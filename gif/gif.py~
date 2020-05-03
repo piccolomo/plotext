@@ -1,0 +1,26 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
+import plotext.plot as plt
+import os
+
+cols, rows=100,30
+plt.scatter([1,-10,3], cols=cols, rows=rows, equations=0)
+plt.show()
+cur_dir=os.path.dirname(os.path.realpath(__file__))
+#plt.savefig(cur_dir+"/plot.txt")
+
+#configuration
+font_size=12
+width=int(1.3*cols*font_size)
+height=int(3.2*rows*font_size)
+back_ground_color=(48, 10, 36)
+font_size=36
+font_color=(255,255,255)
+text = plt.get_canvas(False)
+
+img=Image.new("RGB", (width,height), back_ground_color)
+draw=ImageDraw.Draw(img)
+unicode_font=ImageFont.truetype("UbuntuMono-R.ttf", font_size)
+draw.text((10,10), text, font=unicode_font, fill=font_color )
+img.save(cur_dir+'/image.png')

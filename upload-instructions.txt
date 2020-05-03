@@ -1,0 +1,37 @@
+#cd to the package to upload
+cd ~/Dropbox/software/plotext
+
+#update version of setup.py and plotext/__init__.py files
+python3 update_version.py
+
+#remove previous installation files
+rm -rf build dist plotext.egg-info .git plotext/__pycache__/ plotext/__init__.pyc
+
+#github uploads
+#username piccolomo-password ***19***file***
+git init
+git add .
+git commit -m 'a message'
+git remote rm origin #no worries about errors
+git remote add origin https://github.com/piccolomo/plotext.git
+git push -f origin master
+
+#building the package
+python3 setup.py sdist bdist_wheel
+
+#test your package
+twine check dist/*
+
+#pypi test upload
+#username piccolomo-password Mk2cnp7l
+twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+
+#pypi real upload
+#username piccolomo-password Mk2cnp7l
+twine upload dist/*
+
+#install with pip
+sudo -H pip uninstall plotext
+sudo -H pip install -i https://test.pypi.org/simple/ plotext
+sudo -H pip install plotext
+
