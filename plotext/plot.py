@@ -470,7 +470,10 @@ def _print(string):
 def _apply_clear():
     """When the option clear is set to True, it clears the terminal."""
     if h.clear:
-        _print('\033c')
+        if platform.system() == "Windows":
+            os.system("cls")
+        else:
+            _print('\033c')
     return h.clear
 
 def set_sleep(sleep=False):
