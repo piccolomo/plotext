@@ -4,6 +4,8 @@ from time import time, sleep
 import numpy as np
 import sys
 import os
+import platform
+import struct
 
 class holder():
     def __init__(self):
@@ -217,9 +219,32 @@ def get_decimals():
     """It returns the value set for the option 'decimals'."""
     return h.decimals
 
+def _get_terminal_size_windows():
+    try:
+        from ctypes import windll, create_string_buffer
+        # stdin handle is -10
+        # stdout handle is -11
+        # stderr handle is -12
+        h = windll.kernel32.GetStdHandle(-12)
+        csbi = create_string_buffer(22)
+        res = windll.kernel32.GetConsoleScreenBufferInfo(h, csbi)
+        if res:
+            (bufx, bufy, curx, cury, wattr,
+             left, top, right, bottom,
+             maxx, maxy) = struct.unpack("hhhhHhhhhhh", csbi.raw)
+            sizex = right - left + 1
+            sizey = bottom - top + 1
+            return sizex, sizey
+    except:
+        pass
+
 def get_terminal_size():
-    """It returns the size of the terminal as number of column x number of rows."""
-    h.rows_terminal, h.cols_terminal=map(int, os.popen('stty size', 'r').read().split())
+    if platform.system() == "Windows":
+        h.cols_terminal,h.rows_terminal = _get_terminal_size_windows()
+        h.cols_terminal -= 1
+    else:
+        """It returns the size of the terminal as number of column x number of rows."""
+        h.rows_terminal, h.cols_terminal=map(int, os.popen('stty size', 'r').read().split())
     return h.cols_terminal, h.rows_terminal
 
 def set_cols_max():
@@ -607,6 +632,8 @@ def get_xy_from_plot(col=0, row=0):
 
 def _print_canvas():
     """It prints the final canvas"""
+    if platform.system() == "Windows":
+        h.canvas = escape_ansi(h.canvas)
     _print(h.canvas+"\n")
     #myprint("\n")
     return "canvas printed"
