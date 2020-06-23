@@ -73,6 +73,7 @@ It builds the scatter plot of data points whose coordinates are given by the x a
  - The option 'line', when True, plots straight lines between each data points. The default value is False.
  - The option 'line_marker' sets the marker used to plot the lines between each data point. Only single characters are allowed (eg: '*'). The default value is "•".
  - The option 'line_color' sets the color of the lines between each data point. Access the 'get_colors' function for the available color codes. The default value is 'norm'.
+ - The option 'force_size', when True the given rows and cols are used even if they are bigger than the terminal size
 """
     set_axes(kwargs.get("axes"))
     set_axes_color(kwargs.get("axes_color"))
@@ -84,8 +85,8 @@ It builds the scatter plot of data points whose coordinates are given by the x a
     get_terminal_size()
     set_cols_max()
     set_rows_max()
-    set_cols(kwargs.get("cols"))
-    set_rows(kwargs.get("rows"))
+    set_cols(kwargs.get("cols"),kwargs.get("force_size"))
+    set_rows(kwargs.get("rows"),kwargs.get("force_size"))
     
     set_data(*args)
     set_xlim(kwargs.get("xlim"))
@@ -98,17 +99,15 @@ It builds the scatter plot of data points whose coordinates are given by the x a
     set_line_marker(kwargs.get("line_marker"))
     set_line_color(kwargs.get("line_color"))
 
-def plot(*args, axes=None, axes_color=None, ticks=None, spacing=None, equations=None, decimals=None, cols=None, rows=None, xlim=None, ylim=None, point=False, point_marker="*", point_color=None, line=True, line_marker=None, line_color=None):
+def plot(*args, axes=None, axes_color=None, ticks=None, spacing=None, equations=None, decimals=None, cols=None, rows=None, xlim=None, ylim=None, point=False, point_marker="*", point_color=None, line=True, line_marker=None, line_color=None, force_size=False):
     """
 This is equivalent to the 'scatter' function with the 'point' option set to False, the 'point_marker' option set to '*' and the 'line' option set to True. See the 'scatter' function docstring for more documentation. """
-    scatter(*args, axes=axes, ticks=ticks, axes_color=axes_color, spacing=spacing, equations=equations, decimals=decimals, cols=cols, rows=rows, xlim=xlim, ylim=ylim, point=point, point_marker=point_marker, point_color=point_color, line=line, line_marker=line_marker, line_color=line_color)
+    scatter(*args, axes=axes, ticks=ticks, axes_color=axes_color, spacing=spacing, equations=equations, decimals=decimals, cols=cols, rows=rows, xlim=xlim, ylim=ylim, point=point, point_marker=point_marker, point_color=point_color, line=line, line_marker=line_marker, line_color=line_color, force_size=force_size)
 
-def show(clear=False, sleep=False):
+def prepare_canvas(clear=False):
+    """ Prepares the canvas, useful to get just the text (and use it however you like)
+    On Windows the color is removed from the canvas
     """
-It prints the plot built by the 'scatter' or 'plot' functions. 
- - When the option 'clear' is set to True, the terminal is clear before the plot is printed. The default value is False.
- - When the option 'sleep' is True, the computation is paused for 0.01 secs after plotting. Optionally, the sleeping time (in secs) can passed directly (eg: sleep=0.001). The default value is False.
-"""
     set_clear(clear)
     _apply_clear()
     _set_grid()
@@ -116,7 +115,19 @@ It prints the plot built by the 'scatter' or 'plot' functions.
     _add_xaxis()
     _set_canvas()
     _add_equations()
-    _print_canvas()
+    if platform.system() == "Windows":
+        h.canvas = escape_ansi(h.canvas)
+    return get_canvas()
+
+def show(clear=False, sleep=False, color=True):
+    """
+It prints the plot built by the 'scatter' or 'plot' functions. 
+ - When the option 'clear' is set to True, the terminal is clear before the plot is printed. The default value is False.
+ - When the option 'sleep' is True, the computation is paused for 0.01 secs after plotting. Optionally, the sleeping time (in secs) can passed directly (eg: sleep=0.001). The default value is False.
+ - When the option 'color' is False the canvas is printed without colors (forced on windows)
+"""
+    prepare_canvas(clear)
+    _print_canvas(color)
     set_sleep(sleep)
     _apply_sleep()
 
@@ -265,32 +276,30 @@ def get_rows_max():
     """It returns the maximum number of rows allowed for the plot depending on the terminal size."""
     return h.cols_max
 
-def set_cols(cols=None):
+def set_cols(cols=None,force_size=None):
     """It sets the number of columns of the plot. Only integers are allowed. The default value is the highest allowed by the the terminal dimension."""
-    if type(cols)==float:
+    if cols and force_size:
         cols=int(cols)
-    if cols==None or cols>h.cols_max:
-        h.cols=h.cols_max
+    elif cols==None or cols>h.cols_max:
+        cols=h.cols_max
     elif cols<h.cols_min:
-        h.cols=h.cols_min
-    else:
-        h.cols=abs(int(cols))
+        cols=h.cols_min
+    h.cols=abs(int(cols))
     return h.cols
 
 def get_cols():
     """It returns the number of columns of the plot."""
     return h.cols
 
-def set_rows(rows=None):
+def set_rows(rows=None,force_size=None):
     """The option 'rows' sets the number of rows of the plot. Only integers are allowed. The default value is the highest allowed by the the terminal dimension.""" 
-    if type(rows)==float:
-        rows=int(rows)
-    if rows==None or rows>h.rows_max:
-        h.rows=h.rows_max
+    if rows and force_size:
+        rows = int(rows)
+    elif rows==None or rows>h.rows_max:
+        rows=h.rows_max
     elif rows<h.rows_min:
-        h.rows=h.rows_min
-    else:
-        h.rows=abs(int(rows))
+        rows=h.rows_min
+    h.rows = abs(int(rows))
     return h.rows
 
 def get_rows():
@@ -633,12 +642,9 @@ def get_xy_from_plot(col=0, row=0):
     """It returns the real x and y data values from respectively the x and y values plotted. The x value must be passed to the 'col' option, while the y value to the 'row' option."""
     return get_x_from_xaxis(col), get_y_from_yaxis(row)
 
-def _print_canvas():
+def _print_canvas(color = True):
     """It prints the final canvas"""
-    if platform.system() == "Windows":
-        h.canvas = escape_ansi(h.canvas)
-    _print(h.canvas+"\n")
-    #myprint("\n")
+    _print(get_canvas(color)+"\n")
     return "canvas printed"
 
 def escape_ansi(line):
