@@ -105,8 +105,8 @@ This is equivalent to the 'scatter' function with the 'point' option set to Fals
     scatter(*args, axes=axes, ticks=ticks, axes_color=axes_color, spacing=spacing, equations=equations, decimals=decimals, cols=cols, rows=rows, xlim=xlim, ylim=ylim, point=point, point_marker=point_marker, point_color=point_color, line=line, line_marker=line_marker, line_color=line_color, force_size=force_size)
 
 def prepare_canvas(clear=False):
-    """ Prepares the canvas, useful to get just the text (and use it however you like)
-    On Windows the color is removed from the canvas
+    """ Prepares the canvas, useful to get just the text 
+    (and use it however you like, e.g. store in a file)
     """
     set_clear(clear)
     _apply_clear()
@@ -115,8 +115,6 @@ def prepare_canvas(clear=False):
     _add_xaxis()
     _set_canvas()
     _add_equations()
-    if platform.system() == "Windows":
-        h.canvas = escape_ansi(h.canvas)
     return get_canvas()
 
 def show(clear=False, sleep=False, color=True):
@@ -124,7 +122,7 @@ def show(clear=False, sleep=False, color=True):
 It prints the plot built by the 'scatter' or 'plot' functions. 
  - When the option 'clear' is set to True, the terminal is clear before the plot is printed. The default value is False.
  - When the option 'sleep' is True, the computation is paused for 0.01 secs after plotting. Optionally, the sleeping time (in secs) can passed directly (eg: sleep=0.001). The default value is False.
- - When the option 'color' is False the canvas is printed without colors (forced on windows)
+ - When the option 'color' is False the canvas is printed without colors
 """
     prepare_canvas(clear)
     _print_canvas(color)
