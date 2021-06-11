@@ -3,7 +3,7 @@ import sys
 import math
 from datetime import datetime as dt
 import docstrings as _docstrings
- 
+
 ##############################################
 ############    Set Functions    #############
 ##############################################
@@ -17,7 +17,7 @@ def set_list_to_both(x = None, y = None): # by setting a parameter to a list, bo
         x, y = x[0], x[1]
     return [x, y]
 
-def set_if_none(x = None, x_none = None): # set a parameter when none is provided. 
+def set_if_none(x = None, x_none = None): # set a parameter when none is provided.
     if x == None:
         x = x_none
     return x
@@ -132,7 +132,7 @@ def scientific_base(num):
     return [base, exp]
 
 def scientific_notation(base, exp):
-    return str(base) + 'E' + str(exp) 
+    return str(base) + 'E' + str(exp)
 
 def get_matrix_data(data, plot_lim, bins):
     bins = 1 if bins == 0 else bins
@@ -170,7 +170,7 @@ def update_matrix_small(matrix, x, y, color):
             new = matrix_to_block(new)
             matrix[rows - 1 - r][c][:2] = [new, color]
     return matrix
-            
+
 def small_marker(c, r):
     c = (2 * c) % 2
     r = (2 * r) % 2
@@ -209,7 +209,7 @@ def matrix_to_block(matrix):
         if matrix == blocks[k]:
             return k
 
-def get_line(x, y): 
+def get_line(x, y):
     x_line = []
     y_line = []
     for n in range(len(x) - 1):
@@ -246,7 +246,7 @@ def fill_data(x, y, y0):
 
 def frame_matrix(matrix, symbol = None):
     l, w = len(matrix), len(matrix[0])
-    frame = [symbol] * 6 if symbol!= None else ["┌", "─", "┐", "│", "┘", "└"] 
+    frame = [symbol] * 6 if symbol!= None else ["┌", "─", "┐", "│", "┘", "└"]
     side = [[frame[3]] *  l]
     matrix = transpose(side + transpose(matrix) + side)
     up = [[frame[0]] + [frame[1]] * w + [frame[2]]]
@@ -343,7 +343,7 @@ def string_to_date(string):
     if date.count('/') == 1:
         date += '/' + str(today.year)
     if time.count(':') == 1:
-        time += ':00' 
+        time += ':00'
     time = dt.strptime(date + ' ' + time, '%d/%m/%Y %H:%M:%S')
     day, month, year, hour, minute, second = time.day, time.month, time.year, time.hour, time.minute, time.second
     return [day, month, year, hour, minute, second]
@@ -366,7 +366,7 @@ def get_canvas(matrix):
             canvas += marker
         canvas += '\n'
     return canvas + '\n'
-  
+
 def write(string):
     sys.stdout.write(string)
 
@@ -393,7 +393,7 @@ def shell():
 ###########    Other Functions    ############
 ##############################################
 def check_path(path):
-    home = os.path.expanduser("~") 
+    home = os.path.expanduser("~")
     if path == None:
         path = os.path.join(home, "plot.txt")
     basedir = os.path.dirname(path)
@@ -403,9 +403,12 @@ def check_path(path):
         print("warning: parent directory doesn't exists.")
         path = os.path.join(home, os.path.basename(path))
     return path
-    
+
 def terminal_size():
-    return list(os.get_terminal_size())
+    try:
+        return list(os.get_terminal_size())
+    except OSError:
+        return [80, 25]
 
 def docstrings():
     fun = dir(_docstrings)
@@ -493,7 +496,7 @@ def colors():
         if key[i] in background_color.keys():
             full = "black" if key[i] not in ["none", "black", "iron"] else "white"
             back_color = add_color(key[i], full, key[i])
-        out += "\n" * 1 + full_color + back_color 
+        out += "\n" * 1 + full_color + back_color
     out += "\n\n" + "Fullground colors can be set to the 'color' attribute or given as input to plt.ticks_color()."
     out += "\n" + "Background colors can be given as input to plt.canvas_color() and plt.axes_color()."
     print(out)
@@ -506,8 +509,8 @@ marker = {'small':  '▘',
           'dollar': '$',
           'euro':   '€'}
 marker_sequence = ["small", "dot", "x", "o", "heart", "dollar", "smile", "euro", "big", "@", "^", "é", "a", "b", "c", "d", "e", "f"]
-    
-def markers(): 
+
+def markers():
     print()
     title = "Code\tMarker"
     lines = '─' * 14
