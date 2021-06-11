@@ -2,7 +2,11 @@
 
 `plotext` plots directly on terminal, it has no dependencies and the syntax is very similar to `matplotlib`. It also provide a simple command line tool.
 
-Note: there are many new feautures from the previous version, any bug report is usefull and very welcomed.
+Note: there are many new feautures from the previous version, any bug report is usefull and very welcomed. Use the function test() in order to check if the package works in your system.
+```
+import plotext as plt
+plt.test()
+```
 
 <a name="contents"></a>
 ## Table of Contents
@@ -496,12 +500,8 @@ Plotting the same data using `matplotlib` was roughly 10 to 50 times slower on m
 - `get_canvas()` return the plot final canvas as a string. To be used after the `show` function possibly with its `hide` parameter set to True.
 - `version()` returns the version of the current installed `plotext` package.
 - `sin()` returns a sinusoidal function usefull for testing. Access its docstring for durther documentation.
-- `plt.docstrings()` prints all the available doc-strings.
+- `docstrings()` prints all the available doc-strings.
 - `test()` runs all the above tests in sequence:
-```
-import plotext as plt
-plt.test()
-```
 
 [ Table of Contents ](https://github.com/piccolomo/plotext#table-of-contents)
 
