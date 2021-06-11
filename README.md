@@ -2,7 +2,7 @@
 
 `plotext` plots directly on terminal, it has no dependencies and the syntax is very similar to `matplotlib`. It also provide a simple command line tool.
 
-Note: there are many new feautures from the previous version, any bug report is usefull and very welcomed. Use the function `test()` in order to check if the package works in your system.
+Note: there are many new feautures from the previous version, any bug report is usefull and very welcomed. Use the function `test()` in order to check if the package works well in your system.
 ```
 import plotext as plt
 plt.test()
