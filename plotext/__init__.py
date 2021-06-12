@@ -14,4 +14,4 @@ _sys.path.pop(0)
 from plotext.plot import *
 
 __name__ = "plotext"
-__version__ = "3.1.2"
+__version__ = "3.1.3"
