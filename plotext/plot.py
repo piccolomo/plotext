@@ -762,7 +762,7 @@ def _add_yaxis(subplot):
 
 def _add_xaxis(subplot):
     if subplot.x == []:
-        returnsa
+        return
     axis_lower = [" "] * subplot.ylabels_width_left + ["└"] * subplot.yaxes[0]
     axis_lower += ["─" for r in range(subplot.width_canvas)]
     axis_lower += ["┘"] * subplot.yaxes[1] + [" "] * subplot.ylabels_width_right
