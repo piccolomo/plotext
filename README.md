@@ -2,7 +2,7 @@
 
 `plotext` plots directly on terminal, it has no dependencies and the syntax is very similar to `matplotlib`. It also provide a simple command line tool.
 
-Note: there are many new feautures from the previous version, any bug report is usefull and very welcomed.
+Note: there are many new features from the previous version, any bug report is usefull and very welcomed.
 
 <a name="contents"></a>
 ## Table of Contents
