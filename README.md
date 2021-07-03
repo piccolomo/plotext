@@ -2,7 +2,7 @@
 
 `plotext` plots directly on terminal, it has no dependencies and the syntax is very similar to `matplotlib`. It also provide a simple command line tool.
 
-Note: there are many new features from the previous version, any bug report is usefull and very welcomed.
+Note: there are many new features from the previous version, any bug report is useful and very welcomed.
 
 <a name="contents"></a>
 ## Table of Contents
@@ -48,7 +48,7 @@ python3 -m plotext "import plotext as plt; y = plt.sin(100, 3); plt.scatter(y); 
 ```
 Access the `scatter` docstring for more documentation.
 
-**Note**: the higher resolution marker shown in the picture doesnt work in Windows for now, use other available markers in this case, like `dot`, `big` or others. See the section [ Plot Aspect ](https://github.com/piccolomo/plotext#plot-aspect) for further guidance.
+**Note**: the higher resolution marker shown in the picture doesn't work in Windows for now, use other available markers in this case, like `dot`, `big` or others. See the section [ Plot Aspect ](https://github.com/piccolomo/plotext#plot-aspect) for further guidance.
 
 [ Table of Contents ](https://github.com/piccolomo/plotext#table-of-contents)
 
@@ -108,7 +108,7 @@ Access the `xscale` and `yscale` docstring for more documentation.
 
 <a name="stem"></a>
 # Stem Plot
-For a stem plot use either `fillx` or `filly` parameters. Here is a bisic example:
+For a stem plot use either `fillx` or `filly` parameters. Here is a basic example:
 ```
 import plotext as plt
 y = plt.sin(50, 2)
@@ -204,7 +204,7 @@ python3 -m plotext "import plotext as plt; cities = ['Tokyo', 'Delhi', 'Shanghai
 ```
 Access the `bar` docstring for more documentation. Note: for now it doesn't work with log scale.
 
-**Note**: the higher resolution marker shown in the picture doesnt work in Windows for now, use other available markers in this case, like `dot`, `big` or others. See the section 
+**Note**: the higher resolution marker shown in the picture doesn't work in Windows for now, use other available markers in this case, like `dot`, `big` or others. See the section
 
 [ Table of Contents ](https://github.com/piccolomo/plotext#table-of-contents)
 
@@ -248,7 +248,7 @@ Access the `hist` docstring for more documentation. Note: for now it doesn't wor
 # Data Ticks
 You can change the numerical ticks on both axes with the following three functions - to be placed before `show()`:
 
- - `plt.ticks(xnum, ynum)` sets the ticks frequency on respectivelly the `x` and `y` axis.
+ - `plt.ticks(xnum, ynum)` sets the ticks frequency on respectively the `x` and `y` axis.
  - `plt.xticks(ticks, labels)` manually sets the `x` ticks to the list of `labels` at the list of coordinates provided in `ticks`. If only one list is provided (`ticks`), the labels will correspond to the coordinates.
  - `plt.yticks(ticks, labels)` is the equivalent of `plt.xticks()` but for the `y` axis. It also takes the optional parameter `yaxis` in case multiple `y` axes are used in the plot.
 
@@ -409,7 +409,7 @@ Note: using `flash` will result in an actual white flashing marker (therefore it
 <a name="subplots"></a> 
 # Multiplie Subplots
 In order to plot a grid of plots, use the following main functions:
- - `plt.subplots(rows, cols)` creats a matrix of plots with the given number of rows and columns.  
+ - `plt.subplots(rows, cols)` creates a matrix of plots with the given number of rows and columns.
  - `plt.subplot(row, col)` access the plot at the given row and column, counting (from 1) from the upper left corner of the matrix of plots, previously set. 
 
 Here is a coded basic example:
@@ -444,7 +444,7 @@ python3 -m plotext "import plotext as plt; l, n = 1000, 5; y = plt.sin(l, n); pl
 
 <a name="streaming"></a>
 # Streaming Data
-When streaming a continuos flow of data, consider using the following functions:
+When streaming a continuous flow of data, consider using the following functions:
  - `clear_figure` (in short `clf`) clears the entire figure, including its subplots. 
  - `clear_plot()` (in short `clp()`) clears the plot and all its internal parameters; it is useful when running the same script several times in order to avoid adding the same data to the plot; it is very similar to `cla()` in `matplotlib`.
  - `clear_data()` (in short `cld()`) clear only the plot data (without clearing the plot style).
@@ -495,7 +495,7 @@ Plotting the same data using `matplotlib` was roughly 10 to 50 times slower on m
 - `savefig(path)` saves the plot as a text file at the `path` provided. Note: no colors are preserved at the moment, when saving.
 - `get_canvas()` return the plot final canvas as a string. To be used after the `show` function possibly with its `hide` parameter set to True.
 - `version()` returns the version of the current installed `plotext` package.
-- `sin()` returns a sinusoidal function usefull for testing. Access its docstring for durther documentation.
+- `sin()` returns a sinusoidal function useful for testing. Access its docstring for further documentation.
 - `plt.docstrings()` prints all the available doc-strings.
 - `test()` runs all the above tests in sequence:
 ```
@@ -546,7 +546,7 @@ Under request (just open an issue report about it):
 - log scale for bar/hist plot
 - subplots with `columnspan` and `rowspan` parameters
 - Spider/Idle terminal support or for other more rare terminals (if possible)
-- saving plot text files with color (not sure if usefull)
+- saving plot text files with color (not sure if useful)
 
 Any help or new ideas are welcomed.
 
