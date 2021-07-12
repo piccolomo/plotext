@@ -367,8 +367,13 @@ def get_canvas(matrix):
         canvas += '\n'
     return canvas + '\n'
   
+
+_terminal_printed_lines_cnt = 0
+
 def write(string):
+    global _terminal_printed_lines_cnt
     sys.stdout.write(string)
+    _terminal_printed_lines_cnt += string.count('\n')
 
 
 ##############################################
