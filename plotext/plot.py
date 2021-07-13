@@ -229,8 +229,20 @@ def _filly(fill = None):
 ##############################################
 def clear_terminal():
     _utility.write('\033c')
+    _utility._terminal_printed_lines_cnt = 0
 clear_terminal.__doc__ = _docstrings.clear_terminal_doc
 clt = clear_terminal
+
+def clear_terminal_printed_lines():
+    # clear the lines that plotext had printed
+    # (plus 1 because the last line would not has an \n at the end)
+    n = _utility._terminal_printed_lines_cnt + 1
+    for i in range(n):
+        _utility.write("\033[2K")
+        if i < n - 1:
+            _utility.write("\033[A")
+            _utility.write("\033[2K")
+    _utility._terminal_printed_lines_cnt = 0
 
 def clear_figure():
     _fig.__init__()
