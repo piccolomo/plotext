@@ -380,7 +380,7 @@ def write(string):
 ######    Platform/Shell Functions    ########
 ##############################################
 def platform():
-    if "win" in sys.platform:
+    if sys.platform.startswith("win"):
         return "windows"
     else:
         return "linux"
