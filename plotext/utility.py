@@ -296,7 +296,10 @@ def bar_xdata(x):
 def bars(x, y, width = 4 / 5):
     x, y = x[:], y[:]
     bins = len(x)
-    bin_size_half = (max(x) - min(x)) / (bins - 1) * width / 2
+    bin_size_half = width / 2
+    # adjust the bar width according to the number of bins
+    if bins > 1:
+        bin_size_half *= (max(x) - min(x)) / (bins - 1)
     #bin_size_half = (max(x) - min(x)) / (bins) * width / 2
     #x[0] += bin_size_half
     #x[bins - 1] -= bin_size_half
