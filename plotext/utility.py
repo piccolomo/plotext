@@ -1,4 +1,5 @@
 import os
+import shutil
 import sys
 import math
 from datetime import datetime as dt
@@ -413,7 +414,10 @@ def check_path(path):
     return path
     
 def terminal_size():
-    return list(os.get_terminal_size())
+    try:
+        return list(os.get_terminal_size())
+    except OSError:
+        return shutil.get_terminal_size(fallback=(120, 50))
 
 def docstrings():
     fun = dir(_docstrings)
