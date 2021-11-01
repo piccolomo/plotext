@@ -11,7 +11,7 @@ from test import test
 
 _sys.path.pop(0)
 
-from plotext.plot import *
+from plotext.plot_ import *
 
 __name__ = "plotext"
 __version__ = "3.1.3"

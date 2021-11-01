@@ -411,7 +411,7 @@ yscale.__doc__ = _docstrings.yscale_doc
 ##############################################
 ###########    Show Functions    #############
 ##############################################
-def show(hide = False):
+def show(hide: bool = False, allow_scrolling: bool = False):
     _figure_size_max()
     _figure_size()
 
@@ -420,14 +420,14 @@ def show(hide = False):
 
     for r in range(_fig.rows):
         for c in range(_fig.cols):
-            
+
             subplot = _fig.subplots[r][c]
 
             _previous_size(subplot)
             
             _sort_data(subplot)
 
-            _height(subplot)
+            _height(subplot, ignore_figure_size=allow_scrolling)
 
             _ylim_data(subplot)
             _ylim_plot(subplot)
@@ -522,13 +522,14 @@ def _sort_data(subplot):
     subplot.data_right = subplot.x_right != [] and subplot.y_right != []
     subplot.data = subplot.data_left or subplot.data_right
     
-def _height(subplot):
+def _height(subplot, ignore_figure_size: bool = False):
     subplot.height_max = _fig.height - _fig.previous_height
     height_none = subplot.height_max // (_fig.rows - subplot.row)
     height = _utility.set_if_none(subplot.height_set, height_none)
     height = abs(int(height))
     
-    height = subplot.height_max if height > subplot.height_max else height
+    if not ignore_figure_size and height > subplot.height_max:
+        height = subplot.height_max
     subplot.height = height
 
     subplot.xaxes[0] = 0 if height < 2 else subplot.xaxes[0]
