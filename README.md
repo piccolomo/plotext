@@ -412,6 +412,8 @@ In order to plot a grid of plots, use the following main functions:
  - `plt.subplots(rows, cols)` creates a matrix of plots with the given number of rows and columns.
  - `plt.subplot(row, col)` access the plot at the given row and column, counting (from 1) from the upper left corner of the matrix of plots, previously set. 
 
+Note that if subplots are manually resized with `plotsize`, they can overflow the figure, in which case they will be cut (and possibly made completely invisible if their size is set to 0). A figure can be automatically resized in the vertical direction to fit all the subplots by passing `allow_scrolling=True` to `show`.
+
 Here is a coded basic example:
 ```
 import plotext as plt
@@ -430,6 +432,7 @@ plt.hist(y, color = "indigo")
 plt.plotsize(100, 27)
 
 plt.show()
+# plt.show(allow_scrolling=True)  # if your terminal is less than 54 px in height
 ```
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/subplots.png)
 
