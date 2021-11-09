@@ -1,0 +1,7 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short -rxs"
