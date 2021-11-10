@@ -7,11 +7,21 @@ import argparse
 from collections import defaultdict
 
 
+def column(x):
+    """Helper function to parse indexes of columns when doing and histogram plot
+
+    This function is called after ArgumentParser has parsed the args
+    """
+    # we return a tuple of int, instead of an int for consistency on how we access columns
+    # with other type of plots.
+    return (int(x) - 1,)
+
+
 def split_columns(x):
+    print(x)
     """Helper function to parse pair of indexes of columns
 
-
-    This function is called by ArgumentParser
+    This function is called after ArgumentParser has parsed the args
     """
     try:
         a, b = map(int, x.split(","))
@@ -36,16 +46,19 @@ def build_parser():
 
 
     # plot data from stdin
-    $ cat data.txt | plotext
+    $ cat data.txt | plotext scatter
 
     # plot data from a file
-    $ plotext -f data.txt
+    $ plotext scatter -f data.txt
 
     # bar plot of second-first column
-    $ cat data.txt | plotext --bar --columns 2,1
+    $ cat data.txt | plotext bar --columns 2,1
 
     # linespoints of first-second and first-third column
-    $ plotext -f data.txt --linespoints --columns 1,2 1,3
+    $ plotext linespoints -f data.txt --columns 1,2 1,3
+
+    # histogram plot. columns are separated by ,
+    $ plotext hist -f data.csv -d , -c 1 2
 
     """
     parser = argparse.ArgumentParser(
@@ -56,51 +69,38 @@ def build_parser():
     )
 
     parser.add_argument(
+        "plot", choices=["scatter", "bar", "line", "linespoints", "hist"]
+    )
+
+    parser.add_argument(
         "-f",
         "--file",
         help="Read data from file. If this flag is not used, plotext reads from stdin",
     )
 
-    # supported types of plots. only one type at time is allowed
-    # e.g., we cannot pass flags -s -b together
-    # this is caught by ArgumentParser because we add the flags
-    # to a set of mutually exclusive group
-    plots = parser.add_mutually_exclusive_group()
-    plots.add_argument(
-        "-s",
-        "--scatter",
-        dest="plot",
-        help="Scatter plot. This is the default",
-        action="store_const",
-        const="scatter",
-    )
-    plots.add_argument(
-        "-l",
-        "--line",
-        dest="plot",
-        help="Line plot.",
-        action="store_const",
-        const="line",
-    )
-    plots.add_argument(
-        "-lp",
-        "--linespoints",
-        dest="plot",
-        help="Linespoints plot.",
-        action="store_const",
-        const="linespoints",
-    )
-    plots.add_argument(
-        "-b", "--bar", dest="plot", help="Bar plot.", action="store_const", const="bar"
+    parser.add_argument(
+        "-d",
+        "--delimiter",
+        help="Use DELIMITER instead of spaces for column separator",
+        default=None,
     )
 
     parser.add_argument(
         "-c",
         "--columns",
-        help="""Pairs of columns to plot: 1,2 1,3 4,2. By default, the first two columns are used""",
+        help="""Columns to plot. 
+        For scatter, line, linespoints, and bar they must be pairs separated by ',' without spaces 
+        
+        1,2 1,3 4,2.
+
+        For histogram plots, just list of columns 1 2 3. By default, the first two columns are used""",
         nargs="*",
-        type=split_columns,
-        default=[(0, 1)],
+        type=str,
+        default=["1,2"],
+    )
+
+    parser.add_argument(
+        "--bins", help="Number of bins for histogram plot", type=int, default=10
     )
 
     parser.add_argument("-xl", "--xlabel", help="Set x label", nargs="?")
@@ -111,19 +111,24 @@ def build_parser():
 
     parser.add_argument("-g", "--grid", help="Enable grid", action="store_true")
 
-    parser.add_argument(
-        "-d", "--delimiter", help="Use delimiter instead of spaces for field delimiter"
-    )
-
-    parser.set_defaults(plot="scatter", delimiter=None)
     return parser
+
+
+def parser_call_back(args):
+    if args.plot == "hist":
+        # histogram plots expect just a list of columns, not pairs
+        args.columns = list(map(column, args.columns))
+    else:
+        args.columns = list(map(split_columns, args.columns))
+    return args
 
 
 def parse_args(argv):
     """Helper function: return namespace populated by ArgumentParser"""
 
     parser = build_parser()
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    return parser_call_back(args)
 
 
 def post_process_all_floats(columns, plot_type):
@@ -216,18 +221,23 @@ def plot_properties(args):
 def plot(data, args):
     """Draw the plot."""
 
-    pairs = args.columns
-
-    for i, j in pairs:
+    for x in args.columns:
         if args.plot == "scatter":
+            i, j = x
             plt.scatter(data[i], data[j])
         elif args.plot == "bar":
+            i, j = x
             plt.bar(data[i], data[j])
         elif args.plot == "line":
+            i, j = x
             plt.plot(data[i], data[j])
         elif args.plot == "linespoints":
+            i, j = x
             plt.plot(data[i], data[j], marker=".")
             plt.scatter(data[i], data[j], marker="small")
+        elif args.plot == "hist":
+            i = x[0]
+            plt.hist(data[i], bins=args.bins)
 
     plot_properties(args)
     plt.show()
