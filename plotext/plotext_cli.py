@@ -73,7 +73,7 @@ def _build_parser():
     """
     parser = argparse.ArgumentParser(
         prog="plotext",
-        description="plots directly on terminal",
+        description="plots directly on the terminal",
         epilog=examples,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -85,7 +85,7 @@ def _build_parser():
     parser.add_argument(
         "-f",
         "--file",
-        help="Read data from file. If this flag is not used, plotext reads from stdin",
+        help="Read data from FILE. If this flag is not used, plotext reads from stdin",
     )
 
     parser.add_argument(
@@ -99,11 +99,11 @@ def _build_parser():
         "-c",
         "--columns",
         help="""Columns to plot. 
-        For scatter, line, linespoints, and bar they must be pairs separated by ',' without spaces 
+        For scatter, line, linespoints, and bar, they must be pairs separated by ',' without spaces 
         
         1,2 1,3 4,2.
 
-        For histogram plots, just list of columns 1 2 3. By default, the first two columns are used""",
+        For histogram plots, list of columns 1 2 3. By default, the first two columns are used""",
         nargs="*",
         type=str,
         default=["1,2"],
