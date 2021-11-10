@@ -13,11 +13,11 @@ import pytest
 
 
 def test_column():
-    assert cli.column("1") == (0,)
+    assert cli._column("1") == (0,)
 
 
 def test_split_columns():
-    assert cli.split_columns("1,3") == (0, 2)
+    assert cli._split_columns("1,3") == (0, 2)
 
     # when we pass from command line pairs contaning spaces
     # e.g.,
@@ -26,13 +26,13 @@ def test_split_columns():
     # 1 , 3
     # ArgumentParser will pass just the first token
     with pytest.raises(ValueError):
-        cli.split_columns("1,")
-        cli.split_columns("1")
+        cli._split_columns("1,")
+        cli._split_columns("1")
 
 
 @pytest.fixture
 def parser():
-    return cli.build_parser()
+    return cli._build_parser()
 
 
 def test_parser(parser):
@@ -47,6 +47,7 @@ def test_parser(parser):
     assert args.title == None
     assert args.xlabel == None
     assert args.ylabel == None
+    assert args.size == None
 
     args = parser.parse_args("scatter -f a_file".split())
     assert args.file == "a_file"
@@ -69,6 +70,11 @@ def test_parser(parser):
     args = cli.parse_args("scatter -c 1,2 1,3".split())
     assert args.columns == [(0, 1), (0, 2)]
 
+    args = cli.parse_args("scatter --size 10,20".split())
+    assert args.size == (10, 20)
+    args = cli.parse_args("scatter -s 10,20".split())
+    assert args.size == (10, 20)
+
     with pytest.raises(SystemExit):
         # no plot type defined
         parser.parse_args([""])
@@ -78,6 +84,12 @@ def test_parser(parser):
 
         # cannot set plots different types
         cli.parse_args(["bar", "scatter"])
+
+        # no spaces between plot dimensions
+        cli.parse_args("bar --size 10, 20".split())
+
+        # plot dimensions are integers
+        cli.parse_args("bar --size 10.5,20".split())
 
     args = parser.parse_args("bar --xlabel xlabel".split())
     assert args.xlabel == "xlabel"

@@ -7,7 +7,7 @@ import argparse
 from collections import defaultdict
 
 
-def column(x):
+def _column(x):
     """Helper function to parse indexes of columns when doing and histogram plot
 
     This function is called after ArgumentParser has parsed the args
@@ -17,11 +17,9 @@ def column(x):
     return (int(x) - 1,)
 
 
-def split_columns(x):
+def _split_columns(x):
     print(x)
-    """Helper function to parse pair of indexes of columns
-
-    This function is called after ArgumentParser has parsed the args
+    """Helper function to parse pair of indexes
     """
     try:
         a, b = map(int, x.split(","))
@@ -38,7 +36,19 @@ def split_columns(x):
         raise ex
 
 
-def build_parser():
+def _plot_size(x):
+    try:
+        a, b = map(int, x.split(","))
+        return a, b
+    except ValueError as ex:
+        message = """ 
+        Cannot understand the size of the plot. Please pass a pair of integers separated by a comma
+        without a space: 100,30\n\n\n"""
+        print(message, ex)
+        raise ex
+
+
+def _build_parser():
     """Define command line args
     """
     examples = """
@@ -103,6 +113,8 @@ def build_parser():
         "--bins", help="Number of bins for histogram plot", type=int, default=10
     )
 
+    parser.add_argument("-s", "--size", help="Size of the plot", type=_plot_size)
+
     parser.add_argument("-xl", "--xlabel", help="Set x label", nargs="?")
 
     parser.add_argument("-yl", "--ylabel", help="Set y label", nargs="?")
@@ -114,24 +126,24 @@ def build_parser():
     return parser
 
 
-def parser_call_back(args):
+def _parser_call_back(args):
     if args.plot == "hist":
         # histogram plots expect just a list of columns, not pairs
-        args.columns = list(map(column, args.columns))
+        args.columns = list(map(_column, args.columns))
     else:
-        args.columns = list(map(split_columns, args.columns))
+        args.columns = list(map(_split_columns, args.columns))
     return args
 
 
 def parse_args(argv):
-    """Helper function: return namespace populated by ArgumentParser"""
-
-    parser = build_parser()
+    """Returns the namespace with all the command line args"""
+    parser = _build_parser()
     args = parser.parse_args(argv)
-    return parser_call_back(args)
+    # post-process several args
+    return _parser_call_back(args)
 
 
-def post_process_all_floats(columns, plot_type):
+def _post_process_all_floats(columns, plot_type):
     """Convert all data read from file or stdin to float. 
     This function is invoked by get_data()"""
     for k, v in columns.items():
@@ -144,7 +156,7 @@ def post_process_all_floats(columns, plot_type):
     return columns
 
 
-def post_process_bar(columns, pairs):
+def _post_process_bar(columns, pairs):
     """Convert y-axis values into float. x-axis values are left str"""
     # in a bar plot, x-axis elements are left string
     # y elements, must be conveterd to float
@@ -162,7 +174,7 @@ def post_process_bar(columns, pairs):
     return columns
 
 
-def get_data_from(file_descriptor, args):
+def _get_data_from(file_descriptor, args):
     """Read line from file_descriptor, which is a file or stdin. 
 
     Each line is plit according to the delimiter passed from command line. 
@@ -190,20 +202,20 @@ def get_data(args):
 
     if args.file:
         with open(args.file) as f:
-            columns = get_data_from(f, args)
+            columns = _get_data_from(f, args)
     else:
-        columns = get_data_from(sys.stdin, args)
+        columns = _get_data_from(sys.stdin, args)
 
     # here we basically convert x and/or y elements to float
     if args.plot == "bar":
-        columns = post_process_bar(columns, args.columns)
+        columns = _post_process_bar(columns, args.columns)
     else:
-        columns = post_process_all_floats(columns, args.plot)
+        columns = _post_process_all_floats(columns, args.plot)
 
     return columns
 
 
-def plot_properties(args):
+def _plot_properties(args):
     """Apply optional configurations to the plot"""
     if args.xlabel:
         plt.xlabel(args.xlabel)
@@ -216,6 +228,9 @@ def plot_properties(args):
 
     if args.grid:
         plt.grid(True)
+
+    if args.size:
+        plt.plotsize(*args.size)
 
 
 def plot(data, args):
@@ -239,7 +254,7 @@ def plot(data, args):
             i = x[0]
             plt.hist(data[i], bins=args.bins)
 
-    plot_properties(args)
+    _plot_properties(args)
     plt.show()
 
 
