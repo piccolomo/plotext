@@ -18,7 +18,6 @@ def _column(x):
 
 
 def _split_columns(x):
-    print(x)
     """Helper function to parse pair of indexes
     """
     try:
