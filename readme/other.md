@@ -92,7 +92,9 @@ python3 -c "import plotext as plt; y=plt.sin(); plt.clp(); plt.scatter(y); plt.t
 
 - `plt.sleep()` adds a sleeping time to the computation.
 
-- `plt.sin(amplitude, periods, length, phase, decay) outputs a sinusoidal signal with the given parameters.
+- `plt.time()` it returns the computation time of the last `plt.show()` or `plt.build()` functions. 
+
+- `plt.sin(amplitude, periods, length, phase, decay)` outputs a sinusoidal signal with the given parameters.
 
 - `plt.colorize(string, full-ground, background, show)` it paints a string with the given color codes. If `show` is True, the string is printed and not returned.
 
