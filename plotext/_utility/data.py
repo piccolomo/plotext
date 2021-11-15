@@ -8,9 +8,9 @@ from math import sin as _sin
 ##############################################
 
 def set_data(x = None, y = None): # it return properly formatted x and y data lists
-    if x == None and y == None :
+    if x is None and y is None :
         x, y = [], []
-    elif x != None and y == None:
+    elif x is not None and y is None:
         y = x
         x = range(1, len(y) + 1)
     x, y = list(x), list(y)
@@ -70,7 +70,7 @@ def replace(data, data2, element = None): # replace element in data with corresp
 def get_lim(data): # it returns the data minimum and maximum limits
     m = min(data, default = None)
     M = max(data, default = None)
-    m, M = (m - 1, M + 1) if m == M and m != None else (m, M)
+    m, M = (m - 1, M + 1) if m == M and m is not None else (m, M)
     lim = [m, M]
     return lim
 

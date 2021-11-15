@@ -23,7 +23,7 @@ def update_bars(x, bars, offset): # it updates the bar coordinates using the pas
     return x, xlabels, labelled, bars
 
 def update_bar_xlim(y): # it updates the bar limits along their heights (y if orientation is vertical otherwise x)
-    y = [el for el in y if el != None]
+    y = [el for el in y if el is not None]
     bar_lim = [min(y, default = None), max(y, default = None)]
     return bar_lim
 

@@ -30,8 +30,8 @@ class subplot_class():
         self.settings_init()
 
     def set_size(self, width = None, height = None):
-        self.width = width if width == None else int(width)
-        self.height = height if height == None else int(height)
+        self.width = width if width is None else int(width)
+        self.height = height if height is None else int(height)
         self.size = [self.width, self.height]
 
     def data_init(self): 
@@ -99,13 +99,13 @@ class subplot_class():
 
     def xside_to_pos(self, xside = None): # from axis side to position
         xaxis = self.default.xside
-        xside = xaxis[0] if xside == None or xside not in xaxis else xside
+        xside = xaxis[0] if xside is None or xside not in xaxis else xside
         pos = self.default.xside.index(xside)
         return pos
 
     def yside_to_pos(self, yside = None):
         yaxis = self.default.yside
-        yside = yaxis[0] if yside == None or yside not in yaxis else yside
+        yside = yaxis[0] if yside is None or yside not in yaxis else yside
         pos = self.default.yside.index(yside)
         return pos
 
@@ -134,11 +134,11 @@ class subplot_class():
 ##############################################
 
     def add_xside(self, xside = None):
-        xside = self.default.xside[0] if xside == None or xside not in self.default.xside else xside
+        xside = self.default.xside[0] if xside is None or xside not in self.default.xside else xside
         self.xside.append(xside)
 
     def add_yside(self, yside = None):
-        yside = self.default.yside[0] if yside == None or yside not in self.default.yside else yside
+        yside = self.default.yside[0] if yside is None or yside not in self.default.yside else yside
         self.yside.append(yside)
 
     def add_data(self, *args):
@@ -148,7 +148,7 @@ class subplot_class():
         self.signals += 1
 
     def add_lines(self, lines):
-        lines = self.default.lines if lines == None else bool(lines) 
+        lines = self.default.lines if lines is None else bool(lines) 
         self.lines.append(lines)
 
     def add_markers(self, marker = None):
@@ -158,7 +158,7 @@ class subplot_class():
 
     def check_marker(self, marker = None):
         marker = marker if marker in marker_codes or marker in hd_marker_codes else marker if type(marker) == str else None
-        marker = first(marker_sequence, self.marker) if marker == None else marker
+        marker = first(marker_sequence, self.marker) if marker is None else marker
         spaces = only_spaces(marker)
         marker = space_marker if spaces else marker
         marker = marker if marker in hd_marker_codes or marker in marker_codes else marker[0]
@@ -173,21 +173,21 @@ class subplot_class():
     def check_color(self, color = None, past_colors = []): # past colors are not calcuated here to reduce time for list based colors
         code = color_code(color, 1)
         nocolor = code[0] == 3
-        color = None if color == None or nocolor else color
-        color = first(self.color_sequence, past_colors) if color == None else color
+        color = None if color is None or nocolor else color
+        color = first(self.color_sequence, past_colors) if color is None else color
         return color
         
     def add_fillx(self, fillx = None):
-        fillx = self.default.fillx if fillx == None else bool(fillx) 
+        fillx = self.default.fillx if fillx is None else bool(fillx) 
         self.fillx.append(fillx)
 
     def add_filly(self, filly = None):
-        filly = self.default.filly if filly == None else bool(filly) 
+        filly = self.default.filly if filly is None else bool(filly) 
         self.filly.append(filly)
 
     def add_label(self, label = None):
         spaces = only_spaces(label)
-        label = self.default.label if label == None or spaces else str(label).strip() # strip to remove spaces before and after
+        label = self.default.label if label is None or spaces else str(label).strip() # strip to remove spaces before and after
         self.label.append(label)
         #figure.subplot.label_show.append(default.label_show)
 
@@ -232,8 +232,8 @@ class subplot_class():
         self.ylim = self.get_lim(self.y, self.yside, self.default.yside, self.ylim)
 
     def get_height_canvas(self):
-        self.title_width = any([el != None for el in [self.title, self.xlabel[1]]])
-        self.labels_width = any([el != None for el in [self.xlabel[0], self.ylabel[0], self.ylabel[1]]])
+        self.title_width = any([el is not None for el in [self.title, self.xlabel[1]]])
+        self.labels_width = any([el is not None for el in [self.xlabel[0], self.ylabel[0], self.ylabel[1]]])
         self.height_canvas = self.height - sum(self.xaxes) - sum(map(bool, self.xfrequency)) - self.labels_width - self.title_width
 
     def get_yticks(self):
@@ -412,12 +412,12 @@ class subplot_class():
         x, y = set_data(x, y)
         xside, yside, marker, color, fill, width, orientation, label, minimum, offset = self.get_bar_parameters(**kwargs)
         
-        marker = self.default.bar_marker if marker == None else marker
-        fill = self.default.bar_fill if fill == None else fill
-        width = self.default.bar_width if width == None else width
+        marker = self.default.bar_marker if marker is None else marker
+        fill = self.default.bar_fill if fill is None else fill
+        width = self.default.bar_width if width is None else width
         width = 1 if width > 1 else 0 if width < 0 else width
-        orientation = self.default.bar_orientation[0] if orientation == None or orientation not in self.default.bar_orientation else orientation
-        offset = 0 if offset == None else offset
+        orientation = self.default.bar_orientation[0] if orientation is None or orientation not in self.default.bar_orientation else orientation
+        offset = 0 if offset is None else offset
 
         xpos = self.xside_to_pos(xside)
         ypos = self.xside_to_pos(yside)
@@ -469,10 +469,10 @@ class subplot_class():
         xside, yside, marker, color, fill, width, orientation, label, minimum, offset = self.get_bar_parameters(**kwargs)
         ly = len(y)
 
-        width = self.default.bar_width if width == None else width
-        marker = [marker] * ly if marker == None or type(marker) != list else marker
-        color = [color] * ly if color == None else color
-        label = [label] * ly if label == None else label
+        width = self.default.bar_width if width is None else width
+        marker = [marker] * ly if marker is None or type(marker) != list else marker
+        color = [color] * ly if color is None else color
+        label = [label] * ly if label is None else label
         width = width / ly if ly != 0 else 0
         offset = linspace(-1 / 2 + 1 / (2 * ly), 1 / 2 - 1 / (2 * ly), ly) if ly!= 0 else []
         
@@ -492,9 +492,9 @@ class subplot_class():
     def draw_stacked_bar(self, x, y, **kwargs):
         xside, yside, marker, color, fill, width, orientation, label, minimum, offset = self.get_bar_parameters(**kwargs)
         ly = len(y)
-        marker = [marker] * ly if marker == None or type(marker) != list else marker
-        color = [color] * ly if color == None else color
-        label = [label] * ly if label == None else label
+        marker = [marker] * ly if marker is None or type(marker) != list else marker
+        color = [color] * ly if color is None else color
+        label = [label] * ly if label is None else label
 
         y = transpose([cumsum(el) for el in transpose(y)])
         for i in range(ly - 1, -1, -1):
@@ -511,7 +511,7 @@ class subplot_class():
 
     def draw_hist(self, data, **kwargs):
         bins = kwargs.get("bins")
-        bins = self.default.hist_bins if bins == None else bins
+        bins = self.default.hist_bins if bins is None else bins
         x, y = hist_data(data, bins)
         self.draw_single_bar(x, y, **kwargs)
 

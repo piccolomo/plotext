@@ -47,7 +47,7 @@ def color_type(color = None): # color type: 0 = standard, 1 = 256 colors, 2 = rg
     return t
 
 def color_code(color = None, fullground = True): # given a color, an integer or a tuple, it returns the internal to plotext color code and bool which is True if the color is unrecognised
-    color = "" if color == None else color
+    color = "" if color is None else color
     t = color_type(color) # color type
     code = [t] + [int(fullground)]
     if t == 0:
@@ -79,8 +79,8 @@ def end_escape(color_code = None): # the closing ascii sequence, dependent on th
     return '' if color_code[0] == 3 or (color_code[0] == 0 and color_code[2] == 0) else '\x1b[0m'
 
 def colorize(string, fullground = None, background = None, show = False): # it paints a text with given fullground and background color
-    string = string if fullground == None else begin_escape(color_code(fullground, 1)) + string + end_escape(color_code(fullground, 1))
-    string = string if background == None else begin_escape(color_code(background, 0)) + string + end_escape(color_code(background, -1))
+    string = string if fullground is None else begin_escape(color_code(fullground, 1)) + string + end_escape(color_code(fullground, 1))
+    string = string if background is None else begin_escape(color_code(background, 0)) + string + end_escape(color_code(background, -1))
     if show:
         print(string)
     else:
