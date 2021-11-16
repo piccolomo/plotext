@@ -25,8 +25,8 @@ def save_text(path, text):
     print("data saved as " + path)
 
 def read_data(path, delimiter = None, columns = None, header = None): # it turns a text file into data lists
-    delimiter = " " if delimiter == None else delimiter
-    header = True if header == None else header
+    delimiter = " " if delimiter is None else delimiter
+    header = True if header is None else header
     begin = int(not header)
     file = open(path, "r")
     lines = file.readlines()[begin:]
@@ -34,15 +34,15 @@ def read_data(path, delimiter = None, columns = None, header = None): # it turns
     data = []
     for x in lines:
         row = x.split(delimiter)
-        cols = row if columns == None else columns
+        cols = row if columns is None else columns
         row = [float(row[c].replace('\n', '')) for c in cols]
         data.append(row)
     data = _transpose(data)
     return data
 
 def write_data(path, matrix, delimiter = None, columns = None):# it turns a matrix into a text file 
-    delimiter = " " if delimiter == None else delimiter
-    cols = list(range(len(matrix[0]))) if columns == None else columns
+    delimiter = " " if delimiter is None else delimiter
+    cols = list(range(len(matrix[0]))) if columns is None else columns
     text = ""
     for row in matrix:
         row = [row[i] for i in cols]
