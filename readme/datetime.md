@@ -42,7 +42,7 @@ Here is an example which uses the package `yfinance`.
 ```
 import yfinance as yf
 import plotext as plt
-plt.datetime.set_datetime_form(date_form = `%d/%m/%Y`)
+plt.datetime.set_datetime_form(date_form='%d/%m/%Y')
 
 start = plt.datetime.string_to_datetime("11/07/2020")
 end = plt.datetime.today.datetime
