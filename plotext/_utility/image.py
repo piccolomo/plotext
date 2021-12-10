@@ -1,6 +1,4 @@
 from plotext._utility.data import replace
-from PIL.Image import fromarray
-import numpy as np
 
 def to_gray_rgb(matrix): # from a standard matrix to a matrix of gray rgb colors
     if matrix == []:
@@ -29,10 +27,22 @@ def resize_image(image, size, keep_ratio, resample): # it resize an image to the
     return image
 
 def image_to_matrix(image): # from image to a matrix of pixels
-    matrix = np.array(image)
-    if type(matrix[0][0]) == np.ndarray or type(el) == list:
-        matrix = [[tuple(el) for el in l] for l in matrix]
-    return matrix
+    pixels = list(image.getdata())
+    width, height = image.size
+    pixels = [pixels[i * width:(i + 1) * width] for i in range(height)]
+    return pixels
 
-def matrix_to_image(matrix): # from a matrix of pixels to an image
-    return fromarray(np.uint8(matrix))
+
+# old version based on numpy
+# def image_to_matrix(image): # from image to a matrix of pixels
+#     matrix = np.array(image)
+#     if type(matrix[0][0]) == np.ndarray or type(el) == list:
+#         matrix = [[tuple(el) for el in l] for l in matrix]
+#     return matrix
+
+
+# def matrix_to_image(matrix): # from a matrix of pixels to an image, never used so far
+#     from PIL.Image import fromarray
+#     import numpy as np
+#     return fromarray(np.uint8(matrix))
+

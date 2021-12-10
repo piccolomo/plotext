@@ -4,44 +4,23 @@ import os
 
 def platform(): # the platform (eg: linux) you are using plotext with
     platform = sys.platform
-    names = ["win", "linux", "unix"]
-    platforms = ["windows", "linux", "unix"]
-    for i in range(3):
-        if names[i] in platform:
-            return platforms[i]
-    return "not found"
-
-def shell(): # the terminal used
-    try:
-        __IPYTHON__
-        return "ipython"
-    except NameError:
-        pass
-    try:
-        shell = os.environ['SHELL']
-        shells = ["bash", "idle", "spyder"]
-        for s in shells:
-            if s in shell:
-                return s
-    except KeyError:
-        pass
-    shell = sys.executable
-    if 'pythonw' in shell:
-        return 'idle'
-    if 'anaconda' in shell:
-        return 'spyder'
+    # According to the docs, this returns one of: 'aix', 'linux', 'win32', 'cygwin', 
+    # 'darwin', or the modified result of `uname -s` on other Unix systems.
+    if platform in {'win32', 'cygwin'}:
+        # These are the only two possible outputs on Windows systems
+        return 'windows'
     else:
-        return "cmd"
+        # Anything that is not Windows and that runs Python is a flavor of Unix
+        return 'unix'
 
 _platform = platform()
-_shell = shell()
 
 if _platform == "windows":
     # to enable ascii escape color sequences
     import subprocess 
     subprocess.call('', shell = True)
 
-    # to enable higher definition markers: it didn't work....
+    # to enable higher definition markers in windows: it didn't work....
     #import ctypes
     #kernel32 = ctypes.windll.kernel32
     #kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7) 

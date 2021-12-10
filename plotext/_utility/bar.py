@@ -22,15 +22,16 @@ def update_bars(x, bars, offset): # it updates the bar coordinates using the pas
             x = xn
     return x, xlabels, labelled, bars
 
-def update_bar_xlim(y): # it updates the bar limits along their heights (y if orientation is vertical otherwise x)
+def update_bar_xlim(y): # it updates the bar limits along their base dimension  (x if orientation is vertical otherwise y)
     y = [el for el in y if el is not None]
     bar_lim = [min(y, default = None), max(y, default = None)]
     return bar_lim
 
-def update_bar_ylim(y): # it updates the bar limits along their base dimension  (x if orientation is vertical otherwise y)
+def update_bar_ylim(y): # it updates the bar limits along their heights (y if orientation is vertical otherwise x)
     bar_lim = update_bar_xlim(y)
     if None not in bar_lim:
         delta = (bar_lim[1] - bar_lim[0]) / 20
+        delta = bar_lim[0] / 20 if delta == 0 else delta
         bar_lim[0] = bar_lim[0] - delta if bar_lim[0] - delta > 0 else bar_lim[0]
     return bar_lim
 
