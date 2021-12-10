@@ -74,7 +74,7 @@ which  translates into:
 python3 -c "import plotext as plt; y=plt.sin(); plt.clp(); plt.scatter(y); plt.title('Scatter Plot'); plt.show();"
 ```
 
-Alternatively you could use the direct plotext executable discussed in [ Issue 47 ](https://github.com/piccolomo/plotext/issues/47) and [ Issue 51 ](https://github.com/piccolomo/plotext/issues/51) and which will be further developed in the future. 
+Alternatively you could use the direct plotext executable discussed in [ Issue 47 ](https://github.com/piccolomo/plotext/issues/47) and [ Pull 51 ](https://github.com/piccolomo/plotext/pull/51) and which will be further developed in the future. 
 
 [ Other Utilities Menu ](https://github.com/piccolomo/plotext/blob/master/readme/other.md#other-utilities)
 
