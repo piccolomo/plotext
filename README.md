@@ -8,16 +8,6 @@ This is what you could output on terminal with `plotext`:
 
 For details on how to use the package, follow this menu.
 
-## Main Menu
-
-- [ Basic Plots ](https://github.com/piccolomo/plotext/blob/master/readme/basic.md) 
-- [ Bar Plots ](https://github.com/piccolomo/plotext/blob/master/readme/bar.md)
-- [ Datetime Plots ](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md)
-- [ Plot Aspect ](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md)
-- [ Matrix/Image Plots ](https://github.com/piccolomo/plotext/blob/master/readme/matrix-image-plots.md)
-- [ Multiple Subplots ](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md)
-- [ Other Utilities ](https://github.com/piccolomo/plotext/blob/master/readme/other.md)
-
 
 ## How to Install
 To install the latest version of `plotext` you can use:
@@ -37,6 +27,17 @@ Which will make sure that the package `pillow` is installed.
 
 [ Main Menu ](https://github.com/piccolomo/plotext#main-menu)
 
+
+
+## Main Menu
+
+- [ Basic Plots ](https://github.com/piccolomo/plotext/blob/master/readme/basic.md) 
+- [ Bar Plots ](https://github.com/piccolomo/plotext/blob/master/readme/bar.md)
+- [ Datetime Plots ](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md)
+- [ Plot Aspect ](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md)
+- [ Matrix/Image Plots ](https://github.com/piccolomo/plotext/blob/master/readme/matrix-image-plots.md)
+- [ Multiple Subplots ](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md)
+- [ Other Utilities ](https://github.com/piccolomo/plotext/blob/master/readme/other.md)
 
 
 
@@ -102,6 +103,8 @@ From versions 3:
  - `hd` and `fhd` label ticks that adapts to plot or scatter function
 
 Any help or new ideas are welcomed.
+
+[ Main Menu ](https://github.com/piccolomo/plotext#main-menu)
 
 
 ## Credits and Sources of Inspiration
