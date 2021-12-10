@@ -24,13 +24,9 @@ pip install plotext[image]
 Which will make sure that the package `pillow` is installed. 
 
 
-[ Main Menu ](https://github.com/piccolomo/plotext#main-menu)
-
-
+## Main Menu
 
 For details on how to use the package, follow this menu:
-
-## Main Menu
 
 - [ Basic Plots ](https://github.com/piccolomo/plotext/blob/master/readme/basic.md) 
 - [ Bar Plots ](https://github.com/piccolomo/plotext/blob/master/readme/bar.md)
@@ -42,7 +38,8 @@ For details on how to use the package, follow this menu:
 
 
 
-## Main Updates:
+## Main Updates
+
 Note: there are many new features from the previous version, any bug report is useful and very welcomed.
 
 From version 4.0.0:
