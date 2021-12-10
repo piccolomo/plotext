@@ -6,8 +6,6 @@ It also provide a simple command line tool.
 This is what you could output on terminal with `plotext`:
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/subplots.png)
 
-For details on how to use the package, follow this menu.
-
 
 ## How to Install
 To install the latest version of `plotext` you can use:
@@ -28,6 +26,8 @@ Which will make sure that the package `pillow` is installed.
 [ Main Menu ](https://github.com/piccolomo/plotext#main-menu)
 
 
+
+For details on how to use the package, follow this menu:
 
 ## Main Menu
 
