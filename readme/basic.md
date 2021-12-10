@@ -23,12 +23,16 @@ plt.scatter(y)
 plt.title("Scatter Plot")
 plt.show()
 ```
+or directly on terminal:
+```
+python3 -c "import plotext as plt; y = plt.sin(); plt.scatter(y); plt.title('Scatter Plot'); plt.show()"
+```
 which prints this on terminal:
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/scatter.png)
 
-The doc-string of the `scatter()` function is easily accessible with `plt.doc.scatter()`.
+Access the `scatter()` function documentation with `plt.doc.scatter()`
 
-**Note**: the higher resolution marker shown in the picture doesn't work in Windows for now.
+**Note**: the 3 x 2 higher resolution marker (named `fhd`) used by default in the example above, doesn't work in Windows for now. But the 2 x 2 marker (named `hd`) does!
 
 [ Basic Plots Menu ](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
@@ -47,6 +51,10 @@ plt.clp()
 plt.plot(y)
 plt.title("Line Plot")
 plt.show()
+```
+or directly on terminal:
+```
+python3 -c "import plotext as plt; y = plt.sin(); plt.plot(y); plt.title('Line Plot'); plt.show()"
 ```
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/plot.png)
 
@@ -70,6 +78,10 @@ y = plt.sin()
 plt.scatter(y, fillx = True)
 plt.title("Stem Plot")
 plt.show()
+```
+or directly on terminal:
+```
+python3 -c "import plotext as plt; y = plt.sin(); plt.scatter(y, fillx = True); plt.title('Stem Plot'); plt.show()"
 ```
 
 which outputs:
@@ -97,7 +109,10 @@ plt.scatter(y2, label = "scatter")
 plt.title("Multiple Data Set")
 plt.show()
 ```
-
+or directly on terminal:
+```
+python3 -c "import plotext as plt; y1 = plt.sin(); y2 = plt.sin(phase = -1); plt.plot(y1, label = 'plot'); plt.scatter(y2, label = 'scatter'); plt.title('Multiple Data Set'); plt.show()"
+```
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/multiple-data.png)
 
 Using the `label` parameter, a legend is automatically added in the upper left corner of the plot.
@@ -108,7 +123,7 @@ Using the `label` parameter, a legend is automatically added in the upper left c
 
 ## Multiple Axes Plot
 
-Data could be plotted independently on both lower and upper x axes, as well as left and right y axes, using respectivelly the `xside` and `yside` parameters.
+Data could be plotted independently on both lower and upper `x` axes, as well as left and right `y` axes, using respectivelly the `xside` and `yside` parameters.
 
 Here is a simple example:
 
@@ -124,10 +139,13 @@ plt.plot(y2, xside= "upper", yside = "right", label = "upper right")
 plt.title("Multiple Axes Plot")
 plt.show()
 ```
-
+or directly on terminal:
+```
+python3 -c "import plotext as plt; y1 = plt.sin(); y2 = plt.sin(2, phase = -1); plt.plot(y1, xside= 'lower', yside = 'left', label = 'lower left'); plt.plot(y2, xside= 'upper', yside = 'right', label = 'upper right'); plt.title('Multiple Axes Plot'); plt.show()"
+```
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/multiple-axes.png)
 
-Note that on the right side of each entry of the plot legend, a symbol is introduce to easily identify on which axes the data set refers to: the interpretation should be intuitive.
+Note that on the right side of each legend entry, a symbol is introduce to easily identify on which axes the data set refers to: the interpretation should be intuitive.
 
 [ Basic Plots Menu ](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
@@ -158,10 +176,13 @@ plt.ylabel("linear scale")
 
 plt.show()
 ```
-
+or directly on terminal:
+```
+python3 -c "import plotext as plt; l = 10 ** 4; x = range(1, l + 1); y = plt.sin(1, 2, l); plt.plot(x, y); plt.xscale('log'); plt.yscale('linear'); plt.grid(1, 0); plt.title('Logarithmic Plot'); plt.xlabel('logarithmic scale'); plt.ylabel('linear scale'); plt.show()"
+```
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/log.png)
 
-Note that the the `xscale()` and `yscale()` functions can use the `xside` and `yside` parameter respectively, to set the scale of the other x or y axes independently and if needed.
+Note that the the `xscale()` and `yscale()` functions can use the `xside` and `yside` parameters respectively, to set the scale of both `x` or `y` axes independently and if needed.
 
 [ Basic Plots Menu ](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
@@ -177,7 +198,7 @@ When streaming a continuous flow of data, consider using the following functions
 
 - `plt.sleep(time)` to reduce a possible screen flickering; for example `sleep(0.01)` would add approximately 10 ms to the computation.
 
-- `plt.clear_color()` - in short `plt.clc()` - is recommended to make the streaming more responsive.
+- optionally `plt.clear_color()` - in short `plt.clc()` - to remove the plot coloring, and so to make the streaming more responsive.
 
 Here is a coded example:
 
@@ -186,12 +207,12 @@ import plotext as plt
 
 l = 200
 x = range(1, l + 1)
-frames = 18
+frames = 50
 
 plt.title("Streaming Data")
 plt.clc()
 
-for i in range(frames * 5):
+for i in range(frames):
     y = plt.sin(1, periods = 2, length = l, phase = 2 * i  / frames)	
     
     plt.cld()
@@ -201,7 +222,10 @@ for i in range(frames * 5):
     #plt.sleep(0.001)
     plt.show()
 ```
-
+or directly on terminal:
+```
+python3 -c "import plotext as plt; l = 200; x = range(1, l + 1); frames = 50; plt.title('Streaming Data'); plt.clc(); [(plt.cld(), plt.clt(), plt.plot(x, plt.sin(1, periods = 2, length = l, phase = 2 * i  / frames), marker = 'dot'), plt.sleep(0), plt.show()) for i in range(frames)]"
+```
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/stream.gif)
 
 [ Basic Plots Menu ](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)

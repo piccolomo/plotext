@@ -12,7 +12,7 @@
 
 ## Clear Functions
 
-Here are all the clear functions:
+Here are all the available clear functions:
 
 - `plt.clear_figure()` - in short `plt.clf()` clears all internal definitions of the final figure, including its subplots.
 
@@ -24,7 +24,7 @@ Here are all the clear functions:
 
 - `plt.clear_color()` - in short `plt.clc()` - clears only the color settings relative to the active subplot, without clearing all other plot settings. The final rendering of this subplot will be colorless.
 
-- `plt.clear_terminal()` - in short `plt.clt()` - clears the terminal screen and it is generally useful before plotting a continuous stream of data. It is recommended to use it before show(). If its parameter 'lines' is set to an integer (it is 'None' by default), only the specified lines will be cleared. In this case, it is recommended to use it after show(). Note that, the shell used may print extra lines, which need to be added to 'lines' in order for the clearing to have an effect. 
+- `plt.clear_terminal()` - in short `plt.clt()` - clears the terminal screen and it is generally useful before plotting a continuous stream of data. It is recommended to use it before `plt.show()`. If its `lines` parameter is set to an integer (it is 'None' by default), only the specified number of lines will be cleared. In this case, it is recommended to use it after `plt.show()`. Note that, depending on shell used, few extra lines may be printed after the plot.
 
 - `plt.datetime.clear()` restores the internal definitions of the `datetime` container.
 
@@ -35,7 +35,7 @@ Here are all the clear functions:
 
 ## File Utilities
 
-`Plotext` has a container of tools, called `plt.file`, to more easily manipulate files and file paths.
+`Plotext` has a container of tools, called `plt.file`, to easily manipulate files and file paths.
 
 Here is the list of its utilities:
 
@@ -43,13 +43,13 @@ Here is the list of its utilities:
 
 - `plt.file.script_folder()` returns the folder containing the current script.
 
-- `plt.file.join_paths()` it joins as many strings into a proper file path. If the first parameter is "~", it will be interpreted as the user home folder. Eg: `plt.file.join_paths("/", "home", "file.txt")` returns "/home/file.txt".
+- `plt.file.join_paths()` it joins as many strings into a proper file path. Eg: `plt.file.join_paths("/", "home", "file.txt")` returns "/home/file.txt". Note that, if its first parameter is "~", it will be interpreted as the user home folder.
  
-- `plt.file.save_text(path, text)` saves some text to the path selected.
+- `plt.file.save_text(path, text)` saves some text to the `path` specified.
 
-- `plt.file.read_data(path, delimiter, columns, header)` reads numerical data from the 'path' selected with the given delimiter between columns (by default " "), and the selected list of columns (`None` returns all of them by default); the parameter header is used to include or not the first data row.
+- `plt.file.read_data(path, delimiter, columns, header)` reads numerical data from the `path` specified, using the given delimiter between data columns (by default " "), selecting the specified list of columns (`None` returns all of them by default); the parameter `header` is used to include or not the first data row.
 
-- `plt.file.write_data(path, matrix, delimiter, columns)` write a matrix of data in the 'path' selected.
+- `plt.file.write_data(path, matrix, delimiter, columns)` write a matrix of data at `path` specified.
 
 [ Other Utilities Menu ](https://github.com/piccolomo/plotext/blob/master/readme/other.md#other-utilities)
 
@@ -58,22 +58,23 @@ Here is the list of its utilities:
 
 ## Command Line Tool
 
-It is easy to transalte any `plotext` python code into a direct command line. Here is an example:
+It is easy to translate any `plotext` python code into a direct command line. Here is an example:
 ```
 import plotext as plt
 
-y = plt.sin() # sinusoidal signal 
+y = plt.sin() 
 
 plt.clp()
 plt.scatter(y)
 plt.title("Scatter Plot")
 plt.show()
 ```
-
-translates into this direct command line:
+which  translates into:
 ```
 python3 -c "import plotext as plt; y=plt.sin(); plt.clp(); plt.scatter(y); plt.title('Scatter Plot'); plt.show();"
 ```
+
+Alternatively you could use the awesome direct plotext executable (see [ Issue 47 ](https://github.com/piccolomo/plotext/issues/47) and [ Issue 51 ](https://github.com/piccolomo/plotext/issues/51)) which will be further developed in the future. 
 
 [ Other Utilities Menu ](https://github.com/piccolomo/plotext/blob/master/readme/other.md#other-utilities)
 
@@ -82,9 +83,9 @@ python3 -c "import plotext as plt; y=plt.sin(); plt.clp(); plt.scatter(y); plt.t
 
 ## Other Functions
 
-- `plt.build()` is equivalent to `plt.show()` except that the final figure canvas is returned and not printed. 
+- `plt.build()` is equivalent to `plt.show()` except that the final figure canvas is returned as a string and not printed. 
 
-- `plt.savefig(path)` saves the plot as a text file at the `path` provided. **If the path extension is `.html` the colors will be preserved.**
+- `plt.savefig(path)` saves the plot as a text file at the `path` specified. **If the path extension is `.html` the colors will be preserved.**
 
 - `plt.terminal_size()` returns the size of the terminal.
 
@@ -92,11 +93,11 @@ python3 -c "import plotext as plt; y=plt.sin(); plt.clp(); plt.scatter(y); plt.t
 
 - `plt.sleep()` adds a sleeping time to the computation.
 
-- `plt.time()` it returns the computation time of the last `plt.show()` or `plt.build()` functions. 
+- `plt.time()` returns the computation time of the latest `plt.show()` or `plt.build()` functions. 
 
 - `plt.sin(amplitude, periods, length, phase, decay)` outputs a sinusoidal signal with the given parameters.
 
-- `plt.colorize(string, full-ground, background, show)` it paints a string with the given color codes. If `show` is True, the string is printed and not returned.
+- `plt.colorize(string, full-ground, background, show)` it paints a string with the given fullground and background color codes. If `show` is True, the string is printed and not returned.
 
 - `plt.uncolorize(string)` removes all color codes from a string.
 
@@ -110,9 +111,9 @@ python3 -c "import plotext as plt; y=plt.sin(); plt.clp(); plt.scatter(y); plt.t
 
 All main `plotext` functions have a doc-string that can be accessed in three ways. For example for the function `plt.scatter()`:
 
-- with `print(plt.scatter.__doc__)`
+- using `print(plt.scatter.__doc__)`
 
-- more easily with the doc container: `plt.doc.scatter()`. Note that in the case of functions which are part of a container like `plt.datetime.string_to_timestamp()`, its  doc-string can be accessed with `plt.doc.string_to_timestamp()` (and not `plt.doc.datetime.string_to_timestamp()`)
+- more easily with the `doc` container: `plt.doc.scatter()`. Note that in the case of functions which are part of a container like `plt.datetime.string_to_timestamp()`, its  doc-string can be accessed with `plt.doc.string_to_timestamp()` (and not `plt.doc.datetime.string_to_timestamp()`)
 
 - with `plt.doc.all()` which prints all `plotext` doc-strings.
 
