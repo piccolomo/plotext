@@ -6,7 +6,7 @@ It also provide a simple command line tool.
 This is what you could output on terminal with `plotext`:
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/subplots.png)
 
-For details on how to use the package, follow the following menu.
+For details on how to use the package, follow this menu.
 
 ## Main Menu
 
