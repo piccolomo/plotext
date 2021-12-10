@@ -41,7 +41,7 @@ Which will make sure that the package `pillow` is installed.
 
 
 ## Main Updates:
-Note: there are many new features from the previous version, any bug report is useful and very welcomed.ù
+Note: there are many new features from the previous version, any bug report is useful and very welcomed.
 
 From version 4.0.0:
 
@@ -51,7 +51,7 @@ From version 4.0.0:
  - `numpy` is no longer a dependency (not even optional)
  - `platform` function changed, as recommended by user `crisluengo` in [ Issue 55 ](https://github.com/piccolomo/plotext/issues/55)
  - `shell` function and parameter removed as found to be useless
- - README corrected and integrated
+ - all `.md` files corrected and integrated
 
 From versions 3:
 
@@ -86,9 +86,8 @@ From versions 3:
 
 
 ## Future Plans
-By request:
 
- - improve the great command tool created by `asartori86` ([ Issue 47 ](https://github.com/piccolomo/plotext/issues/47)) to handle more options, settings and funtions
+ - finalize the command tool created by `asartori86` ([ Issue 47 ](https://github.com/piccolomo/plotext/issues/47)) to handle more options, settings and funtions
  - guide for integration with package `rich`, as discussed in [ Issue 26 ](https://github.com/piccolomo/plotext/issues/26)
  - guide for `tkinter` integration, as discussed in [ Issue 33 ](https://github.com/piccolomo/plotext/issues/33)
  - mosaic markers available on windows (not sure how)
