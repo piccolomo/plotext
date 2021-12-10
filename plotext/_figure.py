@@ -5,7 +5,6 @@ from plotext._utility.color import uncolorize
 from plotext._matrices import figure_matrices
 from plotext._default import figure_default
 from plotext._utility.file import save_text
-from plotext._utility.platform import _shell as shell
 from plotext._subplot import subplot_class
 from plotext._utility.plot import *
 from time import time
@@ -38,6 +37,10 @@ class figure_class():
     def set_subplots(self, rows = None, cols = None): # it sets the figure grid size
         rows = 1 if rows is None else rows
         cols = 1 if cols is None else cols
+        if rows > self.default.rows_max:
+            raise ValueError("Subplots rows above limit of " + str(self.default.rows_max))
+        if cols > self.default.cols_max:
+            raise ValueError("Subplots cols above limit of " + str(self.default.cols_max))
         rows = rows if rows < self.default.rows_max else self.default.rows_max
         cols = cols if cols < self.default.cols_max else self.default.cols_max
         self.rows, self.cols = [rows, cols]

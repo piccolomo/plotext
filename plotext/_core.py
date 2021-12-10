@@ -18,7 +18,6 @@ from plotext._utility.data import sleep as _sleep
 from plotext._utility.platform import _platform as platform 
 from plotext._utility.data import sin as _sin
 from plotext._utility.data import linspace
-from plotext._utility.platform import _shell as shell
 from plotext._utility import doc
 import plotext._utility.file as file
 

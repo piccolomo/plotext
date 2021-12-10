@@ -8,7 +8,6 @@ from plotext._utility.image import *
 from plotext._utility.data import *
 from plotext._utility.plot import *
 from plotext._utility.bar import *
-from PIL import Image, ImageOps
 from math import floor
 
 datetime = datetime_class() # usefull for datetime plot
@@ -560,6 +559,8 @@ class subplot_class():
         self.ylabel[ypos] = "row"
 
     def draw_image(self, path, size = [None, None], marker = None, grayscale = False, keep_ratio = False, resample = True):
+        from PIL import Image, ImageOps
+
         image = Image.open(path)
         image = ImageOps.grayscale(image) if grayscale else image
         image = image.convert('RGB')
