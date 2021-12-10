@@ -21,6 +21,7 @@ setup(
     packages = find_packages(),
     python_requires = ">=3.5",
     include_package_data = True,
-    #install_requires = [],
+    install_requires = [],
+    extras_require = {"image": ["pillow>=8.4"]},
     classifiers = []
     )
