@@ -4,6 +4,7 @@
 It also provide a simple command line tool.
 
 This is what you could output on terminal with `plotext`:
+
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/subplots.png)
 
 
