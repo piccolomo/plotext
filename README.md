@@ -87,7 +87,7 @@ From versions 3:
 
 ## Future Plans
 
- - finalize the command tool created by `asartori86` ([ Issue 47 ](https://github.com/piccolomo/plotext/issues/47)) to handle more options, settings and funtions
+ - finalize the command tool created by `asartori86` and discussed in [ Issue 47 ](https://github.com/piccolomo/plotext/issues/47) to handle more options, settings and funtions
  - guide for integration with package `rich`, as discussed in [ Issue 26 ](https://github.com/piccolomo/plotext/issues/26)
  - guide for `tkinter` integration, as discussed in [ Issue 33 ](https://github.com/piccolomo/plotext/issues/33)
  - mosaic markers available on windows (not sure how)
