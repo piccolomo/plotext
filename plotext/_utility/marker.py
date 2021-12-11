@@ -51,6 +51,7 @@ hd_marker_codes = {'hd': '▞',
 
 marker_sequence = ['fhd', '•', 'x', 'y', 'z'] # the standard marker sequence for multiple data plots
 marker_sequence += list(map(chr, range(97, 97 + len(color_sequence) - len(marker_sequence)))) # it continues with the alphabet letters
+bar_marker = 'fhd'
 
 side_symbols = {("lower", "left"): 'L', ("lower", "right"): '⅃', ("upper", "left"): 'Γ', ("upper", "right"): '⅂'} # symbols used in the legend to indentify the axes used for plot
 
@@ -156,3 +157,4 @@ if _platform == "windows":
                     'smile'      :'☺'}
     hd_marker_codes = {}
     marker_sequence.pop(marker_sequence.index("fhd"))
+    bar_marker = 'sd'

@@ -20,7 +20,10 @@ if _platform == "windows":
     import subprocess 
     subprocess.call('', shell = True)
 
-    # to enable higher definition markers in windows: it didn't work....
+    import win_unicode_console
+    win_unicode_console.enable()
+
+    #to enable higher definition markers in windows: it didn't work....
     #import ctypes
     #kernel32 = ctypes.windll.kernel32
     #kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7) 
@@ -31,9 +34,17 @@ if _platform == "windows":
 
     #import sys, codecs
     #sys.stdout = codecs.getwriter('utf8')(sys.stdout)
-    #sys.stderr = codecs.getwriter('utf8')(sys.stderr)
+    #sys.stderr = codecs.getwriter('utf8')(sys.stderr)    
 
-    #import win_unicode_console
+    #from ctypes import WINFUNCTYPE, windll, POINTER, byref, c_int
+    #from ctypes.wintypes import BOOL, HANDLE, DWORD, LPWSTR, LPCWSTR, LPVOID
+
+    #codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
+
+    #import codecs, sys,locale
+    #sys.stdout = codecs.getwriter('UTF-8')(sys.stdout)   
+    #print(u"valued at £9.2 billion.")
+    #sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout);
 
     
 def version():
