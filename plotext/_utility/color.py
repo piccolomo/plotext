@@ -68,6 +68,7 @@ def begin_escape(color_code): # it takes the internal color code and returns the
     if color_code[0] == 3 or (color_code[0] == 0 and color_code[2] == 0): 
         return ''
     escape = '\x1b['
+    escape = '\033['
     if color_code[0] != 0:
         escape += '38;' if color_code[1] == 1 else '48;'
     type_code = ['', '5;', '2;']
@@ -76,8 +77,8 @@ def begin_escape(color_code): # it takes the internal color code and returns the
     return escape
 
 def end_escape(color_code = None): # the closing ascii sequence, dependent on the color code as for no_color_name the end sequence is ''
-    return '' if color_code[0] == 3 or (color_code[0] == 0 and color_code[2] == 0) else '\x1b[0m'
-
+    return '' if color_code[0] == 3 or (color_code[0] == 0 and color_code[2] == 0) else '\033[0m'
+#'\x1b[0m'
 def colorize(string, fullground = None, background = None, show = False): # it paints a text with given fullground and background color
     string = string if fullground is None else begin_escape(color_code(fullground, 1)) + string + end_escape(color_code(fullground, 1))
     string = string if background is None else begin_escape(color_code(background, 0)) + string + end_escape(color_code(background, -1))
