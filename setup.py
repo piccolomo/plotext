@@ -12,7 +12,7 @@ setup(
     author = "Savino Piccolomo",
     author_email = "piccolomo@gmail.com",
     name = 'plotext',
-    version='4.1.1',
+    version='4.1.2',
     description = 'plotext plots directly on terminal',
     long_description = README,
     long_description_content_type = "text/markdown",  
