@@ -89,6 +89,7 @@ def colorize(string, fullground = None, background = None, show = False): # it p
 
 def uncolorize(string): # remove color codes from colored string
     asci = '\x1b['
+    asci = '\033['
     colored = lambda: asci in string
     while colored():
         b = string.index(asci)
