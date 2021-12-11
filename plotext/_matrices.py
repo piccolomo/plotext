@@ -19,25 +19,30 @@ class figure_matrices(): # storing the figure canvas in matrix form
         if self.rows == 0:
             self.canvas = ''
             return self.canvas
-        
+
         m = [el.copy() for el in self.marker.copy()]
-        c = [el.copy() for el in self.color]
-        b = [el.copy() for el in self.background]
-        
-        both = lambda row, col: [c[row][col], b[row][col]]
+        both = lambda row, col: [self.color[row][col], self.background[row][col]]
+
         for row in range(self.rows):
             for col in range(self.cols):
+                bc, ec = begin_escape(self.color[row][col]), end_escape(self.color[row][col])
+                bb, eb = begin_escape(self.background[row][col]), end_escape(self.background[row][col])
+                if ec != '':
+                    eb = ''
+                # shorter escape code version
                 if col == 0 or both(row, col) != both(row, col - 1):
-                    m[row][col] = begin_escape(c[row][col]) + begin_escape(b[row][col]) + m[row][col]
+                    m[row][col] = bb + bc + m[row][col]
                 if (col == self.cols - 1) or both(row, col) != both(row, col + 1):
-                    m[row][col] = m[row][col] + end_escape(b[row][col]) + end_escape(c[row][col])
-# This is a longer escape version of previous lines
-                # m[r][c] = begin_escape(b[r][c]) + m[r][c] + end_escape(b[r][c])
-                # m[r][c] = begin_escape(color[r][c]) + m[r][c] + end_escape(color[r][c])
-        self.canvas = '\n'.join([''.join(el) for el in m]) 
-        end = end_escape((1,1,1))
+                    m[row][col] = m[row][col] + ec + eb
+                    
+                # This is a longer escape version of previous code
+                #m[row][col] =  bb + bc + m[row][col] + ec + eb
+                
+        self.canvas = '\n'.join([''.join(el) for el in m])
+        end = end_escape((1,0,0))
         self.canvas = self.canvas + end if end in self.canvas else self.canvas
         self.canvas += '\n'
+        #self.canvas = self.canvas.encode('utf-8')
         return self.canvas
         
     def to_html(self):
