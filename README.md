@@ -42,8 +42,9 @@ For details on how to use the package, follow this menu:
 
 Note: there are many new features from the previous version, any bug report is useful and very welcomed.
 
-From version 4.0.0:
+In version 4.1:
 
+ - added coomand line tool developed by `asartori86` and discussed in [Issue 47](https://github.com/piccolomo/plotext/issues/47) and [Pull 57](https://github.com/piccolomo/plotext/pull/57), [Pull 52](https://github.com/piccolomo/plotext/pull/52) and [Pull 51](https://github.com/piccolomo/plotext/pull/51)
  - fixed bar error reported in [ Issue 61 ](https://github.com/piccolomo/plotext/issues/61) by user `SoyBison`
  - added exception when subplots size is bigger then default ([ Issue 60 ](https://github.com/piccolomo/plotext/issues/60))
  - `pillow` is now an optional dependency [ Issue 56 ](https://github.com/piccolomo/plotext/issues/56)
@@ -52,7 +53,7 @@ From version 4.0.0:
  - `shell` function and parameter removed as found to be useless
  - all `.md` files corrected and integrated
 
-From versions 3:
+In version 4.0:
 
   - entire code re-written
   - faster plotting
