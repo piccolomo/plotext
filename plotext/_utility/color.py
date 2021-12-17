@@ -19,7 +19,8 @@ fullground_colors = list(fullground_codes.keys())
 background_colors = list(background_codes.keys())
 styles = list(style_codes.keys())
 
-color_sequence = ["bright-blue", "bright-yellow", "green", "red", "magenta", "black", "bright-magenta", "bright-red", "yellow", "blue"] # standard color sequence for multiple data plots
+color_sequence = ["bright-blue", "bright-green", "bright-red", "bright-cyan", "bright-magenta", "bright-yellow", "bright-black", "blue", "green", "red", "cyan", "magenta", "yellow", "black"] # standard color sequence for multiple data plots
+
 color_sequence += [el for el in fullground_colors if el not in color_sequence]  # it continues with the remaining fullground colors
 
 def color_name(code, fullground = 1): # it returns the color name from code used
@@ -77,8 +78,8 @@ def begin_escape(color_code): # it takes the internal color code and returns the
     return escape
 
 def end_escape(color_code = None): # the closing ascii sequence, dependent on the color code as for no_color_name the end sequence is ''
-    return '' if color_code[0] == 3 or (color_code[0] == 0 and color_code[2] == 0) else '\033[0m'
-#'\x1b[0m'
+    return '' if color_code[0] == 3 or (color_code[0] == 0 and color_code[2] == 0) else '\033[0m' #'\x1b[0m'
+    
 def colorize(string, fullground = None, background = None, show = False): # it paints a text with given fullground and background color
     string = string if fullground is None else begin_escape(color_code(fullground, 1)) + string + end_escape(color_code(fullground, 1))
     string = string if background is None else begin_escape(color_code(background, 0)) + string + end_escape(color_code(background, -1))

@@ -2,6 +2,7 @@ from plotext._utility.file import script_folder, parent_folder, join_paths
 import sys
 import os
 
+
 def platform(): # the platform (eg: linux) you are using plotext with
     platform = sys.platform
     # According to the docs, this returns one of: 'aix', 'linux', 'win32', 'cygwin', 

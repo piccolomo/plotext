@@ -14,12 +14,20 @@ def parent_folder(path, level = 1): # it return the parent folder of the path or
 def script_folder(): # the folder of the script executed
     return parent_folder(_inspect.getfile(_sys._getframe(1)))
 
+def _correct_path(path):
+    if _os.path.dirname(path) == '':
+        path = _os.path.join(_os.path.expanduser("~"),_os.path.basename(path))
+    elif path == "~":
+        path = _os.path.expanduser("~")
+    return path
+
 def join_paths(*args): # it join a list of string in a proper file path; if the first argument is ~ it is turnded into the used home folder path 
     args = list(args)
-    args[0] = _os.path.expanduser("~") if args[0] == "~" else args[0]
+    args[0] = _correct_path(args[0]) if args[0] == "~" else args[0]
     return _os.path.abspath(_os.path.join(*args))
 
 def save_text(path, text):
+    path = _correct_path(path)
     with open(path , "w+") as file:
         file.write(text)
     print("data saved as " + path)
