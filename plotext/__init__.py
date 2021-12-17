@@ -3,4 +3,4 @@
 from plotext._core import *
 
 __name__ = "plotext"
-__version__ = "4.1.2"
+__version__ = "4.1.3"

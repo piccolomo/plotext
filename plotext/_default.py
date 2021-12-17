@@ -30,9 +30,9 @@ class subplot_default(): # storing default values for subplot class
 
         self.grid = [False, False]
 
-        self.canvas_color = "white"
+        self.canvas_color = "bright-white"
         self.ticks_color = "black"
-        self.axes_color = "white"
+        self.axes_color = "bright-white"
 
         self.xscale = ["linear", "log"] # the two possibilities, the first is default
         self.yscale = ["linear", "log"]

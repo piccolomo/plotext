@@ -27,12 +27,15 @@ class figure_matrices(): # storing the figure canvas in matrix form
             for col in range(self.cols):
                 bc, ec = begin_escape(self.color[row][col]), end_escape(self.color[row][col])
                 bb, eb = begin_escape(self.background[row][col]), end_escape(self.background[row][col])
+                
                 if ec != '':
                     eb = ''
+                    
                 # shorter escape code version
                 if col == 0 or both(row, col) != both(row, col - 1):
                     m[row][col] = bb + bc + m[row][col]
-                if (col == self.cols - 1) or both(row, col) != both(row, col + 1):
+                    
+                if col == self.cols - 1 or (col <= self.cols - 2 and both(row, col) != both(row, col + 1)):
                     m[row][col] = m[row][col] + ec + eb
                     
                 # This is a longer escape version of previous code

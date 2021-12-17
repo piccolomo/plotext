@@ -1,4 +1,4 @@
-from plotext._utility.marker import space_marker, marker_codes, hd_marker_codes, marker_sequence, marker_factor
+from plotext._utility.marker import space_marker, marker_codes, hd_marker_codes, plot_marker, marker_factor
 from plotext._utility.color import no_color_name, color_sequence, color_code, to_gray_rgb
 from plotext._utility.string import only_spaces
 from plotext._matrices import subplot_matrices
@@ -157,7 +157,7 @@ class subplot_class():
 
     def check_marker(self, marker = None):
         marker = marker if marker in marker_codes or marker in hd_marker_codes else marker if type(marker) == str else None
-        marker = first(marker_sequence, self.marker) if marker is None else marker
+        marker = plot_marker if marker is None else marker
         spaces = only_spaces(marker)
         marker = space_marker if spaces else marker
         marker = marker if marker in hd_marker_codes or marker in marker_codes else marker[0]
