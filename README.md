@@ -45,7 +45,7 @@ Note: there are many new features from the previous version, any bug report is u
 In version 4.1:
 
  - added coomand line tool developed by `asartori86` and discussed in [Issue 47](https://github.com/piccolomo/plotext/issues/47) and [Pull 57](https://github.com/piccolomo/plotext/pull/57), [Pull 52](https://github.com/piccolomo/plotext/pull/52) and [Pull 51](https://github.com/piccolomo/plotext/pull/51)
- - set default marker to 'hd' to avoid complications with 'fhd' marker in some terminals [Issue 62](https://github.com/piccolomo/plotext/issues/62)
+ - set default marker to `hd` to avoid complications with `fhd` marker in some terminals [Issue 62](https://github.com/piccolomo/plotext/issues/62)
  - changed default canvas background color back to 'bright-white' (let me know if the darker 'white' is prefered)
  - fixed bar error reported in [ Issue 61 ](https://github.com/piccolomo/plotext/issues/61) by user `SoyBison`
  - added exception when subplots size is bigger then default ([ Issue 60 ](https://github.com/piccolomo/plotext/issues/60))
