@@ -28,7 +28,7 @@
 - `plt.datetime.set_time0()` sets the origin of time to the `year`, `month`, `day`, `hour`, `minute` and `second`, provided as integers. The default value is 01/01/1900. 
 This function is useful when using log scale with datetime plots, in order to avoid "hitting" the 0 timestamp. Note that `hour`, `minute` and `second` are set to 0, if not provided.
 
-[Datetime Menu](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#datetime-menu)
+[Datetime Plots](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#datetime-plots)
 
 
 
@@ -63,4 +63,4 @@ python3 -c "import yfinance as yf; import plotext as plt; plt.datetime.set_datet
 
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/datetime.png)
 
-[Datetime Menu](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#datetime-menu)
+[Datetime Plots](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#datetime-plots)
