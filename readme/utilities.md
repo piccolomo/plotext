@@ -12,7 +12,7 @@
 ## Command Line Tool
 
 There are two ways one could use `plotext` directly on terminal. The first is by using the command line tool discussed in [Issue 47](https://github.com/piccolomo/plotext/issues/47) and [Pull 57](https://github.com/piccolomo/plotext/pull/57), [52](https://github.com/piccolomo/plotext/pull/52) and [51](https://github.com/piccolomo/plotext/pull/51), which will probably be further developed in the future. For further documentation run:
-```
+```console
 plotext --help
 ```
 on terminal. 
