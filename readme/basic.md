@@ -14,16 +14,15 @@
 ## Scatter Plot
 
 Here is an example of a simple scatter plot:
-```
+```python
 import plotext as plt
 y = plt.sin() # sinusoidal signal 
-plt.clp()
 plt.scatter(y)
 plt.title("Scatter Plot")
 plt.show()
 ```
 or directly on terminal:
-```
+```console
 python3 -c "import plotext as plt; y = plt.sin(); plt.scatter(y); plt.title('Scatter Plot'); plt.show()"
 ```
 ![scatter](https://raw.githubusercontent.com/piccolomo/plotext/master/images/scatter.png)
@@ -39,17 +38,15 @@ Access the `plt.scatter()` function documentation with `plt.doc.scatter()`
 ## Line Plot
 
 For a line plot use the `plt.plot()` function instead:
-
-```
+```python
 import plotext as plt
 y = plt.sin()
-plt.clp()
 plt.plot(y)
 plt.title("Line Plot")
 plt.show()
 ```
 or directly on terminal:
-```
+```console
 python3 -c "import plotext as plt; y = plt.sin(); plt.plot(y); plt.title('Line Plot'); plt.show()"
 ```
 ![plot](https://raw.githubusercontent.com/piccolomo/plotext/master/images/plot.png)
@@ -63,8 +60,7 @@ Access the `plt.plot()` doc-string with `plt.doc.plot()`.
 ## Stem Plot
 
 For a stem plot use either the `fillx` or `filly` parameters (available for most plotting functions) to fill the canvas of data points till the `x` or `y` axis, respectively. Here is a basic example:
-
-```
+```python
 import plotext as plt
 y = plt.sin()
 plt.plot(y, fillx = True)
@@ -72,7 +68,7 @@ plt.title("Stem Plot")
 plt.show()
 ```
 or directly on terminal:
-```
+```console
 python3 -c "import plotext as plt; y = plt.sin(); plt.plot(y, fillx = True); plt.title('Stem Plot'); plt.show()"
 ```
 
@@ -87,7 +83,7 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.plot(y, fillx = True); plt
 
 Multiple data sets can be plotted using consecutive plotting functions. Here is an example:
 
-```
+```python
 import plotext as plt
 
 y1 = plt.sin()
@@ -100,7 +96,7 @@ plt.title("Multiple Data Set")
 plt.show()
 ```
 or directly on terminal:
-```
+```console
 python3 -c "import plotext as plt; y1 = plt.sin(); y2 = plt.sin(phase = -1); plt.plot(y1, label = 'plot'); plt.scatter(y2, label = 'scatter'); plt.title('Multiple Data Set'); plt.show()"
 ```
 ![multiple-data](https://raw.githubusercontent.com/piccolomo/plotext/master/images/multiple-data.png)
@@ -115,7 +111,7 @@ Using the `label` parameter, inside a plotting functions, adds automatically a l
 
 Data could be plotted independently on both lower and upper `x` axes, as well as, left and right `y` axes, using respectively the `xside` and `yside` parameters. Here is how:
 
-```
+```python
 import plotext as plt
 
 y1 = plt.sin()
@@ -128,7 +124,7 @@ plt.title("Multiple Axes Plot")
 plt.show()
 ```
 or directly on terminal:
-```
+```console
 python3 -c "import plotext as plt; y1 = plt.sin(); y2 = plt.sin(2, phase = -1); plt.plot(y1, xside= 'lower', yside = 'left', label = 'lower left'); plt.plot(y2, xside= 'upper', yside = 'right', label = 'upper right'); plt.title('Multiple Axes Plot'); plt.show()"
 ```
 ![multiple-axes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/multiple-axes.png)
@@ -143,7 +139,7 @@ python3 -c "import plotext as plt; y1 = plt.sin(); y2 = plt.sin(2, phase = -1); 
 
 For a log plot use the the functions `plt.xscale()` or `plt.yscale()` before `plt.show()`, to specify the scale used as either `linear` (as by default) or `log`. Here is a basic example:
 
-```
+```python
 import plotext as plt
 
 l = 10 ** 4
@@ -163,7 +159,7 @@ plt.ylabel("linear scale")
 plt.show()
 ```
 or directly on terminal:
-```
+```console
 python3 -c "import plotext as plt; l = 10 ** 4; x = range(1, l + 1); y = plt.sin(1, 2, l); plt.plot(x, y); plt.xscale('log'); plt.yscale('linear'); plt.grid(1, 0); plt.title('Logarithmic Plot'); plt.xlabel('logarithmic scale'); plt.ylabel('linear scale'); plt.show()"
 ```
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/log.png)
@@ -190,7 +186,7 @@ When streaming a continuous flow of data, consider using the following functions
 
 Here is a coded example:
 
-```
+```python
 import plotext as plt
 
 l = 1000
@@ -211,9 +207,11 @@ for i in range(frames):
     plt.show()
 ```
 or directly on terminal:
-```
+```console
 python3 -c "import plotext as plt; l = 1000; x = range(1, l + 1); frames = 50; plt.title('Streaming Data'); plt.clc(); [(plt.cld(), plt.clt(), plt.plot(x, plt.sin(1, periods = 2, length = l, phase = 2 * i  / frames), marker = 'dot'), plt.sleep(0), plt.show()) for i in range(frames)]"
 ```
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/stream.gif)
 
 [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
+
+[Plotext Guide](https://github.com/piccolomo/plotext#guide)
