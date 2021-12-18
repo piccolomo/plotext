@@ -1,4 +1,4 @@
-[Plotext Guide](https://github.com/piccolomo/plotext#main-menu)
+[Plotext Guide](https://github.com/piccolomo/plotext#guide)
 
 # Datetime Menu
 

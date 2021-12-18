@@ -1,4 +1,4 @@
-[Plotext Guide](https://github.com/piccolomo/plotext#main-menu)
+[Plotext Guide](https://github.com/piccolomo/plotext#guide)
 
 # Basic Plots
 
@@ -16,9 +16,7 @@
 Here is an example of a simple scatter plot:
 ```
 import plotext as plt
-
 y = plt.sin() # sinusoidal signal 
-
 plt.clp()
 plt.scatter(y)
 plt.title("Scatter Plot")
@@ -30,9 +28,9 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.scatter(y); plt.title('Sca
 ```
 ![scatter](https://raw.githubusercontent.com/piccolomo/plotext/master/images/scatter.png)
 
-Access the `scatter()` function documentation with `plt.doc.scatter()`
+Access the `plt.scatter()` function documentation with `plt.doc.scatter()`
 
-**Note**: the default marker is `hd`, the 2 x 2 high resolution characters, in `unix` systems only as it doesn't seem to render well in Windows; the 3 x 2 highest resolution marker, named `fhd`, works in Linux only and only in some terminals and the only way to find out is to test it.
+**Note**: the default marker is `hd` (the 2 x 2 high resolution characters) in `unix` systems only as it doesn't seem to render well in Windows; the 3 x 2 highest resolution marker, named `fhd`, works in Unix only and only in some terminals and the only way to find out is to test it.
 
 [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
@@ -44,9 +42,7 @@ For a line plot use the `plt.plot()` function instead:
 
 ```
 import plotext as plt
-
 y = plt.sin()
-
 plt.clp()
 plt.plot(y)
 plt.title("Line Plot")
@@ -58,7 +54,7 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.plot(y); plt.title('Line P
 ```
 ![plot](https://raw.githubusercontent.com/piccolomo/plotext/master/images/plot.png)
 
-Access the `plot()` doc-string with `plt.doc.plot()`.
+Access the `plt.plot()` doc-string with `plt.doc.plot()`.
 
 [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
@@ -66,13 +62,11 @@ Access the `plot()` doc-string with `plt.doc.plot()`.
 
 ## Stem Plot
 
-For a stem plot use either the `fillx` or `filly` parameters (available for most plotting functions) to fill the canvas of data till the `x` or `y` axis, respectively. Here is a basic example:
+For a stem plot use either the `fillx` or `filly` parameters (available for most plotting functions) to fill the canvas of data points till the `x` or `y` axis, respectively. Here is a basic example:
 
 ```
 import plotext as plt
-
 y = plt.sin()
-
 plt.plot(y, fillx = True)
 plt.title("Stem Plot")
 plt.show()
@@ -111,7 +105,7 @@ python3 -c "import plotext as plt; y1 = plt.sin(); y2 = plt.sin(phase = -1); plt
 ```
 ![multiple-data](https://raw.githubusercontent.com/piccolomo/plotext/master/images/multiple-data.png)
 
-Using the `label` parameter, a legend is automatically added in the upper left corner of the plot.
+Using the `label` parameter, inside a plotting functions, adds automatically a legend in the upper left corner of the plot.
 
 [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 

@@ -1,4 +1,4 @@
-[Plotext Guide](https://github.com/piccolomo/plotext#main-menu)
+[Plotext Guide](https://github.com/piccolomo/plotext#guide)
 
 # Plot Aspect
 
@@ -127,7 +127,7 @@ import plotext as plt
 
 plt.plot(plt.sin())
 
-plt.plot_size(100, 30)
+plt.plot_size(150, 45)
 plt.frame(True)
 plt.grid(True)
 
@@ -143,7 +143,7 @@ plt.show()
 ```
 or directly on terminal:
 ```
-python3 -c "import plotext as plt; plt.plot(plt.sin()); plt.plot_size(100, 30); plt.frame(True); plt.grid(True); plt.title('Plot Title'); plt.xlabel('Lower'); plt.ylabel('Left'); plt.xlabel('Upper', xside = 'upper'); plt.ylabel('Right', yside = 'right'); plt.show()"
+python3 -c "import plotext as plt; plt.plot(plt.sin()); plt.plot_size(150, 45); plt.frame(True); plt.grid(True); plt.title('Plot Title'); plt.xlabel('Lower'); plt.ylabel('Left'); plt.xlabel('Upper', xside = 'upper'); plt.ylabel('Right', yside = 'right'); plt.show()"
 ```
 
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/labels.png)
