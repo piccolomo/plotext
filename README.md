@@ -10,8 +10,16 @@ The code used to plot the previous image could be found [here](https://github.co
 
 ## Install
 
-To install use ```pip install plotext``` and to upgrade to the latest version ```pip install plotext --upgrade```.
-To install the optional dependency necessary to plot images, use ```pip install plotext[image]``` which will make sure that the package `pillow` is installed.
+To install use 
+```console
+pip install plotext
+```
+and to upgrade to the latest version ```pip install plotext --upgrade```.
+To install the optional dependency necessary to plot images, use 
+```console
+pip install plotext[image]
+``` 
+which will make sure that the package `pillow` is installed.
 
 
 ## Guide
