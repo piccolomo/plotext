@@ -70,7 +70,7 @@ which outputs:
 ## Tkinter
 
 The integration with the package `tkinter` has been discussed in [Issue 33](https://github.com/piccolomo/plotext/issues/33) and here is my initial take on it:
-```
+```python
 import tkinter as tk 
 import plotext as plt
 
