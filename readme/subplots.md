@@ -1,3 +1,6 @@
+[Plotext Guide](https://github.com/piccolomo/plotext#guide)
+
+
 # Multiple Subplots
 
 To plot a grid of subplots, use the following main functions:
@@ -6,7 +9,7 @@ To plot a grid of subplots, use the following main functions:
 
  - `plt.subplot(row, col)` to access the subplot at the given row and column, counting (from 1) from the upper left corner of the matrix of plots.
 
- - `plt.span(rowspan, colspan)` to set how many rows and/or columns the current subplot should span in the matrix of subplots.
+ - `plt.span(rowspan, colspan)` to set how many rows and/or columns a given subplot should span in the matrix of subplots.
 
 Here is a coded example, where the [`maryling.jpg`](https://raw.githubusercontent.com/piccolomo/plotext/master/images/marylin.jpg) and [`mj.jpg`](https://raw.githubusercontent.com/piccolomo/plotext/master/images/mj.jpg) files should be placed in the script folder.
 
@@ -21,8 +24,8 @@ plt.subplot(1, 1)
 l = 256
 plt.plot(plt.sin(length = l), marker = "fhd", color = list(range(l)))
 plt.title("Plot Colors")
-plt.canvas_color((200,200,200)) # rgb coloring
-plt.axes_color("bright-black")
+plt.canvas_color(254) 
+plt.axes_color((20, 40, 100)) # rgb coloring
 plt.ticks_color("bright-yellow")
 
 plt.subplot(1, 2)
@@ -88,5 +91,4 @@ python3 -c "import plotext as plt; import random; import yfinance as yf; plt.sub
 ```
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/subplots.png)
 
-
-[ Main Menu ](https://github.com/piccolomo/plotext#main-menu)
+[Plotext Guide](https://github.com/piccolomo/plotext#guide)
