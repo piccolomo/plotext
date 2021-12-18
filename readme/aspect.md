@@ -157,13 +157,13 @@ python3 -c "import plotext as plt; plt.plot(plt.sin()); plt.plot_size(100, 30); 
 
 To manually specify which marker to use, use the parameter `marker`, available in all plotting functions (eg: `plt.scatter(data, marker = "x")`). You could provide the following:
 
-- `None` (as by default): in this case, the marker is set automatically to `fhd` (see below). 
+- `None` (as by default): in this case, the marker is set automatically to `hd` in Unix systems and to `dot` on Windows (see below).
 
 - A **single character**: if the space character " ", the plot will be invisible. 
 
 - A **list of specific markers**, one for each data point: its length will automatically adapt to the data length.
 
-- One of the following **marker codes** which will translate in the single character specified: 
+- One of the following **marker codes** which will translate in the single character specified (**note**: Some are not available in Windows): 
 
    | code | marker |
    | :--- | :--- |
@@ -176,11 +176,11 @@ To manually specify which marker to use, use the parameter `marker`, available i
    | heart | ♥ |
    | smile | ☺ |
    | gclef | 𝄞 |
-   | note 𝅘𝅥| |
+   | note | 𝅘𝅥| |
    | shamrock | ☘ |
    | atom | ⚛ |
    | snowflake | ❄ |
-   | lightinig | 🌩 |
+   | lightning | 🌩 |
    | queen | ♕ |
    | king | ♔ | 
    | cross | ♰ | 
@@ -198,15 +198,11 @@ To manually specify which marker to use, use the parameter `marker`, available i
    | eight | 🯸 |
    | nine  | 🯹 |
 
-Some of those markers codes are not available in Windows.
+- The marker code `sd` stands for "standard resolution". To plot in higher resolution use one of following two extra codes instead:
 
-- The marker code "sd" stands for "standard resolution". To plot in higher resolution use one of following two extra codes instead:
+    - **`hd`** for high resolution, which uses 2 x 2 unicode block characters, such as ▞. 
 
-    - **hd** for high resolution, which uses 2 x 2 unicode block characters, such as ▞.
-
-    - **fhd** for full high resolution, which uses 3 x 2 unicode block characters, such as 🬗. This is the default marker of the first data set plotted, and it is not available in Windows. 
-
-Note: the higher resolution marker `fhd` is correctly displayed only on some terminals. Check if it works on yours before using it.
+    - **`fhd`** for full high resolution, which uses 3 x 2 unicode block characters, such as 🬗.  **Note**: this marker works in Unix systems only and only in some terminals and the only way to find out is to test it.
 
 Further documentation is available using `plt.markers()`.
 
@@ -216,11 +212,13 @@ Further documentation is available using `plt.markers()`.
 
 ## Marker Colors
 
-To specify the marker colors use the `color` parameter. You could provide the following:
+To specify the marker colors use the `color` parameter, available in all plotting functions (eg: `plt.plot(data, color = "red")`). You could provide the following:
+
+<span style="color: rgb(1,20,100)">red</span>
 
 - `None` (as by default): in this case, the color is set automatically. 
 
-- the following **color string codes**: `default, black, red, green, yellow, blue, magenta, cyan, white, bright-black, bright-red, bright-green, bright-yellow, bright-blue, bright-magenta, bright-cyan, bright-white`. Using `default` will result in the standard terminal coloring. 
+- the following **color string codes**: `default`, `black`, `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white`, `bright-black`, `bright-red`, `bright-green`, `bright-yellow`, `bright-blue`, `bright-magenta`, `bright-cyan`, `bright-white`. Using `default` will result in the standard terminal coloring. 
 
     - along side the string color codes, one can add as many **styles** as desired among these: `bold, dim, italic, underline, double-underline, strike, inverted, flash`. The color and styles must be separated by a space. Using `flash` will result in an actual white flashing marker (therefore it will not work with bright-white canvas background color).
 
