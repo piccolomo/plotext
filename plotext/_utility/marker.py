@@ -26,7 +26,7 @@ marker_codes = {'sd'         :'█',
                 'shamrock'   :'☘',
                 'atom'       :'⚛',
                 'snowflake'  :'❄',
-                'lightinig'  :'🌩',
+                'lightning'  :'🌩',
                 'queen'      :'♕',
                 'king'       :'♔',
                 
@@ -118,12 +118,12 @@ def sum_tuples(a, b): # it summs two tuples into one
     return tuple([int(a[i] or b[i]) for i in range(len(a))])
 
 def markers():
-    out = """A single character could be provided to the 'marker' parameter of any plotting function. \n
-If 'None' is provided (as by default), the marker is set automatically to 'hd' (see below). \n
-If the space character " " is provided, the plot will be invisible. \n
-A list of markers could also be provided: in this case the length of the list of markers will adapt to the length of the data set.
-
-Here are the extra available marker codes: \n"""
+    color = "bright-blue bold"
+    out = "To manually specify which marker to use, use the parameter 'marker', available in all plotting functions (eg: plt.scatter(data, marker = 'x')). You could provide the following:\n\n"
+    out += "• " + colorize('None', color) + " (as by default) to set the marker automatically to `hd` in Unix systems and to `dot` in Windows (see below).\n\n"
+    out += "• A " + colorize("single character", color) + ": if the space character ' ', the plot will be invisible.\n\n"
+    out += "• A " + colorize("list of specific markers", color) + ", one for each data point: its length will automatically adapt to the data length.\n\n"
+    out += "• One of the following " + colorize("marker codes", color) + " which will translate in the single character specified (note: come of these are not available in Windows): \n"""
     
     m = [el for el in marker_codes]
     v = [marker_codes[el]  for el in m]
@@ -133,19 +133,19 @@ Here are the extra available marker codes: \n"""
     for i in range(len(m)):
         out += "\n" + m[i] + "\t" + v[i]
     out += "\n"
-    out += """\nThe marker code "sd" stands for "standard resolution". To plot in higher resolutions use one of following two extra codes:\n"""
+    out += """\nThe marker code "sd" stands for "standard resolution". To plot in """ + colorize("higher resolutions", color) + " use one of following two extra codes:\n"""
     
     m = [el for el in hd_marker_codes]
     v = [hd_marker_codes[el] for el in m]
     m = [el + " " * (l - len(str(el))) for el in m]
-    m = [colorize(el, "bright-blue bold") for el in m]
+    m = [colorize(el, color) for el in m]
     c = [2, 3]
     r = ["high resolution", "full high resolution"]
     r = [colorize(el, "bright-blue bold") for el in r]
     
     for i in range(len(m)):
-        out += "\n" + m[i] + "\t" + v[i] + "\t" + r[i] + ": " + str(c[i]) + " x 2 unicode block characters" + "\n"
-    out += "\nNote: the higher resolution marker 'fhd' is correctly displayed only on some terminals."
+        out += "\n" + m[i] + "\t" + v[i] + "\t" + r[i] + ": " + str(c[i]) + " x 2 unicode block characters" + "\n\n"
+    out += colorize("Note", color) + ": this marker works in Unix systems only and only in some terminals and the only way to find out is to test it."
     sys.stdout.write(out)
 
 if _platform == "windows":

@@ -145,36 +145,35 @@ type1_to_type2_codes = {0:(0,0,0), 1:(205,49,49), 2:(13,188,121), 3:(229,229,16)
 #[print(colorize("test", color, "white"), colorize("test", to_rgb(color_code(color,1)), "white")) for color in range(16)]; # used to test the conversion
 
 def colors():
-    out  = "These are the types of color codes that could be provided to the 'color' parameter of any plotting function or as input for the functions canvas_color(), axes_color() and ticks_color(), as well the colorize() function:\n\n"
+    out  = "These are the types of color codes that could be provided to the 'color' parameter of any plotting function, as well as the 'fullground' parameter of the function 'plt.colorize()', or as input for the functions 'plt.canvas_color()', 'plt.axes_color()' and 'plt.ticks_color()':\n\n"
 
     color = "bold underline"
-    out += " - the following " + colorize("color string codes", color) + ": "
-    c = [colorize(el, el) for el in fullground_codes]
-    c = ", ".join(c)
-    out += c + ".\n\n"
+    
+    out += "• 'None' (as by default), to set the color automatically.  \n\n"
+    
+    out += "• The following " + colorize("color string codes", color) + ": "
+    c = [colorize(el, el, background = "black" if el == "bright-white" else None) for el in fullground_codes]
+    c = "\n   ".join(c)
+    out += "\n\n   " + c + "\n\n"
+    
+    out += "• Along side the previous string color codes, one can add as many styles as desired among the following " + colorize("string style codes", color) + ": "
+    c = [colorize(el, el) for el in style_codes]
+    c = "\n   ".join(c)
+    out += "\n\n   " + c + "\n\n"
+    out += """The color and style codes must be separated by a space. Using 'flash' will result in an actual white flashing marker (therefore it will not work with 'bright-white' canvas background color). Naturally those style won't work as background colors.\n\n"""
 
-    out += " - " + colorize("an integer between 0 and 255", color) + ", resulting in the following colors:"
+    out += "• An " + colorize("integer between 0 and 255", color) + ", resulting in the following colors: "
     c = [colorize(str(i), i) for i in range(256)]
     c = ", ".join(c)
-    out += c + ". "
-    out += "Note that the first 16 produce the same results as the previous string color codes.\n\n"
+    out += "\n\n" + c + ". "
+    out += "\n\nNote that the first 16 produce the same results as the previous string color codes.\n\n"
     
-    out += " - " + colorize("an RGB color", color) + " consisting of a tuple of three values (red, green, blue), each between 0 and 255, to obtain the most realistic color rendering.\n\n"
+    out += "• An " + colorize("RGB color", color) + " consisting of a tuple of three values (red, green, blue), each between 0 and 255, to obtain the most realistic color rendering.\n\n"
 
-    out += " - " + colorize("a list of color codes", color) + " to give a different color to each plot marker (only for the 'color' parameter). In this case the length of the list of colors will adapt to the length of the data set.\n\n"
+    out += "• A " + colorize("list of color codes", color) + " to give a different color to each plot marker: the length of the list of colors will adapt to the length of the data set.\n\n"
 
-    out += " - if 'None' is provided (as by default), the color is set automatically. \n\n"
-
-    out += colorize("Background Colors", color) + ": all color codes above will be automatically set as background color instead of fullground, if intended by either the parameter (eg: the 'background' parameter of colorize()) or the function (eg: canvas_color()) to which it is provided. For example, here is the effect of the string color codes intended as background colors: "
-    c = [colorize(el, background = el) for el in fullground_codes]
-    c = ", ".join(c)
-    out += c + ".\n\n"
-
-    out += colorize("String Styles", color) + ": one can also specify the string style. Here are all the available style codes: "
-    
-    c = [colorize(el, el) for el in style_codes]
-    c = ", ".join(c)
-    out += c + ". "
-    out += """One could add as many styles as one likes (with or without a string color code) separated by a space. Eg: "bright-blue italic bold underline" producing """ + colorize("this effect", "bright-blue italic bold underline") + """. Note that styles will not be recognised for background colors. \n"""
-
+    out += colorize("Background Colors", color) + ": all color codes above are valid also as background color, if provided to the 'background' parameter of the function 'plt.colorize()' or input as for the functions plt.canvas_color(), and plt.axes_color(). For example, here is the effect of the string color codes above intended as background color: "
+    c = [colorize(el, fullground = ("bright-white" if el == "black" else None), background = el) for el in fullground_codes]
+    c = "\n   ".join(c)
+    out += "\n\n   " + c + "\n"
     sys.stdout.write(out)

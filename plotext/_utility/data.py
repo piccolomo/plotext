@@ -112,7 +112,7 @@ def distinguish_list(data): # it return the minimum amount of decimal digits nec
     d = [distinguish(data[i], data[i + 1]) for i in range(len(data) - 1)]
     return max(d, default = 1)
 
-def sin(amplitude = 1, periods = 2, length = 1000, phase = 0, decay = 0): # sinusoidal data with given parameters
+def sin(amplitude = 1, periods = 2, length = 200, phase = 0, decay = 0): # sinusoidal data with given parameters
     f = 2 * pi * periods / (length - 1) 
     phase =  pi * phase
     d = decay / length
