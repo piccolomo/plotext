@@ -2,7 +2,7 @@
 
 `plotext` plots directly on terminal, the syntax is very similar to `matplotlib` and it has no dependencies (except for an optional dependency required for image plotting).
 
-It also provide a simple [command line tool](https://github.com/piccolomo/plotext/blob/master/readme/basic.md).
+It also provide a simple [command line tool](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#command-line-tool).
 
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/subplots.png)
 
@@ -22,9 +22,8 @@ To install the optional dependency necessary to plot images, use ```pip install 
 - [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md)
 - [2D Plots](https://github.com/piccolomo/plotext/blob/master/readme/2d-plots.md)
 - [Multiple Subplots](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md)
-- [File Utilities](https://github.com/piccolomo/plotext/blob/master/readme/file.md)
 - [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md)
-- [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/other.md)
+- [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md)
 
 
 
