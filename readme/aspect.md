@@ -214,7 +214,7 @@ Further documentation is available using `plt.markers()`.
 
 To specify the marker colors use the `color` parameter, available in all plotting functions (eg: `plt.plot(data, color = "red")`). You could provide the following:
 
-<span style = "color: rgb(100,20,100)">red</span>
+<p style = "color: rgb(100,20,100)">red</p>
 
 - `None` (as by default): in this case, the color is set automatically. 
 
