@@ -1,13 +1,15 @@
+[Plotext Guide](https://github.com/piccolomo/plotext#main-menu)
+
 # Plot Aspect
 
-- [ Plot Limits ](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-limits)
-- [ Axes Ticks ](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#axes-ticks)
-- [ Plot Size ](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-size)
-- [ Axes and Grids ](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#axes-and-grids)
-- [ Plot Labels ](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-labels)
-- [ Plot Markers ](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-markers)
-- [ Marker Colors ](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#marker-colors)
-- [ Plot Colors ](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-colors)
+- [Plot Limits](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-limits)
+- [Axes Ticks](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#axes-ticks)
+- [Plot Size](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-size)
+- [Axes and Grids](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#axes-and-grids)
+- [Plot Labels](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-labels)
+- [Plot Markers](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-markers)
+- [Marker Colors](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#marker-colors)
+- [Plot Colors](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-colors)
 
 [ Main Menu ](https://github.com/piccolomo/plotext#main-menu)
 
@@ -28,7 +30,7 @@ import plotext as plt
 
 l = 1000
 x = range(1, l + 1)
-y = plt.sin(1, l)
+y = plt.sin(length = l)
 plt.scatter(x, y)
 plt.xlim(x[0] - 101, x[-1] + 100)
 plt.ylim(-1.2, 1.2)
@@ -38,10 +40,10 @@ or directly on terminal:
 ```
 python3 -c "import plotext as plt; l = 1000; x = range(1, l + 1); y = plt.sin(1, l); plt.scatter(x, y); plt.xlim(x[0] - 101, x[-1] + 100); plt.ylim(-1.2, 1.2); plt.show()"
 ```
-![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/limits.png)
+![limits](https://raw.githubusercontent.com/piccolomo/plotext/master/images/limits.png)
 
 
-[ Plot Aspect Menu ](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
+[Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
 
 
@@ -50,8 +52,8 @@ python3 -c "import plotext as plt; l = 1000; x = range(1, l + 1); y = plt.sin(1,
 To change the numerical ticks on the `x` axis, you could use one of the following functions:
 
  - `plt.xfrequency(xfreq)` sets the numerical ticks frequency on the `x` axis to an integer.
- 
- - `plt.xticks(xticks)` manually sets the x ticks to the list provided. If two lists are provided, the second is intended as the list of `labels` to be placed at the coordinates provided by the first.
+
+ - `plt.xticks(xticks)` manually sets the `x` axis ticks to the list provided. If two lists are provided, the second is intended as the list of `labels` to be placed at the coordinates provided by the first.
 
 In both cases, the parameter `xside` is used to access a specific `x` axis (lower or upper).
 
@@ -62,7 +64,7 @@ Here is a coded example:
 import plotext as plt
 
 l, p = 1000, 3
-y = plt.sin(1, p, l)
+y = plt.sin(periods = p, length = l)
 
 plt.scatter(y)
 
@@ -74,11 +76,11 @@ plt.show()
 ```
 or directly on terminal:
 ```
-python3 -c "import plotext as plt; l, p = 1000, 3; y = plt.sin(1, p, l); plt.scatter(y); xticks = [l * i / (2 * p)  for i in range(2 * p + 1)]; xlabels = [str(i) + 'π' for i in range(2 * p + 1)]; plt.xticks(xticks, xlabels); plt.show()"
+python3 -c "import plotext as plt; l, p = 1000, 3; y = plt.sin(periods = p, length = l); plt.scatter(y); xticks = [l * i / (2 * p)  for i in range(2 * p + 1)]; xlabels = [str(i) + 'π' for i in range(2 * p + 1)]; plt.xticks(xticks, xlabels); plt.show()"
 ```
-![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/ticks.png)
+![ticks](https://raw.githubusercontent.com/piccolomo/plotext/master/images/ticks.png)
 
-[ Plot Aspect Menu ](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
+[Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
 
 
@@ -87,18 +89,18 @@ python3 -c "import plotext as plt; l, p = 1000, 3; y = plt.sin(1, p, l); plt.sca
 
 By default the plot size adapts to the dimensions of the terminal. To alter the plot size use one of the following functions:
 
- - `plt.plot_size(width, height)` to set the width and height of the plot to the desired values.
+ - `plt.plot_size(width, height)` to set the width and height of the plot to the desired values, in character size unit.
 
- - `plt.limit_size(boolx, booly)` to set whatever or not to limit both plot dimensions to the terminal width and height.
+ - `plt.limit_size(boolx, booly)` to set whatever or not to limit plot width and height to, respectively, the terminal width and height.
 
-[ Plot Aspect Menu ](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
+[Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
 
 
 
 ## Axes and Grids
 
- - Use the function `plt.xaxis(bool)` to specify whatever or not to show the x axis: the parameter `xside` is used to specify the `x` axis (lower or upper) to address.
+ - Use the function `plt.xaxis(bool)` to specify whatever or not to show the `x` axis: the parameter `xside` is used to specify the `x` axis (lower or upper) to address.
 
  - The function `plt.yaxis(bool)` behaves analogously but for the `y` axis.
 
@@ -106,7 +108,7 @@ By default the plot size adapts to the dimensions of the terminal. To alter the 
 
  - The function `grid(xbool, ybool)` is used to add or remove the horizontal and vertical grid lines. A single Boolean sets both grid lines simultaneously. 
 
-[ Plot Aspect Menu ](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
+[Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
 
 
@@ -123,7 +125,7 @@ Here is an example:
 ```
 import plotext as plt
 
-plt.scatter(plt.sin())
+plt.plot(plt.sin())
 
 plt.plot_size(100, 30)
 plt.frame(True)
@@ -141,12 +143,12 @@ plt.show()
 ```
 or directly on terminal:
 ```
-python3 -c "import plotext as plt; plt.scatter(plt.sin()); plt.plot_size(100, 30); plt.frame(True); plt.grid(True); plt.title('Plot Title'); plt.xlabel('Lower'); plt.ylabel('Left'); plt.xlabel('Upper', xside = 'upper'); plt.ylabel('Right', yside = 'right'); plt.show()"
+python3 -c "import plotext as plt; plt.plot(plt.sin()); plt.plot_size(100, 30); plt.frame(True); plt.grid(True); plt.title('Plot Title'); plt.xlabel('Lower'); plt.ylabel('Left'); plt.xlabel('Upper', xside = 'upper'); plt.ylabel('Right', yside = 'right'); plt.show()"
 ```
 
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/labels.png)
  
-[ Plot Aspect Menu ](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
+[Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
 
 
@@ -155,13 +157,48 @@ python3 -c "import plotext as plt; plt.scatter(plt.sin()); plt.plot_size(100, 30
 
 To manually specify which marker to use, use the parameter `marker`, available in all plotting functions (eg: `plt.scatter(data, marker = "x")`). You could provide the following:
 
-- `None` (as by default): in this case, the marker is set automatically. 
+- `None` (as by default): in this case, the marker is set automatically to `fhd` (see below). 
 
 - A **single character**: if the space character " ", the plot will be invisible. 
 
 - A **list of specific markers**, one for each data point: its length will automatically adapt to the data length.
 
-- One of the following **marker codes** which will translate in the single character specified: sd █, dot •, dollar $, euro €, bitcoin ฿, at @, heart  ♥, smile  ☺, gclef 𝄞, note 𝅘𝅥, shamrock ☘, atom ⚛, snowflake ❄, lightning 🌩, queen ♕, king ♔, cross ♰, yinyang ☯, om ॐ, osiris 𓂀, zero  🯰, one 🯱, two 🯲, three  🯳, four 🯴, five 🯵, six 🯶, seven  🯷, eight 🯸, nine   🯹. Some of those markers codes are not availabel in Windows.
+- One of the following **marker codes** which will translate in the single character specified: 
+
+   | code | marker |
+   | :--- | :--- |
+   | sd | █ |
+   | dot | • |
+   | dollar | $ |
+   | euro | € |
+   | bitcoin | ฿ |
+   | at | @ |
+   | heart | ♥ |
+   | smile | ☺ |
+   | gclef | 𝄞 |
+   | note 𝅘𝅥| |
+   | shamrock | ☘ |
+   | atom | ⚛ |
+   | snowflake | ❄ |
+   | lightinig | 🌩 |
+   | queen | ♕ |
+   | king | ♔ | 
+   | cross | ♰ | 
+   | yinyang | ☯ |
+   | om | ॐ | 
+   | osiris | 𓂀 |
+   | zero  | 🯰 |
+   | one |🯱 |
+   | two | 🯲 |
+   | three | 🯳 |
+   | four | 🯴 |
+   | five | 🯵 |
+   | six | 🯶 |
+   | seven | 🯷 |
+   | eight | 🯸 |
+   | nine  | 🯹 |
+
+Some of those markers codes are not available in Windows.
 
 - The marker code "sd" stands for "standard resolution". To plot in higher resolution use one of following two extra codes instead:
 
@@ -169,9 +206,11 @@ To manually specify which marker to use, use the parameter `marker`, available i
 
     - **fhd** for full high resolution, which uses 3 x 2 unicode block characters, such as 🬗. This is the default marker of the first data set plotted, and it is not available in Windows. 
 
+Note: the higher resolution marker `fhd` is correctly displayed only on some terminals. Check if it works on yours before using it.
+
 Further documentation is available using `plt.markers()`.
 
-[ Plot Aspect Menu ](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
+[Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
 
 
@@ -183,7 +222,7 @@ To specify the marker colors use the `color` parameter. You could provide the fo
 
 - the following **color string codes**: `default, black, red, green, yellow, blue, magenta, cyan, white, bright-black, bright-red, bright-green, bright-yellow, bright-blue, bright-magenta, bright-cyan, bright-white`. Using `default` will result in the standard terminal coloring. 
 
-    - along side the string color codes, one can add as many **styles** as desired among these: `bold, dim, italic, underline, double-underline, strike, inverted, flash`. The color and styles must be separated by a space. Using `flash` will result in an actual white flashing marker (therefore it will not work with white canvas background color).
+    - along side the string color codes, one can add as many **styles** as desired among these: `bold, dim, italic, underline, double-underline, strike, inverted, flash`. The color and styles must be separated by a space. Using `flash` will result in an actual white flashing marker (therefore it will not work with bright-white canvas background color).
 
 - **an integer between 0 and 255** to plot 256 colors.
 
@@ -191,7 +230,7 @@ To specify the marker colors use the `color` parameter. You could provide the fo
 
 - a list of color codes, one for each data point.
 
-[ Plot Aspect Menu ](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
+[Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
 
 
@@ -235,4 +274,4 @@ python3 -c "import plotext as plt; l = 256; plt.plot(plt.sin(length = l), marker
 
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/colors.png)
 
-[ Plot Aspect Menu ](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
+[Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
