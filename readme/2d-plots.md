@@ -80,7 +80,7 @@ python3 -c "import plotext as plt; path = plt.file.join_paths(plt.file.script_fo
 
 Access the function `plt.image_plot()` documentation with `plt.doc.image_plot()`.
 
-**Note**: To easily manipulate file paths use the tools recommended in [File Utilities](https://github.com/piccolomo/plotext/blob/master/readme/file.md)
+**Note**: To easily manipulate file paths use the tools recommended in [File Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities)
 
 **Note**: To save the result, in colors, as an html page, use the function `plt.savefig()`.
 
