@@ -6,12 +6,11 @@ It also provide a simple [command line tool](https://github.com/piccolomo/plotex
 
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/subplots.png)
 
-To code to plot the previous image is [here](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md)
+The code used to plot the previous image could be found [here](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md)
 
 ## Install
 
 To install use ```pip install plotext``` and to upgrade to the latest version ```pip install plotext --upgrade```.
-
 To install the optional dependency necessary to plot images, use ```pip install plotext[image]``` which will make sure that the package `pillow` is installed.
 
 
@@ -21,8 +20,9 @@ To install the optional dependency necessary to plot images, use ```pip install 
 - [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md)
 - [Datetime Plots](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md)
 - [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md)
-- [Matrix/Image Plots](https://github.com/piccolomo/plotext/blob/master/readme/matrix-image-plots.md)
+- [2D Plots](https://github.com/piccolomo/plotext/blob/master/readme/2d-plots.md)
 - [Multiple Subplots](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md)
+- [File Utilities](https://github.com/piccolomo/plotext/blob/master/readme/file.md)
 - [Other Utilities](https://github.com/piccolomo/plotext/blob/master/readme/other.md)
 - [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/other.md)
 
