@@ -212,25 +212,33 @@ Further documentation is available using `plt.markers()`.
 
 ## Marker Colors
 
-To specify the marker colors use the `color` parameter, available in all plotting functions (eg: `plt.plot(data, color = "red")`). You could provide the following:
+These are the types of color codes that could be provided to the `color` parameter of any plotting function, as well as the `fullground` parameter of the function `plt.colorize()`, or as input for the functions plt.canvas_color(), plt.axes_color() and plt.ticks_color():
 
-```diff
-+ this text is highlighted in green
-- this text is highlighted in red
-```
-<p style = "color: red">red</p>
+• `None` (as by default), to set the color automatically. 
 
-- `None` (as by default): in this case, the color is set automatically. 
+• The following <u>color string codes</u>: 
 
-- the following **color string codes**: `default`, `black`, `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white`, `bright-black`, `bright-red`, `bright-green`, `bright-yellow`, `bright-blue`, `bright-magenta`, `bright-cyan`, `bright-white`. Using `default` will result in the standard terminal coloring. 
+  ![color-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/color-codes.png)
 
-    - along side the string color codes, one can add as many **styles** as desired among these: `bold, dim, italic, underline, double-underline, strike, inverted, flash`. The color and styles must be separated by a space. Using `flash` will result in an actual white flashing marker (therefore it will not work with bright-white canvas background color).
+• Along side the previous string color codes, one can add as many styles as desired among The following <u>string style codes</u>: 
 
-- **an integer between 0 and 255** to plot 256 colors.
+  ![style-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/style-codes.png)
 
-- **an RGB color** consisting of a tuple of three integer values (red, green, blue), each between 0 and 255, to obtain the most realistic color rendering.
+   The color and style codes must be separated by a space. Using `flash` will result in an actual white flashing marker (therefore it will not work with `bright-white` canvas background color). Naturally those style won't work as background colors.
 
-- a list of color codes, one for each data point.
+• An <u>integer between 0 and 255</u>, resulting in the following colors:
+
+  ![integer-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/integer-codes.png)
+
+  Note that the first 16 produce the same results as the previous string color codes.
+
+• An <u>RGB color</u> consisting of a tuple of three values (red, green, blue), each between 0 and 255, to obtain the most realistic color rendering.
+
+• a <u>list of color codes</u> to give a different color to each plot marker: the length of the list of colors will adapt to the length of the data set.
+
+<u>Background Colors</u>: all color codes above are valid also as background color, if provided to the `background` parameter of the function `plt.colorize()` or as input for the functions plt.canvas_color(), and plt.axes_color(). For example, here is the effect of the string color codes above intended as background color: 
+
+  ![background-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/background-codes.png)
 
 [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
@@ -242,11 +250,11 @@ Colors could also be applied to the rest of the plot, using the following functi
 
 - `plt.canvas_color(color)` to set the background color of the plot canvas alone (the area where the data is plotted).
 
-- `plt.axes_color(color)` to sets the background color of the axes, axes numerical ticks, axes labels and title.
+- `plt.axes_color(color)` to sets the background color of the axes, axes numerical ticks, axes labels and plot title.
 
-- `plt.ticks_color(color)` sets the (full-ground) color of the axes ticks, the grid lines, title, labels and legend, if present.
+- `plt.ticks_color(color)` sets the (fullground) color of the axes ticks, the grid lines, title, labels and legend, if present.
 
-The color codes conventions are analogous to the [ Marker Colors ](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#marker-colors) except that for background colors - naturally - the styles won't work. 
+The color codes conventions are explained in the section [Marker Colors](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#marker-colors).
 
 To remove the plot colors, use one of the following functions:
 
@@ -263,15 +271,15 @@ plt.plot(plt.sin(length = l), marker = "fhd", color = list(range(l)))
 
 plt.title("Plot Colors")
 plt.canvas_color((200, 200, 200)) # rgb coloring
-plt.axes_color("bright-black")
-plt.ticks_color("bright-yellow")
+plt.axes_color(254)
+plt.ticks_color((20, 40, 100))
 
-plt.plot_size(100, 30)
+plt.plot_size(150, 45)
 plt.show()
 ```
 or directly on terminal:
 ```
-python3 -c "import plotext as plt; l = 256; plt.plot(plt.sin(length = l), marker = 'fhd', color = list(range(l))); plt.title('Plot Colors'); plt.canvas_color((200, 200, 200)); plt.axes_color('bright-black'); plt.ticks_color('bright-yellow'); plt.plot_size(100, 30); plt.show()"
+python3 -c "import plotext as plt; l = 256; plt.plot(plt.sin(length = l), marker = 'fhd', color = list(range(l))); plt.title('Plot Colors'); plt.canvas_color(254); plt.axes_color((20, 40, 100)); plt.ticks_color('bright-yellow'); plt.plot_size(150, 45); plt.show()"
 ```
 
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/colors.png)
