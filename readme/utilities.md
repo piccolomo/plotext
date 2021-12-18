@@ -19,17 +19,17 @@ on terminal.
 
 The second way requires the translation of a script into a single string and passing it to the `python3` command with flag `-c`.
 For example:
-```
+```python
 import plotext as plt
 plt.scatter(plt.sin())
 plt.title('Scatter Plot')
 plt.show()
 ```
 translates into:
-```
+```console
 python3 -c "import plotext as plt; plt.scatter(plt.sin()); plt.title('Scatter Plot'); plt.show();"
 ```
-Each line has terminate with a `;` and strings in any given line should be surrounded by `'` instead of `"`. 
+Each line has terminate with a `;` and strings, in any given line, should be surrounded by `'` instead of `"`. 
 
 **Note**: Each coded example in the [Plotext Guide](https://github.com/piccolomo/plotext#guide) is followed by the correspondent single terminal command of the second type.
 

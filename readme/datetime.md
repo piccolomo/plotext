@@ -36,7 +36,7 @@ This function is useful when using log scale with datetime plots, in order to av
 
 To plot dates and/or times use either `plt.scatter_date()` or `plt.plot_date()`. Here is an example, which requires the package `yfinance`:
 
-```
+```python
 import yfinance as yf
 import plotext as plt
 
@@ -57,10 +57,12 @@ plt.ylabel("Stock Price $")
 plt.show()
 ```
 or directly on terminal:
-```
+```console
 python3 -c "import yfinance as yf; import plotext as plt; plt.datetime.set_datetime_form(date_form='%d/%m/%Y'); start = plt.datetime.string_to_datetime('11/07/2020'); end = plt.datetime.today.datetime; data = yf.download('goog', start, end); prices = list(data['Close']); dates = [plt.datetime.datetime_to_string(el) for el in data.index]; plt.plot_date(dates, prices); plt.title('Google Stock Price'); plt.xlabel('Date'); plt.ylabel('Stock Price $'); plt.show()"
 ```
 
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/datetime.png)
 
 [Datetime Menu](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#datetime-menu)
+
+[Plotext Guide](https://github.com/piccolomo/plotext#guide)

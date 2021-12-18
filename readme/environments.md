@@ -9,7 +9,7 @@
 
 The integration with the package `rich` has been discussed in [Issue 26](https://github.com/piccolomo/plotext/issues/26). Thanks to the kind help of its creator, `willmcgugan`, as well as user `whisller`, it seems that the following code could be a good working template:
 
-```
+```python
 from rich.layout import Layout
 from rich.live import Live
 from rich.ansi import AnsiDecoder

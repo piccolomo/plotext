@@ -10,11 +10,11 @@
 
 Note: there are many new features from the previous version: any bug report is useful and very welcomed.
 
-In version 4.1:
+**In version 4.1**:
 
  - added command line tool discussed in [Issue 47](https://github.com/piccolomo/plotext/issues/47) and [Pull 57](https://github.com/piccolomo/plotext/pull/57), [52](https://github.com/piccolomo/plotext/pull/52) and [51](https://github.com/piccolomo/plotext/pull/51)
  - set default marker to `hd` to avoid complications with `fhd` marker in some terminals [Issue 62](https://github.com/piccolomo/plotext/issues/62)
- - changed default canvas background color back to **bright-white** (feel free to express any other preference)
+ - changed default canvas background color back to `bright-white` (feel free to express any other preference)
  - fixed bar error reported in [Issue 61](https://github.com/piccolomo/plotext/issues/61)
  - added guide for integration with package `rich`, as discussed in [Issue 26](https://github.com/piccolomo/plotext/issues/26)
  - added guide for integration with `tkinter`, as discussed in [Issue 33](https://github.com/piccolomo/plotext/issues/33)
@@ -25,7 +25,7 @@ In version 4.1:
  - `shell` function and parameter removed as found to be useless
  - all `.md` files corrected and integrated
 
-In version 4.0:
+**In version 4.0**:
 
   - entire code re-written
   - faster plotting
@@ -54,12 +54,12 @@ In version 4.0:
   - `get_canvas()` is now `build()`
   - `plt.frame()` function reinstated
 
-In version 3.1:
+**In version 3.1**:
 
   - fixed [Issue 23](https://github.com/piccolomo/plotext/issues/23) on plot resizing 
   - added `plt.clear_data()` and `plt.test()` functions
 
-In version 3.0:
+**In version 3.0**:
 
   - direct terminal command line tool added (of first type)  
   - added marker "small" (with improved resolution), and new marker codes  
@@ -77,13 +77,13 @@ In version 3.0:
   - `plt.frame()` function removed and replaced with `plt.xaxes()` and `plt.yaxes()`
   - re-written most of the code 
 
-In version 2.3:
+**In version 2.3**:
 
   - solved histogram error reported on [Issue 15](https://github.com/piccolomo/plotext/issues/15)  
   - added histogram plot
   - added `fillx` and `filly` parameters  
 
-In version 2.2:
+**In version 2.2**:
 
   - new `readme.md` description file, 
   - changed `plt.fig_size()` to `plt.figsize()`
@@ -103,7 +103,7 @@ In version 2.2:
   - added function `plt.parameters()`
   - added function `docstrings()`
 
-In version 2.1:
+**In version 2.1**:
 
  - the plot now shows the actual data ticks using a simpler algorithm  
  - changed `ticks_number` to `ticks`  
@@ -115,7 +115,7 @@ In version 2.1:
  - new color codes  
  - code restructured and revised
 
-In version 2.0:
+**In version 2.0**:
 
  - the plot now shows the actual data ticks, which was more complicated then expected as the ticks should adapt to a limited amount of characters available (ticks_length)  
  - added `plt.set_xticks()` and `plt.set_yticks()` functions 
@@ -131,7 +131,7 @@ In version 2.0:
  - `decimals` parameter removed  
  - code restructured and revised
 
-In version 1.0:
+**In version 1.0**:
 
   - `plotext` now works also in Windows with colors
   - `plotext` now works also using Python IDLE3 but with no colors and no adaptive dimensions
@@ -147,12 +147,12 @@ In version 1.0:
   - when `thick` is `False`, the axes non numerical ticks are also removed
   - removed `get` functions for plot parameters
 
-[ Main Menu ](https://github.com/piccolomo/plotext#main-menu)
+[Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
 
 
 ## Future Plans
 
- - finalize the command tool, created by user `asartori86`, and discussed in [ Issue 47 ](https://github.com/piccolomo/plotext/issues/47) to handle more options, settings and funtions
+ - finalize the command tool, created by `asartori86`, and discussed in [ Issue 47 ](https://github.com/piccolomo/plotext/issues/47) to handle more options, settings and funtions
  - high resolution mosaic markers available on windows and other more rare terminals (not sure how)
  - remove grid span areas intersection problems (if issue is raised)
  - bar alignment option (if requested)
@@ -165,22 +165,24 @@ In version 1.0:
 
 Any help or new ideas are welcomed.
 
-[ Main Menu ](https://github.com/piccolomo/plotext#main-menu)
+[Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
 
 
 ## Credits
- - user `asartori86` for the awesome command line tool [ Issue 47 ](https://github.com/piccolomo/plotext/issues/47)
- - user `jtplaarj` for the great ideas and codes regarding multiple and stacked b⎄ar plots: [ Issue 48 ](https://github.com/piccolomo/plotext/issues/48)
- - user `ethack` for  requiring log scale on bar plot: [ Issue 37 ](https://github.com/piccolomo/plotext/issues/37)
- - user `gregwa1953` for  inspiring `plt.limit_size()`: [ Issue 33 ](https://github.com/piccolomo/plotext/issues/33)
- - user `rbanffy` for suggestion of using 3 x 2 unicode mosaic box characters: [ Issue 29 ](https://github.com/piccolomo/plotext/issues/29).
- - user `henryiii` for unittest suggestion: [ Issue 32 ](https://github.com/piccolomo/plotext/issues/32)
- - user `whisller` and `willmcgugan` for integration with `Rich` package: [ Issue 26 ](https://github.com/piccolomo/plotext/issues/26)
- - user `garid3000` for the idea of a function that returns the plot canvas: [ Issue 20 ](https://github.com/piccolomo/plotext/issues/20)
- - user `robintw` and `Sauci` for horizontal bar plot idea and code, respectively: [ Issue 16 ](https://github.com/piccolomo/plotext/issues/16)
- - user `Zaneo` for multiple data set idea: [ Issue 13 ](https://github.com/piccolomo/plotext/issues/13)
- - user `Zaneo` for double axes idea: [ Issue 12 ](https://github.com/piccolomo/plotext/issues/12)
+ - `asartori86` for the awesome command line tool [ Issue 47 ](https://github.com/piccolomo/plotext/issues/47)
+ - `jtplaarj` for the great ideas and codes regarding multiple and stacked b⎄ar plots: [ Issue 48 ](https://github.com/piccolomo/plotext/issues/48)
+ - `ethack` for  requiring log scale on bar plot: [ Issue 37 ](https://github.com/piccolomo/plotext/issues/37)
+ - `gregwa1953` for  inspiring `plt.limit_size()`: [ Issue 33 ](https://github.com/piccolomo/plotext/issues/33)
+ - `rbanffy` for suggestion of using 3 x 2 unicode mosaic box characters: [ Issue 29 ](https://github.com/piccolomo/plotext/issues/29).
+ - `henryiii` for unittest suggestion: [ Issue 32 ](https://github.com/piccolomo/plotext/issues/32)
+ - `whisller` and `willmcgugan` for integration with `Rich` package: [ Issue 26 ](https://github.com/piccolomo/plotext/issues/26)
+ - `garid3000` for the idea of a function that returns the plot canvas: [ Issue 20 ](https://github.com/piccolomo/plotext/issues/20)
+ - `robintw` and `Sauci` for horizontal bar plot idea and code, respectively: [ Issue 16 ](https://github.com/piccolomo/plotext/issues/16)
+ - `Zaneo` for multiple data set idea: [ Issue 13 ](https://github.com/piccolomo/plotext/issues/13)
+ - `Zaneo` for double axes idea: [ Issue 12 ](https://github.com/piccolomo/plotext/issues/12)
  - users `geoffrey-eisenbarth` and  `matthewhanson` for requesting datetime support: [ Issue 7 ](https://github.com/piccolomo/plotext/issues/7)
- - user `kris927b` for requesting histogram plot: [ Issue 6 ](https://github.com/piccolomo/plotext/issues/6)
+ - `kris927b` for requesting histogram plot: [ Issue 6 ](https://github.com/piccolomo/plotext/issues/6)
 
-[ Main Menu ](https://github.com/piccolomo/plotext#main-menu)
+[Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
+
+[Plotext Guide](https://github.com/piccolomo/plotext#guide)
