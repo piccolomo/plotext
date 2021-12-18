@@ -214,7 +214,11 @@ Further documentation is available using `plt.markers()`.
 
 To specify the marker colors use the `color` parameter, available in all plotting functions (eg: `plt.plot(data, color = "red")`). You could provide the following:
 
-<p style = "color: rgb(100,20,100)">red</p>
+```diff
++ this text is highlighted in green
+- this text is highlighted in red
+```
+<p style = "color: red">red</p>
 
 - `None` (as by default): in this case, the color is set automatically. 
 
