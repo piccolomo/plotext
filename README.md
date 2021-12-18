@@ -23,6 +23,7 @@ To install the optional dependency necessary to plot images, use ```pip install 
 - [2D Plots](https://github.com/piccolomo/plotext/blob/master/readme/2d-plots.md)
 - [Multiple Subplots](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md)
 - [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md)
+- [Other Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md)
 - [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md)
 
 
