@@ -14,7 +14,7 @@ To install use
 ```console
 pip install plotext
 ```
-and to upgrade to the latest version ```pip install plotext --upgrade```.
+and to upgrade to the latest version ```console pip install plotext --upgrade```.
 To install the optional dependency necessary to plot images, use 
 ```console
 pip install plotext[image]
