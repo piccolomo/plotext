@@ -278,3 +278,5 @@ python3 -c "import plotext as plt; l = 256; plt.plot(plt.sin(length = l), marker
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/colors.png)
 
 [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
+
+[Plotext Guide](https://github.com/piccolomo/plotext#guide)
