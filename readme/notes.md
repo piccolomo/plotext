@@ -170,19 +170,20 @@ Any help or new ideas are welcomed.
 
 
 ## Credits
- - `asartori86` for the awesome command line tool [ Issue 47 ](https://github.com/piccolomo/plotext/issues/47)
- - `jtplaarj` for the great ideas and codes regarding multiple and stacked b⎄ar plots: [ Issue 48 ](https://github.com/piccolomo/plotext/issues/48)
- - `ethack` for  requiring log scale on bar plot: [ Issue 37 ](https://github.com/piccolomo/plotext/issues/37)
- - `gregwa1953` for  inspiring `plt.limit_size()`: [ Issue 33 ](https://github.com/piccolomo/plotext/issues/33)
- - `rbanffy` for suggestion of using 3 x 2 unicode mosaic box characters: [ Issue 29 ](https://github.com/piccolomo/plotext/issues/29).
- - `henryiii` for unittest suggestion: [ Issue 32 ](https://github.com/piccolomo/plotext/issues/32)
- - `whisller` and `willmcgugan` for integration with `Rich` package: [ Issue 26 ](https://github.com/piccolomo/plotext/issues/26)
- - `garid3000` for the idea of a function that returns the plot canvas: [ Issue 20 ](https://github.com/piccolomo/plotext/issues/20)
- - `robintw` and `Sauci` for horizontal bar plot idea and code, respectively: [ Issue 16 ](https://github.com/piccolomo/plotext/issues/16)
- - `Zaneo` for multiple data set idea: [ Issue 13 ](https://github.com/piccolomo/plotext/issues/13)
- - `Zaneo` for double axes idea: [ Issue 12 ](https://github.com/piccolomo/plotext/issues/12)
- - users `geoffrey-eisenbarth` and  `matthewhanson` for requesting datetime support: [ Issue 7 ](https://github.com/piccolomo/plotext/issues/7)
- - `kris927b` for requesting histogram plot: [ Issue 6 ](https://github.com/piccolomo/plotext/issues/6)
+ - `asartori86` for the awesome command line tool [Issue 47](https://github.com/piccolomo/plotext/issues/47)
+ - `jtplaarj` for the great ideas and codes regarding multiple and stacked bar plots: [Issue 48](https://github.com/piccolomo/plotext/issues/48)
+ - `ethack` for  requiring log scale on bar plot: [Issue 37](https://github.com/piccolomo/plotext/issues/37)
+ - `ethack` for  solving single bar error: [Pull 43](https://github.com/piccolomo/plotext/issues/43)
+ - `gregwa1953` for  inspiring `plt.limit_size()`: [Issue 33](https://github.com/piccolomo/plotext/issues/33)
+ - `rbanffy` for suggestion of using 3 x 2 unicode mosaic box characters: [Issue 29](https://github.com/piccolomo/plotext/issues/29).
+ - `henryiii` for unittest suggestion: [Issue 32](https://github.com/piccolomo/plotext/issues/32)
+ - `whisller` and `willmcgugan` for integration with `Rich` package: [Issue 26](https://github.com/piccolomo/plotext/issues/26)
+ - `garid3000` for the idea of a function that returns the plot canvas: [Issue 20](https://github.com/piccolomo/plotext/issues/20)
+ - `robintw` and `Sauci` for horizontal bar plot idea and code, respectively: [Issue 16](https://github.com/piccolomo/plotext/issues/16)
+ - `Zaneo` for multiple data set idea: [Issue 13](https://github.com/piccolomo/plotext/issues/13)
+ - `Zaneo` for double axes idea: [Issue 12](https://github.com/piccolomo/plotext/issues/12)
+ - users `geoffrey-eisenbarth` and  `matthewhanson` for requesting datetime support: [Issue 7](https://github.com/piccolomo/plotext/issues/7)
+ - `kris927b` for requesting histogram plot: [Issue 6](https://github.com/piccolomo/plotext/issues/6)
 
 [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
 
