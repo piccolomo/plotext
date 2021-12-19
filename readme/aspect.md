@@ -156,7 +156,7 @@ To manually specify which marker to use, use the parameter `marker`, available i
 
 - One of the following **marker codes** which will translate in the single character specified: 
 
- ![markers](https://raw.githubusercontent.com/piccolomo/plotext/master/images/markers.png)
+  ![markers](https://raw.githubusercontent.com/piccolomo/plotext/master/images/markers.png)
 
    **Note**: some of these are not available in Windows.
 
