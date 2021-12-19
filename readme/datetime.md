@@ -25,8 +25,8 @@
 
 - `plt.datetime.datetime_to_string()` turns a `datetime` object into a string.
 
-- `plt.datetime.set_time0()` sets the origin of time to the `year`, `month`, `day`, `hour`, `minute` and `second`, provided as integers. The default value is 01/01/1900. 
-This function is useful when using log scale with datetime plots, in order to avoid "hitting" the 0 timestamp. Note that `hour`, `minute` and `second` are set to 0, if not provided.
+- `plt.datetime.set_time0()` sets the origin of time to the `year`, `month`, `day`, `hour`, `minute` and `second`, provided as integers. The default value is `01/01/1900`. 
+This function is useful when using log scale with datetime plots, in order to avoid *hitting* the 0 timestamp. Note that `hour`, `minute` and `second` are set to 0, if not provided.
 
 [Datetime Menu](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#datetime-menu)
 
@@ -61,7 +61,7 @@ or directly on terminal:
 python3 -c "import yfinance as yf; import plotext as plt; plt.datetime.set_datetime_form(date_form='%d/%m/%Y'); start = plt.datetime.string_to_datetime('11/07/2020'); end = plt.datetime.today.datetime; data = yf.download('goog', start, end); prices = list(data['Close']); dates = [plt.datetime.datetime_to_string(el) for el in data.index]; plt.plot_date(dates, prices); plt.title('Google Stock Price'); plt.xlabel('Date'); plt.ylabel('Stock Price $'); plt.show()"
 ```
 
-![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/datetime.png)
+![datetime](https://raw.githubusercontent.com/piccolomo/plotext/master/images/datetime.png)
 
 [Datetime Menu](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#datetime-menu)
 
