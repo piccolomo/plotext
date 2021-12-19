@@ -1,12 +1,12 @@
 <p align="left">  <img src="https://raw.githubusercontent.com/piccolomo/plotext/master/images/logo.png" /></p>
 
-`plotext` plots directly on terminal, the syntax is very similar to `matplotlib` and it has no dependencies (except for an optional dependency required for image plotting). It can also [save plots](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#other-functions) as text or as colored `html`.
+`plotext` plots directly on terminal: the syntax is very similar to `matplotlib`, it has no dependencies (except for an optional dependency required for image plotting) and can [save plots](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#other-functions) as text or as colored `html`.
 
 It also provides a simple [command line tool](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#command-line-tool) and a function to [colorize strings](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#colorized-text).
 
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/subplots.png)
 
-The code used to plot the previous image could be found [here](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md).
+The code used to plot the previous image, could be found [here](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md).
 
 
 ## Guide
@@ -24,13 +24,13 @@ The code used to plot the previous image could be found [here](https://github.co
 
 ## Install
 
-As usual, use:
+As usual, with:
 ```console
 pip install plotext
 ```
-and to upgrade to the latest version use ```pip install plotext --upgrade```.
+To upgrade to the latest version, with ```pip install plotext --upgrade```.
 
-To install the optional dependency necessary to plot images, use 
+To install the optional dependency necessary to plot images, use:
 ```console
 pip install plotext[image]
 ``` 
