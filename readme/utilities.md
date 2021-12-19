@@ -29,9 +29,9 @@ translates into:
 ```console
 python3 -c "import plotext as plt; plt.scatter(plt.sin()); plt.title('Scatter Plot'); plt.show();"
 ```
-Each line has terminate with a `;` and strings, in any given line, should be surrounded by `'` instead of `"`. 
+Each line has to terminate with a `;` and python strings, in any given line, should be surrounded by `'` instead of `"`. 
 
-**Note**: Each coded example in the [Plotext Guide](https://github.com/piccolomo/plotext#guide) is followed by the correspondent single terminal command of the second type.
+**Note**: Each coded example in the [Plotext Guide](https://github.com/piccolomo/plotext#guide) is followed by the correspondent direct terminal command line (of the latter type).
 
 [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#utilities)
 
