@@ -48,9 +48,10 @@ plt.colorize("integer color codes", fullground = 201, background = 158, show = T
 plt.colorize("RGB color codes", fullground = (16, 100, 200), background = (200, 100, 100), show = True)
 ```
 ![colorize](https://raw.githubusercontent.com/piccolomo/plotext/master/images/colorize.png)
-where using `flash` will result in an actual flashing character.
 
-**Note**: to remove any coloring use the function `plt.uncolorize(string)`.
+**Note 1**: using the marker `flash` will result in an actual flashing character.
+
+**Note 2**: to remove any coloring use the function `plt.uncolorize(string)`.
 
 
 ## File Utilities
@@ -95,7 +96,7 @@ Here are all the available clear functions:
 
 ## Other Functions
 
-- `plt.savefig(path)` saves the colourless version of the plot, as a text file, at the `path` specified. **If the path extension is `.html` the colours will be preserved.**
+- `plt.savefig(path)` saves the colourless version of the plot, as a text file, at the `path` specified. **If the path extension is `.html` the colors will be preserved.**
 
 - `plt.build()` is equivalent to `plt.show()` except that the final figure canvas is returned as a string and not printed. 
 
