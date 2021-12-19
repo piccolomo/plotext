@@ -179,21 +179,21 @@ These are the types of color codes that could be provided to the `color` paramet
 
 • The following **color string codes**: 
 
-  ![color-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/color-codes.png)
+   ![color-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/color-codes.png)
 
-  **Note**: `default` will use the terminal default color settings.
+   **Note**: `default` will use the terminal default color settings.
 
 • Along side the previous string color codes, one can add as many styles as desired among the following **string style codes**: 
 
-  ![style-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/style-codes.png)
+   ![style-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/style-codes.png)
 
-   The color and style codes must be separated by a space. Using `flash` will result in an actual white flashing marker (therefore it will not work with `bright-white` canvas background color). Naturally those style won't work as background colors.
+    **Note**: the color and style codes must be separated by a space. Using `flash` will result in an actual white flashing marker (therefore it will not work with `bright-white` canvas background color). Naturally those style won't work as background colors.
 
 • An **integer between 0 and 255**, resulting in the following colors:
 
-  ![integer-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/integer-codes.png)
+   ![integer-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/integer-codes.png)
 
-  **Note**: the first 16 produce the same results as the previous string color codes.
+   **Note**: the first 16 produce the same results as the previous string color codes.
 
 • An **RGB color** consisting of a tuple of three values (red, green, blue), each between 0 and 255, to obtain the most realistic color rendering.
 
