@@ -12,6 +12,7 @@ Note: there are many new features from the previous version: any bug report is u
 
 **In version 4.1**:
 
+ - solved single bar plot error discussed in [Issue 63](https://github.com/piccolomo/plotext/issues/63)
  - added command line tool discussed in [Issue 47](https://github.com/piccolomo/plotext/issues/47) and [Pull 57](https://github.com/piccolomo/plotext/pull/57), [52](https://github.com/piccolomo/plotext/pull/52) and [51](https://github.com/piccolomo/plotext/pull/51)
  - set default marker to `hd` to avoid complications with `fhd` marker in some terminals [Issue 62](https://github.com/piccolomo/plotext/issues/62)
  - changed default canvas background color back to `bright-white` (feel free to express any other preference)
