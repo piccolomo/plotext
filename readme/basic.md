@@ -162,9 +162,9 @@ python3 -c "import plotext as plt; l = 10 ** 4; x = range(1, l + 1); y = plt.sin
 ```
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/log.png)
 
-**Note**: the functions `plt.xscale()` and `plt.yscale()` can use the `xside` and `yside` parameters respectively, to independently set the scale of both `x` or `y` axes.
+**Note 1**: the functions `plt.xscale()` and `plt.yscale()` can use the `xside` and `yside` parameters respectively, to independently set the scale of both `x` or `y` axes.
 
-**Note**: the log function used is *log10*.
+**Note 2**: the log function used is *log10*.
 
 [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
