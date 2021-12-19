@@ -54,7 +54,7 @@ To change the numerical ticks on the `x` axis, you could use one of the followin
 
 In both cases, the parameter `xside` is used to access a specific `x` axis (lower or upper).
 
-Naturally, the functions used to specify the plot limits on the `y` axis behave similarly and are `plt.yfrequency(yfreq)`, `plt.yticks(yticks)`.
+Naturally, the functions used to specify the plot limits on the `y` axis, behave similarly and are `plt.yfrequency(yfreq)`, `plt.yticks(yticks)`.
 
 Here is a coded example:
 ```python
@@ -85,18 +85,16 @@ python3 -c "import plotext as plt; l, p = 1000, 3; y = plt.sin(periods = p, leng
 
 By default the plot size adapts to the dimensions of the terminal. To alter the plot size use one of the following functions:
 
- - `plt.plot_size(width, height)` to set the width and height of the plot to the desired values, in character size unit.
+ - `plt.plot_size(width, height)` to set the width and height of the plot to the desired values, in units of character dimensions.
 
- - `plt.limit_size(boolx, booly)` to set whatever or not to limit plot width and height to, respectively, the terminal width and height.
+ - `plt.limit_size(boolx, booly)` to set, whatever or not, to limit the plot width and height to, respectively, the terminal width and height.
 
 [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
-
-[Plotext Guide](https://github.com/piccolomo/plotext#guide)
 
 
 ## Axes and Grids
 
- - Use the function `plt.xaxis(bool)` to specify whatever or not to show the `x` axis: the parameter `xside` is used to specify the `x` axis (lower or upper) to address.
+ - Use the function `plt.xaxis(bool)` to specify whatever or not to show the `x` axis: the parameter `xside` is used to specify which `x` axis (lower or upper) to address.
 
  - The function `plt.yaxis(bool)` behaves analogously but for the `y` axis.
 
@@ -141,7 +139,7 @@ or directly on terminal:
 python3 -c "import plotext as plt; plt.plot(plt.sin()); plt.plot_size(150, 45); plt.frame(True); plt.grid(True); plt.title('Plot Title'); plt.xlabel('Lower'); plt.ylabel('Left'); plt.xlabel('Upper', xside = 'upper'); plt.ylabel('Right', yside = 'right'); plt.show()"
 ```
 
-![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/labels.png)
+![labels](https://raw.githubusercontent.com/piccolomo/plotext/master/images/labels.png)
  
 [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
@@ -156,46 +154,17 @@ To manually specify which marker to use, use the parameter `marker`, available i
 
 - A **list of specific markers**, one for each data point: its length will automatically adapt to the data length.
 
-- One of the following **marker codes** which will translate in the single character specified (**note**: come of these are not available in Windows): 
+- One of the following **marker codes** which will translate in the single character specified: 
 
-   | code | marker |
-   | :--- | :--- |
-   | sd | █ |
-   | dot | • |
-   | dollar | $ |
-   | euro | € |
-   | bitcoin | ฿ |
-   | at | @ |
-   | heart | ♥ |
-   | smile | ☺ |
-   | gclef | 𝄞 |
-   | note | 𝅘𝅥| |
-   | shamrock | ☘ |
-   | atom | ⚛ |
-   | snowflake | ❄ |
-   | lightning | 🌩 |
-   | queen | ♕ |
-   | king | ♔ | 
-   | cross | ♰ | 
-   | yinyang | ☯ |
-   | om | ॐ | 
-   | osiris | 𓂀 |
-   | zero  | 🯰 |
-   | one |🯱 |
-   | two | 🯲 |
-   | three | 🯳 |
-   | four | 🯴 |
-   | five | 🯵 |
-   | six | 🯶 |
-   | seven | 🯷 |
-   | eight | 🯸 |
-   | nine  | 🯹 |
+ ![markers](https://raw.githubusercontent.com/piccolomo/plotext/master/images/markers.png)
+
+   **Note**: some of these are not available in Windows.
 
 - The marker code `sd` stands for "standard resolution". To plot in **higher resolution** use one of following two extra codes instead:
 
     - **`hd`** for *high resolution*, which uses 2 x 2 unicode block characters, such as ▞. 
 
-    - **`fhd`** for *full high resolution*, which uses 3 x 2 unicode block characters, such as 🬗.  **Note**: this marker works in Unix systems only and only in some terminals and the only way to find out is to test it.
+    - **`fhd`** for *full high resolution*, which uses 3 x 2 unicode block characters, such as 🬗.  **Note**: this marker works only in Unix systems and only in some terminals.
 
 The same documentation is available using `plt.markers()`.
 
@@ -212,6 +181,8 @@ These are the types of color codes that could be provided to the `color` paramet
 
   ![color-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/color-codes.png)
 
+  **Note**: `default` will use the terminal default color settings.
+
 • Along side the previous string color codes, one can add as many styles as desired among the following **string style codes**: 
 
   ![style-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/style-codes.png)
@@ -222,13 +193,13 @@ These are the types of color codes that could be provided to the `color` paramet
 
   ![integer-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/integer-codes.png)
 
-  Note that the first 16 produce the same results as the previous string color codes.
+  **Note**: the first 16 produce the same results as the previous string color codes.
 
 • An **RGB color** consisting of a tuple of three values (red, green, blue), each between 0 and 255, to obtain the most realistic color rendering.
 
 • a **list of color codes** to give a different color to each plot marker: the length of the list of colors will adapt to the length of the data set.
 
-**Background Colors**: all color codes above are valid also as background color, if provided to the `background` parameter of the function `plt.colorize()` or as input for the functions plt.canvas_color(), and plt.axes_color(). For example, here is the effect of the string color codes above intended as background color: 
+**Background Colors**: all color codes above are valid also as background color, if provided to the `background` parameter of the function `plt.colorize()` or as input for the functions `plt.canvas_color()`, and `plt.axes_color()`. For example, here is the effect of the string color codes above, intended as background color: 
 
   ![background-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/background-codes.png)
 
@@ -247,7 +218,7 @@ Colors could also be applied to the rest of the plot, using the following functi
 
 - `plt.ticks_color(color)` sets the (fullground) color of the axes ticks, the grid lines, title, labels and legend, if present.
 
-The color codes conventions are explained in the section [Marker Colors](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#marker-colors).
+The color codes conventions are explained in section [Marker Colors](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#marker-colors).
 
 To remove the plot colors, use one of the following functions:
 

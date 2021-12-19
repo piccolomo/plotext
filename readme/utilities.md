@@ -3,6 +3,7 @@
 
 # Utilities
 - [Command Line Tool](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#command-line-tool)
+- [Colorized Text](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#colorized-text)
 - [File Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities)
 - [Clear Functions](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#clear-functions)
 - [Other Functions](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#other-functions)
@@ -11,14 +12,11 @@
 
 ## Command Line Tool
 
-There are two ways one could use `plotext` directly on terminal. The first is by using the command line tool discussed in [Issue 47](https://github.com/piccolomo/plotext/issues/47) and [Pull 57](https://github.com/piccolomo/plotext/pull/57), [52](https://github.com/piccolomo/plotext/pull/52) and [51](https://github.com/piccolomo/plotext/pull/51), which will probably be further developed in the future. For further documentation run:
+There are two ways one could use `plotext` directly on terminal. The first is by using the command line tool discussed in [Issue 47](https://github.com/piccolomo/plotext/issues/47) and [Pull 57](https://github.com/piccolomo/plotext/pull/57), [52](https://github.com/piccolomo/plotext/pull/52) and [51](https://github.com/piccolomo/plotext/pull/51), which will probably be further developed in the future. For further documentation run, on terminal:
 ```console
 plotext --help
 ```
-on terminal. 
-
-The second way requires the translation of a script into a single string and passing it to the `python3` command with flag `-c`.
-For example:
+The second way requires the translation of a script into a single string and passing it to the `python3` command with flag `-c`.For example:
 ```python
 import plotext as plt
 plt.scatter(plt.sin())
@@ -29,11 +27,30 @@ translates into:
 ```console
 python3 -c "import plotext as plt; plt.scatter(plt.sin()); plt.title('Scatter Plot'); plt.show();"
 ```
-Each line has to terminate with a `;` and python strings, in any given line, should be surrounded by `'` instead of `"`. 
+**Note 1**: each line has to terminate with a `;` and python strings, in any given line, should be surrounded by `'` instead of `"`. 
 
-**Note**: Each coded example in the [Plotext Guide](https://github.com/piccolomo/plotext#guide) is followed by the correspondent direct terminal command line (of the latter type).
+**Note 2**: each coded example in the [Plotext Guide](https://github.com/piccolomo/plotext#guide) is followed by the correspondent direct terminal command line (of the latter type).
 
 [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#utilities)
+
+
+## Colorized Text
+
+To obtained colorized strings use the function `plt.colorize(string, fullground, background, show)` which paints a string with the given fullground and background [color and style codes](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#marker-colors). If `show = True` the string is directly printed and not returned. Here are a few examples:
+```python
+import plotext as plt
+
+plt.colorize("black on white, bold", fullground = "black bold", background = "white", show = True)
+plt.colorize("red on green, italic", fullground = "red italic", background = "green", show = True)
+plt.colorize("yellow on blue, flash", fullground = "yellow flash", background = "blue", show = True)
+plt.colorize("magenta on cyan, underlined", fullground = "magenta underline", background = "cyan", show = True)
+plt.colorize("integer color codes", fullground = 201, background = 158, show = True)
+plt.colorize("RGB color codes", fullground = (16, 100, 200), background = (200, 100, 100), show = True)
+```
+![colorize](https://raw.githubusercontent.com/piccolomo/plotext/master/images/colorize.png)
+where using `flash` will result in an actual flashing character.
+
+**Note**: to remove any coloring use the function `plt.uncolorize(string)`.
 
 
 ## File Utilities
@@ -78,23 +95,17 @@ Here are all the available clear functions:
 
 ## Other Functions
 
+- `plt.savefig(path)` saves the colourless version of the plot, as a text file, at the `path` specified. **If the path extension is `.html` the colours will be preserved.**
+
 - `plt.build()` is equivalent to `plt.show()` except that the final figure canvas is returned as a string and not printed. 
 
 - `plt.time()` returns the computation time of the latest `plt.show()` or `plt.build()` functions. 
 
-- `plt.savefig(path)` saves the colourless version of the plot as a text file at the `path` specified. **If the path extension is `.html` the colors will be preserved.**
-
 - `plt.terminal_size()` returns the size of the terminal.
-
-- `plt.markers()` and `plt.colors()` print useful information on how to use markers and colors.
 
 - `plt.sleep()` adds a sleeping time to the computation.
 
 - `plt.sin(amplitude, periods, length, phase, decay)` outputs a sinusoidal signal with the given parameters.
-
-- `plt.colorize(string, full-ground, background, show)` it paints a string with the given fullground and background color codes. If `show` is True, the string is printed and not returned.
-
-- `plt.uncolorize(string)` removes all color codes from a string.
 
 - `version()` returns the version of the current installed `plotext` package.
 
@@ -110,6 +121,8 @@ All main `plotext` functions have a doc-string that can be accessed in three way
 - more easily through the `doc` container: `plt.doc.scatter()`.
 
 - with `plt.doc.all()` which prints all `plotext` doc-strings.
+
+The functions `plt.markers()` and `plt.colors()` directly print useful information on how to use respectively [markers](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-markers) and [colors](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#marker-colors).
 
 [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#utilities)
 

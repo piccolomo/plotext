@@ -17,11 +17,11 @@
 
 - `plt.datetime.clear()` restores the internal definitions of the `datetime` container.
 
-- `plt.datetime.string_to_datetime()` turns a string based datetime object into a `datetime` object.
+- `plt.datetime.string_to_datetime()` turns a string into a `datetime` object.
 
 - `plt.datetime.datetime_to_timestamp()` turns an `datetime` object to a timestamp, relative to the origin of time.
 
-- `plt.datetime.string_to_timestamp()` turns a string based datetime object into a timestamp.
+- `plt.datetime.string_to_timestamp()` turns a string into a timestamp.
 
 - `plt.datetime.datetime_to_string()` turns a `datetime` object into a string.
 

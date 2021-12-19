@@ -29,13 +29,13 @@ or directly on terminal:
 ```console
 python3 -c "import plotext as plt; cols, rows = 200, 45; p = 1; matrix = [[(abs(r - rows / 2) + abs(c - cols / 2)) ** p for c in range(cols)] for r in range(rows)]; plt.matrix_plot(matrix); plt.plotsize(cols, rows); plt.title('Matrix Plot'); plt.show()"
 ```
-![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/matrix.png)
+![matrix](https://raw.githubusercontent.com/piccolomo/plotext/master/images/matrix.png)
 
-Access the function `plt.matrix_plot()` documentation with `plt.doc.matrix_plot()`.
+**Note 1**: The intensity of the pixel (how light it is) is proportional to the correspondent element in the matrix. 
 
-**Note**: The intensity of the pixel (how light it is) is proportional to the correspondent element in the matrix. 
+**Note 2**: The same function can **plot in colors** if each pixel is an RGB tuple of three integers between 0 and 255.
 
-**Note**: The same function can plot in colors if each pixel is an RGB tuple of three integers between 0 and 255.
+Access the documentation of the function `plt.matrix_plot()` with `plt.doc.matrix_plot()`.
 
 [2D Plots](https://github.com/piccolomo/plotext/blob/master/readme/2d-plots.md#2d-plots)
 
@@ -76,13 +76,13 @@ or directly on terminal:
 python3 -c "import plotext as plt; path = plt.file.join_paths(plt.file.script_folder(), 'monalisa.jpg'); size = [200, 60]; size = plt.image_plot(path, size = size, keep_ratio = True); plt.plotsize(*size); plt.title('Mona Lisa'); plt.show()"
 ```
 
-![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/image.png)
+![image](https://raw.githubusercontent.com/piccolomo/plotext/master/images/image.png)
 
-Access the function `plt.image_plot()` documentation with `plt.doc.image_plot()`.
+**Note 1**: to easily manipulate file paths use the tools recommended in section [File Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities).
 
-**Note**: To easily manipulate file paths use the tools recommended in [File Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities)
+**Note 2**: to save the result, in colors, as an `html` page, use the function `plt.savefig()`.
 
-**Note**: To save the result, in colors, as an html page, use the function `plt.savefig()`.
+Access the documentation of the function `plt.image_plot()` with `plt.doc.image_plot()`.
 
 [2D Plots](https://github.com/piccolomo/plotext/blob/master/readme/2d-plots.md#2d-plots)
 

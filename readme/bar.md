@@ -30,7 +30,7 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 ```
 ![simple-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/images/simple-bar.png)
 
-Access the function `plt.bar()` documentation with `plt.doc.bar()`.
+Access the documentation of the function `plt.bar()` with `plt.doc.bar()`.
 
 [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
 
@@ -81,7 +81,7 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 
 ![multiple-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/images/multiple-bar.png)
 
-Access the function `plt.multiple_bar()` documentation with `plt.doc.multiple_bar()`.
+Access the documentation of the function `plt.multiple_bar()` with `plt.doc.multiple_bar()`.
 
 [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
 
@@ -108,7 +108,7 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 ```
 ![stacked-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/images/stacked-bar.png)
 
-Access the function `plt.stacked_bar()` documentation with `plt.doc.stacked_bar()`.
+Access the documentation of the function `plt.stacked_bar()` with `plt.doc.stacked_bar()`.
 
 [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
 
@@ -141,7 +141,7 @@ python3 -c "import plotext as plt; import random; l = 7 * 10 ** 4; data1 = [rand
 ```
 ![hist](https://raw.githubusercontent.com/piccolomo/plotext/master/images/hist.png)
 
-Access the function `plt.hist()` documentation with `plt.doc.hist()`.
+Access the documentation of the function `plt.hist()` with `plt.doc.hist()`.
 
 [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
 

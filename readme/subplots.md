@@ -11,7 +11,7 @@ To plot a grid of subplots, use the following main functions:
 
  - `plt.span(rowspan, colspan)` to set how many rows and/or columns a given subplot should span in the matrix of subplots.
 
-Here is a coded example, where the [`maryling.jpg`](https://raw.githubusercontent.com/piccolomo/plotext/master/images/marylin.jpg) and [`mj.jpg`](https://raw.githubusercontent.com/piccolomo/plotext/master/images/mj.jpg) files should be placed in the script folder.
+Here is a coded example, which requires the package `yfinance` and where the [`maryling.jpg`](https://raw.githubusercontent.com/piccolomo/plotext/master/images/marylin.jpg) and [`mj.jpg`](https://raw.githubusercontent.com/piccolomo/plotext/master/images/mj.jpg) files should be placed in the script folder.
 
 ```python
 import plotext as plt

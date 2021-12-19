@@ -27,9 +27,9 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.scatter(y); plt.title('Sca
 ```
 ![scatter](https://raw.githubusercontent.com/piccolomo/plotext/master/images/scatter.png)
 
-Access the `plt.scatter()` function documentation with `plt.doc.scatter()`
+Access the documentation of the function `plt.scatter()` with `plt.doc.scatter()`.
 
-**Note**: the default marker is `hd` (the 2 x 2 high resolution characters) in `unix` systems only as it doesn't seem to render well in Windows; the 3 x 2 highest resolution marker, named `fhd`, works in Unix only and only in some terminals and the only way to find out is to test it.
+**Note**: the default marker is `hd` (the 2 x 2 high resolution characters) only in `Unix` systems as it doesn't seem to render well in Windows; the 3 x 2 highest resolution marker, named `fhd`, works only in `Unix` systems and only in some terminals.
 
 [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
@@ -50,8 +50,6 @@ or directly on terminal:
 python3 -c "import plotext as plt; y = plt.sin(); plt.plot(y); plt.title('Line Plot'); plt.show()"
 ```
 ![plot](https://raw.githubusercontent.com/piccolomo/plotext/master/images/plot.png)
-
-Access the `plt.plot()` doc-string with `plt.doc.plot()`.
 
 [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
@@ -129,7 +127,7 @@ python3 -c "import plotext as plt; y1 = plt.sin(); y2 = plt.sin(2, phase = -1); 
 ```
 ![multiple-axes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/multiple-axes.png)
 
-**Note**:  on the right side of each legend entry, a symbol is introduce to easily identify on which axes the data set refers to: the interpretation should be intuitive.
+**Note**:  on the right side of each legend entry, a symbol is introduce to easily identify on which axes the data refers to: the interpretation should be intuitive.
 
 [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
