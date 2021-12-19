@@ -39,7 +39,11 @@ def bars(x, y, width, minimum): # given the bars center coordinates and height, 
     if x == []:
         return [], []
     bins = len(x)
-    bin_size_half = (max(x) - min(x)) / (bins - 1) * width / 2
+    #bin_size_half = (max(x) - min(x)) / (bins - 1) * width / 2
+    bin_size_half = width / 2
+    # adjust the bar width according to the number of bins
+    if bins > 1:
+        bin_size_half *= (max(x) - min(x)) / (bins - 1)
     xbar, ybar = [], []
     for i in range(bins):
         xbar.append([x[i] - bin_size_half, x[i] - bin_size_half,
