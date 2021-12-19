@@ -175,33 +175,33 @@ The same documentation is available using `plt.markers()`.
 
 These are the types of color codes that could be provided to the `color` parameter of any plotting function, as well as the `fullground` parameter of the function `plt.colorize()`, or as input for the functions `plt.canvas_color()`, `plt.axes_color()` and `plt.ticks_color()`:
 
-• `None` (as by default), to set the color automatically. 
+- `None` (as by default), to set the color automatically. 
 
-• The following **color string codes**: 
+- The following **color string codes**: 
 
-   ![color-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/color-codes.png)
+  ![color-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/color-codes.png)
 
-   **Note**: `default` will use the terminal default color settings.
+  **Note**: `default` will use the terminal default color settings.
 
-• Along side the previous string color codes, one can add as many styles as desired among the following **string style codes**: 
+- Along side the previous string color codes, one can add as many styles as desired among the following **string style codes**: 
 
-   ![style-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/style-codes.png)
+  ![style-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/style-codes.png)
 
-    **Note**: the color and style codes must be separated by a space. Using `flash` will result in an actual white flashing marker (therefore it will not work with `bright-white` canvas background color). Naturally those style won't work as background colors.
+   **Note**: the color and style codes must be separated by a space. Using `flash` will result in an actual white flashing marker (therefore it will not work with `bright-white` canvas background color). Naturally those style won't work as background colors.
 
-• An **integer between 0 and 255**, resulting in the following colors:
+- An **integer between 0 and 255**, resulting in the following colors:
 
-   ![integer-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/integer-codes.png)
+  ![integer-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/integer-codes.png)
 
-   **Note**: the first 16 produce the same results as the previous string color codes.
+  **Note**: the first 16 produce the same results as the previous string color codes.
 
-• An **RGB color** consisting of a tuple of three values (red, green, blue), each between 0 and 255, to obtain the most realistic color rendering.
+- An **RGB color** consisting of a tuple of three values (red, green, blue), each between 0 and 255, to obtain the most realistic color rendering.
 
-• a **list of color codes** to give a different color to each plot marker: the length of the list of colors will adapt to the length of the data set.
+- a **list of color codes** to give a different color to each plot marker: the length of the list of colors will adapt to the length of the data set.
 
 **Background Colors**: all color codes above are valid also as background color, if provided to the `background` parameter of the function `plt.colorize()` or as input for the functions `plt.canvas_color()`, and `plt.axes_color()`. For example, here is the effect of the string color codes above, intended as background color: 
 
-  ![background-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/background-codes.png)
+![background-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/background-codes.png)
 
 The same documentation is available using `plt.colors()`.
 
