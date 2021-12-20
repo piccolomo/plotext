@@ -3,7 +3,7 @@
 
 # Utilities
 - [Command Line Tool](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#command-line-tool)
-- [Colorized Text](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#colorized-text)
+- [Colored Text](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#colored-text)
 - [File Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities)
 - [Clear Functions](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#clear-functions)
 - [Other Functions](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#other-functions)
