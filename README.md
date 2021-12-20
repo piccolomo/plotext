@@ -2,7 +2,7 @@
 
 `plotext` plots directly on terminal: the syntax is very similar to `matplotlib`, it has no dependencies (except for an optional dependency required for image plotting) and can [save plots](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#other-functions) as text or as colored `html`.
 
-It also provides a simple [command line tool](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#command-line-tool) and a function to [color strings](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#colorized-text).
+It also provides a simple [command line tool](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#command-line-tool) and a function to [color strings](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#colored-text).
 
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/subplots.png)
 
