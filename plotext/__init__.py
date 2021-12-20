@@ -1,6 +1,2 @@
-"""\nplotext plots directly on terminal"""
+from . import *
 
-from plotext._core import *
-
-__name__ = "plotext"
-__version__ = "4.1.3"
