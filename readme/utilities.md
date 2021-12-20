@@ -34,22 +34,22 @@ python3 -c "import plotext as plt; plt.scatter(plt.sin()); plt.title('Scatter Pl
 [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#utilities)
 
 
-## Colorized Text
+## Colored Text
 
-To obtained colorized strings use the function `plt.colorize(string, fullground, background, show)` which paints a string with the given fullground and background [color and style codes](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#marker-colors). If `show = True` the string is directly printed and not returned. Here are a few examples:
+To obtained colored strings use the function `plt.colorize(string, fullground, background, show)` which paints a string with the given fullground and background [color and style codes](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#marker-colors). If `show = True` the string is directly printed and not returned. Here are a few examples:
 ```python
 import plotext as plt
 
-plt.colorize("black on white, bold", fullground = "black bold", background = "white", show = True)
-plt.colorize("red on green, italic", fullground = "red italic", background = "green", show = True)
-plt.colorize("yellow on blue, flash", fullground = "yellow flash", background = "blue", show = True)
-plt.colorize("magenta on cyan, underlined", fullground = "magenta underline", background = "cyan", show = True)
-plt.colorize("integer color codes", fullground = 201, background = 158, show = True)
-plt.colorize("RGB color codes", fullground = (16, 100, 200), background = (200, 100, 100), show = True)
+plt.colorize("black on white, bold", "black bold", "white", True)
+plt.colorize("red on green, italic", "red italic", "green", True)
+plt.colorize("yellow on blue, flash", "yellow flash", "blue", True)
+plt.colorize("magenta on cyan, underlined", "magenta underline", "cyan", show = True)
+plt.colorize("integer color codes", 201, 158, True)
+plt.colorize("RGB color codes", (16, 100, 200), (200, 100, 100), True)
 ```
 ![colorize](https://raw.githubusercontent.com/piccolomo/plotext/master/images/colorize.png)
 
-**Note 1**: using the marker `flash` will result in an actual flashing character.
+**Note 1**: using the style `flash` will result in an actual flashing string.
 
 **Note 2**: to remove any coloring use the function `plt.uncolorize(string)`.
 
