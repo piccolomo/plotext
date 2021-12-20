@@ -53,6 +53,8 @@ plt.colorize("RGB color codes", (16, 100, 200), (200, 100, 100), True)
 
 **Note 2**: to remove any coloring use the function `plt.uncolorize(string)`.
 
+[Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#utilities)
+
 
 ## File Utilities
 
