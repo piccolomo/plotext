@@ -32,6 +32,6 @@ To upgrade to the latest version, with ```pip install plotext --upgrade```.
 
 To install the optional dependency necessary to plot images, use:
 ```console
-pip install plotext[image]
+pip install "plotext[image]"
 ``` 
 which will make sure that the package `pillow` is installed.
