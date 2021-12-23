@@ -69,7 +69,7 @@ which outputs:
 
 ## Tkinter
 
-The integration with the package `tkinter` has been discussed in [Issue 33](https://github.com/piccolomo/plotext/issues/33) and here is my initial take on it, where the file [`adam.jpg`](https://raw.githubusercontent.com/piccolomo/plotext/master/images/adam.jpg) should be placed in the script folder:
+The integration with the package `tkinter` has been discussed in [Issue 33](https://github.com/piccolomo/plotext/issues/33). Thanks to the great inputs from `gregwa1953` here is an initial take on it, where the file [`adam.jpg`](https://raw.githubusercontent.com/piccolomo/plotext/master/images/adam.jpg) should be placed in the script folder:
 
 ```python
 import tkinter as tk
@@ -233,7 +233,10 @@ which outputs:
 
 ![tkinter](https://raw.githubusercontent.com/piccolomo/plotext/master/images/tkinter.png)
 
-**Note**: using the `scale` slider one can change the font size; lower font size makes the final plot bigger, which requires more computational time.
+**Note 1**: using the `scale` slider one can change the font size; lower font size makes the final plot bigger, which requires more computational time.
+
+**Note 2**: the `Save` button saves the plots as an `html` file in the user home folder.
+
 
 [Other Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md#other-environments)
 
