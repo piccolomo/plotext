@@ -233,7 +233,7 @@ which outputs:
 
 ![tkinter](https://raw.githubusercontent.com/piccolomo/plotext/master/images/tkinter.png)
 
-**Note**: for now no color and no higher resolution markers are available.
+**Note**: using the `scale` slider one can change the font size; lower font size makes the final plot bigger, which requires more computational time.
 
 [Other Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md#other-environments)
 
