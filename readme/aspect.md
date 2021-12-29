@@ -6,7 +6,7 @@
 - [Plot Limits](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-limits)
 - [Axes Ticks](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#axes-ticks)
 - [Plot Size](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-size)
-- [Axes, Grids and Lines](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#axes-and-grids)
+- [Axes and Grid Lines](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#axes-and-grid-lines)
 - [Plot Labels](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-labels)
 - [Plot Markers](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-markers)
 - [Marker Colors](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#marker-colors)
