@@ -22,7 +22,11 @@ python3 -c "import plotext as plt; l = 1000; x = range(1, l + 1); frames = 50; p
 python3 -c "print('\npress for next text'); input()"
 python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms', 'Cheese', 'Chicken', 'Beef']; percentages = [14, 36, 11, 8, 7, 4]; plt.bar(pizzas, percentages); plt.title('Most Favored Pizzas in the World'); plt.show()"
 ### Horizontal Bar
+python3 -c "print('\npress for next text'); input()"
 python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms', 'Cheese', 'Chicken', 'Beef']; percentages = [14, 36, 11, 8, 7, 4]; plt.bar(pizzas, percentages, orientation = 'h'); plt.title('Most Favored Pizzas in the World'); plt.show()"
+### Sketchy Bar
+python3 -c "print('\npress for next text'); input()"
+python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms', 'Cheese', 'Chicken', 'Beef']; percentages = [14, 36, 11, 8, 7, 4]; plt.bar(pizzas, percentages, orientation = 'horizontal', width = 0.3); plt.title('Most Favoured Pizzas in the World'); plt.clc(); plt.plotsize(100, 2 * len(pizzas) + 3); plt.show()"
 ### Multiple Bar
 python3 -c "print('\npress for next text'); input()"
 python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms', 'Cheese', 'Chicken', 'Beef']; male_percentages = [14, 36, 11, 8, 7, 4]; female_percentages = [12, 20, 35, 15, 2, 1]; plt.multiple_bar(pizzas, [male_percentages, female_percentages], label = ['men', 'women']); plt.title('Most Favored Pizzas in the World by Gender'); plt.show()"
@@ -37,7 +41,7 @@ python3 -c "print('\npress for next text'); input()"
 python3 -c "import yfinance as yf; import plotext as plt; plt.datetime.set_datetime_form(date_form='%d/%m/%Y'); start = plt.datetime.string_to_datetime('11/07/2020'); end = plt.datetime.today.datetime; data = yf.download('goog', start, end); prices = list(data['Close']); dates = [plt.datetime.datetime_to_string(el) for el in data.index]; plt.plot_date(dates, prices); plt.title('Google Stock Price'); plt.xlabel('Date'); plt.ylabel('Stock Price $'); plt.show()"
 ### Limits
 python3 -c "print('\npress for next text'); input()"
-python3 -c "import plotext as plt; l = 1000; x = range(1, l + 1); y = plt.sin(lenfth = 1000); plt.scatter(x, y); plt.xlim(x[0] - 101, x[-1] + 100); plt.ylim(-1.2, 1.2); plt.show()"
+python3 -c "import plotext as plt; l = 1000; x = range(1, l + 1); y = plt.sin(length = 1000); plt.scatter(x, y); plt.xlim(x[0] - 101, x[-1] + 100); plt.ylim(-1.2, 1.2); plt.show()"
 ### Ticks
 python3 -c "print('\npress for next text'); input()"
 python3 -c "import plotext as plt; l, p = 1000, 3; y = plt.sin(periods = p, length = l); plt.scatter(y); xticks = [l * i / (2 * p)  for i in range(2 * p + 1)]; xlabels = [str(i) + 'π' for i in range(2 * p + 1)]; plt.xticks(xticks, xlabels); plt.show()"
