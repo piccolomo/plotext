@@ -56,7 +56,7 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 
 ![horizontal-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/images/horizontal-bar.png)
 
-A more sketchy version is:
+And a more **sketchy version** is:
 ```python
 import plotext as plt
 
