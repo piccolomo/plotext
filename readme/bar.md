@@ -66,7 +66,7 @@ percentages = [14, 36, 11, 8, 7, 4]
 plt.bar(pizzas, percentages, orientation = "horizontal", width = 0.3) # or shorter orientation = 'h'
 plt.title("Most Favoured Pizzas in the World")
 plt.clc() # to remove colors
-plt.plotsize(100, 2 * len(pizzas) + 3)
+plt.plotsize(100, 2 * len(pizzas) - 1 + 4) # 4 = 1 for x numerical ticks + 2 for x axes + 1 for title
 plt.show()
 ```
 or directly on terminal:
