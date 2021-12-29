@@ -29,7 +29,7 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.scatter(y); plt.title('Sca
 
 Access the documentation of the function `plt.scatter()` with `plt.doc.scatter()`.
 
-**Note 1**: by default the plot size adapts to the terminal size, to change the plot size use the function `plt.plotsize()`, described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-size).
+**Note 1**: by default, the plot size adapts to the terminal size, to change it use the function `plt.plot_size()`, described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-size).
 
 **Note 2**: the default marker is `hd` (the 2 x 2 high resolution characters) only in `Unix` systems as it doesn't seem to render well in Windows; the 3 x 2 highest resolution marker, named `fhd`, works only in `Unix` systems and only in some terminals.
 
