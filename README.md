@@ -5,8 +5,7 @@
 It also provides a simple [command line tool](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#command-line-tool) and a function to [color strings](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#colored-text).
 
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/subplots.png)
-
-image code [here](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md).
+Image code [here](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md).
 
 
 ## Guide
