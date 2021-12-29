@@ -296,6 +296,26 @@ def image_plot(path,
     resample = resample)
     
 ##############################################
+#############     Line Plot    ###############
+##############################################
+
+def vertical_line(coordinate,
+    xside = None,
+    color = None):
+    figure.subplot.draw_vertical_line(
+    coordinate = coordinate,
+    xside = xside,
+    color = color)
+
+def horizontal_line(coordinate,
+    yside = None,
+    color = None):
+    figure.subplot.draw_horizontal_line(
+    coordinate = coordinate,
+    yside = yside,
+    color = color)
+
+##############################################
 ##########     Other Functions    ############
 ##############################################
 

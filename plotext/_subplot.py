@@ -4,6 +4,7 @@ from plotext._utility.string import only_spaces
 from plotext._matrices import subplot_matrices
 from plotext._default import subplot_default
 from plotext._datetime import datetime_class
+from plotext._utility.data import mean
 from plotext._utility.image import *
 from plotext._utility.data import *
 from plotext._utility.plot import *
@@ -92,6 +93,12 @@ class subplot_class():
         self.yticks = [[], []]
         self.ylabels = [[], []]
 
+        self.vlines = [[], []] # those are user defined extra grid lines, vertical or horizontal
+        self.hlines = [[], []]
+        
+        self.vcolors = [[], []] # their color
+        self.hcolors = [[], []]
+
 ##############################################
 #########    Utility Functions    ############
 ##############################################
@@ -142,6 +149,7 @@ class subplot_class():
 
     def add_data(self, *args):
         x, y = set_data(*args)
+        x, y = remove_non_numerical(x, y)
         self.x.append(x)
         self.y.append(y)
         self.signals += 1
@@ -195,8 +203,8 @@ class subplot_class():
 ##############################################
 
     def correct_frequency(self):
-        self.xfrequency = [0 if self.default.xside[i] not in self.xside else self.xfrequency[i] for i in range(2)]
-        self.yfrequency = [0 if self.default.yside[i] not in self.yside else self.yfrequency[i] for i in range(2)]
+        self.xfrequency = [self.xfrequency[i] if self.default.xside[i] in self.xside or self.vlines[i] != [] else 0 for i in range(2)]
+        self.yfrequency = [self.yfrequency[i] if self.default.yside[i] in self.yside or self.hlines[i] != [] else 0 for i in range(2)]
 
     def adjust_height(self):
         self.xaxes[0] = False if self.height <= 1 else self.xaxes[0]
@@ -225,10 +233,14 @@ class subplot_class():
         return [replace(lim_set[s], lim[s]) for s in range(2)]
 
     def get_xlim(self):
-        self.xlim = self.get_lim(self.x, self.xside, self.default.xside, self.xlim)
+        x = self.x + self.vlines # to include the vertical lines in the limits
+        xside = self.xside + self.default.xside
+        self.xlim = self.get_lim(x, xside, self.default.xside, self.xlim)
 
     def get_ylim(self):
-        self.ylim = self.get_lim(self.y, self.yside, self.default.yside, self.ylim)
+        y = self.y + self.hlines # to include the vertical lines in the limits
+        yside = self.yside + self.default.yside
+        self.ylim = self.get_lim(y, yside, self.default.yside, self.ylim)
 
     def get_height_canvas(self):
         self.title_width = any([el is not None for el in [self.title, self.xlabel[1]]])
@@ -262,15 +274,19 @@ class subplot_class():
         self.xfrequency = [min(el, self.width_canvas) for el in self.xfrequency]
         self.xticks = [get_ticks(self.xlim[i], self.xfrequency[i]) if self.xticks[i] == [] else self.xticks[i] for i in range(2)]
         self.xlabels = [get_labels(self.xticks[i], self.xscale[i]) if self.xlabels[i] == [] else self.xlabels[i] for i in range(2)]
-      # self.xlabels = [_utility.get_labels(el) for el in self.xticks]
+        # self.xlabels = [_utility.get_labels(el) for el in self.xticks]
         self.xlabels_height = [0 if l == [] else 1 for l in self.xlabels]
 
-    def get_absolute_ticks(self):
-        self.cticks = [get_matrix_data(self.xticks[s], self.xlim[s], self.width_canvas) for s in range(2)]
-        self.rticks = [get_matrix_data(self.yticks[s], self.ylim[s], self.height_canvas) for s in range(2)]
-        self.cticks = [list(map(floor, el)) for el in self.cticks]
-        self.rticks = [list(map(floor, el)) for el in self.rticks]
-        # here i use floor instead of int because otherwise int(-0.8) = 0 would appear in the plot, which shouldn't: floor(-0.8) = -1 won't appear; for positive numbers int and floor are the same function
+    def get_relative_ticks(self):
+        self.cticks = self._get_relative_ticks(self.xticks, self.xlim, self.width_canvas)
+        self.rticks = self._get_relative_ticks(self.yticks, self.ylim, self.height_canvas)
+
+        self.vticks = self._get_relative_ticks(self.vlines, self.xlim, self.width_canvas) #relative ticks for user defined lines
+        self.hticks = self._get_relative_ticks(self.hlines, self.ylim, self.height_canvas)
+
+    def _get_relative_ticks(self, ticks, lim, bins):
+        ticks = [get_matrix_data(ticks[s], lim[s], bins) for s in range(2)]
+        return [list(map(floor, el)) for el in ticks] # here i use floor instead of int because otherwise int(-0.8) = 0 would appear in the plot, which shouldn't: floor(-0.8) = -1 won't appear; for positive numbers int and floor are the same function
 
     def create_matrices(self):
         self.matrices.create(self.width_canvas, self.height_canvas, space_marker, no_color_name, self.canvas_color)
@@ -278,6 +294,17 @@ class subplot_class():
     def add_grid(self):
         [self.matrices.update_same_elements(*get_line([c, c], [0, self.height_canvas - 1]), "│", self.ticks_color) for c in join(self.cticks) if self.grid[0]]
         [self.matrices.update_same_elements(*get_line([0, self.width_canvas - 1], [r, r]), "─", self.ticks_color) for r in join(self.rticks) if self.grid[1]]
+        
+    def add_extra_lines(self):
+        for s in range(2):
+            for i in range(len(self.vticks[s])):
+                c = self.vticks[s][i]
+                x, y = get_line([c, c], [0, self.height_canvas - 1])
+                self.matrices.update_same_elements(x, y, "│", self.vcolors[s][i])
+            for i in range(len(self.hticks[s])):
+                r = self.hticks[s][i]
+                x, y = get_line([0, self.width_canvas - 1], [r, r])
+                self.matrices.update_same_elements(x, y, "─", self.hcolors[s][i])
 
     def update_matrix(self):
         xlim = [self.xlim[0] if self.xside[s] == self.default.xside[0] else self.xlim[1] for s in range(self.signals)]
@@ -346,6 +373,9 @@ class subplot_class():
         axis = [update_axis(axis[i], self.rticks[i], primary_tick[i]) for i in range(2)]
         secondary_tick = [('├'  if i == 0 else '┤') if self.grid[1] else None for i in range(2)]
         axis = [update_axis(axis[i], self.rticks[i - 1], secondary_tick[i]) for i in range(2)]
+        hline_tick = [('├'  if i == 0 else '┤') for i in range(2)]
+        axis = [update_axis(axis[i], join(self.hticks), hline_tick[i]) for i in range(2)]
+
         axis = [transpose([list(el)[::-1]]) for el in axis]
         [self.matrices.pad(self.default.yside[i], axis[i], self.ticks_color, self.axes_color) for i in range(2) if self.yaxes[i]]
 
@@ -353,9 +383,10 @@ class subplot_class():
         [self.matrices.pad(self.default.yside[i], ticks[i], self.ticks_color, self.axes_color) for i in range(2) if self.yfrequency[i]]
 
     def add_xaxis(self):
-        ticks = [get_xticks(self.width_canvas, self.xlabels[i], self.cticks[i]) for i in range(2)]
+        ticks = [get_xticks(self.width_canvas, self.xlabels[i], self.cticks[i]) for i in range(2)] # numerical ticks
         ticks, cticks = transpose(ticks)
-        pad_stop = [len(self.xlabels[i]) > 0 for i in range(2)]
+        
+        pad_stop = [len(self.xlabels[i]) > 0 for i in range(2)] # spaces before and after numerical ticks
         pad_length = [(self.ylabels_width[i] + self.yaxes[i]) for i in range(2)]
         ticks = [pad_list(ticks[i], "left", space_marker, pad_length[0] * pad_stop[i]) for i in range(2)]
         ticks = [pad_list(ticks[i], "right", space_marker, pad_length[1] * pad_stop[i]) for i in range(2)]
@@ -365,6 +396,8 @@ class subplot_class():
         axis = [update_axis(axis[i], cticks[i], primary_tick[i]) for i in range(2)]
         secondary_tick = [('┴'  if i == 0 else '┬') if self.grid[0] else None for i in range(2)]
         axis = [update_axis(axis[i], cticks[i - 1], secondary_tick[i]) for i in range(2)]
+        vline_tick = [('┴'  if i == 0 else '┬') for i in range(2)]
+        axis = [update_axis(axis[i], join(self.vticks), vline_tick[i]) for i in range(2)]
         axis = [list(el) for el in axis]
         axis = [pad_list(axis[i], "left", '└' if i == 0 else '┌', self.yaxes[0]) for i in range(2)]
         axis = [pad_list(axis[i], "right", '┘' if i == 0 else '┐', self.yaxes[1]) for i in range(2)]
@@ -581,3 +614,15 @@ class subplot_class():
         self.ylabel = [None, None]
 
         return size
+
+    def draw_vertical_line(self, coordinate, xside = None, color = None):
+        pos = self.xside_to_pos(xside)
+        self.vlines[pos].append(coordinate)
+        color = self.ticks_color if color == None else color
+        self.vcolors[pos].append(self.check_color(color))
+        
+    def draw_horizontal_line(self, coordinate, yside = None, color = None):
+        pos = self.xside_to_pos(yside)
+        self.hlines[pos].append(coordinate)
+        color = self.ticks_color if color == None else color
+        self.hcolors[pos].append(self.check_color(color))
