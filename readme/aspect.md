@@ -100,11 +100,11 @@ By default the plot size adapts to the dimensions of the terminal. To alter the 
 
  - To control all axes simultaneously, use the function `plt.frame(bool)` instead, which will show or remove the plot frame (composed by all 4 axes).
 
- - The function `grid(xbool, ybool)` is used to add or remove the horizontal and vertical grid lines. A single Boolean sets both grid lines simultaneously. 
+ - The function `plt.grid(xbool, ybool)` is used to add or remove the horizontal and vertical grid lines. A single Boolean sets both grid lines simultaneously. 
  
- - The function `vertical_line(coordinate, color, xside)` plots a vertical line at the given `coordinate` and specified `color`; the parameter `xside` to specify which `x` axis, `lower` (as by default) or `upper`, the parameter `coordinate` refers to.
+ - The function `plt.vertical_line(coordinate, color, xside)` plots a vertical line at the given `coordinate` and specified `color`; the parameter `xside` to specify which `x` axis, `lower` (as by default) or `upper`, the parameter `coordinate` refers to.
 
- - The function `horizontal_line(coordinate, color, yside)` plots a horizontal line at the given `coordinate` and specified `color`; the parameter `yside` to specify which `y` axis, `left` (as by default) or `right`, the parameter `coordinate` refers to.
+ - The function `plt.horizontal_line(coordinate, color, yside)` plots a horizontal line at the given `coordinate` and specified `color`; the parameter `yside` to specify which `y` axis, `left` (as by default) or `right`, the parameter `coordinate` refers to.
 
 [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
