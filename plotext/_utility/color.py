@@ -172,7 +172,7 @@ def colors():
 
     out += "• A " + colorize("list of color codes", color) + " to give a different color to each plot marker: the length of the list of colors will adapt to the length of the data set.\n\n"
 
-    out += colorize("Background Colors", color) + ": all color codes above are valid also as background color, if provided to the 'background' parameter of the function 'plt.colorize()' or input as for the functions plt.canvas_color(), and plt.axes_color(). For example, here is the effect of the string color codes above intended as background color: "
+    out += colorize("Background Colors", color) + ": all color codes above are valid also as background color, if provided to the 'background' parameter of the function 'plt.colorize()' or input as for the functions 'plt.canvas_color()', and 'plt.axes_color()'. For example, here is the effect of the string color codes above intended as background color: "
     c = [colorize(el, fullground = ("bright-white" if el == "black" else None), background = el) for el in fullground_codes]
     c = "\n   ".join(c)
     out += "\n\n   " + c + "\n"

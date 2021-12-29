@@ -25,6 +25,13 @@ def set_data(x = None, y = None): # it return properly formatted x and y data li
 #########    List Manipulation     ###########
 ##############################################
 
+def remove_non_numerical(x, y):
+    l = len(x)
+    numerical = lambda el: isinstance(el, int) or isinstance(el, float)
+    xn = [x[i] for i in range(l) if numerical(x[i]) and numerical(y[i])]
+    yn = [y[i] for i in range(l) if numerical(x[i]) and numerical(y[i])]
+    return xn, yn
+
 def brush(x, y): # remove duplicates from x and y and sort both according to x only
     l = min(len(x), len(y))
     x, y = x[:l], y[:l]

@@ -25,9 +25,8 @@ def size_span(size, span): # it divides the plot size in the span dimension
     return sizes
 
 def get_matrix_data(data, lim, bins): # it returns the actual data to be plotted in the plot canvas matrix  
-    if bins >= 2 and None not in lim:
-        dz = (lim[1] - lim[0]) / (bins - 1) if bins != 1 and None not in lim else 1
-        data = [round((el - lim[0]) / dz + 0.5, 1)   for el in data]
+    dz = (lim[1] - lim[0]) / (bins - 1) if (bins != 1) and (None not in lim) else 1
+    data = [round((el - lim[0]) / dz + 0.5, 1) for el in data] if lim[0] != None else [None] * len(data)
     return data
     
 def sum_elements(past, present): # sums markers or colors

@@ -129,11 +129,11 @@ def markers():
     v = [marker_codes[el]  for el in m]
     l = max([len(str(el)) for el in m])
     m = [el + " " * (l - len(str(el))) for el in m]
-    out += "\n" + colorize("Code" + " " * (l - 4), "bright-blue bold") + "\t" + colorize("Marker", "bright-blue bold")
+    out += "\n  " + colorize("Code" + " " * (l - 4), "bright-blue bold") + "\t" + colorize("Marker", "bright-blue bold")
     for i in range(len(m)):
-        out += "\n" + m[i] + "\t" + v[i]
+        out += "\n  " + m[i] + "\t" + v[i]
     out += "\n"
-    out += """\nThe marker code "sd" stands for "standard resolution". To plot in """ + colorize("higher resolutions", color) + " use one of following two extra codes:\n"""
+    out += """\n• The marker code "sd" stands for "standard resolution". To plot in """ + colorize("higher resolutions", color) + " use one of following two extra codes:\n"""
     
     m = [el for el in hd_marker_codes]
     v = [hd_marker_codes[el] for el in m]
@@ -144,8 +144,8 @@ def markers():
     r = [colorize(el, "bright-blue bold") for el in r]
     
     for i in range(len(m)):
-        out += "\n" + m[i] + "\t" + v[i] + "\t" + r[i] + ": " + str(c[i]) + " x 2 unicode block characters" + "\n\n"
-    out += colorize("Note", color) + ": this marker works in Unix systems only and only in some terminals and the only way to find out is to test it."
+        out += "\n  " + m[i] + "\t" + v[i] + "\t" + r[i] + ": " + str(c[i]) + " x 2 unicode block characters" + "\n"
+    out += "  " + colorize("Note", color) + ": the 'fhd' marker works only in Unix systems and only in some terminals."
     sys.stdout.write(out)
 
 if _platform == "windows":
