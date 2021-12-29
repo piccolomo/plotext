@@ -6,7 +6,7 @@ It also provides a simple [command line tool](https://github.com/piccolomo/plote
 
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/subplots.png)
 
-The code used to plot the previous image, could be found [here](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md).
+image code [here](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md).
 
 
 ## Guide
