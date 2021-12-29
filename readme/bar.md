@@ -53,7 +53,26 @@ or directly on terminal:
 ```console
 python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms', 'Cheese', 'Chicken', 'Beef']; percentages = [14, 36, 11, 8, 7, 4]; plt.bar(pizzas, percentages, orientation = 'h'); plt.title('Most Favored Pizzas in the World'); plt.show()"
 ```
+
 ![horizontal-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/images/horizontal-bar.png)
+
+A more sketchy version is:
+```python
+import plotext as plt
+
+pizzas = ["Sausage", "Pepperoni", "Mushrooms", "Cheese", "Chicken", "Beef"]
+percentages = [14, 36, 11, 8, 7, 4]
+
+plt.bar(pizzas, percentages, orientation = "horizontal", width = 0.3) # or shorter orientation = 'h'
+plt.title("Most Favoured Pizzas in the World")
+plt.clc() # to remove colors
+plt.plotsize(100, 2 * len(pizzas) + 3)
+plt.show()
+```
+or directly on terminal:
+```console
+python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms', 'Cheese', 'Chicken', 'Beef']; percentages = [14, 36, 11, 8, 7, 4]; plt.bar(pizzas, percentages, orientation = 'h'); plt.title('Most Favored Pizzas in the World'); plt.show()"
+```
 
 [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
 

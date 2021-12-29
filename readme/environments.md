@@ -69,7 +69,7 @@ which outputs:
 
 ## Tkinter
 
-The integration with the package `tkinter` has been discussed in [Issue 33](https://github.com/piccolomo/plotext/issues/33). Thanks to the great inputs from `gregwa1953` here is an initial take on it, where the file [`adam.jpg`](https://raw.githubusercontent.com/piccolomo/plotext/master/images/adam.jpg) should be placed in the script folder:
+The integration with the package `tkinter` has been discussed in [Issue 33](https://github.com/piccolomo/plotext/issues/33). Thanks to the great inputs from `gregwa1953`, here is an initial take on it, where the file [`adam.jpg`](https://raw.githubusercontent.com/piccolomo/plotext/master/images/adam.jpg) should be placed in the script folder:
 
 ```python
 import tkinter as tk

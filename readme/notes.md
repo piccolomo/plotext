@@ -12,6 +12,8 @@ Note: there are many new features from the previous version: any bug report is u
 
 **In version 4.1**:
 
+ - added `horizontal_line` and `vertical_line` functions, as requested in [Issue 65](https://github.com/piccolomo/plotext/issues/65)
+ - the plotting functions should now deal also with non numerical values (by not plotting them) as requested in [Issue 65](https://github.com/piccolomo/plotext/issues/65)
  - solved single bar plot error discussed in [Issue 63](https://github.com/piccolomo/plotext/issues/63)
  - added command line tool discussed in [Issue 47](https://github.com/piccolomo/plotext/issues/47) and [Pull 57](https://github.com/piccolomo/plotext/pull/57), [52](https://github.com/piccolomo/plotext/pull/52) and [51](https://github.com/piccolomo/plotext/pull/51)
  - set default marker to `hd` to avoid complications with `fhd` marker in some terminals [Issue 62](https://github.com/piccolomo/plotext/issues/62)
@@ -170,7 +172,8 @@ Any help or new ideas are welcomed.
 
 
 ## Credits
- - `asartori86` for the awesome command line tool [Issue 47](https://github.com/piccolomo/plotext/issues/47)
+ - `NLKNguyen` for ideas inspiring `horizontal_line` and `vertical_line` functions: [Issue 65](https://github.com/piccolomo/plotext/issues/65)
+ - `asartori86` for the awesome command line tool: [Issue 47](https://github.com/piccolomo/plotext/issues/47)
  - `jtplaarj` for the great ideas and codes regarding multiple and stacked bar plots: [Issue 48](https://github.com/piccolomo/plotext/issues/48)
  - `ethack` for  requiring log scale on bar plot: [Issue 37](https://github.com/piccolomo/plotext/issues/37)
  - `ethack` for  solving single bar error: [Pull 43](https://github.com/piccolomo/plotext/issues/43)

@@ -6,7 +6,7 @@
 - [Plot Limits](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-limits)
 - [Axes Ticks](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#axes-ticks)
 - [Plot Size](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-size)
-- [Axes and Grids](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#axes-and-grids)
+- [Axes, Grids and Lines](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#axes-and-grids)
 - [Plot Labels](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-labels)
 - [Plot Markers](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-markers)
 - [Marker Colors](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#marker-colors)
@@ -92,7 +92,7 @@ By default the plot size adapts to the dimensions of the terminal. To alter the 
 [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
 
-## Axes and Grids
+## Axes and Grid Lines
 
  - Use the function `plt.xaxis(bool)` to specify whatever or not to show the `x` axis: the parameter `xside` is used to specify which `x` axis (lower or upper) to address.
 
@@ -101,6 +101,10 @@ By default the plot size adapts to the dimensions of the terminal. To alter the 
  - To control all axes simultaneously, use the function `plt.frame(bool)` instead, which will show or remove the plot frame (composed by all 4 axes).
 
  - The function `grid(xbool, ybool)` is used to add or remove the horizontal and vertical grid lines. A single Boolean sets both grid lines simultaneously. 
+ 
+ - The function `vertical_line(coordinate, color, xside)` plots a vertical line at the given `coordinate` and specified `color`; the parameter `xside` to specify which `x` axis, `lower` (as by default) or `upper`, the parameter `coordinate` refers to.
+
+ - The function `horizontal_line(coordinate, color, yside)` plots a horizontal line at the given `coordinate` and specified `color`; the parameter `yside` to specify which `y` axis, `left` (as by default) or `right`, the parameter `coordinate` refers to.
 
 [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
