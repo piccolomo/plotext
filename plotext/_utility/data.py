@@ -2,6 +2,7 @@ from math import log10, ceil, floor, pi, exp, log10
 from time import sleep as sleeping
 from time import time as timing
 from math import sin as _sin
+from math import isnan
 
 ##############################################
 ############    Set Functions    #############
@@ -27,7 +28,7 @@ def set_data(x = None, y = None): # it return properly formatted x and y data li
 
 def remove_non_numerical(x, y):
     l = len(x)
-    numerical = lambda el: isinstance(el, int) or isinstance(el, float)
+    numerical = lambda el: isinstance(el, int) or (isinstance(el, float) and el != None and not isnan(el))
     xn = [x[i] for i in range(l) if numerical(x[i]) and numerical(y[i])]
     yn = [y[i] for i in range(l) if numerical(x[i]) and numerical(y[i])]
     return xn, yn
@@ -94,7 +95,7 @@ def remove_outsiders(x, y, width, height): # it removes elements from x and y th
     return xn, yn
     
 def correct_data(data, factor): # it is useful when using higher resolution markers where factor is 2 or 3
-    return [el / factor for el in data]
+    return [int(el / factor) for el in data]
 
 def pad_list(data, side, element, length):
     element = [element] * int(length)

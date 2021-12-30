@@ -50,8 +50,8 @@ def get_line(x, y): # it returns a line of points from x[0],y[0] to x[1],y[1] di
     dx, dy = int(x1) - int(x0), int(y1) - int(y0)
     ax, ay = abs(dx), abs(dy)
     a = int(max(ax, ay) + 1)
-    x = linspace(x0, x1, a)
-    y = linspace(y0, y1, a)
+    x = linspace(x0, x1, a)[:-1]
+    y = linspace(y0, y1, a)[:-1]
     return [x, y]
 
 def get_lines(x, y, m, c): # it returns the lines between all couples of data points like x[i], y[i] to x[i + 1], y[i + 1]; m and c are the list of markers and colors that needs to be elongated
