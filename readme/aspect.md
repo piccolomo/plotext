@@ -104,7 +104,7 @@ By default the plot size adapts to the dimensions of the terminal. To alter the 
  
  - The function `plt.vertical_line(coordinate, color, xside)` plots a vertical line at the given `coordinate` and specified `color`; the parameter `xside` to specify which `x` axis, `lower` (as by default) or `upper`, the parameter `coordinate` refers to. It also works with string based datetime coordinates.
 
- - The function `plt.horizontal_line(coordinate, color, yside)` is similar to `plt.horizontal_line()` but for horizontal lines.
+ - The function `plt.horizontal_line(coordinate, color, yside)` is similar to `plt.vertical_line()` but for horizontal lines.
 
 [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
