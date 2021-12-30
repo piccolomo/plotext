@@ -160,11 +160,13 @@ class subplot_class():
 
     def add_markers(self, marker = None):
         l = len(self.x[-1])
+        marker = list(marker) if type(marker) == range else marker
         marker = repeat([self.check_marker(el) for el in marker], l) if type(marker) == list else self.check_marker(marker)
         self.marker.append(marker)
 
     def check_marker(self, marker = None):
-        marker = marker if marker in marker_codes or marker in hd_marker_codes else marker if type(marker) == str else None
+        marker = str(marker)
+        marker = marker if marker in marker_codes or marker in hd_marker_codes else marker
         marker = plot_marker if marker is None else marker
         spaces = only_spaces(marker)
         marker = space_marker if spaces else marker
@@ -173,6 +175,7 @@ class subplot_class():
 
     def add_colors(self, color = None):
         l = len(self.x[-1])
+        color = list(color) if type(color) == range else color
         past_colors = no_duplicates(join(self.color))
         color = repeat([self.check_color(el, past_colors) for el in color], l) if type(color) == list else self.check_color(color, past_colors)
         self.color.append(color)
@@ -341,6 +344,7 @@ class subplot_class():
         y = [correct_data(y[s], yfactor[s]) for s in range(self.signals)]
 
         xy = [brush(x[s], y[s]) for s in range(self.signals)]
+
         empty = [[]] * self.signals
         x, y = (empty, empty) if xy == [] else transpose(xy)
 
@@ -554,7 +558,8 @@ class subplot_class():
         xpos = self.xside_to_pos(xside)
         ypos = self.xside_to_pos(yside)
         marker = kwargs.get("marker")
-        marker = "sd" if marker in [None, "hd", "fhd"] else marker
+        marker = [marker] if type(marker) != list else marker
+        marker = ["sd" if el in [None, "hd", "fhd"] else self.check_marker(el) for el in marker]
         
         rgb_test = lambda data: (type(data) == tuple or type(data) == list) and len(data) == 3
         
@@ -569,7 +574,7 @@ class subplot_class():
             self.add_yside(yside)
             self.add_data(x, y)
             self.add_lines(False)
-            self.marker.append([marker] * cols)
+            self.marker.append(repeat(marker, cols))
             self.color.append(color)
             self.add_fillx(False)
             self.add_filly(False)
