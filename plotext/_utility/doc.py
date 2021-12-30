@@ -281,10 +281,10 @@ image_plot = lambda: print(_image_plot)
 #############     Line Plot    ###############
 ##############################################
 
-_vertical_line = """It plots a vertical line at the given 'coordinate' and specified 'color'. Use the parameter 'xside' to specify which x axis, 'lower' (as by default) or 'upper', the parameter 'coordinate' refers to."""
+_vertical_line = """It plots a vertical line at the given 'coordinate' and specified 'color'. Use the parameter 'xside' to specify which x axis, 'lower' (as by default) or 'upper', the parameter 'coordinate' refers to. It also works with string based datetime coordinates."""
 vertical_line = lambda: print(_vertical_line)
 
-_horizontal_line = """It plots a horizontal line at the given 'coordinate' and specified 'color'. Use the parameter 'yside' to specify which y axis, 'left' (as by default) or 'right', the parameter 'coordinate' refers to."""
+_horizontal_line = """It plots a horizontal line at the given 'coordinate' and specified 'color'. Use the parameter 'yside' to specify which y axis, 'left' (as by default) or 'right', the parameter 'coordinate' refers to. It also works with string based datetime coordinates."""
 horizontal_line = lambda: print(_horizontal_line)
 
 ##############################################
