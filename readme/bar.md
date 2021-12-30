@@ -4,6 +4,7 @@
 
 - [Simple Bar Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#simple-bar-plot)
 - [Horizontal Bar Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#horizontal-bar-plot)
+- [Sketchy Bar Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#sketchy-bar-plot)
 - [Multiple Bar Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#multiple-bar-plot)
 - [Stacked Bar Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#stacked-bar-plot)
 - [Histogram Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#histogram-plot)
@@ -56,7 +57,9 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 
 ![horizontal-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/images/horizontal-bar.png)
 
-And a more **sketchy version** is:
+
+## Sketchy Bar Plot
+A more sketchy version of the previous bar plot is this:
 ```python
 import plotext as plt
 
