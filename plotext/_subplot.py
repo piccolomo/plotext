@@ -165,7 +165,7 @@ class subplot_class():
         self.marker.append(marker)
 
     def check_marker(self, marker = None):
-        marker = str(marker)
+        marker = None if marker is None else str(marker)
         marker = marker if marker in marker_codes or marker in hd_marker_codes else marker
         marker = plot_marker if marker is None else marker
         spaces = only_spaces(marker)
@@ -623,11 +623,11 @@ class subplot_class():
     def draw_vertical_line(self, coordinate, xside = None, color = None):
         pos = self.xside_to_pos(xside)
         self.vlines[pos].append(coordinate)
-        color = self.ticks_color if color == None else color
+        color = self.ticks_color if color is None else color
         self.vcolors[pos].append(self.check_color(color))
         
     def draw_horizontal_line(self, coordinate, yside = None, color = None):
         pos = self.xside_to_pos(yside)
         self.hlines[pos].append(coordinate)
-        color = self.ticks_color if color == None else color
+        color = self.ticks_color if color is None else color
         self.hcolors[pos].append(self.check_color(color))
