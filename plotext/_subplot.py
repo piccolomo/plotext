@@ -621,12 +621,14 @@ class subplot_class():
         return size
 
     def draw_vertical_line(self, coordinate, xside = None, color = None):
+        coordinate = datetime.string_to_timestamp(coordinate) if type(coordinate) == str else coordinate
         pos = self.xside_to_pos(xside)
         self.vlines[pos].append(coordinate)
         color = self.ticks_color if color is None else color
         self.vcolors[pos].append(self.check_color(color))
         
     def draw_horizontal_line(self, coordinate, yside = None, color = None):
+        coordinate = datetime.string_to_timestamp(coordinate) if type(coordinate) == str else coordinate
         pos = self.xside_to_pos(yside)
         self.hlines[pos].append(coordinate)
         color = self.ticks_color if color is None else color
