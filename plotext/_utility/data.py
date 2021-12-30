@@ -95,7 +95,7 @@ def remove_outsiders(x, y, width, height): # it removes elements from x and y th
     return xn, yn
     
 def correct_data(data, factor): # it is useful when using higher resolution markers where factor is 2 or 3
-    return [int(el / factor) for el in data]
+    return [int(el) / factor for el in data]
 
 def pad_list(data, side, element, length):
     element = [element] * int(length)
