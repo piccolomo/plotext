@@ -62,7 +62,7 @@ Here is an example, where the image [`monalisa.jpg`](https://raw.githubuserconte
 ```python
 import plotext as plt
 
-path = plt.file.join_paths(plt.file.script_folder(), 'mj.jpg')
+path = plt.file.join_paths(plt.file.script_folder(), 'monalisa.jpg')
 
 size = [200, 60]
 size = plt.image_plot(path, size = size, keep_ratio = True)
