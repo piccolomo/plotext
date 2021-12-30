@@ -78,9 +78,13 @@ python3 -c "import plotext as plt; path = plt.file.join_paths(plt.file.script_fo
 
 ![image](https://raw.githubusercontent.com/piccolomo/plotext/master/images/image.png)
 
-**Note 1**: to easily manipulate file paths, use the tools recommended in section [File Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities).
+Notes:
 
-**Note 2**: to save the result **in colors**, as an `html` page, use the function `plt.savefig()`.
+ - a **curious visual effect**, to play with, is obtained using for example `marker = list("MonaLisa")` inside the `plt.image_plot()` function: try it out!
+ - to easily manipulate **file paths**, use the tools recommended in section [File Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities).
+ - to save the result **in colors**, as an `html` page, use the function `plt.savefig()`.
+ - to print beyond the terminal size use `plt.limit_size(False)` or the app developed [here](https://github.com/piccolomo/plotext/blob/master/readme/environments.md#tkinter)
+ using `tkinter`.
 
 Access the documentation of the function `plt.image_plot()` with `plt.doc.image_plot()`.
 
