@@ -102,9 +102,9 @@ By default the plot size adapts to the dimensions of the terminal. To alter the 
 
  - The function `plt.grid(xbool, ybool)` is used to add or remove the horizontal and vertical grid lines. A single Boolean sets both grid lines simultaneously. 
  
- - The function `plt.vertical_line(coordinate, color, xside)` plots a vertical line at the given `coordinate` and specified `color`; the parameter `xside` to specify which `x` axis, `lower` (as by default) or `upper`, the parameter `coordinate` refers to.
+ - The function `plt.vertical_line(coordinate, color, xside)` plots a vertical line at the given `coordinate` and specified `color`; the parameter `xside` to specify which `x` axis, `lower` (as by default) or `upper`, the parameter `coordinate` refers to. It also works with string based datetime coordinates.
 
- - The function `plt.horizontal_line(coordinate, color, yside)` plots a horizontal line at the given `coordinate` and specified `color`; the parameter `yside` to specify which `y` axis, `left` (as by default) or `right`, the parameter `coordinate` refers to.
+ - The function `plt.horizontal_line(coordinate, color, yside)` is similar to `plt.horizontal_line()` but for horizontal lines.
 
 [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
