@@ -9,7 +9,7 @@ To plot a grid of subplots, use the following main functions:
 
  - `plt.subplot(row, col)` to access the subplot at the given row and column, counting (from 1) from the upper left corner of the matrix of plots.
 
- - `plt.span(rowspan, colspan)` to set how many rows and/or columns a given subplot should span in the matrix of subplots.
+ - `plt.span(colspan, rowspan)` to set how many rows and/or columns a given subplot should span in the matrix of subplots.
 
 Here is a coded example, which requires the package `yfinance` and where the [`maryling.jpg`](https://raw.githubusercontent.com/piccolomo/plotext/master/images/marylin.jpg) and [`mj.jpg`](https://raw.githubusercontent.com/piccolomo/plotext/master/images/mj.jpg) files should be placed in the script folder.
 
