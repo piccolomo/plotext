@@ -5,6 +5,7 @@ from plotext._utility.color import uncolorize
 from plotext._matrices import figure_matrices
 from plotext._default import figure_default
 from plotext._utility.file import save_text
+from plotext._subplot import datetime as _datetime
 from plotext._subplot import subplot_class
 from plotext._utility.plot import *
 from time import time
@@ -227,7 +228,7 @@ class figure_class():
         ticks = self.subplot.default.xticks[pos] if ticks is None else list(ticks)
         labels = ticks if labels is None else list(labels)
         labels = list(map(str, labels))
-        ticks = list(map(_utility.string_to_time, ticks)) if len(ticks) > 0 and type(ticks[0]) == str else ticks
+        ticks = list(map(_datetime.string_to_timestamp, ticks)) if len(ticks) > 0 and type(ticks[0]) == str else ticks
         ticks, labels = brush(ticks, labels)
         self.subplot.xticks[pos] = ticks
         self.subplot.xlabels[pos] = labels
