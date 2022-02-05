@@ -1,5 +1,5 @@
 from plotext._utility.plot import get_labels
-from plotext._utility.data import linspace
+from plotext._utility.data import linspace, get_lim
 
 ##############################################
 ############   Bar Functions    ##############
@@ -24,7 +24,7 @@ def update_bars(x, bars, offset): # it updates the bar coordinates using the pas
 
 def update_bar_xlim(y): # it updates the bar limits along their base dimension  (x if orientation is vertical otherwise y)
     y = [el for el in y if el is not None]
-    bar_lim = [min(y, default = None), max(y, default = None)]
+    bar_lim = get_lim(y)
     return bar_lim
 
 def update_bar_ylim(y): # it updates the bar limits along their heights (y if orientation is vertical otherwise x)
