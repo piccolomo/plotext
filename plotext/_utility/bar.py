@@ -56,7 +56,7 @@ def bars(x, y, width, minimum): # given the bars center coordinates and height, 
 ###########   Hist Functions    ##############
 ##############################################
 
-def hist_data(data, bins = 10): # it returns data in histogram form 
+def hist_data(data, bins = 10, norm = False): # it returns data in histogram form if norm is False. Otherwise, it returns data in density form where all bins sum to 1.
     #data = [round(el, 15) for el in data]
     if data == []:
         return [], []
@@ -67,4 +67,6 @@ def hist_data(data, bins = 10): # it returns data in histogram form
     histy = [0] * bins
     for el in data:
         histy[el] += 1
+    if norm:
+        histy = [el / len(data) for el in histy]
     return histx, histy

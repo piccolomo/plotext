@@ -550,7 +550,8 @@ class subplot_class():
     def draw_hist(self, data, **kwargs):
         bins = kwargs.get("bins")
         bins = self.default.hist_bins if bins is None else bins
-        x, y = hist_data(data, bins)
+        norm = kwargs.get("norm", False)
+        x, y = hist_data(data, bins, norm)
         self.draw_single_bar(x, y, **kwargs)
 
     def draw_matrix(self, matrix, **kwargs):
