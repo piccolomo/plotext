@@ -172,6 +172,7 @@ Any help or new ideas are welcomed.
 
 
 ## Credits
+ - `ZaydH` for norm parameter in `hist` function: [Issue 76](https://github.com/piccolomo/plotext/issues/76) and [Pull 79](https://github.com/piccolomo/plotext/pull/79)
  - `NLKNguyen` for ideas inspiring `horizontal_line` and `vertical_line` functions: [Issue 65](https://github.com/piccolomo/plotext/issues/65)
  - `asartori86` for the awesome command line tool: [Issue 47](https://github.com/piccolomo/plotext/issues/47)
  - `jtplaarj` for the great ideas and codes regarding multiple and stacked bar plots: [Issue 48](https://github.com/piccolomo/plotext/issues/48)
