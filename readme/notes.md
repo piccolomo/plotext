@@ -10,6 +10,10 @@
 
 Note: there are many new features from the previous version: any bug report is useful and very welcomed.
 
+**In version 4.2**:
+- `norm` parameter in `hist` function as requested in [Issue 76](https://github.com/piccolomo/plotext/issues/76) and pulled in [Pull 79](https://github.com/piccolomo/plotext/pull/79) by `ZaydH`
+
+
 **In version 4.1**:
 
  - added `horizontal_line` and `vertical_line` functions, as requested in [Issue 65](https://github.com/piccolomo/plotext/issues/65)
