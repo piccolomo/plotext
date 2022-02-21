@@ -248,9 +248,10 @@ _stacked_bar = """It allows to plot multiple bars with the same labels or coordi
 It accepts the same parameters as the bar() function."""
 stacked_bar = lambda: print(_stacked_bar)
 
-_hist = """It builds the histogram plot relative to the data provided. It accepts the same parameters as the bar plot (except for 'minimum' which is not available here) with the following extra parameter:
+_hist = """It builds the histogram plot relative to the data provided. It accepts the same parameters as the bar plot (except for 'minimum' which is not available here) with the following extra parameters:
 
-\x1b[96mbins\x1b[0m used to calculate the histogram transform of the data (10 by default)."""
+\x1b[96mbins\x1b[0m used to calculate the histogram transform of the data (10 by default).
+\x1b[96mnorm\x1b[0m if True, the bin heights are normalised so that the plot would simulate a probability distribution."""
 hist = lambda: print(_hist)
 
 ##############################################
