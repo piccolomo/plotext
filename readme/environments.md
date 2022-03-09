@@ -13,7 +13,7 @@ The integration with the package `rich` has been discussed in [Issue 26](https:/
 from rich.layout import Layout
 from rich.live import Live
 from rich.ansi import AnsiDecoder
-from rich.console import RenderGroup
+from rich.console import Group
 from rich.jupyter import JupyterMixin
 from rich.panel import Panel
 
@@ -35,7 +35,7 @@ class plotextMixin(JupyterMixin):
         self.width = options.max_width or console.width
         self.height = options.height or console.height
         canvas = make_plot(self.width, self.height)
-        self.rich_canvas = RenderGroup(*self.decoder.decode(canvas))
+        self.rich_canvas = Group(*self.decoder.decode(canvas))
         yield self.rich_canvas
 
 def make_layout():
