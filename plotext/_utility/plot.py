@@ -143,11 +143,17 @@ def get_ticks(lim, frequency): # it returns the data ticks with given limits and
     ticks = [] if None in lim else linspace(lim[0], lim[1], frequency)
     return ticks
 
+def _get_sep(x):
+    try:
+        return x.index('.')
+    except ValueError:
+        return x.index('e')
+
 def get_labels(ticks, scale): # it returns the approximated string version of the data ticks
     ticks = ticks if scale == "linear" else [10 ** el for el in ticks]
     d = distinguish_list(ticks)
     labels = [str(round(el, d + 1)) for el in ticks]
-    labels = [el[: el.index('.') + d + 2] for el in labels]
+    labels = [el[: _get_sep(el) + d + 2] for el in labels]
     labels = [pad_label(el, d + 1) if len(labels) > 1 else el for el in labels]
     sign = any([el < 0 for el in ticks])
     #labels = ['+' + labels[i] if ticks[i] > 0 and sign else labels[i] for i in range(len(labels))]
