@@ -11,6 +11,7 @@
 Note: there are many new features from the previous version: any bug report is useful and very welcomed.
 
 **In version 4.3**:
+
 - accounts for exponential float notation as requested in [Pull 82](https://github.com/piccolomo/plotext/pull/82) by `soraxas`
 - added functionality to properly read `numpy` data as requested in [Issue 84](https://github.com/piccolomo/plotext/issues/84) and [Issue 85](https://github.com/piccolomo/plotext/issues/85). 
 - coming soon: solving [Issue 81](https://github.com/piccolomo/plotext/issues/81) related to time format error in datetime plots.
@@ -182,6 +183,7 @@ Any help or new ideas are welcomed.
 
 
 ## Credits
+ - `soraxas` for functionality that accounts for exponential float notation: [Pull 82](https://github.com/piccolomo/plotext/pull/82)
  - `NLKNguyen` for ideas inspiring the `horizontal_line` and `vertical_line` functions: [Issue 65](https://github.com/piccolomo/plotext/issues/65)
  - `asartori86` for the awesome command line tool: [Issue 47](https://github.com/piccolomo/plotext/issues/47)
  - `jtplaarj` for the great ideas and codes regarding multiple and stacked bar plots: [Issue 48](https://github.com/piccolomo/plotext/issues/48)
