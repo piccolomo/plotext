@@ -10,6 +10,12 @@
 
 Note: there are many new features from the previous version: any bug report is useful and very welcomed.
 
+**In version 4.3**:
+- accounts for exponential float notation as requested in [Pull 82](https://github.com/piccolomo/plotext/pull/82) by `soraxas`
+- added functionality to properly read `numpy` data as requested in [Issue 84](https://github.com/piccolomo/plotext/issues/84) and [Issue 85](https://github.com/piccolomo/plotext/issues/85). 
+- coming soon: solving [Issue 81](https://github.com/piccolomo/plotext/issues/81) related to time format error in datetime plots.
+
+
 **In version 4.2**:
 - `norm` parameter in `hist` function as requested in [Issue 76](https://github.com/piccolomo/plotext/issues/76) and pulled in [Pull 79](https://github.com/piccolomo/plotext/pull/79) by `ZaydH`
 
@@ -176,8 +182,7 @@ Any help or new ideas are welcomed.
 
 
 ## Credits
- - `ZaydH` for `norm` parameter in `hist` function: [Issue 76](https://github.com/piccolomo/plotext/issues/76) and [Pull 79](https://github.com/piccolomo/plotext/pull/79)
- - `NLKNguyen` for ideas inspiring `horizontal_line` and `vertical_line` functions: [Issue 65](https://github.com/piccolomo/plotext/issues/65)
+ - `NLKNguyen` for ideas inspiring the `horizontal_line` and `vertical_line` functions: [Issue 65](https://github.com/piccolomo/plotext/issues/65)
  - `asartori86` for the awesome command line tool: [Issue 47](https://github.com/piccolomo/plotext/issues/47)
  - `jtplaarj` for the great ideas and codes regarding multiple and stacked bar plots: [Issue 48](https://github.com/piccolomo/plotext/issues/48)
  - `ethack` for  requiring log scale on bar plot: [Issue 37](https://github.com/piccolomo/plotext/issues/37)
