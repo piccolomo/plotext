@@ -9,18 +9,27 @@ from math import isnan
 ##############################################
 
 def set_data(x = None, y = None): # it return properly formatted x and y data lists
-    if x is None and y is None :
-        x, y = [], []
-    elif x is not None and y is None:
-        y = x
-        x = range(1, len(y) + 1)
-    x, y = list(x), list(y)
-    lx, ly = len(x), len(y)
-    if lx != ly:
-        l = min(lx, ly)
-        x = x[ : l]
-        y = y[ : l]
-    return [x, y]
+   if x is None and y is None :
+       x, y = [], []
+   elif x is not None and y is None:
+       y = x
+       x = range(1, len(y) + 1)
+   lx, ly = len(x), len(y)
+   if lx != ly:
+       l = min(lx, ly)
+       x = x[ : l]
+       y = y[ : l]
+   x, y = remove_non_numerical(x, y)
+   return [x, y]
+
+non_numerical = lambda el: el == None or math.isnan(el)
+
+def remove_non_numerical(x, y):
+   l = len(x)
+   p = [i for i in range(l) if not (non_numerical(x[i]) or non_numerical(y[i]))]
+   xn = [float(x[i]) for i in p]
+   yn = [float(y[i]) for i in p]
+   return xn, yn
     
 ##############################################
 #########    List Manipulation     ###########
