@@ -149,7 +149,6 @@ class subplot_class():
 
     def add_data(self, *args):
         x, y = set_data(*args)
-        x, y = remove_non_numerical(x, y)
         self.x.append(x)
         self.y.append(y)
         self.signals += 1
