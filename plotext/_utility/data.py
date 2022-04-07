@@ -14,21 +14,20 @@ def set_data(x = None, y = None): # it return properly formatted x and y data li
    elif x is not None and y is None:
        y = x
        x = range(1, len(y) + 1)
-   x, y = remove_non_numerical(x, y)
    lx, ly = len(x), len(y)
    if lx != ly:
        l = min(lx, ly)
        x = x[ : l]
        y = y[ : l]
-   
+   x, y = remove_non_numerical(x, y)
    return [x, y]
 
 non_numerical = lambda el: el == None or isnan(el)
 
 def remove_non_numerical(x, y):
    l = len(x)
-   p = [i for i in range(l) if not (non_numerical(x[i]) or non_numerical(y[i]))]
-   xn = [float(x[i]) for i in p]
+   p = [i for i in range(l) if isinstance(x[i], str) or not (non_numerical(x[i]) or non_numerical(y[i]))]
+   xn = [x[i] if isinstance(x[i], str) else float(x[i]) for i in p]
    yn = [float(y[i]) for i in p]
    return xn, yn
     
