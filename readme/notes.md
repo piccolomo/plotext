@@ -14,7 +14,7 @@ Note: there are many new features from the previous version: any bug report is u
 
 - accounts for exponential float notation as requested in [Pull 82](https://github.com/piccolomo/plotext/pull/82) by `soraxas`
 - added functionality to properly read `numpy` data as requested in [Issue 84](https://github.com/piccolomo/plotext/issues/84) and [Issue 85](https://github.com/piccolomo/plotext/issues/85). 
-- coming soon: solving [Issue 81](https://github.com/piccolomo/plotext/issues/81) related to time format error in datetime plots.
+- solved [Issue 81](https://github.com/piccolomo/plotext/issues/81) related to time format error in datetime plots.
 
 
 **In version 4.2**:
