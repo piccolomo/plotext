@@ -396,14 +396,15 @@ build.__func__.__doc__ = doc._build
 show.__func__.__doc__ = doc._show
 
 datetime.__doc__ = doc._datetime
-datetime.today.__doc__ = doc._today
+#datetime.today_string.__doc__ = doc._today
+#datetime.today_datetime.__doc__ = doc._today
 datetime.set_time0.__func__.__doc__ = doc._set_time0
-datetime.set_datetime_form.__func__.__doc__ = doc._set_datetime_form
-datetime.clear.__func__.__doc__ = doc._clear
-datetime.string_to_datetime.__func__.__doc__ = doc._string_to_datetime
-datetime.datetime_to_timestamp.__func__.__doc__ = doc._datetime_to_timestamp
-datetime.string_to_timestamp.__func__.__doc__ = doc._string_to_timestamp
-datetime.datetime_to_string.__func__.__doc__ = doc._datetime_to_string
+#datetime.input_form.__func__.__doc__ = doc._set_datetime_form
+#datetime.clear.__func__.__doc__ = doc._clear
+#datetime.string_to_datetime.__func__.__doc__ = doc._string_to_datetime
+#datetime.datetime_to_timestamp.__func__.__doc__ = doc._datetime_to_timestamp
+#datetime.string_to_timestamp.__func__.__doc__ = doc._string_to_timestamp
+#datetime.datetime_to_string.__func__.__doc__ = doc._datetime_to_string
 
 scatter_date.__doc__ = doc._scatter_date
 plot_date.__doc__ = doc._plot_date

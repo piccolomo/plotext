@@ -3,7 +3,7 @@ from plotext._utility.color import no_color_name, color_sequence, color_code, to
 from plotext._utility.string import only_spaces
 from plotext._matrices import subplot_matrices
 from plotext._default import subplot_default
-from plotext._datetime import datetime_class
+from plotext._datetime import date_class
 from plotext._utility.data import mean
 from plotext._utility.image import *
 from plotext._utility.data import *
@@ -11,7 +11,7 @@ from plotext._utility.plot import *
 from plotext._utility.bar import *
 from math import floor
 
-datetime = datetime_class() # usefull for datetime plot
+datetime = date_class() # usefull for datetime plot
 
 ##############################################
 #########    Subplot Container    ############
@@ -424,7 +424,7 @@ class subplot_class():
 
     def draw_date(self, t, y, **kwargs):
         t, y = set_data(t, y)
-        x = list(map(datetime.string_to_timestamp, t))
+        x = list(map(datetime.string_to_time, t))
         self.draw(x, y, **kwargs)
         pos = self.xside_to_pos(self.xside[-1])
         self.xticks[pos] = x
