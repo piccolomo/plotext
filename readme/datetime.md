@@ -11,7 +11,9 @@
 
 `Plotext` has a set of utilities to easily manipulate datetime objects:
 
-- `datetime.date_form(input_form, output_form)` It sets how some functions interpret string based datetime objects. `input_form` is used to control the form of functions that take strings as input while `output_form` (by default equal to `input_form`) is used to control the form of functions that output strings. Date/time forms are the standard ones with the `%` symbol removed for simplicity. Common forms are `d/m/Y` (by default), or `d/m/Y H:M:S`. Here is an extensive [guide](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes) on date/time format codes.
+- `date_form(input_form, output_form)` sets how some functions interpret string based datetime objects; `input_form` is used to control functions that take strings as input while `output_form` (by default equal to `input_form`) is used to control functions that output strings. 
+
+- Date/time forms are the standard ones, with the `%` symbol removed for simplicity. Common forms are `d/m/Y` (by default), or `d/m/Y H:M:S`. Here is an extensive [guide](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes) on date/time format codes.
 
 - `set_time0()` sets the origin of time to string provided. This function is useful when using `log` scale with datetime plots, in order to avoid *hitting* the 0 timestamp. 
 
@@ -27,7 +29,7 @@
 
 
 
-## Datetime Plot
+## Basic Plot
 
 To plot dates and/or times use either `plt.scatter()` or `plt.plot()`. Here is an example, which requires the package `yfinance`:
 

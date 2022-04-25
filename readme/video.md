@@ -22,9 +22,9 @@ which will render [this video](https://raw.githubusercontent.com/piccolomo/plote
 
 - The function `show()` is not necessary in this case, as it is called internally.
 
-- The frames will adapt to the screen size unless `plot_size()` is used before.
+- The frames will adapt to the screen size unless `plot_size()` is used before `play_video()`.
 
-- Set the parameter `from_youtube` to True (False by default) to make sure that the color rendering is correct for videos downloaded from youtube.
+- Set the parameter `from_youtube` to `True` (`False` by default) to make sure that the color rendering is correct for videos downloaded from YouTube.
 
 - This function may require further development.
 
@@ -51,13 +51,13 @@ which will render [this youtube video](https://www.youtube.com/watch?v=2Z4s8xbue
 
 - The function `show()` is not necessary in this case, as it is called internally.
 
-- The frames will adapt to the screen size unless `plot_size()` is used before.
+- The frames will adapt to the screen size unless `plot_size()` is used before `play_youtube()`.
 
 - To download a YouTube video use the function `get_youtube()`.
 
 - This function may require further development.
 
-- Yes! I am a Michael Jackson fan! He is number one!
+- Yes! I am a Michael Jackson fan: He is number one!
 
 - Access the full documentation of the function `plt.play_youtube()` with `plt.doc.play_youtube()`.
 

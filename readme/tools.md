@@ -1,4 +1,4 @@
-# Datetime Menu
+# Plot Tools
 
 - [Event Plot](https://github.com/piccolomo/plotext/blob/master/readme/tools.md#event-plot)
 - [Extra Lines](https://github.com/piccolomo/plotext/blob/master/readme/tools.md#extra-lines)
@@ -32,10 +32,9 @@ or directly on terminal:
 python3 -c "import plotext as plt; from random import randint; from datetime import datetime, timedelta; plt.date_form('H:M'); times = [datetime(2022, 3, 27, randint(0, 23), randint(0, 59), randint(0, 59)) for i in range(100)]; times = plt.datetimes_to_string(times); plt.plotsize(None, 20); plt.eventplot(times); plt.show()"
 ```
 
-The documentation of the `eventplot()` function can be accessed with `plotext.doc.eventplot()`.
-
-
 ![datetime](https://raw.githubusercontent.com/piccolomo/plotext/master/images/eventplot.png)
+
+The documentation of the `eventplot()` function can be accessed with `plotext.doc.eventplot()`.
 
 [Plotext Guide](https://github.com/piccolomo/plotext#guide), [Datetime Menu](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#datetime-menu)
 
@@ -64,7 +63,7 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.scatter(y); plt.title('Ext
 
 - Note that `vline()` and `hline()` accept as coordinates numbers, date/time strings or bar labels (if the plot allows it).
 
-- The documentation of the `vline()` and hline()`` functions can be accessed with `plotext.doc.vline()` and `plotext.doc.hline()`.
+- The documentation of the `vline()` and `hline()` functions can be accessed with `plotext.doc.vertical_line()` and `plotext.doc.horizontal_line()`.
 
 
 ## Text Plot
@@ -90,11 +89,10 @@ or directly on terminal:
 python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms', 'Cheese', 'Chicken', 'Beef']; percentages = [14, 36, 11, 8, 7, 4]; plt.bar(pizzas, percentages)
 plt.title('Labelled Bar Plot using Text()'); [plt.text(pizzas[i], x = pizzas[i], y = percentages[i] + 0.5, alignment = 'center', color = 'red') for i in range(len(pizzas))]; plt.ylim(0, 38); plt.show()"
 ```
-- Note that `text()` accept as coordinates numbers, date/time strings or bar labels (if the plot allows it).
- 
-- The full documentation of the `text()` function can be accessed with `plotext.doc.text()`.
-
 
 ![datetime](https://raw.githubusercontent.com/piccolomo/plotext/master/images/text.png)
 
+- Note that `text()` accept as coordinates numbers, date/time strings or bar labels (if the plot allows it).
+ 
+- The full documentation of the `text()` function can be accessed with `plotext.doc.text()`.
 [Plotext Guide](https://github.com/piccolomo/plotext#guide), [Datetime Menu](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#datetime-menu)

@@ -36,7 +36,7 @@ You could easily add the following text labels to the plot:
 
 - The axes labels will all appear at the bottom of the plot, with the exception of the upper `x` axis label, which will appear on the top center of the plot, moving the plot title to the top left, if present.
 
-- To change the labels colors and styles, use the functions `ticks_colors()` and `ticks_style()`, as explained in [this section](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors)
+- To change the labels colors and styles, use the functions `ticks_colors()` and `ticks_style()`, as explained in [this section](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors).
  
 [Plotext Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
@@ -48,7 +48,7 @@ The plot limits are set automatically; to set them manually you can use the foll
 
  - `plt.xlim()` sets the minimum and maximum limits on the x axis. To address a specific x axis (`lower` or `upper`) use the `xside` parameter as describer in the previous section. 
 
- - `plt.ylim()` sets the minimum and maximum limits on the y axis. To address a specific y axis (`left` or `right`) use the `yside` parameter
+ - `plt.ylim()` sets the minimum and maximum limits on the y axis. To address a specific y axis (`left` or `right`) use the `yside` parameter.
 
 
 [Plotext Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
@@ -95,7 +95,7 @@ python3 -c "import plotext as plt; l, p = 300, 2; plt.plot(plt.sin(length = l, p
 
 
 
-## Axes and Grid Lines
+## Plot Lines
 
 Here are the main functions used to alter the plot lines:
 
@@ -127,10 +127,10 @@ Colors could easily applied to the entire plot, using the following functions:
 To quickly set all those values at once use the function `theme()`. To check the available themes use the function `themes()`; here is its output: 
 
 ![themes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/themes.png)
-`
-Note: to add, tweak, rename any theme presented, please feel free to open an issue dropping your favourite combination of canvas, axes, ticks color and style together with 3 signal colors in sequence: any idea is welcomed. 
 
-To remove all plot colors and styles from the current subplot, use `clear_color()` - in short `clc()`, which is equivalent to `theme('clear')`
+Note: to add, tweak, rename any theme presented, please feel free to open an issue, dropping your favourite combination of canvas, axes, ticks color and style together with 3 signal colors in sequence: any idea is welcomed. 
+
+To remove all plot colors and styles from the current subplot, use `clear_color()` - in short `clc()`, which is equivalent to `theme('clear')`.
 
 If instead you want to set the colors manually, here are the types of color codes that could be provided as input for the functions `canvas_color()`, `axes_color()` and `ticks_color()` or to the `color` parameter of any plotting function, as well as the `fullground` or `background` parameter of the function `plt.colorize()`:
 
@@ -165,7 +165,7 @@ Finally these are the available **style codes** that could be provided as input 
 
 
 
-## Plot Markers
+## Markers
 
 To specify which marker to use, use the parameter `marker`, available for most plotting functions, eg: `plt.scatter(data, marker = "x")`. You could provide the following:
 

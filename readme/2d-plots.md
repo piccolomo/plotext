@@ -58,9 +58,9 @@ python3 -c "import plotext as plt; plt.image_plot(plt.test_image_path); plt.titl
 
 ![image](https://raw.githubusercontent.com/piccolomo/plotext/master/images/image.png)
 
-- It is recommended to use the function `plotsize()` before, especially for larger images, to reduce the image size and so the computational load.
+- It is recommended to use the function `plotsize()` before `image_plot()`, especially for larger images, to reduce the image size and so the computational load.
 
-- The parameter `fast`, if True, allows to plot much faster, but the plot final dimensions will be locked to the whatever size was previously chosen, and won't adapt to the terminal or subplot size.
+- The parameter `fast`, if `True`, allows to plot much faster, but the plot final dimensions will be locked to the whatever size was previously chosen, and won't adapt to the terminal or subplot size.
 
 - A curious visual effect is obtained using for example `marker = list("Creation")` with `style = 'inverted'`: try it out!
 

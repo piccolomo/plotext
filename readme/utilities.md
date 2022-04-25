@@ -93,6 +93,13 @@ plt.colorize("RGB color codes",             (16, 100, 200), "default",   (200, 1
 
 - `delete_file()` deletes `path`, if it is a file.
 
+- A series of test files are stored and could be easily accessed to test the main plotting functions:
+    - `test_data_path`  is the path of some 3 columns test data
+    - `test_image_path` is the path of a test image
+    - `test_gif_path` is the path of a test GIF image
+    - `test_video_path` is the path of a test video
+    - `test_youtube_url` is the link to a test YouTube video
+
 [Plotext Guide](https://github.com/piccolomo/plotext#guide), [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#utilities)
 
 

@@ -30,11 +30,11 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.scatter(y); plt.title('Sca
   
 - the default marker is `hd` (the 2 x 2 higher resolution markers) and it is available only in `Unix` systems as it doesn't seem to render well in Windows; the 3 x 2 highest resolution marker, named `fhd`, works only in `Unix` systems and only in some terminals.
 `
-- To save the plot as colorless `txt` or as colored `html`, use the function save_fig(). If its parameter `keep_colors` is True, the `txt` version will keep the ansi color codes; in this case, in linux systems, the plot could be rendered on terminal with the command `less -R file_path`.
+- To save the plot as colorless `txt` or as colored `html`, use the function `save_fig()`. If its parameter `keep_colors` is `True`, the `txt` version will keep the ansi color codes; in this case, in linux systems, the plot could be rendered on terminal with the command `less -R file_path.txt`.
 
 - The documentation of the `scatter()` function can be accessed with `plotext.doc.scatter()`.
 
-[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots),
+[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
 
 
@@ -130,7 +130,7 @@ python3 -c "import plotext as plt; y1 = plt.sin(); y2 = plt.sin(2, phase = -1); 
 ```
 ![multiple-axes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/multiple-axes.png)
 
-**Note**:  on the right side of each legend entry, a symbol is introduce to easily identify on which axes the data refers to: the interpretation should be intuitive.
+On the right side of each legend entry, a symbol is introduce to easily identify on which axes the data refers to: its interpretation should be intuitive.
 
 [Plotext Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
@@ -211,4 +211,4 @@ python3 -c "import plotext as plt; l = 1000; frames = 200; plt.title('Streaming 
 ```
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/stream.gif)
 
-[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)ù
+[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
