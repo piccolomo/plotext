@@ -1,5 +1,5 @@
 from datetime import datetime as dt
-from datetime import timezone as _tz # usefull for dates before 1970 in windows
+from datetime import timezone as tz # usefull for dates before 1970 in windows
 
 class date_class():
     def __init__(self):
@@ -44,7 +44,7 @@ class date_class():
         input_form = self.input_form if input_form is None else self.correct_form(input_form)
         time0 = self.time0 if time0 is None else time0
         try:
-            return dt.strptime(string, input_form).timestamp() - time0
+            return dt.strptime(string, input_form).replace(tzinfo = tz.utc).timestamp() - time0
         except:
             raise ValueError('Date Form should be: ' + input_form)
 

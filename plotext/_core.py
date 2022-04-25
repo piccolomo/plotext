@@ -314,7 +314,7 @@ def play_video(path, from_youtube = False):
         return
     _play_video(path, from_youtube)
 
-    # pip install youtube-dl==2020.12.2
+
 def play_youtube(url):
     import pafy
     video = pafy.new(url)
