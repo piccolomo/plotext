@@ -1,4 +1,4 @@
-from plotext._utility import join, memorize, transpose
+from plotext._utility import join, memorize, transpose, platform
 
 ##############################################
 ##########    Default Markers      ###########
@@ -6,7 +6,7 @@ from plotext._utility import join, memorize, transpose
 
 space = ' ' # the default null character that appears as background to all plots
 
-plot_marker = "hd"
+plot_marker = "hd" if platform is 'unix' else 'dot'
 
 marker_codes = {'sd'         :'█',
                 'dot'        :'•',
