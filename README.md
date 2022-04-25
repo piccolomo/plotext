@@ -23,7 +23,8 @@ To install the optional dependencies (`pillow`, `pafy`, `opencv-python`, `ffpypl
 ```console
 pip install "plotext[video]"
 ```
-which will also allow to plot images.
+which will also allow to plot images. 
+The command `pip install youtube-dl==2020.12.2` has helped me with youtube video rendering problems.
 
 
 ## Guide
