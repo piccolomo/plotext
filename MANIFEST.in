@@ -1,0 +1,4 @@
+include plotext/_data/data.txt
+include plotext/_data/adam.jpg
+include plotext/_data/homer.gif
+include plotext/_data/moonwalk.mp4
