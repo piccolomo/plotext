@@ -1,17 +1,15 @@
-[Plotext Guide](https://github.com/piccolomo/plotext#guide)
-
 # 2D Plots
 
 - [Matrix Plot](https://github.com/piccolomo/plotext/blob/master/readme/2d-plots.md#matrix-plot)
 - [Image Plot](https://github.com/piccolomo/plotext/blob/master/readme/2d-plots.md#image-plot)
+- [GIF Plot](https://github.com/piccolomo/plotext/blob/master/readme/2d-plots.md#gif-plot)
 
+[Plotext Guide](https://github.com/piccolomo/plotext#guide)
 
 
 ## Matrix Plot
 
-To plot a 2D pixelled representation of a matrix, use the function `plt.matrix_plot()`.
-
-Here is a coded example:
+To plot a 2D pixelled representation of a matrix, use the function `matrix_plot()`. Here is a coded example:
 
 ```python
 import plotext as plt
@@ -31,63 +29,68 @@ python3 -c "import plotext as plt; cols, rows = 200, 45; p = 1; matrix = [[(abs(
 ```
 ![matrix](https://raw.githubusercontent.com/piccolomo/plotext/master/images/matrix.png)
 
-**Note 1**: The intensity of the pixel (how light it is) is proportional to the correspondent element in the matrix. 
+- The intensity of the pixel (how light it is) is proportional to the correspondent element in the matrix. 
 
-**Note 2**: The same function can **plot in colors** if each pixel is an RGB tuple of three integers, between 0 and 255.
+- The same function can **plot in colors** if each pixel is an RGB tuple of three integers, between 0 and 255.
 
-Access the documentation of the function `plt.matrix_plot()` with `plt.doc.matrix_plot()`.
+- Future development (under request) may include a side bar to link the pixel intensity to its actual value in the matrix. 
 
-[2D Plots](https://github.com/piccolomo/plotext/blob/master/readme/2d-plots.md#2d-plots)
+- Access the full documentation of the function `plt.matrix_plot()` with `plt.doc.matrix_plot()`.
+
+[Plotext Guide](https://github.com/piccolomo/plotext#guide), [2D Plots](https://github.com/piccolomo/plotext/blob/master/readme/2d-plots.md#2d-plots)
 
 
 
 ## Image Plot
 
-To plot an image use `plt.image_plot(file_path)` with the following optional parameters:
-
-- `marker`, to set the marker used to identify each pixel in the image. The default value is `sd`. Note that since all canvas will be covered with pixels, using the higher resolution markers (`hd` and `fhd`) will not result in an improved spatial resolution.
-
-- `grayscale`: to plot in gray-scale.
-
-- `size`: to resize the image before plotting; recommended for faster computation, especially for big pictures.
-
-- `keep_ratio` to maintain (or not) the original image aspect ratio.
-
-- `resample` to apply (or not) a smoothing algorithm during resizing (as by default).
-
-The function returns the actual size of the image in unit of character pixels: it is recommended to use this size to later fix the plot size with `plt.plot_size()`.
-
-Here is an example, where the image [`monalisa.jpg`](https://raw.githubusercontent.com/piccolomo/plotext/master/images/monalisa.jpg) should be placed is in the script folder:
+To plot an image use the function `image_plot()` as in this example:
 
 ```python
 import plotext as plt
-
-path = plt.file.join_paths(plt.file.script_folder(), 'monalisa.jpg')
-
-size = [200, 60]
-size = plt.image_plot(path, size = size, keep_ratio = True)
-
-plt.plotsize(*size)
-plt.title("Mona Lisa")
+plt.image_plot(plt.test_image_path)
+plt.title("The Creation by Michelangelo")
 plt.show()
 ```
 or directly on terminal:
 ```console
-python3 -c "import plotext as plt; path = plt.file.join_paths(plt.file.script_folder(), 'monalisa.jpg'); size = [200, 60]; size = plt.image_plot(path, size = size, keep_ratio = True); plt.plotsize(*size); plt.title('Mona Lisa'); plt.show()"
+python3 -c "import plotext as plt; plt.image_plot(plt.test_image_path); plt.title('The Creation by Michelangelo'); plt.show()"
 ```
 
 ![image](https://raw.githubusercontent.com/piccolomo/plotext/master/images/image.png)
 
-Notes:
+- It is recommended to use the function `plotsize()` before, especially for larger images, to reduce the image size and so the computational load.
 
- - a **curious visual effect**, to play with, is obtained using for example `marker = list("MonaLisa")` inside the `plt.image_plot()` function: try it out!
- - to easily manipulate **file paths**, use the tools recommended in section [File Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities).
- - to save the result **in colors**, as an `html` page, use the function `plt.savefig()`.
- - to print beyond the terminal size use `plt.limit_size(False)` or the app developed [here](https://github.com/piccolomo/plotext/blob/master/readme/environments.md#tkinter)
- using `tkinter`.
+- The parameter `fast`, if True, allows to plot much faster, but the plot final dimensions will be locked to the whatever size was previously chosen, and won't adapt to the terminal or subplot size.
 
-Access the documentation of the function `plt.image_plot()` with `plt.doc.image_plot()`.
+- A curious visual effect is obtained using for example `marker = list("Creation")` with `style = 'inverted'`: try it out!
 
-[2D Plots](https://github.com/piccolomo/plotext/blob/master/readme/2d-plots.md#2d-plots)
+- Use the parameter `grayscale` to plot in gray-scale.
 
-[Plotext Guide](https://github.com/piccolomo/plotext#guide)
+- To easily manipulate file paths, use the tools recommended in [this section](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities).
+
+- To save the result **in colors**, as an `html` page, use the function `plt.savefig()`.
+
+- To plot images **beyond the terminal size** use the function `plt.limit_size()` or the app developed [here](https://github.com/piccolomo/plotext/blob/master/readme/environments.md#tkinter), using `tkinter`.
+
+- Access the full documentation of the function `plt.image_plot()` with `plt.doc.image_plot()`.
+
+
+## Gif Plot
+
+To plot a GIF image use the function `play_gif()` as in this example:
+
+```python
+import plotext as plt
+plt.play_gif(plt.test_gif_path)
+plt.show()
+```
+or directly on terminal:
+```console
+python3 -c "import plotext as plt; plt.play_gif(plt.test_gif_path); plt.show()"
+```
+which will play the following GIF:
+
+![image](https://raw.githubusercontent.com/piccolomo/plotext/master/images/homer.gif)
+
+
+[Plotext Guide](https://github.com/piccolomo/plotext#guide), [2D Plots](https://github.com/piccolomo/plotext/blob/master/readme/2d-plots.md#2d-plots)

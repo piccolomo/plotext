@@ -1,20 +1,50 @@
-[Plotext Guide](https://github.com/piccolomo/plotext#guide)
-
 # Project Notes
 - [Main Updates](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#main-updates)
 - [Future Plans](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#future-plans)
 - [Credits](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#credits)
+
+[Plotext Guide](https://github.com/piccolomo/plotext#guide)
 
 
 ## Main Updates
 
 Note: there are many new features from the previous version: any bug report is useful and very welcomed.
 
+**In version 5.0**:
+
+- added `play_gif()`, `play_video()`, `play_youtube()`, `download()`, `get_youtube()` functions, to play GIFs and videos 
+- added `matplotlib` backend function `from_matplotlib()`
+- added `candlestick()` plot function
+- new logic behind the creation of a matrix of subplots, with nested sub-matrices allowed and settings on top level peculating on lower levels
+- removed `span()` function
+- added `take_min()` function
+- entire code re-written
+- faster plotting from 2 (for long data) to 5 (for small data) times faster (on my machine)
+- replaced `xaxis()` with `xaxes()` to set the presence of both axes at the same time, without the `xside` parameter; analogously for `yaxis()`
+- added `ticks_style()` function 
+- added `theme()` function
+- removed `clear_plot()` function, `clear_figure()` takes its place depending on which level of the subplot matrix is applied
+- removed `colorless()` function, `clear_color()` takes its place depending on which level of the subplot matrix is applied
+- introduced `fast` parameter in `matrix_plot()` and `image_plot()` for faster plotting
+- removed `size`, `keep_ratio` and `resample` parameters from `image_plot()`
+- introduced `event_plot()` as inspired by [Issue 83](https://github.com/piccolomo/plotext/issues/83)
+- added `text()` function to add string labels to the plot
+- added `keep_colors` parameter in `save_fig()` to keep ansi color codes in `txt` files (file could be read with `less -R file_path.txt`)
+- removed datetime class, all tools rewritten and moved to normal level
+- introduced `input_form` and `output_form` for date/time string objects
+- date/time plots are now dealt freely by `plot()` and `scatter()`
+- most of the plotting functions accept now date/time strings as well as coordinates
+- removed file class, all tools moved to normal level
+- introduced `test()` function
+- new simpler string color codes
+- `xside` and `yside` parameter could accept 1 and 2 as well for simplicity
+- larger plots outside `ipython`, which prints an extra line or two
+
 **In version 4.3**:
 
 - accounts for exponential float notation as requested in [Pull 82](https://github.com/piccolomo/plotext/pull/82) by `soraxas`
 - added functionality to properly read `numpy` data as requested in [Issue 84](https://github.com/piccolomo/plotext/issues/84) and [Issue 85](https://github.com/piccolomo/plotext/issues/85). 
-- solved [Issue 81](https://github.com/piccolomo/plotext/issues/81) related to time format error in datetime plots.
+- coming soon: solving [Issue 81](https://github.com/piccolomo/plotext/issues/81) related to time format error in datetime plots.
 
 
 **In version 4.2**:
@@ -145,6 +175,7 @@ Note: there are many new features from the previous version: any bug report is u
  - `decimals` parameter removed  
  - code restructured and revised
 
+
 **In version 1.0**:
 
   - `plotext` now works also in Windows with colors
@@ -161,7 +192,7 @@ Note: there are many new features from the previous version: any bug report is u
   - when `thick` is `False`, the axes non numerical ticks are also removed
   - removed `get` functions for plot parameters
 
-[Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
+[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
 
 
 ## Future Plans
@@ -179,10 +210,11 @@ Note: there are many new features from the previous version: any bug report is u
 
 Any help or new ideas are welcomed.
 
-[Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
+[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
 
 
 ## Credits
+ - `MartinThoma` for inspiring the idea behind `event_plot()` in [Issue 83](https://github.com/piccolomo/plotext/issues/83)
  - `soraxas` for functionality that accounts for exponential float notation: [Pull 82](https://github.com/piccolomo/plotext/pull/82)
  - `NLKNguyen` for ideas inspiring the `horizontal_line` and `vertical_line` functions: [Issue 65](https://github.com/piccolomo/plotext/issues/65)
  - `asartori86` for the awesome command line tool: [Issue 47](https://github.com/piccolomo/plotext/issues/47)
@@ -200,6 +232,4 @@ Any help or new ideas are welcomed.
  - users `geoffrey-eisenbarth` and  `matthewhanson` for requesting datetime support: [Issue 7](https://github.com/piccolomo/plotext/issues/7)
  - `kris927b` for requesting histogram plot: [Issue 6](https://github.com/piccolomo/plotext/issues/6)
 
-[Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
-
-[Plotext Guide](https://github.com/piccolomo/plotext#guide)
+[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)

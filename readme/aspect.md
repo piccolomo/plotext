@@ -1,257 +1,188 @@
-[Plotext Guide](https://github.com/piccolomo/plotext#guide)
-
-
 # Plot Aspect
 
+- [Plot Size](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-size)
+- [Plot Labels](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-labels)
 - [Plot Limits](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-limits)
 - [Axes Ticks](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#axes-ticks)
-- [Plot Size](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-size)
-- [Axes and Grid Lines](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#axes-and-grid-lines)
-- [Plot Labels](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-labels)
-- [Plot Markers](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-markers)
-- [Marker Colors](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#marker-colors)
-- [Plot Colors](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-colors)
+- [Plot Lines](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-lines)
+- [Colors](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors)
+- [Markers](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#markers)
 
-
-## Plot Limits
-
-The plot limits are set automatically; to set them manually you can use the following functions:
-
- - `plt.xlim(xmin, xmax)` sets the minimum and maximum limits on the x axis. The parameter `xside` is used to access a specific `x` axis (lower or upper).
-
- - `plt.ylim(ymin, ymax)` sets the minimum and maximum limits on the y axis. The parameter `yside` is used to access a specific `y` axis (left or right).
- 
-Here is a coded example:
-
-```python
-import plotext as plt
-
-l = 1000
-x = range(1, l + 1)
-y = plt.sin(length = l)
-plt.scatter(x, y)
-plt.xlim(x[0] - 101, x[-1] + 100)
-plt.ylim(-1.2, 1.2)
-plt.show()
-```
-or directly on terminal:
-```console
-python3 -c "import plotext as plt; l = 1000; x = range(1, l + 1); y = plt.sin(1, l); plt.scatter(x, y); plt.xlim(x[0] - 101, x[-1] + 100); plt.ylim(-1.2, 1.2); plt.show()"
-```
-![limits](https://raw.githubusercontent.com/piccolomo/plotext/master/images/limits.png)
-
-
-[Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
-
-
-## Axes Ticks
-
-To change the numerical ticks on the `x` axis, you could use one of the following functions:
-
- - `plt.xfrequency(xfreq)` sets the numerical ticks frequency on the `x` axis to an integer.
-
- - `plt.xticks(xticks)` manually sets the `x` axis ticks to the list provided. If two lists are provided, the second is intended as the list of `labels` to be placed at the coordinates provided by the first.
-
-In both cases, the parameter `xside` is used to access a specific `x` axis (lower or upper).
-
-Naturally, the functions used to specify the plot limits on the `y` axis, behave similarly and are `plt.yfrequency(yfreq)`, `plt.yticks(yticks)`.
-
-Here is a coded example:
-```python
-import plotext as plt
-
-l, p = 1000, 3
-y = plt.sin(periods = p, length = l)
-
-plt.scatter(y)
-
-xticks = [l * i / (2 * p)  for i in range(2 * p + 1)]
-xlabels = [str(i) + "π" for i in range(2 * p + 1)]
-
-plt.xticks(xticks, xlabels)
-plt.show()
-```
-or directly on terminal:
-```console
-python3 -c "import plotext as plt; l, p = 1000, 3; y = plt.sin(periods = p, length = l); plt.scatter(y); xticks = [l * i / (2 * p)  for i in range(2 * p + 1)]; xlabels = [str(i) + 'π' for i in range(2 * p + 1)]; plt.xticks(xticks, xlabels); plt.show()"
-```
-![ticks](https://raw.githubusercontent.com/piccolomo/plotext/master/images/ticks.png)
-
-[Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
-
+[Plotext Guide](https://github.com/piccolomo/plotext#guide)
 
 
 ## Plot Size
 
-By default the plot size adapts to the dimensions of the terminal. To alter the plot size use one of the following functions:
+By default the plot size adapts to the dimensions of the terminal. To change this behaviour, use one of the following functions:
 
- - `plt.plot_size(width, height)` to set the width and height of the plot to the desired values, in units of character dimensions.
+ - `plt.plot_size()` to set the plot size to the desired `width` and `height`, in units of character dimensions.
 
- - `plt.limit_size(boolx, booly)` to set, whatever or not, to limit the plot width and height to, respectively, the terminal width and height.
+ - `plt.limit_size()` to set, whatever or not, to limit the plot size to, respectively, the terminal width and height. This function is only available for the main figure and not for its subplots, if present.
 
-[Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
+ - `plt.take_mine()`: in a matrix of subplot, the final widths/heights will be the same for each column/row and, by default, the maximum is taken. If `take_min()` is called, the minimum is considered instead.
 
-
-## Axes and Grid Lines
-
- - Use the function `plt.xaxis(bool)` to specify whatever or not to show the `x` axis: the parameter `xside` is used to specify which `x` axis (lower or upper) to address.
-
- - The function `plt.yaxis(bool)` behaves analogously but for the `y` axis.
-
- - To control all axes simultaneously, use the function `plt.frame(bool)` instead, which will show or remove the plot frame (composed by all 4 axes).
-
- - The function `plt.grid(xbool, ybool)` is used to add or remove the horizontal and vertical grid lines. A single Boolean sets both grid lines simultaneously. 
- 
- - The function `plt.vertical_line(coordinate, color, xside)` plots a vertical line at the given `coordinate` and specified `color`; the optional parameter `xside` is used to specify which `x` axis, `lower` (as by default) or `upper`, the parameter `coordinate` refers to. It also works with string based datetime coordinates.
-
- - The function `plt.horizontal_line(coordinate, color, yside)` is similar to `plt.vertical_line()` but for horizontal lines.
-
-[Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
+[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
 
 ## Plot Labels
 
 You could easily add the following text labels to the plot:
 
- - a title with `plt.title(string)` which adds a title on the top of the plot.
+- a **title** on the top of the active plot with `plt.title()`.
  
- - the axes labels with `plt.xlabel(string)` and `plt.ylabel(string)`. The parameters `xside` and `yside` are used to address specific axes. The labels will all appear at the bottom of the plot, with the exception of the upper `x` label, which will appear on the upper right side of the plot.
+- the **x axes labels** with `plt.xlabel()`: its parameter `xside` is used to address a specific `x` axis , `"lower"` or `"upper"` (in short `1` or `2`). 
 
-Here is an example:
+- Analogously the **y axes labels** with `plt.ylabel()`: `yside` parameter, is used to address a specific `y` axis , `"left"` or `"right"` (in short `1` or `2`).
 
+- The axes labels will all appear at the bottom of the plot, with the exception of the upper `x` axis label, which will appear on the top center of the plot, moving the plot title to the top left, if present.
+
+- To change the labels colors and styles, use the functions `ticks_colors()` and `ticks_style()`, as explained in [this section](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors)
+ 
+[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
+
+
+
+## Plot Limits
+
+The plot limits are set automatically; to set them manually you can use the following functions:
+
+ - `plt.xlim()` sets the minimum and maximum limits on the x axis. To address a specific x axis (`lower` or `upper`) use the `xside` parameter as describer in the previous section. 
+
+ - `plt.ylim()` sets the minimum and maximum limits on the y axis. To address a specific y axis (`left` or `right`) use the `yside` parameter
+
+
+[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
+
+
+## Axes Ticks
+
+To change the numerical ticks on the `x` axis, you could use one of the following functions:
+
+- `plt.xfrequency()` to set the numerical ticks frequency on the `x` axis, to an integer value.
+
+- `plt.xticks()` to manually sets the `x` axis ticks to the list provided. If two lists are provided, the second is intended as the list of `labels` to be placed at the coordinates provided by the first.
+
+- In both cases, the parameter `xside` is used to address a specific `x` axis (`lower` or `upper`).
+
+- Naturally, the functions used to specify the plot limits on the `y` axis, are `plt.yfrequency()`, `plt.yticks()` and behave similarly.
+
+Here is a coded example:
 ```python
 import plotext as plt
-
-plt.plot(plt.sin())
-
-plt.plot_size(150, 45)
-plt.frame(True)
-plt.grid(True)
-
-plt.title("Plot Title")
-
-plt.xlabel("Lower")
-plt.ylabel("Left")
-
-plt.xlabel("Upper", xside = "upper")
-plt.ylabel("Right", yside = "right")
-
+l, p = 300, 2
+plt.plot(plt.sin(length = l, periods = p), label = "My Signal")
+plt.plotsize(100, 30)
+plt.title('Some Smart Title')
+plt.xlabel('Time')
+plt.ylabel('Movement')
+plt.ticks_color('red')
+plt.ticks_style('bold')
+plt.xlim(-l//10, l + l//10)
+plt.ylim(-1.5, 1.5)
+xticks = [l * i / (2 * p)  for i in range(2 * p + 1)]
+xlabels = [str(i) + "π" for i in range(2 * p + 1)]
+plt.xticks(xticks, xlabels)
+plt.yfrequency(5)
 plt.show()
 ```
 or directly on terminal:
 ```console
-python3 -c "import plotext as plt; plt.plot(plt.sin()); plt.plot_size(150, 45); plt.frame(True); plt.grid(True); plt.title('Plot Title'); plt.xlabel('Lower'); plt.ylabel('Left'); plt.xlabel('Upper', xside = 'upper'); plt.ylabel('Right', yside = 'right'); plt.show()"
+python3 -c "import plotext as plt; l, p = 300, 2; plt.plot(plt.sin(length = l, periods = p), label = 'My Signal'); plt.plotsize(100, 30); plt.title('Some Smart Title'); plt.xlabel('Time'); plt.ylabel('Movement'); plt.ticks_color('red'); plt.ticks_style('bold'); plt.xlim(-l//10, l + l//10); plt.ylim(-1.5, 1.5); xticks = [l * i / (2 * p)  for i in range(2 * p + 1)]; xlabels = [str(i) + 'π' for i in range(2 * p + 1)]; plt.xticks(xticks, xlabels); plt.yfrequency(5); plt.show()"
 ```
+![ticks](https://raw.githubusercontent.com/piccolomo/plotext/master/images/ticks.png)
 
-![labels](https://raw.githubusercontent.com/piccolomo/plotext/master/images/labels.png)
+[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
+
+
+
+## Axes and Grid Lines
+
+Here are the main functions used to alter the plot lines:
+
+- `plt.xaxes()` to set whatever or not to show the `x` axes; it accepts two Boolean inputs, one for each `x` axis (`lower` and `upper`).
+
+- `plt.yaxes()` to set whatever or not to show the `y` axes; it accepts two Boolean inputs, one for each `y` axis (`left` and `right`).
  
-[Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
+- To control all axes simultaneously, use the function `plt.frame()` instead, which will show or remove the plot frame (composed of all 4 axes). It require a single Boolean.
+
+- The function `plt.grid()` is used to add or remove the horizontal and vertical grid lines and requires two Boolean inputs.
+
+- To add extra lines at some specific coordinates use the functions `vertical_line()` and `horizontal_line()` ad explained in [this section](https://github.com/piccolomo/plotext/blob/master/readme/tools.md#extra-lines).
+
+[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
 
-## Plot Markers
+## Colors
 
-To manually specify which marker to use, use the parameter `marker`, available in all plotting functions (eg: `plt.scatter(data, marker = "x")`). You could provide the following:
+Colors could easily applied to the entire plot, using the following functions:
 
-- `None` (as by default) to set the marker automatically to `hd` in Unix systems and to `dot` in Windows (see below).
+- `canvas_color()` to set the background color of the plot canvas alone (the area where the data is plotted).
 
-- A **single character**: if the space character " ", the plot will be invisible. 
+- `axes_color()` to sets the background color of the axes, axes numerical ticks, axes labels and plot title.
 
-- A **list of specific markers**, one for each data point: its length will automatically adapt to the data length.
+- `ticks_color()` sets the (fullground) color of the axes ticks, the grid lines, title, and legend labels, if present.
 
-- One of the following **marker codes** which will translate in the single character specified: 
+- `ticks_style()` sets the style of the axes ticks, title, and legend labels, if present.
 
-  ![markers](https://raw.githubusercontent.com/piccolomo/plotext/master/images/markers.png)
+To quickly set all those values at once use the function `theme()`. To check the available themes use the function `themes()`; here is its output: 
 
-   **Note**: some of these are not available in Windows.
+![themes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/themes.png)
+`
+Note: to add, tweak, rename any theme presented, please feel free to open an issue dropping your favourite combination of canvas, axes, ticks color and style together with 3 signal colors in sequence: any idea is welcomed. 
 
-- The marker code `sd` stands for "standard resolution". To plot in **higher resolution** use one of following two extra codes instead:
+To remove all plot colors and styles from the current subplot, use `clear_color()` - in short `clc()`, which is equivalent to `theme('clear')`
 
-    - **`hd`** for *high resolution*, which uses 2 x 2 unicode block characters, such as ▞. 
-
-    - **`fhd`** for *full high resolution*, which uses 3 x 2 unicode block characters, such as 🬗.  **Note**: this marker works only in Unix systems and only in some terminals.
-
-The same documentation is available using `plt.markers()`.
-
-[Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
-
-
-## Marker Colors
-
-These are the types of color codes that could be provided to the `color` parameter of any plotting function, as well as the `fullground` parameter of the function `plt.colorize()`, or as input for the functions `plt.canvas_color()`, `plt.axes_color()` and `plt.ticks_color()`:
-
-- `None` (as by default), to set the color automatically. 
+If instead you want to set the colors manually, here are the types of color codes that could be provided as input for the functions `canvas_color()`, `axes_color()` and `ticks_color()` or to the `color` parameter of any plotting function, as well as the `fullground` or `background` parameter of the function `plt.colorize()`:
 
 - The following **color string codes**: 
 
   ![color-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/color-codes.png)
 
-  **Note**: `default` will use the terminal default color settings.
-
-- Along side the previous string color codes, one can add as many styles as desired among the following **string style codes**: 
-
-  ![style-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/style-codes.png)
-
-   **Note**: the color and style codes must be separated by a space. Using `flash` will result in an actual white flashing marker (therefore it will not work with `bright-white` canvas background color). Naturally those style won't work as background colors.
+  `default` will use the default terminal color.
 
 - An **integer between 0 and 255**, resulting in the following colors:
 
   ![integer-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/integer-codes.png)
 
-  **Note**: the first 16 produce the same results as the previous string color codes.
+  Note: the first 16 produce the same results as the previous string color codes.
 
 - An **RGB color** consisting of a tuple of three values (red, green, blue), each between 0 and 255, to obtain the most realistic color rendering.
 
-- a **list of color codes** to give a different color to each plot marker: the length of the list of colors will adapt to the length of the data set.
+- A **list of color codes** to give a different color to each plot marker: the length of the list of colors will adapt to the length of the data set. Each color could be of a different kind (string, integer or rgb).
 
-**Background Colors**: all color codes above are valid also as background color, if provided to the `background` parameter of the function `plt.colorize()` or as input for the functions `plt.canvas_color()`, and `plt.axes_color()`. For example, here is the effect of the string color codes above, intended as background color: 
-
-![background-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/background-codes.png)
-
-The same documentation is available using `plt.colors()`.
-
-[Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
+- Access the function `colors()` for the available string and integer codes.
 
 
-## Plot Colors
+Finally these are the available **style codes** that could be provided as input to the function ticks_style() or to the `style` parameter of any plotting function, including `colorize()`:
 
-Colors could also be applied to the rest of the plot, using the following functions:
+![style-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/style-codes.png)
 
-- `plt.canvas_color(color)` to set the background color of the plot canvas alone (the area where the data is plotted).
+- any number of styles could be used at the same time, provided they are separated by a space. 
 
-- `plt.axes_color(color)` to sets the background color of the axes, axes numerical ticks, axes labels and plot title.
+- using `flash` will result in an actual white flashing marker.
 
-- `plt.ticks_color(color)` sets the (fullground) color of the axes ticks, the grid lines, title, labels and legend, if present.
+[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
-The color codes conventions are explained in section [Marker Colors](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#marker-colors).
 
-To remove the plot colors, use one of the following functions:
 
-- `plt.clear_color()` - in short `plt.clc()` - to removes all colors from the current subplot.
+## Plot Markers
 
-- `plt.colorless()` - in short `plt.cls()` - to remove all colors from the entire figure.
+To specify which marker to use, use the parameter `marker`, available for most plotting functions, eg: `plt.scatter(data, marker = "x")`. You could provide the following:
 
-Here is an example:
+- A **single character**: if the space character, the plot will be invisible. 
 
-```python
-import plotext as plt
-l = 256
-plt.plot(plt.sin(length = l), marker = "fhd", color = list(range(l)))
+- A **list of specific markers**, one for each data point: its length will automatically adapt to the data set.
 
-plt.title("Plot Colors")
-plt.canvas_color(254) 
-plt.axes_color((20, 40, 100)) # rgb coloring
-plt.ticks_color("bright-yellow")
+- One of the following **marker codes** which will translate in the marker specified (some may not be available in Windows): 
 
-plt.plot_size(150, 45)
-plt.show()
-```
-or directly on terminal:
-```console
-python3 -c "import plotext as plt; l = 256; plt.plot(plt.sin(length = l), marker = 'fhd', color = list(range(l))); plt.title('Plot Colors'); plt.canvas_color(254); plt.axes_color((20, 40, 100)); plt.ticks_color('bright-yellow'); plt.plot_size(150, 45); plt.show()"
-```
+  ![markers](https://raw.githubusercontent.com/piccolomo/plotext/master/images/markers.png)
 
-![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/colors.png)
+- The marker code `sd` stands for "standard resolution".
 
-[Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
+- **`hd`** stands for *high resolution*, which uses 2 x 2 unicode block characters, such as ▞. 
 
-[Plotext Guide](https://github.com/piccolomo/plotext#guide)
+- **`fhd`** stands for *full high resolution*, which uses 3 x 2 unicode block characters, such as 🬗.  This marker works only in Unix systems and only in some terminals.
+
+- Access the function `markers()` for the available marker codes.
+
+[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)

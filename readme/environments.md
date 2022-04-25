@@ -1,8 +1,42 @@
-[Plotext Guide](https://github.com/piccolomo/plotext#guide)
-
 # Other Environments
+- [Matplotlib](https://github.com/piccolomo/plotext/blob/master/readme/environments.md#matplotlib)
 - [Rich](https://github.com/piccolomo/plotext/blob/master/readme/environments.md#rich)
 - [Tkinter](https://github.com/piccolomo/plotext/blob/master/readme/environments.md#tkinter)
+
+[Plotext Guide](https://github.com/piccolomo/plotext#guide)
+
+## Matplotlib
+To automatically transform a `matplotlib` plot into a `plotext` one use the function `from_matplotlib()`. Here is an example:
+
+```python
+import matplotlib.pyplot as plt
+import plotext as plx
+
+y = plx.sin(); ym = [-el for el in y]
+x = range(len(y))
+
+plt.clf()
+plt.subplot(211)
+plt.plot(x, y, color = 'red')
+plt.title('Some Smart Title')
+plt.xlabel('here is a label')
+
+
+plt.subplot(212)
+plt.plot(x, ym, color = 'green')
+plt.ylabel('the y axis')
+
+plt.show(block = 0)
+
+fig = plt.gcf()
+
+plx.from_matplotlib(fig)
+plx.show()
+```
+
+![matplotlib](https://raw.githubusercontent.com/piccolomo/plotext/master/images/matplotlib.png)
+
+These feature is under development: please report any bug, with some possible idea on how to fix it.
 
 
 ## Rich
@@ -13,58 +47,78 @@ The integration with the package `rich` has been discussed in [Issue 26](https:/
 from rich.layout import Layout
 from rich.live import Live
 from rich.ansi import AnsiDecoder
-from rich.console import Group
+from rich.console import RenderGroup
 from rich.jupyter import JupyterMixin
 from rich.panel import Panel
-
+from rich.text import Text
 from time import sleep
 import plotext as plt
 
-def make_plot(*size):
+def make_plot(width, height, phase = 0, title = ""):
     plt.clf()
-    plt.scatter(plt.sin(1000, 3))
-    plt.plotsize(*size)
-    plt.title("Plotext Integration in Rich - Test")
+    l, frames = 1000, 30
+    x = range(1, l + 1)
+    y = plt.sin(periods = 2, length = l, phase = 2 * phase  / frames)
+    plt.theme('pro')
+    plt.scatter(x, y, marker = "fhd")
+    plt.plotsize(width, height)
+    plt.title(title)
+    color = 253
+    #plt.cls()
     return plt.build()
 
 class plotextMixin(JupyterMixin):
-    def __init__(self):
+    def __init__(self, phase = 0, title = ""):
         self.decoder = AnsiDecoder()
-        
+        self.phase = phase
+        self.title = title
+            
     def __rich_console__(self, console, options):
         self.width = options.max_width or console.width
         self.height = options.height or console.height
-        canvas = make_plot(self.width, self.height)
-        self.rich_canvas = Group(*self.decoder.decode(canvas))
+        canvas = make_plot(self.width, self.height, self.phase, self.title)
+        self.rich_canvas = RenderGroup(*self.decoder.decode(canvas))
         yield self.rich_canvas
-
+            
 def make_layout():
     layout = Layout(name="root")
     layout.split(
-        Layout(name="header", size=3),
+        Layout(name="header", size=1),
         Layout(name="main", ratio=1),
     )
-    layout["main"].split_row(
-        Layout(name="plotext", size=120),
-        Layout(name="main_right"),
+    layout["main"].split_column(
+        Layout(name="static", ratio = 1),
+        Layout(name="dynamic"),
     )
     return layout
 
 layout = make_layout()
-plotext_layout = layout["plotext"]
-mix = plotextMixin()
-mix = Panel(mix)
-plotext_layout.update(mix)
 
-with Live(layout, refresh_per_second=0.1) as live:
+header = layout['header']
+title = plt.colorize("Pl✺ text ", "cyan", "bold") + "integration with " + plt.colorize("rich_", style = "dim")
+header.update(Text(title, justify = "center"))
+
+static = layout["static"]
+phase = 0
+mixin_static = Panel(plotextMixin(title = "Static Plot"))
+static.update(mixin_static)
+
+dynamic = layout["dynamic"]
+
+with Live(layout, refresh_per_second=0.0001) as live:
     while True:
-        sleep(0.1)
+        phase += 1
+        mixin_dynamic = Panel(plotextMixin(phase, "Dynamic Plot")) 
+        dynamic.update(mixin_dynamic)
+        #sleep(0.001)
+        live.refresh()
+
 ```
 which outputs:
 
-![rich](https://raw.githubusercontent.com/piccolomo/plotext/master/images/rich.png)
+![rich](https://raw.githubusercontent.com/piccolomo/plotext/master/images/rich.gif)
 
-[Other Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md#other-environments)
+[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Other Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md#other-environments)
 
 
 ## Tkinter
@@ -233,12 +287,9 @@ which outputs:
 
 ![tkinter](https://raw.githubusercontent.com/piccolomo/plotext/master/images/tkinter.png)
 
-**Note 1**: using the `scale` slider one can change the font size; lower font size makes the final plot bigger, which requires more computational time.
+- Using the `scale` slider one can change the font size; lower font size makes the final plot bigger, which requires more computational time.
 
-**Note 2**: the `Save` button saves the plots as an `html` file in the user home folder.
+- The `Save` button saves the plots as an `html` file in the user home folder.
 
 
-[Other Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md#other-environments)
-
-[Plotext Guide](https://github.com/piccolomo/plotext#guide)
-
+[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Other Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md#other-environments)
