@@ -1,7 +1,7 @@
 <p align="left">  <img src="https://raw.githubusercontent.com/piccolomo/plotext/master/images/logo.png" /></p>
 
-`plotext` plots **directly on terminal**
-- it allows also for bar, histogram and date-time plots (including candlesticks),
+`plotext` plots **directly on terminal**:
+- it allows for [scatter](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#scatter-plot), [bar](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#simple-bar-plot), [histogram](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#histogram-plot) and [date-time](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#datetime-plot) plots (including [candlestick](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#candlestick-plot)),
 - it can also [plot images](https://github.com/piccolomo/plotext/blob/master/readme/image.md#image-plot) (including [GIF](https://github.com/piccolomo/plotext/blob/master/readme/image.md#gif-plot)) and [stream video](https://github.com/piccolomo/plotext/blob/master/readme/video.md#video-plot) with audio (including [YouTube](https://github.com/piccolomo/plotext/blob/master/readme/video.md#play-youtube)),
 - it has **no dependencies** (except for optional dependencies for image/video plotting),
 - it provides a simple [command line tool](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#command-line-tool),
