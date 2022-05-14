@@ -7,12 +7,10 @@
 - [Stacked Bar Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#stacked-bar-plot)
 - [Histogram Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#histogram-plot)
 
-[Plotext Guide](https://github.com/piccolomo/plotext#guide)
+[Main Guide](https://github.com/piccolomo/plotext#guide)
 
 
 ## Simple Bar Plot
-
-Here is a simple bar plot:
 
 ```python
 import plotext as plt
@@ -30,13 +28,13 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 ```
 ![simple-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/images/simple-bar.png)
 
-- The color, marker, width, fill properties and orientation of the bars could be changed using the respective parameters. 
+- The color, marker, width, fill properties and orientation of the bars, could be changed using the respective parameters. 
 
-- The full documentation of the `bar()` function can be accessed with `plotext.doc.bar()`.
+- The full documentation of the `bar()` function can be accessed with `doc.bar()`.
 
 - To label each bar with a string follow [this](https://github.com/piccolomo/plotext/blob/master/readme/tools.md#text-plot) example.
 
-[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
 
 
 ## Horizontal Bar Plot
@@ -58,10 +56,9 @@ or directly on terminal:
 python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms', 'Cheese', 'Chicken', 'Beef']; percentages = [14, 36, 11, 8, 7, 4]; plt.bar(pizzas, percentages, orientation = 'h', width = 3 / 5); plt.title('Most Favored Pizzas in the World'); plt.show()"
 ```
 
-
 ![horizontal-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/images/horizontal-bar.png)
 
-[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
 
 
 ## Sketchy Bar Plot
@@ -85,8 +82,7 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 
 ![horizontal-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/images/sketchy-bar.png)
 
-[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
-
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
 
 
 ## Multiple Bar Plot
@@ -111,10 +107,9 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 
 ![multiple-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/images/multiple-bar.png)
 
-The full documentation of the `multiple_bar()` function can be accessed with `plotext.doc.multiple_bar()`.
+The full documentation of the `multiple_bar()` function can be accessed with `doc.multiple_bar()`.
 
-[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
-
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
 
 
 ## Stacked Bar Plot
@@ -138,10 +133,9 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 ```
 ![stacked-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/images/stacked-bar.png)
 
-The full documentation of the `stacked_bar()` function can be accessed with `plotext.doc.stacked_bar()`.
+The full documentation of the `stacked_bar()` function can be accessed with `doc.stacked_bar()`.
 
-[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
-
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
 
 
 ## Histogram Plot
@@ -171,6 +165,6 @@ python3 -c "import plotext as plt; import random; l = 7 * 10 ** 4; data1 = [rand
 ```
 ![hist](https://raw.githubusercontent.com/piccolomo/plotext/master/images/hist.png)
 
-The full documentation of the `hist()` function can be accessed with `plotext.doc.hist()`.
+The full documentation of the `hist()` function can be accessed with `doc.hist()`.
 
-[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
