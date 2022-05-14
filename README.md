@@ -19,7 +19,7 @@ image code [here](https://github.com/piccolomo/plotext/blob/master/readme/subplo
 
 Notes:
 
-- the optional packages are `pillow` (for image plotting), `opencv-python` (for video rendering), `pafy` (to stream YouTube) and `ffpyplayer` (to stream audio);
+- the optional packages are `pillow` (for image plotting), `opencv-python` (for video rendering), `pafy` (to stream YouTube) and `ffpyplayer` (to stream audio).
 - the command `pip install youtube-dl==2020.12.2` has helped with YouTube video rendering problems.
 
 
@@ -32,7 +32,7 @@ Notes:
 - [Other Plots](https://github.com/piccolomo/plotext/blob/master/readme/other.md)
 
 #### 2D Plots
-- [Matrix and Image Plots](https://github.com/piccolomo/plotext/blob/master/readme/2d-plots.md)
+- [Image Plots](https://github.com/piccolomo/plotext/blob/master/readme/image.md)
 - [Video Rendering](https://github.com/piccolomo/plotext/blob/master/readme/video.md)
 
 #### Plotting Utilities
