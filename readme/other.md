@@ -1,7 +1,7 @@
 # Other Plots
 
 - [Event Plot](https://github.com/piccolomo/plotext/blob/master/readme/other.md#event-plot)
-- [Line Plot](https://github.com/piccolomo/plotext/blob/master/readme/other.md#extra-lines)
+- [Line Plot](https://github.com/piccolomo/plotext/blob/master/readme/other.md#line-lines)
 - [Text Plot](https://github.com/piccolomo/plotext/blob/master/readme/other.md#text-plot)
 
 [Main Guide](https://github.com/piccolomo/plotext#guide)
@@ -67,7 +67,7 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.scatter(y); plt.title('Ext
 
 ## Text Plot
 
-To add text to a plot use the `text()` function. Here is how to use it for a labelled bar plot.No
+To add text to a plot use the `text()` function. Here is how to use it for a labelled bar plot:
  
 ```python
 import plotext as plt
@@ -78,20 +78,19 @@ percentages = [14, 36, 11, 8, 7, 4]
 plt.bar(pizzas, percentages)
 plt.title("Labelled Bar Plot using Text()")
 
-[plt.text(pizzas[i], x = pizzas[i], y = percentages[i] + 0.5, alignment = 'center', color = 'red') for i in range(len(pizzas))]
+[plt.text(pizzas[i], x = pizzas[i], y = percentages[i] + 0.8, alignment = 'center', color = 'red') for i in range(len(pizzas))]
 plt.ylim(0, 38)
 plt.show()
 ```
 
 or directly on terminal:
 ```console
-python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms', 'Cheese', 'Chicken', 'Beef']; percentages = [14, 36, 11, 8, 7, 4]; plt.bar(pizzas, percentages)
-plt.title('Labelled Bar Plot using Text()'); [plt.text(pizzas[i], x = pizzas[i], y = percentages[i] + 0.5, alignment = 'center', color = 'red') for i in range(len(pizzas))]; plt.ylim(0, 38); plt.show()"
+python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms', 'Cheese', 'Chicken', 'Beef']; percentages = [14, 36, 11, 8, 7, 4]; plt.bar(pizzas, percentages); plt.title('Labelled Bar Plot using Text()'); [plt.text(pizzas[i], x = pizzas[i], y = percentages[i] + 0.8, alignment = 'center', color = 'red') for i in range(len(pizzas))]; plt.ylim(0, 38); plt.show()"
 ```
 
-![datetime](https://raw.githubusercontent.com/piccolomo/plotext/master/images/text.png)
+![datetime](https://raw.githubusercontent.com/piccolomo/plotext/master/images/labelled-bar.png)
 
-- Note that `text()` accept as coordinates numbers, date/time strings or bar labels (if the plot allows it).
-- The full documentation of the `text()` function can be accessed with `doc.text()`.
+- note that `text()` accepts as coordinates numbers, date/time strings or bar labels, if the plot allows it,
+- the full documentation of the `text()` function can be accessed with `doc.text()`.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Other Plots](https://github.com/piccolomo/plotext/blob/master/readme/other.md)
