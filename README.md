@@ -2,7 +2,7 @@
 
 - it plots **directly on terminal**,
 - it allows for bar, histogram and date-time plots (including candlesticks),
-- it can also *plot images* (including GIF) and *stream videos* with audio (including YouTube),
+- it can also **plot images** (including GIF) and **stream videos** with audio (including YouTube),
 - it has **no dependencies** (except for optional dependencies for image/video plotting),
 - it provides a simple [command line tool](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#command-line-tool),
 - it can [save plots](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#other-functions) as text or as colored `html`,
@@ -31,9 +31,9 @@ Notes:
 - [Datetime Plots](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md)
 - [Other Plots](https://github.com/piccolomo/plotext/blob/master/readme/other.md)
 
-#### Image and Video
-- [Image](https://github.com/piccolomo/plotext/blob/master/readme/2d-plots.md)
-- [Video](https://github.com/piccolomo/plotext/blob/master/readme/video.md)
+#### 2D Plots
+- [Matrix and Image Plots](https://github.com/piccolomo/plotext/blob/master/readme/2d-plots.md)
+- [Video Rendering](https://github.com/piccolomo/plotext/blob/master/readme/video.md)
 
 #### Plotting Utilities
 - [Settings](https://github.com/piccolomo/plotext/blob/master/readme/settings.md)
