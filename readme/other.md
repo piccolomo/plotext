@@ -59,12 +59,10 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.scatter(y); plt.title('Ext
 
 ![datetime](https://raw.githubusercontent.com/piccolomo/plotext/master/images/extralines.png)
 
-[Main Guide](https://github.com/piccolomo/plotext#guide), [Datetime Menu](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#datetime-menu)
-
 - Note that `vline()` and `hline()` accept as coordinates numbers, date/time strings or bar labels (if the plot allows it).
-
 - The documentation of the `vline()` and `hline()` functions can be accessed with `doc.vertical_line()` and `doc.horizontal_line()`.
 
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Other Plots](https://github.com/piccolomo/plotext/blob/master/readme/other.md)
 
 
 ## Text Plot
@@ -94,6 +92,6 @@ plt.title('Labelled Bar Plot using Text()'); [plt.text(pizzas[i], x = pizzas[i],
 ![datetime](https://raw.githubusercontent.com/piccolomo/plotext/master/images/text.png)
 
 - Note that `text()` accept as coordinates numbers, date/time strings or bar labels (if the plot allows it).
- 
 - The full documentation of the `text()` function can be accessed with `doc.text()`.
-[Main Guide](https://github.com/piccolomo/plotext#guide), [Datetime Menu](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#datetime-menu)
+
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Other Plots](https://github.com/piccolomo/plotext/blob/master/readme/other.md)
