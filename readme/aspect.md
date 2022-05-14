@@ -29,30 +29,23 @@ Here are the main functions used to alter the plot lines:
 - `xaxes(lower, upper)` to set whatever or not to show the `x` axes; it accepts two Boolean inputs, one for each `x` axis.
 - `yaxes(left, right)` to set whatever or not to show the `y` axes; it accepts two Boolean inputs, one for each `y` axis.
 - To control all axes simultaneously, use the function `frame(frame)` instead, which will show or remove the plot frame (composed of all 4 axes). It require a single Boolean.
-- The function `grid()` is used to add or remove the horizontal and vertical grid lines and requires two Boolean inputs.
-- To add extra lines at some specific coordinates use the functions `vertical_line()` and `horizontal_line()` ad explained in [this section](https://github.com/piccolomo/plotext/blob/master/readme/tools.md#extra-lines).
+- The function `grid(horizontal, vertical)` is used to add or remove the horizontal and vertical grid lines and requires two Boolean inputs.
+- To add extra lines at some specific coordinates use the functions `vertical_line()` and `horizontal_line()`, ad explained in [this section](https://github.com/piccolomo/plotext/blob/master/readme/tools.md#extra-lines).
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
 
 ## Markers
 
-To specify which marker to use, use the parameter `marker`, available for most plotting functions, eg: `scatter(data, marker = "x")`. You could provide the following:
+To specify which marker to use, for a data point, use the parameter `marker`, available for most plotting functions, eg: `scatter(data, marker = "x")`. You could provide the following:
 
 - A **single character**: if the space character, the plot will be invisible. 
-
 - A **list of specific markers**, one for each data point: its length will automatically adapt to the data set.
-
 - One of the following **marker codes** which will translate in the marker specified (some may not be available in Windows): 
-
   ![markers](https://raw.githubusercontent.com/piccolomo/plotext/master/images/markers.png)
-
-- The marker code `sd` stands for "standard resolution".
-
-- **`hd`** stands for *high resolution*, which uses 2 x 2 unicode block characters, such as ▞. 
-
-- **`fhd`** stands for *full high resolution*, which uses 3 x 2 unicode block characters, such as 🬗.  This marker works only in Unix systems and only in some terminals.
-
+- The marker code `sd` stands for "standard definition".
+- **`hd`** stands for *high definition*, which uses 2 x 2 unicode block characters, such as ▞. 
+- **`fhd`** stands for *full high definition*, which uses 3 x 2 unicode block characters, such as 🬗.  This marker works only in Unix systems and only in some terminals.
 - Access the function `markers()` for the available marker codes.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
@@ -65,32 +58,41 @@ Colors could easily applied to the entire plot, using the following functions:
 - `canvas_color(color)` to set the background color of the plot canvas alone (the area where the data is plotted).
 - `axes_color(color)` to sets the background color of the axes, axes numerical ticks, axes labels and plot title.
 - `ticks_color(color)` sets the (fullground) color of the axes ticks, the grid lines, title, and legend labels, if present.
-- `ticks_style(color)` sets the style of the axes ticks, title, and legend labels, if present.
+- `ticks_style(style)` sets the style of the axes ticks, title, and legend labels, if present.
 
-To quickly set all those values at once use the function `theme()`. To check the available themes use the function `themes()`; here is its output: 
+Here are the types of color codes that could be provided to the `color` parameter of the previous functions, as well as the `fullground` or `background` parameter of the function `colorize()`:
+- the following **color string codes**:
 
-![themes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/themes.png)
-
-Note: to add, tweak, rename any theme presented, please feel free to open an issue, dropping your favourite combination of canvas, axes, ticks color and style together with 3 signal colors in sequence: any idea is welcomed. 
-To remove all plot colors and styles from the current subplot, use `clear_color()` - in short `clc()`, which is equivalent to `theme('clear')`.
-If instead you want to set the colors manually, here are the types of color codes that could be provided as input for the functions `canvas_color()`, `axes_color()` and `ticks_color()` or to the `color` parameter of any plotting function, as well as the `fullground` or `background` parameter of the function `colorize()`:
-- The following **color string codes**: 
   ![color-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/color-codes.png)
+
   `default` will use the default terminal color.
-- An **integer between 0 and 255**, resulting in the following colors:
+- an **integer between 0 and 255**, resulting in the following colors:
+
   ![integer-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/integer-codes.png)
+
   Note: the first 16 produce the same results as the previous string color codes.
-- An **RGB color** consisting of a tuple of three values (red, green, blue), each between 0 and 255, to obtain the most realistic color rendering.
-- A **list of color codes** to give a different color to each plot marker: the length of the list of colors will adapt to the length of the data set. Each color could be of a different kind (string, integer or rgb).
-- Access the function `colors()` for the available string and integer codes.
+- an **RGB color** consisting of a tuple of three values (red, green, blue), each between 0 and 255, to obtain the most realistic color rendering,
+- a **list of color codes** to give a different color to each plot marker: the length of the list of colors will adapt to the length of the data set. Each color could be of a different kind (string, integer or rgb).
+- access the function `colors()` for the available string and integer codes.
 
 
-Finally these are the available **style codes** that could be provided as input to the function ticks_style() or to the `style` parameter of any plotting function, including `colorize()`:
+Finally these are the available **style codes** that could be provided to the `style` parameter of any plotting function, including `colorize()`:
 
 ![style-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/style-codes.png)
 
 - any number of styles could be used at the same time, provided they are separated by a space. 
-
 - using `flash` will result in an actual white flashing marker.
+
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
+
+
+## Themes
+
+To quickly set chose a favoured color combination. use the function `theme(theme)`. The available themes could be displayed with the function `themes()`; here is its output: 
+
+![themes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/themes.png)
+
+To add, tweak, rename any theme presented, please feel free to open an issue, dropping your favourite combination of canvas, axes, ticks color and style together with 3 signal colors in sequence: any idea is welcomed. 
+To remove all plot colors and styles from the current subplot, use `clear_color()` - in short `clc()`, which is equivalent to `theme('clear')`.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
