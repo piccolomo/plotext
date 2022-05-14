@@ -8,14 +8,15 @@
 - [Log Plot](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#log-plot)
 - [Streaming Data](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#streaming-data)
 
-[Plotext Guide](https://github.com/piccolomo/plotext#guide)
+[Main Guide](https://github.com/piccolomo/plotext#guide)
+
 
 ## Scatter Plot
 
 Here is an example of a simple scatter plot:
 ```python
 import plotext as plt
-y = plt.sin() # sinusoidal signal 
+y = plt.sin() # sinusoidal signal
 plt.scatter(y)
 plt.title("Scatter Plot")
 plt.show()
@@ -26,21 +27,17 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.scatter(y); plt.title('Sca
 ```
 ![scatter](https://raw.githubusercontent.com/piccolomo/plotext/master/images/scatter.png)
 
-- by default, the plot size adapts to the terminal size; to change this use the function `plt.plot_size()`, described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-size).
-  
-- the default marker is `hd` (the 2 x 2 higher resolution markers) and it is available only in `Unix` systems as it doesn't seem to render well in Windows; the 3 x 2 highest resolution marker, named `fhd`, works only in `Unix` systems and only in some terminals.
-`
-- To save the plot as colorless `txt` or as colored `html`, use the function `save_fig()`. If its parameter `keep_colors` is `True`, the `txt` version will keep the ansi color codes; in this case, in linux systems, the plot could be rendered on terminal with the command `less -R file_path.txt`.
-
+- By default, the plot size adapts to the terminal size; to change this use the function `plot_size(width, height)`, described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-size).
+- The default marker is `hd` (the 2 x 2 higher definition marker) and it is available only in `Unix` systems, as it doesn't seem to render well in Windows; the 3 x 2 highest definition marker, named `fhd`, works only in `Unix` systems and only in some terminals.
+- To save the plot as colorless `txt` or as colored `html`, use the function `save_fig(path)` described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions). 
 - The documentation of the `scatter()` function can be accessed with `plotext.doc.scatter()`.
 
-[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
-
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
 
 ## Line Plot
 
-For a line plot use the `plt.plot()` function instead:
+For a line plot use the `plot()` function instead:
 ```python
 import plotext as plt
 y = plt.sin()
@@ -54,8 +51,7 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.plot(y); plt.title('Line P
 ```
 ![plot](https://raw.githubusercontent.com/piccolomo/plotext/master/images/plot.png)
 
-[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
-
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
 
 ## Stem Plot
@@ -75,9 +71,7 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.plot(y, fillx = True); plt
 
 ![stem](https://raw.githubusercontent.com/piccolomo/plotext/master/images/stem.png)
 
-[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
-
-
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
 
 ## Multiple Data Sets
@@ -104,8 +98,7 @@ python3 -c "import plotext as plt; y1 = plt.sin(); y2 = plt.sin(phase = -1); plt
 
 The `label` parameter, inside any plotting function, can be used to add an entry in the plot legend in the upper left corner of the plot canvas.
 
-[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
-
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
 
 ## Multiple Axes Plot
@@ -132,8 +125,7 @@ python3 -c "import plotext as plt; y1 = plt.sin(); y2 = plt.sin(2, phase = -1); 
 
 On the right side of each legend entry, a symbol is introduce to easily identify on which axes the data refers to: its interpretation should be intuitive.
 
-[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
-
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
 
 ## Log Plot
@@ -164,12 +156,11 @@ python3 -c "import plotext as plt; l = 10 ** 4; x = range(1, l + 1); y = plt.sin
 ```
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/log.png)
 
-- the functions `plt.xscale()` accept the `xside` parameter, to independently set the scale of each `x` axes , `"lower"` or `"upper"` (in short `1` or `2`). Analogously `plt.yscale()` accept the `yside` parameter, to independently set the scale of each `y` axes , `"left"` or `"right"` (in short `1` or `2`).
+- the functions `plt.xscale()` accept the `xside` parameter, to independently set the scale of each `x` axes , `"lower"` or `"upper"` (in short `1` or `2`). 
+- Analogously `plt.yscale()` accept the `yside` parameter, to independently set the scale of each `y` axes , `"left"` or `"right"` (in short `1` or `2`).
+- the log function used is `math.log10`.
 
-- the log function used is `log10`.
-
-[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
-
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
 
 ## Streaming Data
@@ -211,4 +202,4 @@ python3 -c "import plotext as plt; l = 1000; frames = 200; plt.title('Streaming 
 ```
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/stream.gif)
 
-[Plotext Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
