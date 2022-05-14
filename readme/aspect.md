@@ -92,7 +92,7 @@ To quickly set chose a favoured color combination. use the function `theme(theme
 
 ![themes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/themes.png)
 
-To add, tweak, rename any theme presented, please feel free to open an issue, dropping your favourite combination of canvas, axes, ticks color and style together with 3 signal colors in sequence: any idea is welcomed. 
-To remove all plot colors and styles from the current subplot, use `clear_color()` - in short `clc()`, which is equivalent to `theme('clear')`.
+- to add, tweak, rename any theme presented, please feel free to open an issue, dropping your favourite combination of canvas, axes, ticks color and style together with 3 signal colors in sequence: any idea is welcomed. 
+- to remove all plot colors and styles from the current subplot, use `clear_color()`, in short `clc()`, which is equivalent to `theme('clear')`.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
