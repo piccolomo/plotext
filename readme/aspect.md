@@ -5,6 +5,7 @@
 - [Colors](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors)
 - [Styles](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#styles)
 - [Themes](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#themes)
+
 [Main Guide](https://github.com/piccolomo/plotext#guide)
 
 
@@ -29,6 +30,7 @@ Here are the main functions used to alter the plot lines:
 - To control all axes simultaneously, use the function `frame(frame)` instead, which will show or remove the plot frame (composed of all 4 axes). It require a single Boolean.
 - The function `grid(horizontal, vertical)` is used to add or remove the horizontal and vertical grid lines and requires two Boolean inputs.
 - To add extra lines at some specific coordinates use the functions `vertical_line()` and `horizontal_line()`, ad explained in [this section](https://github.com/piccolomo/plotext/blob/master/readme/tools.md#extra-lines).
+
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
 
@@ -43,6 +45,7 @@ To specify which marker to use, for a data point, use the parameter `marker`, av
 - **`hd`** stands for *high definition*, which uses 2 x 2 unicode block characters, such as ▞. 
 - **`fhd`** stands for *full high definition*, which uses 3 x 2 unicode block characters, such as 🬗.  This marker works only in Unix systems and only in some terminals.
 - Access the function `markers()` for the available marker codes.
+
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
 
@@ -68,6 +71,7 @@ Here are the types of color codes that could be provided to the `color` paramete
 - an **RGB color** consisting of a tuple of three values (red, green, blue), each between 0 and 255, to obtain the most realistic color rendering,
 - a **list of color codes** to give a different color to each plot marker: the length of the list of colors will adapt to the length of the data set. Each color could be of a different kind (string, integer or rgb).
 - access the function `colors()` for the available string and integer codes.
+
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
 
@@ -79,14 +83,16 @@ These are the available **style codes** that could be provided to the `style` pa
 - any number of styles could be used at the same time, provided they are separated by a space,
 - using `flash` will result in an actual white flashing marker,
 - access the function `styles()` for the available style codes.
+
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
 
 ## Themes
-To quickly set chose a favoured color combination. use the function `theme(theme)`. The available themes could be displayed with the function `themes()`; here is its output: 
+To quickly chose a favoured color combination, use the function `theme(theme)`. The available themes could be displayed with the function `themes()`; here is its output: 
 
 ![themes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/themes.png)
 
 - to add, tweak, rename any theme presented, please feel free to open an issue, dropping your favourite combination of canvas, axes, ticks color and style together with 3 signal colors in sequence: any idea is welcomed. 
 - to remove all plot colors and styles from the current subplot, use `clear_color()`, in short `clc()`, which is equivalent to `theme('clear')`.
+
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
