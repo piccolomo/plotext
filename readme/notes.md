@@ -226,5 +226,8 @@ Note: there are many new features from the previous version: any bug report is u
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
 
 ## Similar Projects
-
-
+- [plotille](https://github.com/tammoippen/plotille)
+- [asciichart](https://github.com/cashlo/asciichart)
+- [uniplot](https://github.com/olavolav/uniplot)
+- [bashplotlib](https://github.com/glamp/bashplotlib)
+- [termplotlib](https://pypistats.org/packages/termplotlib)
