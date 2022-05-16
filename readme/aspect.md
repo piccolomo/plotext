@@ -58,7 +58,7 @@ Colors could easily applied to the entire plot, using the following functions:
 Here are the types of color codes that could be provided to the `color` parameter of the previous functions, as well as the `fullground` or `background` parameter of the function `colorize()`:
 - the following **color string codes**:
 ![color-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/color-codes.png)
-  `default` will use the default terminal color.
+`default` will use the default terminal color.
 - an **integer between 0 and 255**, resulting in the following colors:
 ![integer-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/integer-codes.png)
   Note: the first 16 produce the same results as the previous string color codes.
