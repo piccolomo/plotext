@@ -56,7 +56,7 @@ Colors could easily applied to the entire plot, using the following functions:
 - `ticks_style(style)` sets the style of the axes ticks, title, and legend labels, if present.
 
 Here are the types of color codes that could be provided to the `color` parameter of the previous functions, as well as the `fullground` or `background` parameter of the function `colorize()`:
-- the following **color string codes**:
+- the following **color string codes**:\
 ![color-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/color-codes.png)
 - an **integer between 0 and 255**, resulting in the following colors:
 ![integer-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/integer-codes.png)
@@ -70,7 +70,7 @@ Here are the types of color codes that could be provided to the `color` paramete
 
 
 ## Styles
-These are the available **style codes** that could be provided to the `style` parameter of any plotting function, including `colorize()`:
+These are the available **style codes** that could be provided to the `style` parameter of any plotting function, including `colorize()`:\
 ![style-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/styles.png)
 - any number of styles could be used at the same time, provided they are separated by a space,
 - using `flash` will result in an actual white flashing marker,
