@@ -11,16 +11,13 @@
 ![subplots](https://raw.githubusercontent.com/piccolomo/plotext/master/images/subplots.png)
 image code [here](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md).
 
+
 ## Install
 - `pip install plotext` for normal installation,
 - `pip install plotext --upgrade` to upgrade to the latest version,
 - `pip install "plotext[image]"` to install the optional dependency for **image plotting** (including GIFs),
-- `pip install "plotext[video]"` to install the optional dependencies for **video rendering**, which will also allow to plot images. 
-
-Notes:
-
-- the optional packages are `pillow` (for image plotting), `opencv-python` (for video rendering), `pafy` (to stream YouTube) and `ffpyplayer` (to stream audio).
-- the command `pip install youtube-dl==2020.12.2` has helped with YouTube video rendering problems.
+- `pip install "plotext[video]"` to install the optional dependencies for **video rendering**, which will also allow to plot images.
+- the optional packages are `pillow` (for image plotting), `opencv-python` (for video rendering), `ffpyplayer` (to stream audio), and `pafy` and "youtube-dl"(to stream YouTube).
 
 
 ## Guide
@@ -43,4 +40,4 @@ Notes:
 #### Other Resources
 - [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md)
 - [Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md)
-- [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md)
+- [Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md)
