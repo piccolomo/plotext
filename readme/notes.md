@@ -227,6 +227,9 @@ Note: there are many new features from the previous version: any bug report is u
 
 ## Similar Projects
 - [plotille](https://github.com/tammoippen/plotille)
+- [termplot](https://github.com/justnoise/termplot)
+- [termgraph](https://github.com/sgeisler/termgraph)
+- [terminalplot](https://github.com/kressi/terminalplot)
 - [asciichart](https://github.com/cashlo/asciichart)
 - [uniplot](https://github.com/olavolav/uniplot)
 - [bashplotlib](https://github.com/glamp/bashplotlib)
