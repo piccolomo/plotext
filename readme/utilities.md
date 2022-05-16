@@ -1,9 +1,9 @@
 # Utilities
 - [Clearing Functions](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#clearing-functions)
 - [Useful Functions](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions)
-- [Colored Text](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#colored-text)
 - [File Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities)
 - [Command Line Tool](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#command-line-tool)
+- [Colored Text](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#colored-text)
 - [Docstrings](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#docstrings)
 
 [Main Guide](https://github.com/piccolomo/plotext#guide)
@@ -13,20 +13,18 @@
 
 Here are all the available clear functions:
 
-- `clear_figure()`, in short `clf()`, clears **all internal definitions** of the subplot it refers to, including its subplots. If it refers to the entire figure, it will clear everything.
-
-- `clear_data()`, in short `cld()`, clears only the **data information** relative to the active subplot, without clearing all the other plot settings.
-
-- `clear_color()`, in short `clc()`, clears only the **color settings** relative to the active subplot, without clearing all other plot settings. The final rendering of this subplot will be colorless. This function is equivalent to `theme('clear')`
-
-- `clear_terminal()`, in short `clt()`, clears the **terminal screen** and it is generally useful before plotting a continuous stream of data. It is recommended to use it before `show()`. If its `lines` parameter is set to an integer, only the specified number of lines will be cleared. In this case, it is recommended to use it after `show()`. Note that, depending on shell used, few extra lines may be printed after the plot.
+- `clear_figure()`, in short `clf()`, clears **all internal definitions** of the subplot it refers to, including its subplots; if it refers to the entire figure, it will clear everything.
+- `clear_data()`, in short `cld()`, clears only the **data information** relative to the active subplot, without clearing all the other plot settings,
+- `clear_color()`, in short `clc()`, clears only the **color settings** relative to the active subplot, without clearing all other plot settings; the final rendering of this subplot will be colorless; this function is equivalent to `theme('clear')`,
+- `clear_terminal()`, in short `clt()`, clears the **terminal screen** and it is generally useful before plotting a continuous stream of data; it is recommended to use it before `show()`; if its `lines` parameter is set to an integer, only the specified number of lines will be cleared; in this case, it is recommended to use it after `show()`. Note that, depending on shell used, few extra lines may be printed after the plot.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#utilities)
 
 
 ## Useful Functions
 
-- `savefig(path)` saves the colourless version of the plot, as a text file, at the `path` specified. If the path extension is `.html` the colors will be preserved. 
+- `savefig(path)` saves the colourless version of the plot, as a text file, at the `path` specified:
+    - if the path extension is `.html` the colors will be preserved,
     - if its parameter `keep_colors` is `True`, the `txt` version will keep the ansi color codes; in this case, in linux systems, the plot could be rendered on terminal with the command `less -R` followed by the path where the plot is saved,
     - to easily manipulate **file paths**, use the tools recommended in [this section](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities),
 - `build()` is equivalent to `show()` except that the final figure canvas is returned as a string and not printed,
@@ -67,21 +65,28 @@ Here are all the available clear functions:
 
 ## Command Line Tool
 
-There are two ways one could use `plotext` directly on terminal. The first is by using the command line tool, for simple scatter, line, bar, histogram plot, as well as for image, gif, video and youtube rendering. For further documentation run, on terminal:
+There are two ways one could use `plotext` directly on terminal. The first is by using its dedicated command line tool, to print a simple scatter, line, bar or histogram plot, as well as image plotting, and to play GIFs, video and YouTube. For further documentation run, on terminal:
 
 ```console
 plotext --help
 ```
+![command-tool](https://raw.githubusercontent.com/piccolomo/plotext/master/images/command-tool.png)
 
-![command-toll](https://raw.githubusercontent.com/piccolomo/plotext/master/images/command-tool.png)
+The documentation of each function is also available: eg: `plotext scatter -h`
 
-Access the help for each function for further documentation; eg: `plotext scatter -h`. The flag -f is used to read from file; the tool recognizes some keywords for test files internally saved, so it is easy to test the tool following the examples shown on each function help page. For example:
+![scatter-tool](https://raw.githubusercontent.com/piccolomo/plotext/master/images/scatter-tool.png)
+
+The flag -f is used to read from file; the tool recognizes some keywords for test files available online, which it downloads and finally remove, so it is easy to test the tool following the examples shown on each function help page. For example:
 
 ```console
-plotext scatter --file test_data -col 2 3 -m hd -c red+ -t 'Test Data' -xl time -yl Price -g True
+plotext scatter --file test_data --columns 2 3 --marker hd --color red+ --title 'Test Data' --xlabel time --ylabel Price --grid True
+plotext plot --file test_data --columns 1 3 --marker hd --color magenta --title 'Test Data' --xlabel time --ylabel Price
+plotext plotter --file test_data --columns 1 2 --marker x --color blue+ --title 'A Title' --xlabel x --grid True"
+plotext bar --file test_data --columns 1 3 --marker sd --color red+ --fill False --width 0.5
+plotext hist --file test_data --columns 1 3 --marker sd --color orange+ --title 'Test Data' --fill True --bins 15
 plotext image --file test_image
 plotext gif --file test_gif
-plotext video --file test_video --from_youtube True
+plotext video -f test_video --from_youtube True
 plotext youtube --url test_youtube
 ```
 
@@ -105,12 +110,10 @@ python3 -c "import plotext as plt; plt.scatter(plt.sin()); plt.title('Scatter Pl
 
 ## Colored Text
 
-To obtained colored strings use the function `colorize(fullground, style, backgound, show)` which paints a string with the given styles, fullground and background colors. The styles and color codes are explained [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors). If `show = True` the string is directly printed and not returned. Here are a few examples:
+To obtained colored strings use the function `colorize(fullground, style, backgound, show)` which paints a string with the given fullground color, style or styles and background color. The color and style codes are explained [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors). If `show = True` the string is directly printed and not returned. Here are a few examples:
 ```python
 import plotext as plt
-
-import plotext as plt
-                                           #Fullground     #Style       #Backgroun        #Show
+                                            #Fullground     #Style       #Background      #Show
 plt.colorize("black on white, bold",        "black",        "bold",      "white",         True)
 plt.colorize("red on green, italic",        "red",          "italic",    "green",         True)
 plt.colorize("yellow on blue, flash",       "yellow",       "flash",     "blue",          True)
@@ -125,7 +128,6 @@ plt.colorize("RGB color codes",             (16, 100, 200), "default",   (200, 1
 - To remove any coloring use the function `uncolorize(string)`.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#utilities)
-
 
 
 ## Docstrings
