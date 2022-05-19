@@ -1147,7 +1147,7 @@ side_symbols = {("lower", "left"): 'L', ("lower", "right"): '⅃', ("upper", "le
 
 def get_labels(ticks): # it returns the approximated string version of the data ticks
     d = distinguishing_digit(ticks)
-    labels = [str(ut.round(el, d + 1)) for el in ticks]
+    labels = [f"{ut.round(el, d + 1):f}" for el in ticks]
     labels = [el[: el.index('.') + d + 2] for el in labels]
     labels = [add_extra_zeros(el, d + 1) if len(labels) > 1 else el for el in labels]
     sign = any([el < 0 for el in ticks])
