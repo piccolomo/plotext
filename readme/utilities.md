@@ -62,6 +62,7 @@ Here are all the available clear functions:
 
 ## Command Line Tool
 **Updated in version 5.1**
+
 There are two ways one could use `plotext` directly on terminal. The first is by using its dedicated command line tool, to print a simple scatter, line, bar or histogram plot, as well as image plotting, and to play GIFs, video and YouTube. For further documentation run, on terminal:
 
 ```console
