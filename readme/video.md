@@ -19,7 +19,7 @@ or directly on terminal:
 ```console
 python3 -c "import plotext as plt; path = 'moonwalk.mp4'; plt.download(plt.test_video_url, path); plt.play_video(path, from_youtube = True); plt.delete_file(path)"
 ```
-which will render [this video](https://raw.githubusercontent.com/piccolomo/plotext/master/images/moonwalk.mp4) on terminal.
+which will render [this video](https://raw.githubusercontent.com/piccolomo/plotext/master/data/moonwalk.mp4) on terminal.
 
 - The function `show()` is not necessary in this case, as it is called internally,
 - the frames will adapt to the screen size unless `plot_size()` is used before `play_video()`,

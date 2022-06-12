@@ -78,3 +78,7 @@ python3 -c "import plotext as plt; path = 'cat.jpg'; plt.download(plt.test_image
 
 python3 -c "import plotext as plt; path = 'homer.gif'; plt.download(plt.test_gif_url, path); plt.play_gif(path); plt.show(); plt.delete_file(path)"
 
+
+python3 -c "import plotext as plt; path = 'moonwalk.mp4'; plt.download(plt.test_video_url, path); plt.play_video(path, from_youtube = True); plt.delete_file(path)"
+
+
