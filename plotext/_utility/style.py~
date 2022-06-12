@@ -40,4 +40,4 @@ def styles_doc():
     c = '\n'.join(c)
     print(c)
     mul = 'bold italic dim'
-    print('\n' + colorize('multiple styles are accepted, ', title_color) + 'eg: ' + colorize(mul, style = mul))
+    print('\n' + colorize('multiple styles are accepted. ', title_color) + 'eg: ' + colorize(mul, style = mul))

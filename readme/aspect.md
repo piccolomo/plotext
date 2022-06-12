@@ -60,9 +60,9 @@ Colors could easily applied to the entire plot, using the following functions:
 Here are the types of color codes that could be provided to the `color` parameter of the previous functions, as well as the `fullground` or `background` parameter of the function `colorize()`:
 - the following **color string codes**:\
 ![color-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/data/color-codes.png)
+   - `default` will use the default terminal color,
 - an **integer between 0 and 255**, resulting in the following colors:
 ![integer-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/data/integer-codes.png)
-   - `default` will use the default terminal color,
    - the first 16 integer color codes produce the same results as the string color codes,
 - an **RGB color** consisting of a tuple of three values (red, green, blue), each between 0 and 255, to obtain the most realistic color rendering,
 - a **list of color codes** to give a different color to each plot marker: the length of the list of colors will adapt to the length of the data set; each color could be of a different kind (string, integer or rgb).

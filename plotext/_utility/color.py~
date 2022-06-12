@@ -62,7 +62,7 @@ def is_color(color):
 
 def colors_doc():
     from plotext._utility import no_duplicates, pad_string
-    print(colorize("String Color Codes", style = 'bold'))
+    #print(colorize("String Color Codes", style = ''))
     c = no_duplicates([el.replace('+', '') for el in colors if el not in ['default', 'black', 'white']])
     cp = [colorize(el + '+', el + '+') for el in c]
     c = [colorize(pad_string(el, 10), el) for el in c]
@@ -73,7 +73,7 @@ def colors_doc():
     print(c)
     print()
     #print(colorize("\n\nInteger Color Codes:", style = ''))
-    c = colorize("Integer Color Codes", style = 'bold', show = False) + '\n'
+    c = ''
     for row in range(16):
         cr = ' '
         for col in range(16):
@@ -81,11 +81,6 @@ def colors_doc():
             cr += colorize(pad_string(i, 5), i)
         c += cr + '\n'
     print(c)
-    c = '\n'
-    rgb = (100, 200, 85)
-    rgb_string = '(' + ', '.join([str(el) for el in rgb]) + ')'
-    print(colorize("RGB Tuples like:", style = "bold"), colorize(rgb_string, rgb, "bold"))
-    
 
 ##############################################
 #########    Colorizing Strings    ###########
