@@ -35,7 +35,7 @@ plx.from_matplotlib(fig)
 plx.show()
 ```
 
-![matplotlib](https://raw.githubusercontent.com/piccolomo/plotext/master/images/matplotlib.png)
+![matplotlib](https://raw.githubusercontent.com/piccolomo/plotext/master/data/matplotlib.png)
 
 These feature is under development: please report any bug, with some possible idea on how to fix it.
 
@@ -263,7 +263,7 @@ if __name__ == '__main__':
 ```
 which outputs:
 
-![tkinter](https://raw.githubusercontent.com/piccolomo/plotext/master/images/tkinter.png)
+![tkinter](https://raw.githubusercontent.com/piccolomo/plotext/master/data/tkinter.png)
 
 - using the `scale` slider one can change the font size; lower font size makes the final plot bigger, which requires more computational time,
 - the `Save` button saves the plots as an `html` file in the user home folder.

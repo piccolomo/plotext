@@ -125,26 +125,26 @@ def build_parser():
                                    description = "plots a series of data points",
                                    parents = [path_parser, data_parser, common_parser, options_parser],
                                    help = 'plots a series of data points',
-                                   epilog = "eg: plotext scatter --file test --columns 2 3 --marker hd --color red+ --title 'Test Scatter Plot' --xlabel Time --ylabel Price --grid True")
+                                   epilog = "eg: plotext scatter --path test --xcolumn 1 --ycolumns 2 --lines 5000 --title 'Scatter Plot Test'")
 
 
     plot = subparser.add_parser('plot',
                                 parents = [path_parser, data_parser, common_parser, options_parser],
                                 description = "plots lines between consecutive data points",
                                 help = 'plots lines between consecutive data points',
-                                epilog = "eg: plotext plot --file test --columns 1 3 --marker hd --color magenta --title 'Test Plot' --xlabel Time --ylabel Price --grid False")
+                                epilog = "eg:plotext plot --path test --xcolumn 1 --ycolumns 2 --sleep 0.1 --lines 230 --clear_terminal True --color magenta+ --title 'Plot Test'")
 
     plotter = subparser.add_parser('plotter',
                                    parents = [path_parser, data_parser, common_parser, options_parser],
                                    description = 'plots a series of data points and the lines between consecutive ones', 
                                    help = 'scatter + plot',
-                                   epilog = "eg: plotext plotter --file test --columns 1 2 --marker x --color blue+ --title 'Test Plotter' --xlabel x")
+                                   epilog = "eg: plotext plotter --path test --xcolumn 1 --ycolumns 2 --sleep 0.1 --lines 2500 --clear_terminal True --marker braille --title 'Plotter Test'")
  
     bar = subparser.add_parser('bar',
                                parents = [path_parser, data_parser, common_parser, options_parser, barhist_parser],
                                description = 'builds a bar plot',
                                help = 'bar plot',
-                               epilog = "eg: plotext bar --file test --columns 1 3 --marker sd --color red+ --fill False --width 0.5")
+                               epilog = "eg: plotext bar --path test --xcolumn 1 --title 'Bar Plot Test' --xlabel Animals --ylabel Count")
 
     bar.add_argument("-w", "--width",
                             nargs   = 1,
@@ -156,7 +156,7 @@ def build_parser():
                                 parents = [path_parser, data_parser, common_parser, options_parser, barhist_parser],
                                 description = 'builds a histogram plot',
                                 help = 'histogram plot',
-                                epilog = "eg: plotext hist --file test --columns 1 3 --marker sd --color orange+ --title 'Test Hist Plot' --fill True --bins 15")
+                                epilog = "eg: plotext hist --path test --xcolumn 1 --ycolumns 2 --lines 5000 --title 'Histogram Test'")
 
     hist.add_argument("-b", "--bins",
                             nargs   = 1,
@@ -168,19 +168,19 @@ def build_parser():
                                  parents = [path_parser, common_parser],
                                  description = 'plots an image from path',
                                  help = 'plots an image from file path',
-                                 epilog = "eg: plotext image --file test")
+                                 epilog = "eg: plotext image --path test")
     
     gif = subparser.add_parser('gif',
                                parents = [path_parser, common_parser],
                                description = 'plays a gif image from path',
                                help = 'plays a gif image from path',
-                               epilog = "eg: plotext gif --file test")
+                               epilog = "eg: plotext gif --path test")
 
     video = subparser.add_parser('video',
                                  parents = [path_parser, common_parser],
                                  description = 'plays a video from path',
                                  help = 'plays a video from path',
-                                 epilog = "eg: plotext video --file test --from_youtube True")
+                                 epilog = "eg: plotext video --path test --from_youtube True")
 
     video.add_argument("-fy", "--from_youtube",
                                 nargs   = 1,

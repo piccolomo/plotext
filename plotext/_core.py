@@ -330,13 +330,13 @@ def play_youtube(url):
     best = video.getbest()
     _play_video(best.url, from_youtube = True)
 
-def get_youtube(url, path):
+def get_youtube(url, path, log = True):
     import pafy
     video = pafy.new(url)
     best = video.getbest(preftype = "mp4")
     path = _ut.correct_path(path)
     path = best.download(filepath = path)
-    print('video downloaded in', path)
+    print('video downloaded in', path) if log else None
     return path
 
 def _play_video(path, from_youtube = False):
