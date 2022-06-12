@@ -25,9 +25,11 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.scatter(y); plt.title('Sca
 ```
 ![scatter](https://raw.githubusercontent.com/piccolomo/plotext/master/data/scatter.png)
 
-- By default, the plot size adapts to the terminal size; to change this use the function `plot_size(width, height)`, described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-size).
-- The default marker is `hd` (the 2 x 2 higher definition marker) and it is available only in `Unix` systems, as it doesn't seem to render well in Windows; the 3 x 2 highest definition marker, named `fhd`, works only in `Unix` systems and only in some terminals.
-- To save the plot as colorless `txt` or as colored `html`, use the function `save_fig(path)` described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions). 
+- By default, the plot size adapts to the terminal size; to change this use the function `plot_size(width, height)`, described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-size),
+- the default marker is `hd` (the 2 x 2 higher definition marker) and it is available only in `Unix` systems, as it doesn't seem to render well in Windows,
+- the 3 x 2 higher definition marker, named `fhd`, works only in `Unix` systems and only in some terminals,
+- the 4 x 2 highest definition marker, named `braille`, is now available (from version 5.1) and should work in all systems,
+- To save the plot as colorless `txt` or as colored `html`, use the function `save_fig(path)` described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions),
 - The documentation of the `scatter()` function can be accessed with `doc.scatter()`.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
@@ -48,11 +50,13 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.plot(y); plt.title('Line P
 ```
 ![plot](https://raw.githubusercontent.com/piccolomo/plotext/master/data/plot.png)
 
+The documentation of the `plot()` function can be accessed with `doc.scatter()`.
+
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
 
 ## Stem Plot
-For a stem plot use either the `fillx` or `filly` parameters (available for most plotting functions) to fill the canvas of data points till the `y = 0` or `x = 0` axis, respectively. Here is a basic example:
+For a stem plot use either the `fillx` or `filly` parameters (available for most plotting functions) to fill the canvas with data points till the `y = 0` or `x = 0` level, respectively. Here is an example:
 ```python
 import plotext as plt
 y = plt.sin()
@@ -91,7 +95,7 @@ python3 -c "import plotext as plt; y1 = plt.sin(); y2 = plt.sin(phase = -1); plt
 ```
 ![multiple-data](https://raw.githubusercontent.com/piccolomo/plotext/master/data/multiple-data.png)
 
-The `label` parameter, inside any plotting function, can be used to add an entry in the plot legend in the upper left corner of the plot canvas.
+The `label` parameter, inside any plotting function, can be used to add an entry in the plot legend, shown in the upper left corner of the plot canvas.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
@@ -145,12 +149,12 @@ plt.show()
 ```
 or directly on terminal:
 ```console
-python3 -c "import plotext as plt; l = 10 ** 4; x = range(1, l + 1); y = plt.sin(1, 2, l); plt.plot(x, y); plt.xscale('log'); plt.yscale('linear'); plt.grid(1, 0); plt.title('Logarithmic Plot'); plt.xlabel('logarithmic scale'); plt.ylabel('linear scale'); plt.show()"
+python3 -c "import plotext as plt; l = 10 ** 4; y = plt.sin(periods = 2, length = l); plt.plot(y); plt.xscale('log'); plt.yscale('linear'); plt.grid(0, 1); plt.title('Logarithmic Plot'); plt.xlabel('logarithmic scale'); plt.ylabel('linear scale'); plt.show();"
 ```
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/data/log.png)
 
-- the functions `plt.xscale()` accept the `xside` parameter, to independently set the scale of each `x` axes , `"lower"` or `"upper"`, in short `1` or `2`,
-- Analogously `plt.yscale()` accept the `yside` parameter, to independently set the scale of each `y` axes , `"left"` or `"right"`, in short `1` or `2`,
+- the function `plt.xscale()` accept the parameter `xside`, to independently set the scale of each `x` axes , `"lower"` or `"upper"` - in short `1` or `2`,
+- Analogously `plt.yscale()` accept the parameter `yside`, to independently set the scale of each `y` axes , `"left"` or `"right"` - in short `1` or `2`,
 - the log function used is `math.log10`.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
@@ -159,10 +163,10 @@ python3 -c "import plotext as plt; l = 10 ** 4; x = range(1, l + 1); y = plt.sin
 ## Streaming Data
 When streaming a continuous flow of data, consider using the following functions:
 
-- `plt.clear_data()` - in short `plt.cld()` - to clear only the plot data (without clearing the plot style) of the active subplot.
-- `plt.clear_terminal()` - in short `plt.clt()` - to clear the terminal screen before the actual plot.
-- `plt.sleep(time)` to reduce a possible screen flickering: for example `sleep(0.01)` would add approximately 10 ms to the computation.
-- optionally `plt.clear_color()` - in short `plt.clc()` - to remove the plot coloring, and so to make the streaming more responsive.
+- `plt.clear_data()` - in short `plt.cld()` - to clear only the plot data (without clearing the plot style) of the active subplot,
+- `plt.clear_terminal()` - in short `plt.clt()` - to clear the terminal screen before the actual plot,
+- `plt.sleep(time)` to reduce a possible screen flickering: for example `sleep(0.01)` would add approximately 10 ms to the computation,
+- optionally `plt.clear_color()` - in short `plt.clc()` - to remove the plot coloring, at the beginning, and so to make the streaming more responsive.
 
 Here is a coded example:
 
