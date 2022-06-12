@@ -23,7 +23,7 @@ or directly on terminal:
 ```console
 python3 -c "import plotext as plt; y = plt.sin(); plt.scatter(y); plt.title('Scatter Plot'); plt.show()"
 ```
-![scatter](https://raw.githubusercontent.com/piccolomo/plotext/master/images/scatter.png)
+![scatter](https://raw.githubusercontent.com/piccolomo/plotext/master/data/scatter.png)
 
 - By default, the plot size adapts to the terminal size; to change this use the function `plot_size(width, height)`, described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-size).
 - The default marker is `hd` (the 2 x 2 higher definition marker) and it is available only in `Unix` systems, as it doesn't seem to render well in Windows; the 3 x 2 highest definition marker, named `fhd`, works only in `Unix` systems and only in some terminals.
@@ -46,7 +46,7 @@ or directly on terminal:
 ```console
 python3 -c "import plotext as plt; y = plt.sin(); plt.plot(y); plt.title('Line Plot'); plt.show()"
 ```
-![plot](https://raw.githubusercontent.com/piccolomo/plotext/master/images/plot.png)
+![plot](https://raw.githubusercontent.com/piccolomo/plotext/master/data/plot.png)
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
@@ -65,7 +65,7 @@ or directly on terminal:
 python3 -c "import plotext as plt; y = plt.sin(); plt.plot(y, fillx = True); plt.title('Stem Plot'); plt.show()"
 ```
 
-![stem](https://raw.githubusercontent.com/piccolomo/plotext/master/images/stem.png)
+![stem](https://raw.githubusercontent.com/piccolomo/plotext/master/data/stem.png)
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
@@ -89,7 +89,7 @@ or directly on terminal:
 ```console
 python3 -c "import plotext as plt; y1 = plt.sin(); y2 = plt.sin(phase = -1); plt.plot(y1, label = 'plot'); plt.scatter(y2, label = 'scatter'); plt.title('Multiple Data Set'); plt.show()"
 ```
-![multiple-data](https://raw.githubusercontent.com/piccolomo/plotext/master/images/multiple-data.png)
+![multiple-data](https://raw.githubusercontent.com/piccolomo/plotext/master/data/multiple-data.png)
 
 The `label` parameter, inside any plotting function, can be used to add an entry in the plot legend in the upper left corner of the plot canvas.
 
@@ -115,7 +115,7 @@ or directly on terminal:
 ```console
 python3 -c "import plotext as plt; y1 = plt.sin(); y2 = plt.sin(2, phase = -1); plt.plot(y1, xside= 'lower', yside = 'left', label = 'lower left'); plt.plot(y2, xside= 'upper', yside = 'right', label = 'upper right'); plt.title('Multiple Axes Plot'); plt.show()"
 ```
-![multiple-axes](https://raw.githubusercontent.com/piccolomo/plotext/master/images/multiple-axes.png)
+![multiple-axes](https://raw.githubusercontent.com/piccolomo/plotext/master/data/multiple-axes.png)
 
 On the right side of each legend entry, a symbol is introduce to easily identify on which axes the data refers to: its interpretation should be intuitive.
 
@@ -147,7 +147,7 @@ or directly on terminal:
 ```console
 python3 -c "import plotext as plt; l = 10 ** 4; x = range(1, l + 1); y = plt.sin(1, 2, l); plt.plot(x, y); plt.xscale('log'); plt.yscale('linear'); plt.grid(1, 0); plt.title('Logarithmic Plot'); plt.xlabel('logarithmic scale'); plt.ylabel('linear scale'); plt.show()"
 ```
-![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/log.png)
+![example](https://raw.githubusercontent.com/piccolomo/plotext/master/data/log.png)
 
 - the functions `plt.xscale()` accept the `xside` parameter, to independently set the scale of each `x` axes , `"lower"` or `"upper"`, in short `1` or `2`,
 - Analogously `plt.yscale()` accept the `yside` parameter, to independently set the scale of each `y` axes , `"left"` or `"right"`, in short `1` or `2`,
@@ -189,6 +189,6 @@ or directly on terminal:
 ```console
 python3 -c "import plotext as plt; l = 1000; frames = 200; plt.title('Streaming Data'); [(plt.cld(), plt.clt(), plt.plot(plt.sin(periods = 2, length = l, phase = 2 * i  / frames)), plt.sleep(0), plt.show()) for i in range(frames)]"
 ```
-![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/stream.gif)
+![example](https://raw.githubusercontent.com/piccolomo/plotext/master/data/stream.gif)
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
