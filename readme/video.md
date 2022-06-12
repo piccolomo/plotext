@@ -24,7 +24,7 @@ which will render [this video](https://raw.githubusercontent.com/piccolomo/plote
 - The function `show()` is not necessary in this case, as it is called internally,
 - the frames will adapt to the screen size unless `plot_size()` is used before `play_video()`,
 - set the parameter `from_youtube` to `True` to make sure that the color rendering is correct for videos downloaded from YouTube,
-- to download videos from YouTube, use the function `plt.get_youtube()`, described in [this section](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities),
+- to download videos from YouTube, use the function `plt.get_youtube()` described in [this section](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities),
 - this function may require further development,
 - access the full documentation of the function `play_video()` with `doc.play_video()`.
 
@@ -45,11 +45,12 @@ python3 -c "import plotext as plt; plt.play_youtube(plt.test_youtube_url)"
 
 which will render [this youtube video](https://www.youtube.com/watch?v=2Z4s8xbuegQ) on terminal. 
 
-- Yes, I am a Michael Jackson fan: he is number one, not my fault,
 - the function `show()` is not necessary in this case, as it is called internally,
 - the frames will adapt to the screen size unless `plot_size()` is used before `play_youtube()`,
-- to download a YouTube video use the function `get_youtube()`,
+- to download a YouTube video use the function `get_youtube()` described in [this section](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities),
 - this function may require further development,
-- access the full documentation of the function `play_youtube()` with `doc.play_youtube()`.
+- access the full documentation of the function `play_youtube()` with `doc.play_youtube()`,
+- yes! I am a Michael Jackson fan: he is number one, not my fault,
+
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Play Videos](https://github.com/piccolomo/plotext/blob/master/readme/video.md)
