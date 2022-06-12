@@ -72,7 +72,8 @@ plotext --help
 The documentation of each function is also available: eg: `plotext scatter -h`
 
 ![scatter-tool](https://raw.githubusercontent.com/piccolomo/plotext/master/data/scatter-tool.png)
-The flag `-p` is used to read from file path; the tool recognizes the keyword `test` as path, to internally downloads and finally remove some test file, in order for the user to easily test its tool. Run one of the following commands for a simple test:
+The flag `--path` is used to read from file path, while the flag `--lines` to plot a long data table iteratively at chunks, each `lines` long. 
+The tool recognizes the keyword `test` as path, to internally downloads and finally remove some test file, in order for the user to easily test its tool. Run one of the following commands for a simple test:
 
 ```console
 plotext scatter --path test --xcolumn 1 --ycolumns 2 --lines 5000 --title "Scatter Plot Test"
