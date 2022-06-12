@@ -42,7 +42,7 @@ To specify which marker to use, for a data point, use the parameter `marker`, av
 - the marker code `sd` stands for *standard definition*,
 - **`hd`** stands for *high definition*, which uses the 2 x 2 unicode block characters, such as ▞,
 - **`fhd`** stands for *full high definition*, which uses the 3 x 2 unicode block characters, such as 🬗; this marker works only in Unix systems and only in some terminals,
-- [new in version 5.1] **`braille`** uses the 4 x 2 unicode braille characters, such as ⢕ - this marker should works in all systems and terminals,
+- [new in version 5.1] **`braille`** uses the 4 x 2 unicode braille characters, such as ⢕ - this marker should works in `unix` systems (test only in few terminals),
 - it is possible to have markers of different resolutions in the same canvas, but it is recommended not to mix them when using line plots (i.e. using the function `plot()`) in the same signal, while it is safe to mix them with a normal scatter plot,
 - access the function `markers()` for the available marker codes.
 

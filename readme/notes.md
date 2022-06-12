@@ -22,7 +22,6 @@ For now only available in GitHub
 - solved [Issue 90](https://github.com/piccolomo/plotext/issues/90) to plot small axes numerical ticks in exponential form and in 'log' scale
 
 
-
 #### In version 5.0
 - added `play_gif()`, `play_video()`, `play_youtube()`, `download()`, `get_youtube()` functions, to play GIFs and videos 
 - rewritten command line tool
