@@ -1,4 +1,4 @@
-<p align="left">  <img src="https://raw.githubusercontent.com/piccolomo/plotext/master/images/logo.png" /></p>
+<p align="left">  <img src="https://raw.githubusercontent.com/piccolomo/plotext/master/data/logo.png" /></p>
 
 `plotext` plots **directly on terminal**
 - it allows for [scatter](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#scatter-plot), [line](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#line-plot), [bar](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#simple-bar-plot), [histogram](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#histogram-plot) and [date-time](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#datetime-plot) plots (including [candlestick](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#candlestick-plot)),
@@ -8,7 +8,7 @@
 - it can [save plots](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions) as text or as colored `html`,
 - it provides a tool to [color strings](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#colored-text).
 
-![subplots](https://raw.githubusercontent.com/piccolomo/plotext/master/images/subplots.png)
+![subplots](https://raw.githubusercontent.com/piccolomo/plotext/master/data/subplots.png)
 image code [here](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md)
 
 
