@@ -217,7 +217,7 @@ For now only available in GitHub
  - `@Neo-Oli` for requesting braille based markers in [Issue 89](https://github.com/piccolomo/plotext/issues/89)
  - `@MartinThoma` for inspiring the idea behind `event_plot()` in [Issue 83](https://github.com/piccolomo/plotext/issues/83)
  - `@soraxas` for functionality that accounts for exponential float notation: [Pull 82](https://github.com/piccolomo/plotext/pull/82)
- - `@wookayin` for requesting the `from_matplotlib()` backend function in [Issue 75](https://github.com/piccolomo/plotext/issues/75]
+ - `@wookayin` for requesting the `from_matplotlib()` backend function in [Issue 75](https://github.com/piccolomo/plotext/issues/75)
  - `@NLKNguyen` for ideas inspiring the `horizontal_line` and `vertical_line` functions: [Issue 65](https://github.com/piccolomo/plotext/issues/65)
  - `@asartori86` for the awesome command line tool: [Issue 47](https://github.com/piccolomo/plotext/issues/47)
  - `@jtplaarj` for the great ideas and codes regarding multiple and stacked bar plots: [Issue 48](https://github.com/piccolomo/plotext/issues/48)
