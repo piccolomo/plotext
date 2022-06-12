@@ -288,11 +288,11 @@ def download(url, path, log = True):
 def delete_file(path, log = True):
     return _ut.delete_file(path, log = log)
 
-test_data_url = "https://raw.githubusercontent.com/piccolomo/plotext/master/images/data.txt"
-test_bar_data_url = "https://raw.githubusercontent.com/piccolomo/plotext/master/images/bar_data.txt"
-test_image_url  = "https://raw.githubusercontent.com/piccolomo/plotext/master/images/cat.jpg"
-test_gif_url    = "https://raw.githubusercontent.com/piccolomo/plotext/master/images/homer.gif"
-test_video_url  = "https://raw.githubusercontent.com/piccolomo/plotext/master/images/moonwalk.mp4"
+test_data_url = "https://raw.githubusercontent.com/piccolomo/plotext/master/data/data.txt"
+test_bar_data_url = "https://raw.githubusercontent.com/piccolomo/plotext/master/data/bar_data.txt"
+test_image_url  = "https://raw.githubusercontent.com/piccolomo/plotext/master/data/cat.jpg"
+test_gif_url    = "https://raw.githubusercontent.com/piccolomo/plotext/master/data/homer.gif"
+test_video_url  = "https://raw.githubusercontent.com/piccolomo/plotext/master/data/moonwalk.mp4"
 test_youtube_url = 'https://www.youtube.com/watch?v=2Z4s8xbuegQ'
 
 ##############################################
