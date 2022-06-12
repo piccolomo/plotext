@@ -57,7 +57,7 @@ python3 -c "import yfinance as yf; import plotext as plt; plt.date_form('d/m/Y')
 
 
 ## Candlestick Plot
-For this kind of plot, use the function `candlestick()` which requires a list of string dates and a dictionary with the following mandatory keys: `'Open', 'Close', 'High', 'Low'`, where each value should be a list of prices. Here is an example, which requires the package `yfinance`:
+For this kind of plot, use the function `candlestick()`, which requires a list of string based dates/times and a dictionary with the following mandatory keys: `'Open', 'Close', 'High', 'Low'`, where each value should be a list of prices. Here is an example, which requires the package `yfinance`:
 
 ```python
 import yfinance as yf
