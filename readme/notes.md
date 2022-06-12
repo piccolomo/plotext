@@ -15,7 +15,7 @@ For now only available in GitHub
 - all `.md` files corrected and integrated
 - test files are now available on line and not downloaded during installation, to make package lighter
 - 4 x 2 `braille` markers now available, as requested in in [Issue 89](https://github.com/piccolomo/plotext/issues/89)
-- changed `--file' flag in command line tool changed to `--path`
+- changed `--file` flag in command line tool changed to `--path`
 - added `--lines` flag  in command line tool to deal with big data
 - added `--xcolumn` and `--ycolumns` flags to easily set the `x` and `y` data from the data table
 - added `log` parameter to most of the [file functions](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities)
