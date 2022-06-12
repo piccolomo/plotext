@@ -42,9 +42,8 @@ To specify which marker to use, for a data point, use the parameter `marker`, av
 - the marker code `sd` stands for *standard definition*,
 - **`hd`** stands for *high definition*, which uses the 2 x 2 unicode block characters, such as ▞,
 - **`fhd`** stands for *full high definition*, which uses the 3 x 2 unicode block characters, such as 🬗; this marker works only in Unix systems and only in some terminals,
-- [new in version 5.1] **`braille`** uses the 4 x 2 unicode braille characters, such as ⢕; this marker should works in all systems and terminals,
-
-- it is possible to have markers of different resolutions in the same canvas, but it is recommended not to mix them with line plots (i.e. using `plot()`) in the same signal, while it is safe to mix them with a normal scatter plot,
+- [new in version 5.1] **`braille`** uses the 4 x 2 unicode braille characters, such as ⢕ - this marker should works in all systems and terminals,
+- it is possible to have markers of different resolutions in the same canvas, but it is recommended not to mix them when using line plots (i.e. using the function `plot()`) in the same signal, while it is safe to mix them with a normal scatter plot,
 - access the function `markers()` for the available marker codes.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
@@ -63,8 +62,8 @@ Here are the types of color codes that could be provided to the `color` paramete
 ![color-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/data/color-codes.png)
 - an **integer between 0 and 255**, resulting in the following colors:
 ![integer-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/data/integer-codes.png)
-- `default` will use the default terminal color,
-- the first 16 integer color codes produce the same results as the string color codes,
+   - `default` will use the default terminal color,
+   - the first 16 integer color codes produce the same results as the string color codes,
 - an **RGB color** consisting of a tuple of three values (red, green, blue), each between 0 and 255, to obtain the most realistic color rendering,
 - a **list of color codes** to give a different color to each plot marker: the length of the list of colors will adapt to the length of the data set; each color could be of a different kind (string, integer or rgb).
 - access the function `colors()` for the available string and integer codes.
