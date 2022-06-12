@@ -2,6 +2,7 @@
 
 
 # Subplots
+**Updated in version 5.1**
 To plot a grid of subplots, use the following main functions:
 
 - `subplots(rows, cols)` to creates a matrix of subplots with the given number of `rows` and `columns`,
