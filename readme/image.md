@@ -35,7 +35,7 @@ python3 -c "import plotext as plt; cols, rows = 200, 45; p = 1; matrix = [[(abs(
 
 
 ## Image Plot
-To plot an image use the function `image_plot(path)`. In this example a test image is downloaded in the home folder, visualized and finally removed:
+To plot an image use the function `image_plot(path)`. In this example (updated in GitHub version 5.1), a test image is downloaded in the home folder, visualized and finally removed:
 ```python
 import plotext as plt
 path = 'cat.jpg'
@@ -65,7 +65,7 @@ python3 -c "import plotext as plt; path = 'cat.jpg'; plt.download(plt.test_image
 
 
 ## Gif Plot
-To render a GIF image use the function `play_gif(path)`. In this example a test GIF is downloaded in the home folder, visualized and finally removed:
+To render a GIF image use the function `play_gif(path)`. In this example (updated in GitHub version 5.1), a test GIF is downloaded in the home folder, visualized and finally removed:
 ```python
 import plotext as plt
 path = 'homer.gif'

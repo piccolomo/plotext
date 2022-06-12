@@ -6,7 +6,7 @@
 
 
 ## Video Plot
-To play a video, with audio, use the the function `play_video(path)`. In this example a test video is downloaded in the home folder, streamed and finally removed:
+To play a video, with audio, use the the function `play_video(path)`. In this example (updated in GitHub version 5.1), a test video is downloaded in the home folder, streamed and finally removed:
 
 ```python
 import plotext as plt

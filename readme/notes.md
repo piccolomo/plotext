@@ -13,6 +13,11 @@ Note: there are many new features from the previous version: any bug report is u
 #### In version 5.1
 - all `.md` files corrected and integrated
 - test files are now available on line and not downloaded during installation, to make package lighter
+- 4 x 2 `braille` markers now available
+- changed `--file' flag in command line tool changed to `--path`
+- added `--lines` flag  in command line tool to deal with big data
+- added `--xcolumn` and `--ycolumns` flags to easily set the `x` and `y` data from the data table
+- `log` parameter added to most of the [file functions](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities)
 
 
 #### In version 5.0
@@ -226,6 +231,7 @@ Note: there are many new features from the previous version: any bug report is u
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
 
 ## Similar Projects
+These count, as well, as source of inspiration:
 - [plotille](https://github.com/tammoippen/plotille)
 - [termplot](https://github.com/justnoise/termplot)
 - [termgraph](https://github.com/sgeisler/termgraph)
