@@ -39,6 +39,8 @@ plx.show()
 
 These feature is under development: please report any bug, with some possible idea on how to fix it.
 
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md)
+
 
 ## Rich
 The integration with the package `rich` has been discussed in [issue 26](https://github.com/piccolomo/plotext/issues/26) and [issue 27](https://github.com/piccolomo/plotext/issues/27). Thanks to the kind help of its creator, `@willmcgugan`, as well as the user `@whisller`, it seems that the following code could be a good working template:
@@ -116,7 +118,7 @@ with Live(layout, refresh_per_second=0.0001) as live:
         #sleep(0.001)
         live.refresh()
 ```
-
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md)
 
 ## Tkinter
 The integration with the package `tkinter` has been discussed in [Issue 33](https://github.com/piccolomo/plotext/issues/33). Thanks to the great inputs from user `@gregwa1953`, here is an initial take on it, where a test image is downloaded in the home folder, visualized and finally removed:
@@ -264,8 +266,7 @@ if __name__ == '__main__':
 which outputs:
 
 ![tkinter](https://raw.githubusercontent.com/piccolomo/plotext/master/data/tkinter.png)
-
-- using the `scale` slider one can change the font size; lower font size makes the final plot bigger, which requires more computational time,
+- Using the `scale` slider one can change the font size; lower font size makes the final plot bigger, which requires more computational time,
 - the `Save` button saves the plots as an `html` file in the user home folder.
 
-[Main Guide](https://github.com/piccolomo/plotext#guide), [Other Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md#other-environments)
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md)

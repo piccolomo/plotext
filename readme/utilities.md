@@ -106,7 +106,7 @@ python3 -c "import plotext as plt; plt.scatter(plt.sin()); plt.title('Scatter Pl
 
 
 ## Colored Text
-To obtained colored strings use the function `colorize(fullground, style, backgound, show)` which paints a string with the given fullground color, style or styles and background color. The color and styles available are presented respectively [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors) and [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#styles). If `show = True` the string is directly printed and not returned. Here are a few examples:
+To obtained colored strings use the function `colorize(fullground, style, backgound, show)` which paints a string with the given fullground color, style or styles and background color. The color and available are presented [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors), while the styles [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#styles). If `show = True` the string is directly printed and not returned. Here are a few examples:
 ```python
 import plotext as plt
                                             #Fullground     #Style       #Background      #Show
@@ -118,8 +118,7 @@ plt.colorize("integer color codes",         201,            "default",   158,   
 plt.colorize("RGB color codes",             (16, 100, 200), "default",   (200, 100, 100), True)
 ```
 ![colorize](https://raw.githubusercontent.com/piccolomo/plotext/master/data/colorize.png)
-
-- using the style `flash` will result in an actual flashing string,
+- Using the style `flash` will result in an actual flashing string,
 - to remove any coloring use the function `uncolorize(string)`.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#utilities)
