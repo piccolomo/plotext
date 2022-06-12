@@ -57,8 +57,8 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.scatter(y); plt.title('Ext
 
 ![datetime](https://raw.githubusercontent.com/piccolomo/plotext/master/data/extralines.png)
 
-- Note that `vline()` and `hline()` accept as coordinates numbers, date/time strings or bar labels, if the plot allows it,
-- The documentation of the `vline()` and `hline()` functions can be accessed with `doc.vertical_line()` and `doc.horizontal_line()`.
+- Note that `vertical_line()` and `horizontal_line()` accept as coordinates numbers, date/time strings or bar labels, if the plot allows it,
+- The documentation of the `vertical_line()` and `horizontal_line()` functions can be accessed with `doc.vertical_line()` and `doc.horizontal_line()`.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Other Plots](https://github.com/piccolomo/plotext/blob/master/readme/other.md)
 
