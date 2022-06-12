@@ -57,7 +57,7 @@ Colors could easily applied to the entire plot, using the following functions:
 - `ticks_color(color)` sets the (fullground) color of the axes ticks, the grid lines, title, and legend labels, if present,
 - `ticks_style(style)` sets the style of the axes ticks, title, and legend labels, if present.
 
-Here are the types of color codes that could be provided to the `color` parameter of the previous functions, as well as the `fullground` or `background` parameter of the function `colorize()`:
+Here are the types of color codes that could be provided to the `color` parameter of the previous functions, as well as the `fullground` or `background` parameter of the function `colorize()`, described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#colored-text):
 - the following **color string codes**:\
 ![color-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/data/color-codes.png)
    - `default` will use the default terminal color,
@@ -72,7 +72,7 @@ Here are the types of color codes that could be provided to the `color` paramete
 
 
 ## Styles
-These are the available **style codes** that could be provided to the `style` parameter of any plotting function, including `colorize()`:\
+These are the available **style codes** that could be provided to the `style` parameter of any plotting function, including `colorize()`, described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#colored-text):
 ![style-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/data/styles.png)
 - any combination of styles could be used at the same time, provided they are separated by a space,
 - using `flash` will result in an actual white flashing marker,
