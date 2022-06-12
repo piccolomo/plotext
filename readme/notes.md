@@ -10,8 +10,8 @@
 ## Updates
 Note: there are many new features from the previous version: any bug report is useful and very welcomed.
 
-#### In version 5.1 
-**For now only available in GitHub**
+#### In version 5.1:
+For now only available in GitHub
 - all `.md` files corrected and integrated
 - test files are now available on line and not downloaded during installation, to make package lighter
 - 4 x 2 `braille` markers now available
