@@ -77,11 +77,11 @@ The flag `--path` is used to read from file path, while `--lines` to plot a long
 The tool recognizes the keyword `test` as path, to internally downloads and finally remove some test file, in order for the user to easily test its tools. For example, run one of the following commands for the relative test:
 
 ```console
-plotext scatter --path test --xcolumn 1 --ycolumns 2 --lines 5000 --title "Scatter Plot Test"
-plotext plot --path test --xcolumn 1 --ycolumns 2 --sleep 0.1 --lines 230 --clear_terminal True --color magenta+ --title "Plot Test"
-plotext plotter --path test --xcolumn 1 --ycolumns 2 --sleep 0.1 --lines 2500 --clear_terminal True --marker braille --title "Plotter Test"
-plotext bar --path test --xcolumn 1 --title "Bar Plot Test" --xlabel Animals --ylabel Count
-plotext hist --path test --xcolumn 1 --ycolumns 2 --lines 5000 --title "Histogram Test"
+plotext scatter --path test --xcolumn 1 --ycolumns 2 --lines 5000 --title 'Scatter Plot Test' --marker braille
+plotext plot --path test --xcolumn 1 --ycolumns 2 --sleep 0.1 --lines 2500 --clear_terminal True --color magenta+ --title 'Plot Test'
+plotext plotter --path test --xcolumn 1 --ycolumns 2 --sleep 0.1 --lines 120 --clear_terminal True --marker hd --title 'Plotter Test'
+plotext bar --path test --xcolumn 1 --title 'Bar Plot Test' --xlabel Animals --ylabel Count
+plotext hist --path test --xcolumn 1 --ycolumns 2 --lines 5000 --title 'Histogram Test'
 plotext image --path test
 plotext gif --path test
 plotext video --path test --from_youtube True

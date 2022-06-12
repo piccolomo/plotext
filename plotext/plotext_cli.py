@@ -125,20 +125,20 @@ def build_parser():
                                    description = "plots a series of data points",
                                    parents = [path_parser, data_parser, common_parser, options_parser],
                                    help = 'plots a series of data points',
-                                   epilog = "eg: plotext scatter --path test --xcolumn 1 --ycolumns 2 --lines 5000 --title 'Scatter Plot Test'")
+                                   epilog = "eg: plotext scatter --path test --xcolumn 1 --ycolumns 2 --lines 5000 --title 'Scatter Plot Test' --marker braille")
 
 
     plot = subparser.add_parser('plot',
                                 parents = [path_parser, data_parser, common_parser, options_parser],
                                 description = "plots lines between consecutive data points",
                                 help = 'plots lines between consecutive data points',
-                                epilog = "eg:plotext plot --path test --xcolumn 1 --ycolumns 2 --sleep 0.1 --lines 230 --clear_terminal True --color magenta+ --title 'Plot Test'")
+                                epilog = "eg: plotext plot --path test --xcolumn 1 --ycolumns 2 --sleep 0.1 --lines 2500 --clear_terminal True --color magenta+ --title 'Plot Test'")
 
     plotter = subparser.add_parser('plotter',
                                    parents = [path_parser, data_parser, common_parser, options_parser],
                                    description = 'plots a series of data points and the lines between consecutive ones', 
                                    help = 'scatter + plot',
-                                   epilog = "eg: plotext plotter --path test --xcolumn 1 --ycolumns 2 --sleep 0.1 --lines 2500 --clear_terminal True --marker braille --title 'Plotter Test'")
+                                   epilog = "eg:plotext plotter --path test --xcolumn 1 --ycolumns 2 --sleep 0.1 --lines 120 --clear_terminal True --marker hd --title 'Plotter Test'")
  
     bar = subparser.add_parser('bar',
                                parents = [path_parser, data_parser, common_parser, options_parser, barhist_parser],

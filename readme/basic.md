@@ -29,8 +29,8 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.scatter(y); plt.title('Sca
 - the default marker is `hd` (the 2 x 2 higher definition marker) and it is available only in `Unix` systems, as it doesn't seem to render well in Windows,
 - the 3 x 2 higher definition marker, named `fhd`, works only in `Unix` systems and only in some terminals,
 - the 4 x 2 highest definition marker, named `braille`, is now available (from version 5.1) and should work in all systems,
-- To save the plot as colorless `txt` or as colored `html`, use the function `save_fig(path)` described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions),
-- The documentation of the `scatter()` function can be accessed with `doc.scatter()`.
+- to save the plot as colorless `txt` or as colored `html`, use the function `save_fig(path)` described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions),
+- the documentation of the `scatter()` function can be accessed with `doc.scatter()`.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
