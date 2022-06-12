@@ -40,8 +40,10 @@ To specify which marker to use, for a data point, use the parameter `marker`, av
 - one of the following **marker codes** which will translate in the marker specified (some may not be available in Windows): 
   ![markers](https://raw.githubusercontent.com/piccolomo/plotext/master/data/markers.png)
 - the marker code `sd` stands for *standard definition*,
-- **`hd`** stands for *high definition*, which uses 2 x 2 unicode block characters, such as ▞,
-- **`fhd`** stands for *full high definition*, which uses 3 x 2 unicode block characters, such as 🬗.  This marker works only in Unix systems and only in some terminals,
+- **`hd`** stands for *high definition*, which uses the 2 x 2 unicode block characters, such as ▞,
+- **`fhd`** stands for *full high definition*, which uses the 3 x 2 unicode block characters, such as 🬗; this marker works only in Unix systems and only in some terminals,
+- [new in version 5.1] **`braille`** uses the 4 x 2 unicode braille characters, such as ⢕; this marker should works in all systems and terminals,
+
 - it is possible to have markers of different resolutions in the same canvas, but it is recommended not to mix them with line plots (i.e. using `plot()`) in the same signal, while it is safe to mix them with a normal scatter plot,
 - access the function `markers()` for the available marker codes.
 
