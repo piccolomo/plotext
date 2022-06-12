@@ -19,6 +19,8 @@ For now only available in GitHub
 - added `--lines` flag  in command line tool to deal with big data
 - added `--xcolumn` and `--ycolumns` flags to easily set the `x` and `y` data from the data table
 - `log` parameter added to most of the [file functions](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities)
+- solved [Issue 90](https://github.com/piccolomo/plotext/issues/90) to plot small axes numerical ticks in exponential form and in 'log' scale
+
 
 
 #### In version 5.0
@@ -211,12 +213,13 @@ For now only available in GitHub
 
 
 ## Credits
+ - `@Neo-Oli` for requesting braille based markers in [Issue 8p](https://github.com/piccolomo/plotext/issues/89)
  - `@MartinThoma` for inspiring the idea behind `event_plot()` in [Issue 83](https://github.com/piccolomo/plotext/issues/83)
  - `@soraxas` for functionality that accounts for exponential float notation: [Pull 82](https://github.com/piccolomo/plotext/pull/82)
  - `@NLKNguyen` for ideas inspiring the `horizontal_line` and `vertical_line` functions: [Issue 65](https://github.com/piccolomo/plotext/issues/65)
  - `@asartori86` for the awesome command line tool: [Issue 47](https://github.com/piccolomo/plotext/issues/47)
  - `@jtplaarj` for the great ideas and codes regarding multiple and stacked bar plots: [Issue 48](https://github.com/piccolomo/plotext/issues/48)
- - `@ethack` for  requiring log scale on bar plot: [Issue 37](https://github.com/piccolomo/plotext/issues/37)
+ - `@ethack` for  requesting log scale on bar plot: [Issue 37](https://github.com/piccolomo/plotext/issues/37)
  - `@ethack` for  solving single bar error: [Pull 43](https://github.com/piccolomo/plotext/issues/43)
  - `@gregwa1953` for  inspiring `plt.limit_size()`: [Issue 33](https://github.com/piccolomo/plotext/issues/33)
  - `@rbanffy` for suggestion of using 3 x 2 unicode mosaic box characters: [Issue 29](https://github.com/piccolomo/plotext/issues/29).
