@@ -40,7 +40,6 @@ Here are all the available clear functions:
 
 ## File Utilities
 `plotext` includes a set of tools to easily manipulate files and file paths. Here is the list of its utilities:
-
 - `script_folder()` returns the folder containing the script where it is run,
 - `parent_folder(path, level = 1)` returns the parent folder of the `path` provided, at the level above specified,
 - `join_paths(string1, string2 ...)` joins as many strings into a proper file path; eg: `plt.file.join_paths("/", "home", "file.txt")` returns `/home/file.txt`; if its first parameter is `~`, it will be interpreted as the user home folder; if no folder is specified, the home folder is considered,
@@ -62,6 +61,7 @@ Here are all the available clear functions:
 
 
 ## Command Line Tool
+**Updated in version 5.1**
 There are two ways one could use `plotext` directly on terminal. The first is by using its dedicated command line tool, to print a simple scatter, line, bar or histogram plot, as well as image plotting, and to play GIFs, video and YouTube. For further documentation run, on terminal:
 
 ```console
