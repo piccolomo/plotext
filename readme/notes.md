@@ -213,7 +213,7 @@ For now only available in GitHub
 
 
 ## Credits
- - `@PhilipVinc` for `error()` function idea, requested in [Issue 91](https://github.com/piccolomo/plotext/issues/91)
+ - `@PhilipVinc` for `error()` plot idea, requested in [Issue 91](https://github.com/piccolomo/plotext/issues/91)
  - `@Neo-Oli` for requesting braille based markers in [Issue 89](https://github.com/piccolomo/plotext/issues/89)
  - `@MartinThoma` for inspiring the idea behind `event_plot()` in [Issue 83](https://github.com/piccolomo/plotext/issues/83)
  - `@soraxas` for functionality that accounts for exponential float notation: [Pull 82](https://github.com/piccolomo/plotext/pull/82)

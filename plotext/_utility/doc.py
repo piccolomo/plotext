@@ -214,7 +214,7 @@ image_plot = lambda: print(_image_plot)
 
 
 
-_error = """It plots x, and y data (x is optional) with error bars, provided as lists to the 'xerr' and 'yerr' parameters. Optionally either one or both could not be provided, in which case they are set automatically to x. 
+_error = """It plots x, and y data (x is optional) with error bars, provided as lists to the 'xerr' and 'yerr' parameters. Optionally either one or both error bars could not be provided, in which case they are set automatically to 0. 
 As the scatter() function, it accepts the parameters 'color', 'xside', 'yside' and 'label'. No 'marker' parameter is accepted, as markers are automatically set to straight lines."""
 error = lambda: print(_error)
 
