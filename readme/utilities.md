@@ -72,19 +72,18 @@ plotext --help
 The documentation of each function is also available: eg: `plotext scatter -h`
 
 ![scatter-tool](https://raw.githubusercontent.com/piccolomo/plotext/master/data/scatter-tool.png)
-
-The flag -f is used to read from file; the tool recognizes some keywords for test files available online, which it downloads and finally remove, so it is easy to test the tool following the examples shown on each function help page. For example:
+The flag `-p` is used to read from file path; the tool recognizes the keyword `test` as path, to internally downloads and finally remove some test file, in order for the user to easily test its tool. Run one of the following commands for a simple test:
 
 ```console
-plotext scatter --file test_data --columns 2 3 --marker hd --color red+ --title 'Test Data' --xlabel time --ylabel Price --grid True
-plotext plot --file test_data --columns 1 3 --marker hd --color magenta --title 'Test Data' --xlabel time --ylabel Price
-plotext plotter --file test_data --columns 1 2 --marker x --color blue+ --title 'A Title' --xlabel x --grid True"
-plotext bar --file test_data --columns 1 3 --marker sd --color red+ --fill False --width 0.5
-plotext hist --file test_data --columns 1 3 --marker sd --color orange+ --title 'Test Data' --fill True --bins 15
-plotext image --file test_image
-plotext gif --file test_gif
-plotext video -f test_video --from_youtube True
-plotext youtube --url test_youtube
+plotext scatter --path test --xcolumn 1 --ycolumns 2 --lines 5000 --title "Scatter Plot Test"
+plotext plot --path test --xcolumn 1 --ycolumns 2 --sleep 0.1 --lines 230 --clear_terminal True --color magenta+ --title "Plot Test"
+plotext plotter --path test --xcolumn 1 --ycolumns 2 --sleep 0.1 --lines 2500 --clear_terminal True --marker braille --title "Plotter Test"
+plotext bar --path test --xcolumn 1 --title "Bar Plot Test" --xlabel Animals --ylabel Count
+plotext hist --path test --xcolumn 1 --ycolumns 2 --lines 5000 --title "Histogram Test"
+plotext image --path test
+plotext gif --path test
+plotext video --path test --from_youtube True
+plotext youtube --url test
 ```
 
 The second way requires the translation of a script into a single string and passing it to the `python3` command with flag `-c`.For example:
