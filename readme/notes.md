@@ -14,11 +14,11 @@ Note: there are many new features from the previous version: any bug report is u
 For now only available in GitHub
 - all `.md` files corrected and integrated
 - test files are now available on line and not downloaded during installation, to make package lighter
-- 4 x 2 `braille` markers now available
+- 4 x 2 `braille` markers now available, as requested in in [Issue 89](https://github.com/piccolomo/plotext/issues/89)
 - changed `--file' flag in command line tool changed to `--path`
 - added `--lines` flag  in command line tool to deal with big data
 - added `--xcolumn` and `--ycolumns` flags to easily set the `x` and `y` data from the data table
-- `log` parameter added to most of the [file functions](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities)
+- added `log` parameter to most of the [file functions](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities)
 - solved [Issue 90](https://github.com/piccolomo/plotext/issues/90) to plot small axes numerical ticks in exponential form and in 'log' scale
 
 
@@ -213,7 +213,7 @@ For now only available in GitHub
 
 
 ## Credits
- - `@Neo-Oli` for requesting braille based markers in [Issue 8p](https://github.com/piccolomo/plotext/issues/89)
+ - `@Neo-Oli` for requesting braille based markers in [Issue 89](https://github.com/piccolomo/plotext/issues/89)
  - `@MartinThoma` for inspiring the idea behind `event_plot()` in [Issue 83](https://github.com/piccolomo/plotext/issues/83)
  - `@soraxas` for functionality that accounts for exponential float notation: [Pull 82](https://github.com/piccolomo/plotext/pull/82)
  - `@NLKNguyen` for ideas inspiring the `horizontal_line` and `vertical_line` functions: [Issue 65](https://github.com/piccolomo/plotext/issues/65)
