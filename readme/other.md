@@ -75,14 +75,15 @@ percentages = [14, 36, 11, 8, 7, 4]
 plt.bar(pizzas, percentages)
 plt.title("Labelled Bar Plot using Text()")
 
-[plt.text(pizzas[i], x = pizzas[i], y = percentages[i] + 0.8, alignment = 'center', color = 'red') for i in range(len(pizzas))]
+[plt.text(pizzas[i], x = pizzas[i], y = percentages[i] + 1.5, alignment = 'center', color = 'red') for i in range(len(pizzas))]
 plt.ylim(0, 38)
+plt.plotsize(100, 30)
 plt.show()
 ```
 
 or directly on terminal:
 ```console
-python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms', 'Cheese', 'Chicken', 'Beef']; percentages = [14, 36, 11, 8, 7, 4]; plt.bar(pizzas, percentages); plt.title('Labelled Bar Plot using Text()'); [plt.text(pizzas[i], x = pizzas[i], y = percentages[i] + 0.8, alignment = 'center', color = 'red') for i in range(len(pizzas))]; plt.ylim(0, 38); plt.show()"
+python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms', 'Cheese', 'Chicken', 'Beef']; percentages = [14, 36, 11, 8, 7, 4]; plt.bar(pizzas, percentages); plt.title('Labelled Bar Plot using Text()'); [plt.text(pizzas[i], x = pizzas[i], y = percentages[i] + 1.5, alignment = 'center', color = 'red') for i in range(len(pizzas))]; plt.ylim(0, 38); plt.plotsize(100, 30); plt.show()"
 ```
 
 ![datetime](https://raw.githubusercontent.com/piccolomo/plotext/master/data/labelled-bar.png)
