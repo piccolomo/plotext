@@ -88,7 +88,7 @@ plotext video --path test --from_youtube True
 plotext youtube --url test
 ```
 
-The second way requires the translation of a script into a single string and passing it to the `python3` command with flag `-c`.For example:
+The second way is more completed, but more complex, and requires the translation of a script into a single string and passing it to the `python3` command with flag `-c`.For example:
 ```python
 import plotext as plt
 plt.scatter(plt.sin())
@@ -99,15 +99,14 @@ translates into:
 ```console
 python3 -c "import plotext as plt; plt.scatter(plt.sin()); plt.title('Scatter Plot'); plt.show();"
 ```
-- each line has to terminate with a `;` and python strings, in any given line, should be surrounded by `'` instead of `"`. 
-
+- Each line has to terminate with a `;` and python strings, in any given line, should be surrounded by `'` instead of `"`. 
 - each coded example in this [guide](https://github.com/piccolomo/plotext#guide) is followed by the correspondent direct terminal command line (of the second type).
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#utilities)
 
 
 ## Colored Text
-To obtained colored strings use the function `colorize(fullground, style, backgound, show)` which paints a string with the given fullground color, style or styles and background color. The color and style codes are explained [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors). If `show = True` the string is directly printed and not returned. Here are a few examples:
+To obtained colored strings use the function `colorize(fullground, style, backgound, show)` which paints a string with the given fullground color, style or styles and background color. The color and styles available are presented respectively [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors) and [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#styles). If `show = True` the string is directly printed and not returned. Here are a few examples:
 ```python
 import plotext as plt
                                             #Fullground     #Style       #Background      #Show
