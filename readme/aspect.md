@@ -74,7 +74,7 @@ Here are the types of color codes that could be provided to the `color` paramete
 ## Styles
 These are the available **style codes** that could be provided to the `style` parameter of any plotting function, including `colorize()`:\
 ![style-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/data/styles.png)
-- any number of styles could be used at the same time, provided they are separated by a space,
+- any combination of styles could be used at the same time, provided they are separated by a space,
 - using `flash` will result in an actual white flashing marker,
 - access the function `styles()` for the available style codes.
 
@@ -85,6 +85,6 @@ These are the available **style codes** that could be provided to the `style` pa
 To quickly chose a favoured color combination, use the function `theme(theme)`. The available themes could be displayed with the function `themes()`; here is its output: 
 ![themes](https://raw.githubusercontent.com/piccolomo/plotext/master/data/themes.png)
 - to add, tweak, rename any theme presented, please feel free to open an issue, dropping your favourite combination of canvas, axes, ticks color and style together with 3 signal colors in sequence: any idea is welcomed,
-- to remove all plot colors and styles from the current subplot, use `clear_color()`, in short `clc()`, which is equivalent to `theme('clear')`.
+- to remove all plot colors and styles from the current subplot, use the function `clear_color()`, in short `clc()`, which is equivalent to `theme('clear')`.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
