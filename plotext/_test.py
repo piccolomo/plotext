@@ -63,7 +63,9 @@ def test():
     plt.canvas_color('gray+'); plt.axes_color('gray+')
     size = [plt.tw() // 2, 30]
     plt.plotsize(*size)
-    plt.image_plot(plt.test_image_path, grayscale = False)
+    plt.download(plt.test_image_url, 'cat.jpg')
+    plt.image_plot('cat.jpg', grayscale = False)
+    plt.delete_file('cat.jpg')
     plt.title('Adam by Michelangelo')
     plt.frame(0)
     plt.text("Adam", 10, 20, color = 'red', style = 'bold') # it does not accept bar coordinate

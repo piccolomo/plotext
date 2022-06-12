@@ -1,9 +1,35 @@
 # Other Plots
+- [Error Plot](https://github.com/piccolomo/plotext/blob/master/readme/other.md#error-plot)
 - [Event Plot](https://github.com/piccolomo/plotext/blob/master/readme/other.md#event-plot)
 - [Extra Line Plot](https://github.com/piccolomo/plotext/blob/master/readme/other.md#estra-line-plot)
 - [Text Plot](https://github.com/piccolomo/plotext/blob/master/readme/other.md#text-plot)
 
 [Main Guide](https://github.com/piccolomo/plotext#guide)
+
+
+## Error Plot
+To plot data with error bars, along both the `x` and `y` axes use the `error()` function as in this example:
+
+```python
+import plotext as plt
+from random import random 
+l = 20
+n = 1
+ye = [random() * n for i in range(l)]; xe = [random() * n for i in range(l)]
+y = plt.sin(length = l); 
+plt.error(y, xerr = xe, yerr = ye)
+plt.title('Error Plot')
+plt.show()
+```
+or directly on terminal:
+```console
+python3 -c "import plotext as plt; plt.clf();  from random import random; l = 20; n = 1; ye = [random() * n for i in range(l)]; xe = [random() * n for i in range(l)]; y = plt.sin(length = l); plt.error(y, xerr = xe, yerr = ye); plt.title('Error Plot'); plt.show();"
+```
+![datetime](https://raw.githubusercontent.com/piccolomo/plotext/master/data/error.png)
+- Optionally also the x coordinates could be provided,
+- the documentation of the `error()` function can be accessed with `doc.error()`.
+
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Other Plots](https://github.com/piccolomo/plotext/blob/master/readme/other.md)
 
 
 ## Event Plot

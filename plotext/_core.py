@@ -135,8 +135,8 @@ def scatter(*args, xside = None, yside = None, marker = None, color = None, styl
 def plot(*args, xside = None, yside = None, marker = None, color = None, style = None, fillx = None, filly = None, label = None):
     figure._active.plot(*args, xside = xside, yside = yside, marker = marker, color = color,  fillx = fillx, filly = filly, label = label)
 
-def error(*args, xerr = None, yerr = None, xside = None, yside = None, marker = None, color = None, label = None):
-    figure.error(*args, xerr = xerr, yerr = yerr, xside = xside, yside = yside, marker = marker, color = color, label = label)
+def error(*args, xerr = None, yerr = None, xside = None, yside = None, color = None, label = None):
+    figure.error(*args, xerr = xerr, yerr = yerr, xside = xside, yside = yside, color = color, label = label)
 
 def candlestick(dates, data, orientation = None, colors = None, label = None):
     figure._active.candlestick(dates, data, orientation = orientation, colors = colors, label = label)

@@ -33,7 +33,8 @@ Here are all the available clear functions:
 - `sleep(time)` adds a sleeping time to the computation,
 - `sin(amplitude, periods, length, phase, decay)` outputs a sinusoidal signal with the given parameters: its documentation is available using `doc.sin()`,
 - `transpose(matrix)` simply transposes a matrix,
-- `version()` returns the version of the current installed `plotext` package.
+- `version()` returns the version of the current installed `plotext` package,
+- `test()` to quickly test the plotting utilities in your system up to image plotting. 
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#utilities)
 

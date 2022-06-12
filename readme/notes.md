@@ -20,6 +20,7 @@ For now only available in GitHub
 - added `--xcolumn` and `--ycolumns` flags to easily set the `x` and `y` data from the data table
 - added `log` parameter to most of the [file functions](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities)
 - solved [Issue 90](https://github.com/piccolomo/plotext/issues/90) to plot small axes numerical ticks in exponential form and in 'log' scale
+- added `error()` function as requested in [Issue 91](https://github.com/piccolomo/plotext/issues/91)
 
 
 #### In version 5.0
@@ -212,6 +213,7 @@ For now only available in GitHub
 
 
 ## Credits
+ - `@PhilipVinc` for `error()` function idea, requested in [Issue 91](https://github.com/piccolomo/plotext/issues/91)
  - `@Neo-Oli` for requesting braille based markers in [Issue 89](https://github.com/piccolomo/plotext/issues/89)
  - `@MartinThoma` for inspiring the idea behind `event_plot()` in [Issue 83](https://github.com/piccolomo/plotext/issues/83)
  - `@soraxas` for functionality that accounts for exponential float notation: [Pull 82](https://github.com/piccolomo/plotext/pull/82)

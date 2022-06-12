@@ -375,7 +375,7 @@ class monitor_class():
         self.add_filly(kwargs.get("filly"))
         self.add_label(kwargs.get("label"))
 
-    def draw_error(self, *args, xerr = None, yerr = None, xside = None, yside = None, marker = None, color = None, label = None):
+    def draw_error(self, *args, xerr = None, yerr = None, xside = None, yside = None, color = None, label = None):
         x, y = set_data(*args)
         x, y = remove_non_numerical(x, y)
         l = len(x)
@@ -383,10 +383,10 @@ class monitor_class():
         yerr = [0] * l if yerr is None else yerr
         for i in range(l):
             col = self.color[-1][-1] if i > 0 else color
-            mar = self.marker[-1][-1] if i > 0 else marker
-            self.draw([x[i], x[i]], [y[i] - yerr[i] / 2, y[i] + yerr[i] / 2], xside = xside, yside = yside, marker = mar, color = col, lines = True)
-            self.draw([x[i] - xerr[i] / 2, x[i] + xerr[i] / 2], [y[i], y[i]], xside = xside, yside = yside, marker = mar, color = col, lines = True)
-        print('ssd',x, y)
+            self.draw([x[i], x[i]], [y[i] - yerr[i] / 2, y[i] + yerr[i] / 2], xside = xside, yside = yside, marker = "│", color = col, lines = True)
+            col = self.color[-1][-1] if i == 0 else col
+            self.draw([x[i] - xerr[i] / 2, x[i] + xerr[i] / 2], [y[i], y[i]], xside = xside, yside = yside, marker = "─", color = col, lines = True)
+            self.draw([x[i]], [y[i]], xside = xside, yside = yside, marker = "┼", color = col, lines = True)
 
     def draw_candlestick(self, dates, data, orientation = None, colors = None, label = None):
         orientation = 'v' if orientation is None else orientation

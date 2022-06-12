@@ -214,6 +214,10 @@ image_plot = lambda: print(_image_plot)
 
 
 
+_error = """It plots x, and y data (x is optional) with error bars, given as lists to the 'xerr' and 'yerr' parameters. Optionally either one or both could not be provided, in which case they are set automatically to x. 
+As the scatter() function, it accepts the parameters 'color', 'xside', 'yside' and 'label'. No 'marker' parameter is accepted, as markers are automatically set to straight lines."""
+error = lambda: print(_error)
+
 _event_plot = """It plots parallel lines at the given positions given by 'data', which could be a list of number or date/time strings. As the bar plot it accepts the 'orientation' parameter and as the scatter() function the 'marker' and 'color' parameters. 
 
 The parameter 'side' is used to identify on which axis to plot the events coordinates. It could be 'lower' or 'upper' x axis (1 or 2 in short) for 'vertical' orientation, and 'left' and 'right' y axis (1 or 2 in short) for 'horizontal' orientation."""
