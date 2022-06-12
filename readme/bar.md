@@ -28,8 +28,8 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 ![simple-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/data/simple-bar.png)
 
 - The color, marker, width, fill properties and orientation of the bars, could be changed using the respective parameters,
-- The full documentation of the `bar()` function can be accessed with `doc.bar()`,
-- To label each bar with a string follow [this](https://github.com/piccolomo/plotext/blob/master/readme/tools.md#text-plot) example.
+- the full documentation of the `bar()` function can be accessed with `doc.bar()`,
+- to label each bar with a string follow [this](https://github.com/piccolomo/plotext/blob/master/readme/other.md#text-plot) example.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
 
