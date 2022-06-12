@@ -67,11 +67,11 @@ There are two ways one could use `plotext` directly on terminal. The first is by
 ```console
 plotext --help
 ```
-![command-tool](https://raw.githubusercontent.com/piccolomo/plotext/master/images/command-tool.png)
+![command-tool](https://raw.githubusercontent.com/piccolomo/plotext/master/data/command-tool.png)
 
 The documentation of each function is also available: eg: `plotext scatter -h`
 
-![scatter-tool](https://raw.githubusercontent.com/piccolomo/plotext/master/images/scatter-tool.png)
+![scatter-tool](https://raw.githubusercontent.com/piccolomo/plotext/master/data/scatter-tool.png)
 
 The flag -f is used to read from file; the tool recognizes some keywords for test files available online, which it downloads and finally remove, so it is easy to test the tool following the examples shown on each function help page. For example:
 
@@ -117,7 +117,7 @@ plt.colorize("magenta on cyan, underlined", "magenta",      "underline", "cyan",
 plt.colorize("integer color codes",         201,            "default",   158,             True)
 plt.colorize("RGB color codes",             (16, 100, 200), "default",   (200, 100, 100), True)
 ```
-![colorize](https://raw.githubusercontent.com/piccolomo/plotext/master/images/colorize.png)
+![colorize](https://raw.githubusercontent.com/piccolomo/plotext/master/data/colorize.png)
 
 - using the style `flash` will result in an actual flashing string,
 - to remove any coloring use the function `uncolorize(string)`.
