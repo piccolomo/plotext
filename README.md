@@ -20,7 +20,8 @@ image code [here](https://github.com/piccolomo/plotext/blob/master/readme/subplo
 - `pip install git+https://github.com/piccolomo/plotext`, to install the [GitHub version](https://github.com/piccolomo/plotext), if more updated and you feel courageous,
    - `pip install "plotext[image] @ git+https://github.com/piccolomo/plotext.git"` to include image plotting dependencies,
    - `pip install "plotext[video] @ git+https://github.com/piccolomo/plotext.git"` to include video plotting dependencies,
-- the optional packages are `pillow` (for image plotting), `opencv-python` (for video rendering), `ffpyplayer` (to stream audio), `pafy` and `youtube-dl` (to stream YouTube).
+- the optional packages are `pillow` (for image plotting), `opencv-python` (for video rendering), `ffpyplayer` (to stream audio), `pafy` and `youtube-dl` (to stream YouTube),
+-  use the function `test()` to quickly test (up to image rendering) your newly installed version of `plotext`.
 
 ## Guide
 
