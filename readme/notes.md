@@ -10,15 +10,15 @@
 ## Plans
  - high resolution markers available on windows and other rarer terminals (under request and not sure how)
  - add bar alignment parameter (if requested)
-
+ - matrix plot side bar to connect intensity level with actual value
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
 
 
 ## Updates
-Note: there are many new features from the previous version: any bug report is useful and very welcomed.
+Note: there are many new features from previous version: any bug report is useful and very welcomed.
 
-#### In version 5.1:
+#### In version 5.1
 For now only available in GitHub
 - all `.md` files corrected and integrated
 - test files are now available on line and not downloaded during installation, to make package lighter
@@ -242,3 +242,5 @@ These count, as well, as source of inspiration:
 - [uniplot](https://github.com/olavolav/uniplot)
 - [bashplotlib](https://github.com/glamp/bashplotlib)
 - [termplotlib](https://github.com/nschloe/termplotlib)
+
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
