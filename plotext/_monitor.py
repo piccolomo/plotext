@@ -373,8 +373,8 @@ class monitor_class():
         self.add_styles(kwargs.get("style"))
         self.add_fillx(kwargs.get("fillx"))
         self.add_filly(kwargs.get("filly"))
-        self.add_label(kwargs.get("label"))
-
+        self.add_label(kwargs.get("label"))  
+        
     def draw_error(self, *args, xerr = None, yerr = None, xside = None, yside = None, color = None, label = None):
         x, y = set_data(*args)
         x, y = remove_non_numerical(x, y)
@@ -387,7 +387,7 @@ class monitor_class():
             col = self.color[-1][-1] if i == 0 else col
             self.draw([x[i] - xerr[i] / 2, x[i] + xerr[i] / 2], [y[i], y[i]], xside = xside, yside = yside, marker = "─", color = col, lines = True)
             self.draw([x[i]], [y[i]], xside = xside, yside = yside, marker = "┼", color = col, lines = True)
-
+   
     def draw_candlestick(self, dates, data, orientation = None, colors = None, label = None):
         orientation = 'v' if orientation is None else orientation
         markers = ['sd', '│', '─'] #if markers is None else markers
@@ -1046,6 +1046,18 @@ class monitor_class():
             for row in range(height):
                 self.matrix[row][0][0] = ut.ansi_end + self.matrix[row][0][0]
                 self.matrix[row][-1][0] = self.matrix[row][-1][0] + ut.ansi_end
+
+        # Remove Optional Text to Data
+        for s in Texts:
+            self.marker.pop()
+            self.x.pop()
+            self.y.pop()
+            self.color.pop()
+            self.style.pop()
+            self.lines.pop()
+            self.fillx.pop()
+            self.filly.pop()
+            self.label.pop()
 
 
     def to_canvas(self):
