@@ -1,10 +1,18 @@
 # Notes
-- [Updates](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#updates)
 - [Plans](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#plans)
+- [Updates](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#updates)
 - [Credits](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#credits)
 - [Similar Projects](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#similar-projects)
 
 [Main Guide](https://github.com/piccolomo/plotext#guide)
+
+
+## Plans
+ - high resolution markers available on windows and other rarer terminals (under request and not sure how)
+ - add bar alignment parameter (if requested)
+
+
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
 
 
 ## Updates
@@ -21,6 +29,8 @@ For now only available in GitHub
 - added `log` parameter to most of the [file functions](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities)
 - solved [Issue 90](https://github.com/piccolomo/plotext/issues/90) to plot small axes numerical ticks in exponential form and in 'log' scale
 - added `error()` function as requested in [Issue 91](https://github.com/piccolomo/plotext/issues/91)
+- solved [Issue 94](https://github.com/piccolomo/plotext/issues/94) caused by consecutive calls to `show()` function with text plot
+
 
 
 #### In version 5.0
@@ -196,20 +206,6 @@ For now only available in GitHub
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
 
-
-## Plans
- - finalize the command tool, created by `asartori86`, and discussed in [ Issue 47 ](https://github.com/piccolomo/plotext/issues/47) to handle more options, settings and funtions
- - high resolution mosaic markers available on windows and other more rare terminals (not sure how)
- - remove grid span areas intersection problems (if issue is raised)
- - bar alignment option (if requested)
- - finance tools (if requested)
- - text widget to add labels to plot (not as easy as it sounds)
- - using `numpy` to make plotting faster (not sure if it will make a difference)
- - title styles
- - solve issue log scale on y axes in `hist` plot 
- - `hd` and `fhd` markers on legend that adapts to `plot` or `scatter` functions
-
-[Main Guide](https://github.com/piccolomo/plotext#guide), [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
 
 
 ## Credits

@@ -118,7 +118,14 @@ with Live(layout, refresh_per_second=0.0001) as live:
         #sleep(0.001)
         live.refresh()
 ```
+
+![rich](https://raw.githubusercontent.com/piccolomo/plotext/master/data/rich.png)
+
+
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md)
+
+
+
 
 ## Tkinter
 **Updated in version 5.1**
