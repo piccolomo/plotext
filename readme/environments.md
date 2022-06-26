@@ -119,7 +119,7 @@ with Live(layout, refresh_per_second=0.0001) as live:
         live.refresh()
 ```
 
-![rich](https://raw.githubusercontent.com/piccolomo/plotext/master/data/rich.png)
+![rich](https://raw.githubusercontent.com/piccolomo/plotext/master/data/rich.gif)
 
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md)
