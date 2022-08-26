@@ -1,0 +1,24 @@
+#compdef {{programs}}
+# https://github.com/zsh-users/zsh/blob/master/Etc/completion-style-guide
+
+_arguments -s -S \
+  {{flags}} \
+  '*:: :->options'
+
+case $state in
+  '{{subparser}}')
+    local _commands=(
+      {{commands}}
+    )
+    _describe {{subparser}} _commands
+    ;;
+  'options')
+    local curcontext="${curcontext%:*:*}:{{program}}-${words[1]}":
+    case "${words[1]}" in
+{{cases}}
+      *)
+        _message 'unknown {{subparser}}: '"${words[1]}"
+        ;;
+    esac
+    ;;
+esac

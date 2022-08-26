@@ -2,6 +2,14 @@
 
 import plotext as plt
 import argparse, sys, os
+from plotext._utility import marker_codes, hd_symbols
+
+markers = list(hd_symbols.keys())[::-1] + list(marker_codes.keys())
+colors_without_plus = ["black", "white"]
+colors_with_plus = ["red", "green", "orange", "blue", "magenta", "cyan"]
+colors = colors_without_plus + colors_with_plus
+color_choices = colors + list(map(lambda s: s + "+", colors_with_plus))
+
 
 def build_parser():
     examples = """Access each function documentation for further guidance, eg: plotext scatter -h"""
@@ -17,90 +25,96 @@ def build_parser():
     path_parser = argparse.ArgumentParser(add_help = False)
 
     path_parser.add_argument("-p", "--path",
-                             action = 'store',
+                             action  = 'store',
                              #dest   = 'path',
-                             type   = str,
-                             help   = "file path of the data table; if not used it will read from stdin. Use 'test' to automatically download, in your user folder, some test data/image/gif or video, depending on the function used; the file will be removed after the plot")
+                             type    = str,
+                             metavar = "FILE",
+                             help    = "file path of the data table; if not used it will read from stdin. Use 'test' to automatically download, in your user folder, some test data/image/gif or video, depending on the function used; the file will be removed after the plot")
 
     common_parser = argparse.ArgumentParser(add_help = False)
-    
+
     common_parser.add_argument("-clt", "--clear_terminal",
-                                nargs   = 1,
-                                type = str,
-                                default = ["False"],
-                                choices = ["True", "False"],
-                                help    = "it clears the terminal before plotting, if True (as by default)")
+                               nargs   = 1,
+                               type    = str,
+                               default = ["False"],
+                               choices = ["True", "False"],
+                               metavar = "BOOL",
+                               help    = "it clears the terminal before plotting, if True (as by default)")
 
     common_parser.add_argument("-s", "--sleep",
-                                nargs   = 1,
-                                type = float,
-                                default = [0],
-                                help    = "it adds a sleeping time after plotting, to reduce flickering when multiple plots are required; 0 by default")
+                               nargs   = 1,
+                               type    = float,
+                               default = [0],
+                               help    = "it adds a sleeping time after plotting, to reduce flickering when multiple plots are required; 0 by default")
 
     data_parser = argparse.ArgumentParser(add_help = False)
-    
+
     data_parser.add_argument("-xcol", "--xcolumn",
-                         nargs   = "+", # 1 or more
-                         type    = str,
-                         default = ["none"],
-                         help    = "the column number (starting from 1), in the data table, that will be used as x data; by default 'none'")
+                             nargs   = "+", # 1 or more
+                             type    = str,
+                             default = ["none"],
+                             help    = "the column number (starting from 1), in the data table, that will be used as x data; by default 'none'")
 
     data_parser.add_argument("-ycols", "--ycolumns",
-                         nargs   = "+", # 1 or more
-                         type    = str,
-                        default = ["all"],
-                        help = "the column numbers (starting from 1), in the data table, that will be used as y data; by default 'all'")
+                             nargs   = "+", # 1 or more
+                             type    = str,
+                             default = ["all"],
+                             help    = "the column numbers (starting from 1), in the data table, that will be used as y data; by default 'all'")
 
     data_parser.add_argument("-d", "--delimiter",
-                         type    = str,
-                         default = [' '],
-                         nargs   = 1,
-                         help    = "character to be used to separate columns in the data table (eg: ;); by default the white space ' '")
+                             type    = str,
+                             default = [' '],
+                             nargs   = 1,
+                             help    = "character to be used to separate columns in the data table (eg: ;); by default the white space ' '")
 
     data_parser.add_argument("-l", "--lines",
-                         nargs   = "+", # 1 or more
-                         type    = int,
-                         default = [1000],
-                         help    = "number of lines, from data table, to be plotted at each iteration; 1000 by default; data shorter then this will be plotted in a single iteration")
-    
+                             nargs   = "+", # 1 or more
+                             type    = int,
+                             default = [1000],
+                             help    = "number of lines, from data table, to be plotted at each iteration; 1000 by default; data shorter then this will be plotted in a single iteration")
+
     options_parser = argparse.ArgumentParser(add_help = False)
 
     options_parser.add_argument("-m", "--marker",
-                         type    = str,
-                         default = ['hd'],
-                         nargs   = 1,
-                         help    = "character or marker code identifying the data points in the plot, eg: x, braille, sd, heart, fhd; by default hd")
-
+                                type    = str,
+                                default = ['hd'],
+                                nargs   = 1,
+                                choices = markers,
+                                metavar = "marker",
+                                help    = "character or marker code identifying the data points in the plot, eg: x, braille, sd, heart, fhd; by default hd")
     options_parser.add_argument("-c", "--color",
-                         type    = str,
-                         default = [None],
-                         nargs   = 1,
-                         help    = "color of the data points in the plot, between: black, white, red, green, orange, blue, magenta, cyan; add + at the end of the color (except black and white) for clearer colors, eg: red+")
+                                type    = str,
+                                default = [None],
+                                nargs   = 1,
+                                choices = color_choices,
+                                metavar = "COLOR",
+                                help    = "color of the data points in the plot, between: " + ",".join(colors) + "; add + at the end of the color (except black and white) for clearer colors, eg: red+")
 
     options_parser.add_argument("-t", "--title",
-                         nargs   = 1,
-                         type    = str,
-                         default = [None],
-                         help    = "the plot title")
+                                nargs   = 1,
+                                type    = str,
+                                default = [None],
+                                help    = "the plot title")
 
     options_parser.add_argument("-xl", "--xlabel",
-                         nargs   = 1,
-                         type    = str,
-                         default = [None],
-                         help    = "the label of the x axis")
+                                nargs   = 1,
+                                type    = str,
+                                default = [None],
+                                help    = "the label of the x axis")
 
     options_parser.add_argument("-yl", "--ylabel",
-                         nargs   = 1,
-                         type    = str,
-                         default = [None],
-                         help    = "the label of the y axis")
+                                nargs   = 1,
+                                type    = str,
+                                default = [None],
+                                help    = "the label of the y axis")
 
     options_parser.add_argument("-g", "--grid",
-                         nargs   = 1,
-                         type = str,
-                         default = ["False"],
-                         choices = ["True", "False"],
-                         help    = "it add grid lines if True, or removed them if False (as by default)")
+                                nargs   = 1,
+                                type    = str,
+                                default = ["False"],
+                                choices = ["True", "False"],
+                                metavar = "BOOL",
+                                help    = "it add grid lines if True, or removed them if False (as by default)")
 
     barhist_parser = argparse.ArgumentParser(add_help = False)
 
@@ -109,6 +123,7 @@ def build_parser():
                                 type = str,
                                 default = ['v'],
                                 choices = ['v', 'h'],
+                                metavar = "ORIENTATION",
                                 help    = "bar orientation, v for vertical (as by default), h for horizontal")
 
     barhist_parser.add_argument("-f", "--fill",
@@ -116,6 +131,7 @@ def build_parser():
                                 type = str,
                                 default = ["True"],
                                 choices = ["True", "False"],
+                                metavar = "BOOL",
                                 help    = "it fills the bars with colored markers if True (as by default), otherwise only the bars skeleton is shown")
 
     subparser = parser.add_subparsers(dest = 'type',
@@ -136,10 +152,10 @@ def build_parser():
 
     plotter = subparser.add_parser('plotter',
                                    parents = [path_parser, data_parser, common_parser, options_parser],
-                                   description = 'plots a series of data points and the lines between consecutive ones', 
+                                   description = 'plots a series of data points and the lines between consecutive ones',
                                    help = 'scatter + plot',
                                    epilog = "eg:plotext plotter --path test --xcolumn 1 --ycolumns 2 --sleep 0.1 --lines 120 --clear_terminal True --marker hd --title 'Plotter Test'")
- 
+
     bar = subparser.add_parser('bar',
                                parents = [path_parser, data_parser, common_parser, options_parser, barhist_parser],
                                description = 'builds a bar plot',
@@ -147,47 +163,48 @@ def build_parser():
                                epilog = "eg: plotext bar --path test --xcolumn 1 --title 'Bar Plot Test' --xlabel Animals --ylabel Count")
 
     bar.add_argument("-w", "--width",
-                            nargs   = 1,
-                            type = float,
-                            default = [None],
-                            help    = "bars width as a float between 0 and 1")
+                     nargs   = 1,
+                     type    = float,
+                     default = [None],
+                     help    = "bars width as a float between 0 and 1")
 
     hist = subparser.add_parser('hist',
-                                parents = [path_parser, data_parser, common_parser, options_parser, barhist_parser],
+                                parents     = [path_parser, data_parser, common_parser, options_parser, barhist_parser],
                                 description = 'builds a histogram plot',
-                                help = 'histogram plot',
-                                epilog = "eg: plotext hist --path test --xcolumn 1 --ycolumns 2 --lines 5000 --title 'Histogram Test'")
+                                help        = 'histogram plot',
+                                epilog      = "eg: plotext hist --path test --xcolumn 1 --ycolumns 2 --lines 5000 --title 'Histogram Test'")
 
     hist.add_argument("-b", "--bins",
-                            nargs   = 1,
-                            type = int,
-                            default = [10],
-                            help    = "histogram bins (10 by default)")
-    
+                      nargs   = 1,
+                      type    = int,
+                      default = [10],
+                      help    = "histogram bins (10 by default)")
+
     image = subparser.add_parser('image',
-                                 parents = [path_parser, common_parser],
+                                 parents     = [path_parser, common_parser],
                                  description = 'plots an image from path',
-                                 help = 'plots an image from file path',
-                                 epilog = "eg: plotext image --path test")
-    
+                                 help        = 'plots an image from file path',
+                                 epilog      = "eg: plotext image --path test")
+
     gif = subparser.add_parser('gif',
-                               parents = [path_parser, common_parser],
+                               parents     = [path_parser, common_parser],
                                description = 'plays a gif image from path',
-                               help = 'plays a gif image from path',
-                               epilog = "eg: plotext gif --path test")
+                               help        = 'plays a gif image from path',
+                               epilog      = "eg: plotext gif --path test")
 
     video = subparser.add_parser('video',
-                                 parents = [path_parser, common_parser],
+                                 parents     = [path_parser, common_parser],
                                  description = 'plays a video from path',
-                                 help = 'plays a video from path',
-                                 epilog = "eg: plotext video --path test --from_youtube True")
+                                 help        = 'plays a video from path',
+                                 epilog      = "eg: plotext video --path test --from_youtube True")
 
     video.add_argument("-fy", "--from_youtube",
-                                nargs   = 1,
-                                type = str,
-                                default = ["False"],
-                                choices = ["True", "False"],
-                                help    = "set it to True to render the colors correctly for videos downloaded from youtube; default is False")
+                       nargs   = 1,
+                       type    = str,
+                       default = ["False"],
+                       choices = ["True", "False"],
+                       metavar = "BOOL",
+                       help    = "set it to True to render the colors correctly for videos downloaded from youtube; default is False")
 
     youtube = subparser.add_parser('youtube',
                                    description = 'plays a youtube video from url',
@@ -195,12 +212,13 @@ def build_parser():
                                    epilog = "eg: plotext youtube --url test")
 
     youtube.add_argument("-u", "--url",
-                         action = 'store',
-                         dest   = 'url',
-                         nargs  = 1,
-                         type   = str,
-                         help   = "the url of a youtube video; use 'test' for a test video")
-    
+                         action  = 'store',
+                         dest    = 'url',
+                         nargs   = 1,
+                         type    = str,
+                         metavar = "URL",
+                         help    = "the url of a youtube video; use 'test' for a test video")
+
     return parser
 
 
@@ -239,10 +257,10 @@ def main(argv = None):
         plt.show()
         plt.cld()
         plt.sleep(sleep)
-    
+
     data_plot = ['scatter', 'plot', 'plotter', 'bar', 'hist']
     test_path = 'test'
-    
+
     if type in data_plot:
         lines = args.lines[0]
         delimiter = args.delimiter[0]
@@ -255,7 +273,7 @@ def main(argv = None):
         fill = args.fill[0] == 'True' if type in ['bar', 'hist'] else False
         width = args.width[0]  if type == 'bar' else 0
         bins = args.bins[0] if type in 'hist' else None
-        
+
         marker = args.marker[0]
         color = args.color[0]
 
@@ -263,7 +281,7 @@ def main(argv = None):
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
         plt.grid(grid)
-        
+
         if path == test_path:
             plt.plotsize(None, plt.th() - 2)
             if type != "bar":
@@ -271,14 +289,14 @@ def main(argv = None):
             else:
                 plt.download(plt.test_bar_data_url, test_path, log = False)
             path = test_path
-            
+
         if path is None:
             def plot_text(text):
                 data = plt._utility.read_lines(text, delimiter = delimiter)
                 data = plt.transpose(data)
                 x, Y = get_xY(data)
                 plot(x, Y)
-            
+
             text = []
             i = 0
             for line in iter(sys.stdin.readline, ''):
@@ -316,7 +334,7 @@ def main(argv = None):
             plt.download(plt.test_gif_url, test_path, log = False)
             path = test_path
         plt.play_gif(path)
-        
+
     elif type == 'video':
         if path == test_path:
             plt.plotsize(None, plt.th() - 1)
@@ -324,7 +342,7 @@ def main(argv = None):
             path = test_path
         from_youtube = True if args.from_youtube[-1] == 'True' else False
         plt.play_video(path, from_youtube)
-    
+
     elif type == 'youtube':
         url = args.url[-1]
         url = plt.test_youtube_url if url == test_path else url
@@ -333,6 +351,6 @@ def main(argv = None):
     if os.path.isfile(test_path):
         plt.delete_file(test_path, True)
 
-            
+
 if __name__ == "__main__":
     sys.exit(main())
