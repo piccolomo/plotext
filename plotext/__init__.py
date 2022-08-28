@@ -3,8 +3,9 @@
 __name__ = "plotext"
 __version__ = "5.1.0"
 
-from plotext._core import *
-from plotext._test import test
+from ._core import *
+from ._test import test
+from .plotext_cli import build_parser
 
 
 def themes():
