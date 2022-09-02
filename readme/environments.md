@@ -128,8 +128,6 @@ with Live(layout, refresh_per_second=0.0001) as live:
 
 
 ## Tkinter
-**Updated in version 5.1**
-
 The integration with the package `tkinter` has been discussed in [Issue 33](https://github.com/piccolomo/plotext/issues/33). Thanks to the great inputs from user `@gregwa1953`, here is an initial take on it, where a test image is downloaded in the home folder, visualized and finally removed:
 
 ```python

@@ -50,7 +50,7 @@ which will render [this youtube video](https://www.youtube.com/watch?v=FZM9Ibf0G
 - to download a YouTube video to a specified `path` use the function `get_youtube(url, path)`,
 - this function may require further development,
 - access the full documentation of the function `play_youtube()` with `doc.play_youtube()`,
-- question: is there a deep state hiding secrete alien technology?
+- question: is there an actual deep state hiding secrete alien technology?
 
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Play Videos](https://github.com/piccolomo/plotext/blob/master/readme/video.md)

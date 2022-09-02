@@ -29,7 +29,7 @@ or directly on terminal:
 python3 -c "import plotext as plt; plt.clf();  from random import random; l = 20; n = 1; ye = [random() * n for i in range(l)]; xe = [random() * n for i in range(l)]; y = plt.sin(length = l); plt.error(y, xerr = xe, yerr = ye); plt.title('Error Plot'); plt.show();"
 ```
 ![datetime](https://raw.githubusercontent.com/piccolomo/plotext/master/data/error.png)
-- Optionally also the x coordinates could be provided,
+- Optionally also the `x` coordinates could be provided,
 - the documentation of the `error()` function can be accessed with `doc.error()`.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Other Plots](https://github.com/piccolomo/plotext/blob/master/readme/other.md)
@@ -141,6 +141,7 @@ python3 -c "import plotext as plt; plt.clf(); plt.title('Shapes'); plt.polygon()
 ![shapes](https://raw.githubusercontent.com/piccolomo/plotext/master/data/shapes.png)
 
 - the dimensions and position of each shape could be changed using its parameters `x`, `y` (for both rectangles and polygons), `sides` and `radius` (for polygons only),
+- a circle could be simulated by a polygon with high `sides`, 
 - `radius` is the distance of the polygon vertexes to its center: for a simulated circle this corresponds to its actual radius, hence the name, 
 - the aspect of the shapes could be changed with the `lines` and `fill` parameters, to plot lines between the vertexes (as by default) and fill the shape with coloured markers (False by default),
 - the documentation of the `rectangle()` function can be accessed with `doc.rectangle()`,

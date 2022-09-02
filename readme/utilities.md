@@ -29,14 +29,15 @@ Here are all the available clearing functions:
 
 ## Useful Functions
 Here are some functions useful to test the `plotext` package:
-- `sin(periods, length, amplitude, phase, decay)` outputs a sinusoidal signal with the given parameters: its documentation is available using `doc.sin()`,
-- `square(periods, length, amplitude)` outputs a square wave signal with the given parameters: its documentation is available using `doc.square()`,
-- `test()` to perform a quick plotting test (up to image rendering): it will download and finally remove a test image. 
+- `sin(periods, length, amplitude, phase, decay)` outputs a **sinusoidal signal** with the given parameters: its documentation is available using `doc.sin()`,
+- `square(periods, length, amplitude)` outputs a **square wave signal** with the given parameters: its documentation is available using `doc.square()`,
+- `test()` to perform a **quick plotting test** (up to image rendering): it will download and finally remove a test image. 
 - `time(time)` returns the computation time of the latest `show()` or `build()` function,
 
 Here are some functions useful to print or save the final plot:
+- `interactive(True)` to allow dynamic plotting: the `show()` function will not be necessary as the plots will interactively be printed when a change is made,
 - `build()` is equivalent to `show()` except that the final figure canvas is returned as a string and not printed,
-- `savefig(path)` saves the colourless version of the plot, as a text file, at the `path` specified:
+- `save_fig(path)` **saves the** colourless version of the **plot**, as a text file, at the `path` specified:
     - if the path extension is `.html` the colors will be preserved,
     - if its `append` parameter is `True`, the final result will be appended to the file instead of replacing it,
     - if its parameter `keep_colors` is `True`, the `txt` version will keep the ansi color codes; in this case, in linux systems, the plot could be rendered on terminal with the command `less -R` followed by the file path,
@@ -97,7 +98,7 @@ plotext youtube --url test
 ```
 Notes: 
 - you could use `python3 -m` followed the desired flags, instead of `plotext`,
-- to allow TAB completion install `plotext` with flag `[completion]`: this feature needs some extra testing, please report [here] (https://github.com/piccolomo/plotext/pull/118). 
+- to allow TAB completion install `plotext` with flag `[completion]`: this feature needs some extra testing, please report [here](https://github.com/piccolomo/plotext/pull/118). 
 
 
 The second way is more completed, but more complex, and requires the translation of a script into a single string and passing it to the `python3` command with flag `-c`.For example:
