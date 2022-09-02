@@ -49,7 +49,7 @@ To specify which marker to use, for a data point, use the parameter `marker`, av
 
    - the default `hd` marker (the 2 x 2 higher definition marker) is available only in `Unix` systems, as it doesn't seem to render well in Windows,
    - the 3 x 2 higher definition marker, named `fhd`, works only in `Unix` systems and only in some terminals,
-   - the 4 x 2 highest definition marker, named `braille`, is now available (from version 5.1) and should work in Unix systems,
+   - the 4 x 2 highest definition marker, named `braille`, is now available (from version 5.1) and should work in Unix systems.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
@@ -65,12 +65,12 @@ Colors could easily applied to the entire plot, using the following functions:
 Here are the types of color codes that could be provided to the `color` parameter of the previous functions, as well as the `fullground` or `background` parameter of the function `colorize()`, described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#colored-text):
 - the following **color string codes**:\
 ![color-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/data/color-codes.png)
-   note: `default` will use the default terminal color,
+   - note: `default` will use the default terminal color,
 - an **integer between 0 and 255**, resulting in the following colors:
 ![integer-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/data/integer-codes.png)
-   note: the first 16 integer color codes produce the same results as the string color codes,
+   - note: the first 16 integer color codes produce the same results as the string color codes,
 - an **RGB color** consisting of a tuple of three values (red, green, blue), each between 0 and 255, to obtain the most realistic color rendering,
-- a **list of color codes** to give a different color to each plot marker: the length of the list of colors will adapt to the length of the data set; each color could be of a different kind (string, integer or rgb).
+- a **list of color codes** to give a different color to each plot marker: the length of the list of colors will adapt to the length of the data set; each color could be of a different kind (string, integer or rgb),
 - access the function `colors()` for the available string and integer codes.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
