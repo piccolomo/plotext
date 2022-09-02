@@ -1,5 +1,5 @@
 # Bar Plots
-- [Simple Bar Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#simple-bar-plot)
+- [Vertical Bar Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#vertical-bar-plot)
 - [Horizontal Bar Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#horizontal-bar-plot)
 - [Sketchy Bar Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#sketchy-bar-plot)
 - [Multiple Bar Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#multiple-bar-plot)
@@ -9,7 +9,7 @@
 [Main Guide](https://github.com/piccolomo/plotext#guide)
 
 
-## Simple Bar Plot
+## Vertical Bar Plot
 Here is an example:
 ```python
 import plotext as plt
@@ -25,11 +25,11 @@ or directly on terminal:
 ```console
 python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms', 'Cheese', 'Chicken', 'Beef']; percentages = [14, 36, 11, 8, 7, 4]; plt.bar(pizzas, percentages); plt.title('Most Favored Pizzas in the World'); plt.show()"
 ```
-![simple-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/data/simple-bar.png)
+![vertical-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/data/vertical-bar.png)
 
-- The color, marker, width, fill properties and orientation of the bars, could be changed using the respective parameters,
+- The `marker`, `color`, and `fill` properties could be changed using their respective parameters: [markers](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#markers) and [colors](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors) are described in their linked section. 
+- the `orientation` and relative `width` (4 / 5 by default) of the bars could also be changed using their respective parameters, 
 - the full documentation of the `bar()` function can be accessed with `doc.bar()`,
-- to label each bar with a string follow [this](https://github.com/piccolomo/plotext/blob/master/readme/other.md#text-plot) example.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
 
@@ -54,29 +54,25 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 
 ![horizontal-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/data/horizontal-bar.png)
 
-[Main Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
-
-
-## Sketchy Bar Plot
-Here is a sketchy version of the previous bar plot:
+To produce a simpler and sketchier version of the same bar plot, use the function `simple_bar()` instead, as in this example:
 ```python
 import plotext as plt
 
 pizzas = ["Sausage", "Pepperoni", "Mushrooms", "Cheese", "Chicken", "Beef"]
 percentages = [14, 36, 11, 8, 7, 4]
 
-plt.bar(pizzas, percentages, orientation = "h", width = 0.3, marker = 'fhd') 
-plt.title("Most Favoured Pizzas in the World")
-plt.clc() # to remove colors
-plt.plotsize(100, (2 * len(pizzas) - 1) + 4) # 4 = (1 for x numerical ticks + 2 for x axes + 1 for title)
+plt.simple_bar(pizzas, percentages, title = 'Most Favored Pizzas in the World')
 plt.show()
 ```
 or directly on terminal:
 ```console
-python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms', 'Cheese', 'Chicken', 'Beef']; percentages = [14, 36, 11, 8, 7, 4]; plt.bar(pizzas, percentages, orientation = 'h', width = 0.3, marker = 'fhd'); plt.title('Most Favoured Pizzas in the World'); plt.clc(); plt.plotsize(100, 2 * len(pizzas) + 4); plt.show()"
+python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms', 'Cheese', 'Chicken', 'Beef']; percentages = [14, 36, 11, 8, 7, 4]; plt.simple_bar(pizzas, percentages, title = 'Most Favored Pizzas in the World'); plt.show()"
 ```
 
-![horizontal-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/data/sketchy-bar.png)
+![simple-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/data/simple-bar.png)
+
+The advantage of this bar plot is that it produces a very predictable output in terms of bar width (a single character); the disadvantage is that its only orientation is horizontal, it cannot be used inside a [matrix of subplots](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md) and any setting function which follows will not have any effect (like xlabel(), plotsize() and so on). The full documentation of the `simple_bar()` function can be accessed with `doc.simple_bar()`,
+
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
 
@@ -104,6 +100,25 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 
 The full documentation of the `multiple_bar()` function can be accessed with `doc.multiple_bar()`.
 
+To produce a simpler and sketchier version of the same bar plot, use the function `simple_multiple_bar()` instead, as in this example:
+```python
+import plotext as plt
+pizzas = ['Sausage', 'Pepperoni', 'Mushrooms', 'Cheese', 'Chicken', 'Beef']
+male_percentages = [14, 36, 11, 8, 7, 4]
+female_percentages = [12, 20, 35, 15, 2, 1]
+plt.simple_multiple_bar(pizzas, [male_percentages, female_percentages], width = 100, labels = ['men', 'women'], title = 'Most Favored Pizzas in the World by Gender')
+plt.show()
+```
+or directly on terminal:
+```console
+    python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms', 'Cheese', 'Chicken', 'Beef']; male_percentages = [14, 36, 11, 8, 7, 4]; female_percentages = [12, 20, 35, 15, 2, 1]; plt.simple_multiple_bar(pizzas, [male_percentages, female_percentages], width = 100, labels = ['men', 'women'], title = 'Most Favored Pizzas in the World by Gender'); plt.show()"
+```
+
+![simple-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/data/simple-bar.png)
+
+The full documentation of the `simple_multiple_bar()` function can be accessed with `doc.simple_multiple_bar()`,
+
+
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
 
 
@@ -128,6 +143,24 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 ![stacked-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/data/stacked-bar.png)
 
 The full documentation of the `stacked_bar()` function can be accessed with `doc.stacked_bar()`.
+
+To produce a simpler and sketchier version of the same bar plot, use the function `simple_stacked_bar()` instead, as in this example:
+```python
+import plotext as plt
+pizzas = ['Sausage', 'Pepperoni', 'Mushrooms', 'Cheese', 'Chicken', 'Beef']
+male_percentages = [14, 36, 11, 8, 7, 4]
+female_percentages = [12, 20, 35, 15, 2, 1]
+plt.simple_stacked_bar(pizzas, [male_percentages, female_percentages], width = 100, labels = ['men', 'women'], title = 'Most Favored Pizzas in the World by Gender')
+plt.show()
+```
+or directly on terminal:
+```console
+    python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms', 'Cheese', 'Chicken', 'Beef']; male_percentages = [14, 36, 11, 8, 7, 4]; female_percentages = [12, 20, 35, 15, 2, 1]; plt.simple_stacked_bar(pizzas, [male_percentages, female_percentages], width = 100, labels = ['men', 'women'], title = 'Most Favored Pizzas in the World by Gender'); plt.show()"
+```
+
+![simple-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/data/simple-bar.png)
+
+The full documentation of the `simple_stacked_bar()` function can be accessed with `doc.simple_stacked_bar()`,
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
 

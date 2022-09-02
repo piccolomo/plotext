@@ -1,5 +1,5 @@
 # Notes
-- [Plans](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#plans)
+- [Future Ideas](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#future-ideas)
 - [Credits](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#credits)
 - [Similar Projects](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#similar-projects)
 - [Updates](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#updates)
@@ -8,16 +8,29 @@
 [Main Guide](https://github.com/piccolomo/plotext#guide)
 
 
-## Plans
+## Future Ideas
+Under request:
  - high resolution markers available on windows and other rarer terminals (under request and not sure how)
  - add bar alignment parameter (if requested)
- - matrix plot side bar to connect intensity level with actual value
+ - clear_settings() function to clear only the plot settings (labels, title and so on) and not the data, and colors,
+ - add `xside` and `yside` to `candlestick()` function
+ - `matrix_plot()` side bar to connect intensity level with actual value
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
 
 
 ## Credits
- - `@PhilipVinc` for `error()` plot idea, requested in [Issue 91](https://github.com/piccolomo/plotext/issues/91)
+ - `@darul75`  for requesting a simple KPI indicator  in [Issue 121](https://github.com/piccolomo/plotext/issues/121)
+ - `@Freed-Wu`  for requesting interactive mode in [Issue 115](https://github.com/piccolomo/plotext/issues/115)
+ - `@3h4` for requesting confusion matrix in [Issue 113](https://github.com/piccolomo/plotext/issues/113)
+ - `@dns13` for requesting `append` option in save_fig() function in [Issue 109](https://github.com/piccolomo/plotext/issues/109)
+ - `@vps-eric` for requesting square waves in [Issue 108](https://github.com/piccolomo/plotext/issues/108)
+ - `@newbiemate` for requesting simple bar functionality in [Issue 98](https://github.com/piccolomo/plotext/issues/98)
+ - `@pieterbergmans` for requesting reverse axes functionality in [Issue 86](https://github.com/piccolomo/plotext/issues/86)
+ - `@Freed-Wu`  for introducing TAB completions to the command line tool in [Pull Request 118](https://github.com/piccolomo/plotext/pull/118) (more development needed)
+ - `@pankajp` for allowing `plotext` to be used with `python3` with `-m` flag in [Pull Request 107](https://github.com/piccolomo/plotext/pull/107)
+
+ - `@PhilipVinc` for `error()` plot idea, requested in [Issue 122](https://github.com/piccolomo/plotext/issues/122)
  - `@Neo-Oli` for requesting braille based markers in [Issue 89](https://github.com/piccolomo/plotext/issues/89)
  - `@MartinThoma` for inspiring the idea behind `event_plot()` in [Issue 83](https://github.com/piccolomo/plotext/issues/83)
  - `@soraxas` for functionality that accounts for exponential float notation: [Pull 82](https://github.com/piccolomo/plotext/pull/82)
@@ -51,14 +64,39 @@ These count, as well, as source of inspiration:
 - [uniplot](https://github.com/olavolav/uniplot)
 - [bashplotlib](https://github.com/glamp/bashplotlib)
 - [termplotlib](https://github.com/nschloe/termplotlib)
+- [termgraph](https://github.com/mkaz/termgraph)
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
 
 
 ## Updates
+#### In version 5.2
+- code reorganized 
+  - introduced `_global.py` and `_matrix.py` files 
+  - changed `_utility` folder in a file
+  - introduced `_dict.py` file containing long dictionaries related to markers, color, styles and themes
+  - introduced `_build.py` to separately deals with the long `build_plot()` function
+  - added `shtab` optional dependency as introduced in [Pull Request 118](https://github.com/piccolomo/plotext/pull/118)
+  - integrated changes in [Pull Request 107](https://github.com/piccolomo/plotext/pull/107) related to allowing `plotext` with `python` with `-m` flag 
+- added `indicator()` function as requested in [Issue 121](https://github.com/piccolomo/plotext/issues/121)
+- added `interactive()` function as requested in [Issue 115](https://github.com/piccolomo/plotext/issues/115)
+- added `confusion_matrix()` function, as requested in [Issue 113](https://github.com/piccolomo/plotext/issues/113)
+- added `append` parameter to the `save_fig()` function as requested in [Issue 109](https://github.com/piccolomo/plotext/issues/109)
+- added `square()` function as requested in [Issue 108](https://github.com/piccolomo/plotext/issues/108)
+- added `simple_bar()`, `simple_multiple_bar()` and `simple_stacked_bar()` functions as requested in [Issue 98](https://github.com/piccolomo/plotext/issues/98)
+- added `xreverse()` and `yreverse()` functions are requested in [Issue 86](https://github.com/piccolomo/plotext/issues/86)
+- added `polygon()` and `rectangle()` function
+- simplified bar ticks creation and added `reset_ticks` parameter, to optionally disable default ticks creation
+- no memory of past plotted bars in bar functions
+- bars can now have negative values
+- `fillx` and `filly` can now accept `True` and `False` as usual, but also a numerical value (to fill till that value) and `"internal"` (to fill till another data point is reached)
+- solved [Issue 112](https://github.com/piccolomo/plotext/issues/112) and [Issue 123](https://github.com/piccolomo/plotext/issues/123) related to the `xlim()`, `ylim()` functions
+- added `background` color in `text()` function
+- removed `version()` function, now simply `version` value
+
 
 #### In version 5.1
-Note: this version is only available in GitHub for now, and there are many new features from previous version: any bug report is useful and very welcomed.
+Note: this version was only available in GitHub.
 - all `.md` files corrected and integrated
 - test files are now available on line and not downloaded during installation, to make package lighter
 - 4 x 2 `braille` markers now available, as requested in in [Issue 89](https://github.com/piccolomo/plotext/issues/89)

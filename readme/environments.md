@@ -135,7 +135,7 @@ The integration with the package `tkinter` has been discussed in [Issue 33](http
 ```python
 import tkinter as tk
 import plotext as plt
-from plotext._utility.color import to_rgb, uncolorize
+from plotext._utility import to_rgb, uncolorize
 import tkinter.font as tkfont
 
 image_path = 'cat.jpg'
@@ -241,27 +241,30 @@ class window():
           plt.clf()
           plt.limitsize(False, False)
           plt.plotsize(*self.size)
-          plt.image_plot(image_path, fast = True)
+          plt.image_plot(image_path, fast = False)
+          plt.frame(False)
           plt.build()
           #plt.show()
           
      def add_plot(self):
           # Add Colorless Plot 
-          self.cols, self.rows = plt.figure._size
+          #self.rows, self.cols = plt.figure.monitor.matrix.size
+          #plt.figure.monitor.matrix.update_size()
           self.plot_text = text(self.lower_frame, self.cols, self.rows, font = self.font_plot)         
-          self.canvas = plt.figure.monitor.canvas
+          self.canvas = plt.figure.monitor.matrix.canvas
           self.canvas = uncolorize(self.canvas)
           self.plot_text.insert("end", self.canvas)
           self.plot_text.update()
           
      def add_colors(self): # Add Colors to Plot
-          self.color = plt.figure.monitor.matrix
+          self.color = plt.figure.monitor.matrix.fullground[::-1]
+          self.background = plt.figure.monitor.matrix.background[::-1]
           tag = lambda r, c: str(r) + "*" + str(c)
           coord = lambda r, c: str(r + 1) + "." + str(c)
           for r in range(self.rows):
                for c in range(self.cols):
-                    fg = from_rgb(to_rgb(self.color[r][c][2]))
-                    bg = from_rgb(to_rgb(self.color[r][c][1]))
+                    fg = from_rgb(to_rgb(self.color[r][c]))
+                    bg = from_rgb(to_rgb(self.background[r][c]))
                     self.plot_text.tag_add(tag(r, c), coord(r, c))
                     self.plot_text.tag_config(tag(r, c), foreground = fg, background = bg)
                self.plot_text.update()
