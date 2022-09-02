@@ -26,11 +26,11 @@ python3 -c "import plotext as plt; cols, rows = 200, 45; p = 1; matrix = [[(abs(
 ![matrix](https://raw.githubusercontent.com/piccolomo/plotext/master/data/matrix.png)
 
 - The intensity of the pixel (how light it is) is proportional to the correspondent element in the matrix,
-- the parameter `fast`, if set to True, allows to plot much faster, but the plot final dimensions will be locked to the whatever size was previously chosen, and won't adapt to the terminal or subplot size; also any setting function which follows will not have any effect (like xlabel(), frame() and so on),
+- the parameter `fast`, if set to True, allows to plot much faster, but the plot final dimensions will be locked to the whatever size was previously chosen, and won't adapt to the terminal or subplot size; also any setting function which follows will not have any effect (like `xlabel()`, `frame()` and so on),
 - the same function can **plot in colors**, if each pixel is an RGB tuple of three integers, between 0 and 255,
 - access the full documentation of the function `plt.matrix_plot()` with `plt.doc.matrix_plot()`.
 
-[Main Guide](https://github.com/piccolomo/plotext#guide), [Image Plots](https://github.com/piccolomo/plotext/blob/master/readme/image.md#image-plots)
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Matrix Plots](https://github.com/piccolomo/plotext/blob/master/readme/matrix.md#matrix-plots)
 
 
 ## Confusion Matrix
@@ -56,4 +56,4 @@ python3 -c "import plotext as plt; from random import randrange; l = 300; actual
 Access the full documentation of the function `plt.confusion_matrix()` with `plt.doc.confusion_matrix()`.
 
 
-[Main Guide](https://github.com/piccolomo/plotext#guide), [Image Plots](https://github.com/piccolomo/plotext/blob/master/readme/image.md#image-plots)
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Matrix Plots](https://github.com/piccolomo/plotext/blob/master/readme/matrix.md#matrix-plots)
