@@ -21,7 +21,7 @@ setup(
     packages = find_packages(),
     python_requires = ">=3.5",
     include_package_data = True,
-    install_requires = ["shtab"],
-    extras_require = {"image": ["pillow>=8.4"], "video": ["pillow>=8.4", "pafy>=0.5.5", "opencv-python>=4.5.5", "ffpyplayer>=4.3.5", "youtube-dl==2020.12.2"]},
+    install_requires = [],
+    extras_require = {"image": ["pillow>=8.4"], "video": ["pillow>=8.4", "pafy>=0.5.5", "opencv-python>=4.5.5", "ffpyplayer>=4.3.5", "youtube-dl==2020.12.2"], "completion": ["shtab"]},
     classifiers = []
     )
