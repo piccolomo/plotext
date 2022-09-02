@@ -28,7 +28,7 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 
 - The `marker`, `color`, and `fill` properties could be changed using their respective parameters: [markers](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#markers) and [colors](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors) are described in their linked section. 
 - the `orientation` and relative `width` (4 / 5 by default) of the bars could also be changed using their respective parameters, 
-- the full documentation of the `bar()` function can be accessed with `doc.bar()`,
+- the full documentation of the `bar()` function can be accessed with `doc.bar()`.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
 
@@ -70,7 +70,7 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 
 ![simple-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/data/simple-bar.png)
 
-- The advantage of this bar plot is that it produces a very predictable output in terms of bar width (a single character)
+- The advantage of this bar plot is that it produces a very predictable output in terms of bar width (a single character),
 - the disadvantages are that its only orientation is horizontal, it cannot be used inside a [matrix of subplots](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md) and any setting function which follows will not have any effect (like `xlabel()`, `plotsize()` and so on), 
 - the full documentation of the `simple_bar()` function can be accessed with `doc.simple_bar()`.
 
@@ -99,6 +99,7 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 
 ![multiple-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/data/multiple-bar.png)
 
+
 The full documentation of the `multiple_bar()` function can be accessed with `doc.multiple_bar()`.
 
 To produce a **simpler and sketchier version** of the same bar plot, use the function `simple_multiple_bar()` instead, as in this example:
@@ -116,7 +117,9 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 ```
 
 ![simple-multiple-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/data/simple-multiple-bar.png)
-The full documentation of the `simple_multiple_bar()` function can be accessed with `doc.simple_multiple_bar()`,
+
+
+The full documentation of the `simple_multiple_bar()` function can be accessed with `doc.simple_multiple_bar()`.
 
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
