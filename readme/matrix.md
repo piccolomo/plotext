@@ -1,6 +1,6 @@
 # Matrix Plots
-- [Matrix Plot](https://github.com/piccolomo/plotext/blob/master/readme/image.md#matrix-plot)
-- [Confusion Matrix](https://github.com/piccolomo/plotext/blob/master/readme/image.md#confusion-matrix)
+- [Matrix Plot](https://github.com/piccolomo/plotext/blob/master/readme/matrix.md#matrix-plot)
+- [Confusion Matrix](https://github.com/piccolomo/plotext/blob/master/readme/matrix.md#confusion-matrix)
 
 [Main Guide](https://github.com/piccolomo/plotext#guide)
 
