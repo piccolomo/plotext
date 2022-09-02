@@ -2,6 +2,7 @@ from datetime import datetime as dt
 from datetime import timezone as tz # usefull for dates before 1970 in windows
 
 class date_class():
+    
     def __init__(self):
         self.date_form()
         self.time0 = 0

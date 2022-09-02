@@ -1,23 +1,19 @@
 #!/usr/bin/env python
-
-import plotext as plt
+from plotext._utility import all_markers, colors
 import argparse, sys, os
+import plotext as plt
 import shtab
-from plotext._utility import marker_codes, hd_symbols
 
-colors_without_plus = ["black", "white"]
-colors_with_plus = ["red", "green", "orange", "blue", "magenta", "cyan"]
-colors = colors_without_plus + colors_with_plus
-color_choices = colors + list(map(lambda s: s + "+", colors_with_plus))
-markers = marker_codes.copy()
-markers.update(hd_symbols)
-
-
+# For Possible Colors and Markers Completion 
 def dict_to_complete(d={}):
     return {'zsh': '((' + ' '.join(map(lambda x: str(x[0]) + '\\:' + x[1], d.items())) + '))'}
 
+def list_to_complete(data):
+    return {'zsh': '((' + ' '.join([el + '\\:' for el in data]) + '))'}
+
 
 def build_parser():
+    
     examples = """Access each function documentation for further guidance, eg: plotext scatter -h"""
 
     parser = argparse.ArgumentParser(
@@ -25,7 +21,7 @@ def build_parser():
         description     = "plotting directly on terminal",
         epilog          = examples,
         formatter_class = argparse.RawDescriptionHelpFormatter)
-    shtab.add_argument_to(parser)
+    shtab.add_argument_to(parser,  ["-s", "--print-completion"])
 
     parser.set_defaults(type = "scatter")
 
@@ -87,17 +83,19 @@ def build_parser():
                                 type    = str,
                                 default = ['hd'],
                                 nargs   = 1,
-                                choices = list(hd_symbols.keys())[::-1] + list(marker_codes.keys()),
+                                choices = all_markers.keys(),
                                 metavar = "marker",
                                 help    = "character or marker code identifying the data points in the plot, eg: x, braille, sd, heart, fhd; by default hd",
-                                ).complete = dict_to_complete(markers)
+                                ).complete = dict_to_complete(all_markers)
+    
     options_parser.add_argument("-c", "--color",
                                 type    = str,
                                 default = [None],
                                 nargs   = 1,
-                                choices = color_choices,
+                                choices = colors,
                                 metavar = "COLOR",
-                                help    = "color of the data points in the plot, between: " + ",".join(colors) + "; add + at the end of the color (except black and white) for clearer colors, eg: red+")
+                                help    = "color of the data points in the plot, between: " + ",".join(colors) + "; add + at the end of the color (except black and white) for clearer colors, eg: red+"
+                                ).complete = list_to_complete(colors)
 
     options_parser.add_argument("-t", "--title",
                                 nargs   = 1,
@@ -231,10 +229,6 @@ def build_parser():
     return parser
 
 
-#tc = lambda x: plt.colorize(x, 'green+', 'bold') # title color
-
-#
-
 def main(argv = None):
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -292,11 +286,11 @@ def main(argv = None):
         plt.grid(grid)
 
         if path == test_path:
-            plt.plotsize(None, plt.th() - 2)
+            plt.plotsize(None, plt.th() - 3)
             if type != "bar":
-                plt.download(plt.test_data_url, test_path, log = False)
+                plt.download(plt.test_data_url, test_path, log = True)
             else:
-                plt.download(plt.test_bar_data_url, test_path, log = False)
+                plt.download(plt.test_bar_data_url, test_path, log = True)
             path = test_path
 
         if path is None:
@@ -330,8 +324,8 @@ def main(argv = None):
 
     elif type == 'image':
         if path == test_path:
-            plt.plotsize(None, plt.th() - 1)
-            plt.download(plt.test_image_url, test_path, log = False)
+            plt.plotsize(None, plt.th() - 3)
+            plt.download(plt.test_image_url, test_path, log = True)
             path = test_path
         plt.image_plot(path, fast = True)
         plt.clt() if clt else None
@@ -339,15 +333,15 @@ def main(argv = None):
 
     elif type == 'gif':
         if path == test_path:
-            plt.plotsize(None, plt.th() - 1)
-            plt.download(plt.test_gif_url, test_path, log = False)
+            plt.plotsize(None, plt.th() - 3)
+            plt.download(plt.test_gif_url, test_path, log = True)
             path = test_path
         plt.play_gif(path)
 
     elif type == 'video':
         if path == test_path:
-            plt.plotsize(None, plt.th() - 1)
-            plt.download(plt.test_video_url, test_path, log = False)
+            plt.plotsize(None, plt.th() - 3)
+            plt.download(plt.test_video_url, test_path, log = True)
             path = test_path
         from_youtube = True if args.from_youtube[-1] == 'True' else False
         plt.play_video(path, from_youtube)
@@ -363,3 +357,6 @@ def main(argv = None):
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+
