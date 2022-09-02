@@ -25,12 +25,12 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.scatter(y); plt.title('Sca
 ```
 ![scatter](https://raw.githubusercontent.com/piccolomo/plotext/master/data/scatter.png)
 
-**First Things to Know**
-- Use the function `plot_size(width, height)`, described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-size), to change the *plot dimensions*, which by default adapt to the terminal dimensions,
-- to display the plot dynamically, without using the `show()` function, use the function `interactive(True)`, described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions), 
-- to change the plot *marker* use the `marker` parameter, as described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#markers). 
-- to *save the plot* use the function `save_fig(path)` described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions),
-- to generate a sinusoidal or a square wave use the functions sin() and square() respectively, as described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions), 
+**First Things to Know**:
+- Use the function `plot_size(width, height)` described [here](https://github.com/piccolomo/plotext/blob/master/readme/settings.md#plot-size), to change the **plot dimensions**, which by default adapt to the terminal size,
+- to display the **plot dynamically**, without using the `show()` function, use the function `interactive(True)` described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions),
+- to change the **plot marker** use the `marker` parameter and follow [this section](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#markers). 
+- to **save the plot** use the function `save_fig(path)` described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions),
+- to generate a sinusoidal or a square wave signal use the functions `sin()` and `square()` respectively, described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions), 
 - the documentation of the `scatter()` function can be accessed with `doc.scatter()`.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
@@ -51,7 +51,7 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.plot(y); plt.title('Line P
 ```
 ![plot](https://raw.githubusercontent.com/piccolomo/plotext/master/data/plot.png)
 
-The documentation of the `plot()` function can be accessed with `doc.scatter()`.
+The documentation of the `plot()` function can be accessed with `doc.plot()`.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
@@ -71,10 +71,9 @@ or directly on terminal:
 ```console
 python3 -c "import plotext as plt; y = plt.sin(); plt.plot(y, fillx = True); plt.title('Stem Plot'); plt.show()"
 ```
-
+![stem](https://raw.githubusercontent.com/piccolomo/plotext/master/data/stem.png)
 If a numerical value is provided, it is intended as the `y` or `x` level, respectively, where the filling stops. If the code `internal` is provided, the filling will stop when another data point is reached horizontally or vertically (if it exists).
 
-![stem](https://raw.githubusercontent.com/piccolomo/plotext/master/data/stem.png)
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
@@ -166,7 +165,7 @@ python3 -c "import plotext as plt; l = 10 ** 4; y = plt.sin(periods = 2, length 
 
 
 ## Streaming Data
-When streaming a continuous flow of data, consider using the clearing functions, described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#clearing-functions), and the function `plt.sleep(time)`, to reduce a possible screen flickering (for example `sleep(0.01)` would add approximately 10 ms to the computation).
+When streaming a continuous flow of data, consider using the clearing functions, described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#clearing-functions), and the function `plt.sleep(time)`, to reduce a possible screen flickering: for example `sleep(0.01)` would add approximately 10 ms to the computation.
 
 Here is a coded example:
 
