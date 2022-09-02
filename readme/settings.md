@@ -38,6 +38,8 @@ To change the numerical ticks on the `x` axis, you could use one of the followin
 - in both cases, the parameter `xside` is used to address a specific `x` axis, `lower` or `upper` - 1 or 2 in short,
 - naturally, the functions used to specify the ticks relative to the `y` axis, are `yfrequency()`, `yticks()` and behave similarly.
 
+To change the direction of the axes use the functions `xreverse()` and `yreverse()`. 
+
 Here is a coded example:
 ```python
 import plotext as plt

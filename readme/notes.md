@@ -16,6 +16,7 @@
   - introduced `_build.py` to separately deals with the long `build_plot()` function
   - added `shtab` optional dependency as introduced in [Pull Request 118](https://github.com/piccolomo/plotext/pull/118)
   - integrated changes in [Pull Request 107](https://github.com/piccolomo/plotext/pull/107) related to allowing `plotext` with `python` with `-m` flag 
+  - better way to handle `Nan` and `None` values in the data as requested in [Issue 114](https://github.com/piccolomo/plotext/issues/114)
 - added `indicator()` function as requested in [Issue 121](https://github.com/piccolomo/plotext/issues/121)
 - added `interactive()` function as requested in [Issue 115](https://github.com/piccolomo/plotext/issues/115)
 - added `confusion_matrix()` function, as requested in [Issue 113](https://github.com/piccolomo/plotext/issues/113)
@@ -241,6 +242,7 @@ Under request:
  - `@vps-eric` for requesting square waves in [Issue 108](https://github.com/piccolomo/plotext/issues/108)
  - `@newbiemate` for requesting simple bar functionality in [Issue 98](https://github.com/piccolomo/plotext/issues/98)
  - `@pieterbergmans` for requesting reverse axes functionality in [Issue 86](https://github.com/piccolomo/plotext/issues/86)
+ - `@Freed-Wu` for requesting a better way to deal with `Nan` and `None` values in [Issue 114](https://github.com/piccolomo/plotext/issues/114)
  - `@Freed-Wu` for introducing TAB completions to the command line tool in [Pull Request 118](https://github.com/piccolomo/plotext/pull/118) (more development needed)
  - `@pankajp` for allowing `plotext` to be used with `python3` with `-m` flag in [Pull Request 107](https://github.com/piccolomo/plotext/pull/107)
  - `@PhilipVinc` for `error()` plot idea, requested in [Issue 122](https://github.com/piccolomo/plotext/issues/122)
