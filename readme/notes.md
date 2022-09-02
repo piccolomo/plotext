@@ -14,7 +14,7 @@
   - changed `_utility` folder to a file
   - introduced `_dict.py` file containing long dictionaries related to markers, color, styles and themes
   - introduced `_build.py` to separately deals with the long `build_plot()` function
-  - added `shtab` optional dependency as introduced in [Pull Request 118](https://github.com/piccolomo/plotext/pull/118)
+  - added `shtab` optional dependency as introduced in [Pull Request 118](https://github.com/piccolomo/plotext/pull/118), later removed in version 5.2.1
   - integrated changes in [Pull Request 107](https://github.com/piccolomo/plotext/pull/107) related to allowing `plotext` with `python` with `-m` flag 
   - better way to handle `Nan` and `None` values in the data as requested in [Issue 114](https://github.com/piccolomo/plotext/issues/114)
 - added `indicator()` function as requested in [Issue 121](https://github.com/piccolomo/plotext/issues/121)
