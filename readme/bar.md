@@ -161,7 +161,7 @@ or directly on terminal:
 python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms', 'Cheese', 'Chicken', 'Beef']; male_percentages = [14, 36, 11, 8, 7, 4]; female_percentages = [12, 20, 35, 15, 2, 1]; plt.simple_stacked_bar(pizzas, [male_percentages, female_percentages], width = 100, labels = ['men', 'women'], title = 'Most Favored Pizzas in the World by Gender'); plt.show()"
 ```
 
-![simple-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/data/simple-bar.png)
+![simple-stacked-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/data/simple-stacked-bar.png)
 
 The full documentation of the `simple_stacked_bar()` function can be accessed with `doc.simple_stacked_bar()`,
 
