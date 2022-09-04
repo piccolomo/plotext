@@ -1,0 +1,9 @@
+cats 1
+horses 3 
+dogs 5
+birds 7
+pigs 8
+cows 9
+spiders 14
+snakes 7
+fish 8
