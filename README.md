@@ -1,96 +1,46 @@
-<p align="left">  <img src="https://raw.githubusercontent.com/piccolomo/plotext/master/images/logo.png" /></p>
+<p align="left">  <img src="https://raw.githubusercontent.com/piccolomo/plotext/master/data/logo.png" /></p>
 
-`plotext` plots directly on terminal: the syntax is very similar to `matplotlib`, it has no dependencies (except for optional dependencies for image/video plotting) and can [save plots](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#other-functions) as text or as colored `html`.
+`plotext` plots **directly on terminal**
+- it allows for [scatter](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#scatter-plot), [line](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#line-plot), [bar](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#simple-bar-plot), [histogram](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#histogram-plot), [error](https://github.com/piccolomo/plotext/blob/master/readme/other.md#error-plot) and [date-time](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#datetime-plot) plots (including [candlestick](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#candlestick-plot)),
+- it can also [plot images](https://github.com/piccolomo/plotext/blob/master/readme/image.md#image-plot) (including [GIFs](https://github.com/piccolomo/plotext/blob/master/readme/image.md#gif-plot)) and [stream video](https://github.com/piccolomo/plotext/blob/master/readme/video.md#video-plot) with audio (including [YouTube](https://github.com/piccolomo/plotext/blob/master/readme/video.md#play-youtube)),
+- it has **no dependencies** (except for optional dependencies for image/video plotting),
+- it provides a simple [command line tool](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#command-line-tool),
+- it can [save plots](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions) as text or as colored `html`,
+- it provides a tool to [color strings](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#colored-text)
 
-It also provides a simple [command line tool](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#command-line-tool) and a function to [color strings](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#colored-text).
+![subplots](https://raw.githubusercontent.com/piccolomo/plotext/master/data/subplots.png)
+image code [here](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md)
 
-![subplots](https://raw.githubusercontent.com/piccolomo/plotext/master/images/subplots.png)
-Image code [here](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md).
 
 ## Install
-
-As usual, with:
-```console
-pip install plotext
-```
-To upgrade to the latest version, with ```pip install plotext --upgrade```.
-
-To install the optional dependency necessary (`pillow`) to plot images (including GIFs), use:
-```console
-pip install "plotext[image]"
-```
-To install the optional dependencies (`pillow`, `pafy`, `opencv-python`, `ffpyplayer`) necessary to play videos, use:
-```console
-pip install "plotext[video]"
-```
-which will also allow to plot images. 
-The command `pip install youtube-dl==2020.12.2` has helped me with youtube video rendering problems.
-
+- `pip install plotext` for normal installation,
+- `pip install plotext --upgrade` to upgrade to the latest version,
+- `pip install "plotext[image]"` to install the optional dependency for **image plotting** (including GIFs),
+- `pip install "plotext[video]"` to install the optional dependencies for **video rendering**, which will also allow to plot images,
+- `pip install git+https://github.com/piccolomo/plotext`, to install the [GitHub version](https://github.com/piccolomo/plotext), if more updated and you feel courageous,
+   - `pip install "plotext[image] @ git+https://github.com/piccolomo/plotext.git"` to include image plotting dependencies,
+   - `pip install "plotext[video] @ git+https://github.com/piccolomo/plotext.git"` to include video plotting dependencies,
+- the optional packages are `pillow` (for image plotting), `opencv-python` (for video rendering), `ffpyplayer` (to stream audio), `pafy` and `youtube-dl` (to stream YouTube),
+-  use the function `test()` to quickly test (up to image rendering) your newly installed version of `plotext`.
 
 ## Guide
 
-- [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md) 
-    - [Scatter Plot](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#scatter-plot)
-    - [Line Plot](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#line-plot)
-    - [Stem Plot](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#stem-plot)
-    - [Multiple Data Sets](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#multiple-data-sets)
-    - [Multiple Axes Plot](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#multiple-axes-plot)
-    - [Log Plot](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#log-plot)
-    - [Streaming Data](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#streaming-data)
-    
+#### Main Plots
+- [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md)
 - [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md)
-    - [Simple Bar Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#simple-bar-plot)
-    - [Horizontal Bar Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#horizontal-bar-plot)
-    - [Sketchy Bar Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#sketchy-bar-plot)
-    - [Multiple Bar Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#multiple-bar-plot)
-    - [Stacked Bar Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#stacked-bar-plot)
-    - [Histogram Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#histogram-plot)
-
 - [Datetime Plots](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md)
-    - [Datetime Utilities](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#datetime-utilities)
-    - [Basic Plot](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#basic-plot)
-    - [Candlestick Plot](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#candlestick-plot)
+- [Other Plots](https://github.com/piccolomo/plotext/blob/master/readme/other.md)
 
-- [Plot Tools](https://github.com/piccolomo/plotext/blob/master/readme/tools.md)
-    - [Event Plot](https://github.com/piccolomo/plotext/blob/master/readme/tools.md#event-plot)
-    - [Extra Lines](https://github.com/piccolomo/plotext/blob/master/readme/tools.md#extra-lines)
-    - [Text Plot](https://github.com/piccolomo/plotext/blob/master/readme/tools.md#text-plot)
-
-- [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md)
-    - [Plot Size](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-size)
-    - [Plot Labels](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-labels)
-    - [Plot Limits](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-limits)
-    - [Axes Ticks](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#axes-ticks)
-    - [Plot Lines](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-lines)
-    - [Colors](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors)
-    - [Markers](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#markers)
-
-- [2D Plots](https://github.com/piccolomo/plotext/blob/master/readme/2d-plots.md)
-    - [Matrix Plot](https://github.com/piccolomo/plotext/blob/master/readme/2d-plots.md#matrix-plot)
-    - [Image Plot](https://github.com/piccolomo/plotext/blob/master/readme/2d-plots.md#image-plot)
-    - [GIF Plot](https://github.com/piccolomo/plotext/blob/master/readme/2d-plots.md#gif-plot)
-
+#### 2D Plots
+- [Image Plots](https://github.com/piccolomo/plotext/blob/master/readme/image.md)
 - [Play Videos](https://github.com/piccolomo/plotext/blob/master/readme/video.md)
-    - [Video Plot](https://github.com/piccolomo/plotext/blob/master/readme/video.md#video-plot)
-    - [Play YouTube](https://github.com/piccolomo/plotext/blob/master/readme/video.md#play-youtube)
 
-- [Multiple Subplots](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md)
+#### Plotting Utilities
+- [Settings](https://github.com/piccolomo/plotext/blob/master/readme/settings.md)
+- [Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md)
+- [Subplots](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md)
 
+#### Other Resources
 - [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md)
-    - [Command Line Tool](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#command-line-tool)
-    - [Colored Text](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#colored-text)
-    - [File Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities)
-    - [Clear Functions](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#clear-functions)
-    - [Other Functions](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#other-functions)
-    - [Docstrings](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#docstrings)
-
-- [Other Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md)
-    - [Rich](https://github.com/piccolomo/plotext/blob/master/readme/environments.md#rich)
-    - [Tkinter](https://github.com/piccolomo/plotext/blob/master/readme/environments.md#tkinter)
-
-- [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md)
-    - [Main Updates](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#main-updates)
-    - [Future Plans](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#future-plans)
-    - [Credits](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#credits)
-
-
+- [Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md)
+- [Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md)

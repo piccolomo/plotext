@@ -30,6 +30,9 @@ def try_float(data): # it turn a string into float if it can
 ##########    Numbers to List     #############
 ###############################################
 
+def frange(a, b): # same as standard range, except that a and b can be float
+    return [a + el for el in range(math.ceil(b - a))]
+
 def linspace(lower, upper, length = 10): # it returns a lists of numbers from lower to upper with given length
     length = int(length)
     return [lower] if length == 1 else [lower + x * (upper - lower) / (length - 1) for x in range(length)]

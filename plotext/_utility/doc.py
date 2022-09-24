@@ -1,17 +1,18 @@
 from plotext._utility import colorize as colorizing
+from plotext._utility import title_color, positive_color
 
 __doc__ = "It contains the doc-strings of all the main plotext functions."
 
 
-_subplots = """It creates a matrix of subplots with the given number of rows and columns and returns the figure containing the subplots. 
+_subplots = """It creates a matrix of subplots with the given number of 'rows' and 'cols' (columns) and returns the figure containing the subplots. 
 Note that each subplot - accessible with subplot() - could creates its own matrix of subplots. Eg: subplots(2, 2); subplot(1, 1); subplots(3, 4) or directly subplots(2, 2).subplot(1, 1).subplots(3, 4) will create a 2 by 2 matrix where the first subplot is a 3 by 4 matrix."""
 subplots = lambda: print(_subplots)
 
-_subplot = """It sets and returns the active subplot from the matrix of subplots, such that further commands will refer to it. It requires the row (from above) and column (from left) of the chosen subplot, starting from 1. 
+_subplot = """It sets and returns the active subplot from the matrix of subplots, such that further commands will refer to it. It requires the 'row' (from above) and 'col' (column from left) of the chosen subplot, starting from 1. 
 Note that most of the commands referring to the active subplot, could be alternatively passed directly. Eg: subplot(1, 3); plotsize(100, 30) becomes subplot(1, 3).plotsize(300, 30)."""
 subplot = lambda: print(_subplot)
 
-_main = """It returns the main figure at the uppermost level, and sets the active figure to it. Any further commands will refer to the entire figure and to any of its subplots."""
+_main = """It returns the main figure at the uppermost level, and sets the active figure to it. Any further commands will apply to the entire figure and to any of its subplots."""
 main = lambda: print(_main)
 
 _active = """The active figure."""
@@ -19,12 +20,12 @@ active = lambda: print(_active)
 
 
 
-_plot_size = """It sets the plot size - width and height - of the active subplot (in units of character size). 
+_plot_size = """It sets the plot size - 'width' and 'height' - of the active subplot (in units of character size). 
 If the plot is part of a matrix of subplots, the final widths/heights will be the same for each column/row: by default the maximum is taken, use take_min() to take the minimum instead.
 The functions plotsize() and plot_size() are equivalent."""
 plot_size = lambda: print(_plot_size)
 
-_limit_size = """If is used to limit (by default) or not the main figure size to the terminal dimensions. It needs two Booleans, one for each dimension (width and height). 
+_limit_size = """If is used to limit (by default) or not the main figure size to the terminal dimensions. It needs two Booleans, one for each dimension ('width' and 'height'). 
 The functions limitsize() and limit_size() are equivalent."""
 limit_size = lambda: print(_limit_size)
 
@@ -204,7 +205,7 @@ matrix_plot = lambda: print(_matrix_plot)
 
 _image_plot = """It plots the image located at the given required file 'path'. As the scatter() function, it accepts the parameters 'marker' and 'style', and as the matrix_plot() function the 'fast' parameter (for faster plotting). Here is its extra parameter:
 
-\x1b[96mgrayscale\x1b[0m if True allows to plot pictures in gray-scale.
+\x1b[96mgrayscale\x1b[0m if True the image will be plotted in gray-scale.
 
 It is recommended to use the function plotsize() before, especially for larger images, to reduce the image size and so the computational load. If 'fast' is True, only the raw image is displayed (with no possible title or frame). 
 """
@@ -212,6 +213,10 @@ image_plot = lambda: print(_image_plot)
 
 
 
+
+_error = """It plots x, and y data (x is optional) with error bars, provided as lists to the 'xerr' and 'yerr' parameters. Optionally either one or both error bars could not be provided, in which case they are set automatically to 0. 
+As the scatter() function, it accepts the parameters 'color', 'xside', 'yside' and 'label'. No 'marker' parameter is accepted, as markers are automatically set to straight lines."""
+error = lambda: print(_error)
 
 _event_plot = """It plots parallel lines at the given positions given by 'data', which could be a list of number or date/time strings. As the bar plot it accepts the 'orientation' parameter and as the scatter() function the 'marker' and 'color' parameters. 
 
@@ -221,10 +226,12 @@ event_plot = lambda: print(_event_plot)
 _vertical_line = """It plots a vertical line at the given 'coordinate' and specified 'color'. The coordinate could be a number or a date/time string or a bar label.
 The parameter 'xside' allows to the independently address either the 'lower' (by default) or 'upper' x axis (1 or 2 in short)"""
 vertical_line = lambda: print(_vertical_line)
+vline = vertical_line
 
 _horizontal_line = """It plots a horizontal line at the given 'coordinate' and specified 'color'. The coordinate could be a number or a date/time string or a bar label.
 The parameter 'yside' allows to the independently address either the 'left' (by default) or 'right' y axis (1 or 2 in short)."""
 horizontal_line = lambda: print(_horizontal_line)
+hline = horizontal_line
 
 _text = """It adds a 'text' to the plot at the given 'x' and 'y' coordinates. The coordinates could be a number, a date/time string or a bar label. As the scatter() function it accepts the parameters 'color', 'style', 'xside', 'yside', with the following extra parameter:
 
@@ -344,7 +351,7 @@ _join_paths = """It accepts as many strings as necessary and returns a properly 
 The symbol '~', is interpreted as the user home folder. If no folder is specified, the home folder is considered."""
 join_paths = lambda: print(_join_paths)
 
-_save_text = """It saves some 'text' to the 'path' selected."""
+_save_text = """It saves some 'text' to the 'path' selected. Set 'log' to False to avoid printing a final message (True by default)."""
 save_text = lambda: print(_save_text)
 
 _read_data = """It reads and properly interprets some data from the 'path' selected. 
@@ -355,22 +362,26 @@ Here are its parameters:
 
 \x1b[96mcolumns\x1b[0m the list of columns to be returned (starting from 1): by default, all.
 
-\x1b[96mheader\x1b[0m if True (as by default) the columns headers (i.e. the file first line) will be included. Set it to False to exclude those values."""
+\x1b[96mheader\x1b[0m if True (as by default) the columns headers (i.e. the file first line) will be included. Set it to False to exclude those values.
+
+\x1b[96mlog\x1b[0m if True (as by default) a final message is printed."""
 read_data = lambda: print(_read_data)
 
 _write_data = """It writes a matrix of 'data' to the 'path' selected. As the function read_data() it accepts the 'delimiter' and 'columns' parameters. 
-If needed use the transpose() function."""
+If needed use the transpose() function. 
+Set 'log' to False to avoid printing a final message (True by default)."""
 write_data = lambda: print(_write_data)
 
 
-_download = """It downloads an image/gif/video or other from the given 'url' to the 'path' selected."""
+_download = """It downloads an image/gif/video or other from the given 'url' to the 'path' selected. Set 'log' to False to avoid printing a final message (True by default)."""
 download = lambda: print(_download)
 
-_delete_file = """It deletes the file 'path', if it is a file."""
+_delete_file = """It deletes the file 'path', if it is a file. Set 'log' to False to avoid printing a final message (True by default)."""
 delete_file = lambda: print(_delete_file)
 
 
-_play_gif = """It plays a gif image on screen. The images will adapt to the screen size unless plot_size() is used before."""
+_play_gif = """It plays a gif image on screen. The images will adapt to the screen size unless plot_size() is used before.
+Note: this feature may require further development."""
 play_gif = lambda: print(_play_gif)
 
 _play_video = """It plays a video, with audio, from the 'path' selected. The frames will adapt to the screen size unless plot_size() is used before. 
@@ -393,15 +404,15 @@ from_matplotlib = lambda: print(_from_matplotlib)
 
 _all_docstrings = []
 for _key, _value in list(locals().items()):
-   if type(_value) == str and _key[:2] != "__":
-       _key = _key[1:]
-       _all_docstrings.append([_key, _value])
+   if type(_value) == str and _key[:2] != "__" and _key not in ["positive_color", "negative_color", "title_color"]:
+      _key = _key[1:]
+      _all_docstrings.append([_key, _value])
        
 def all():
-   print('\033c', end="")
-   print(colorizing("All Plotext Docstrings\n", "cyan+", "bold"))
+   #print('\033c', end = "")
+   print(colorizing("All Plotext Docstrings\n", title_color, "bold"))
    for el in _all_docstrings:
-       print(colorizing(el[0], "orange+", "bold"))
+       print(colorizing(el[0], positive_color, "bold"))
        print(el[1])
        if el != _all_docstrings[-1]:
-           print("\n")
+           print("")

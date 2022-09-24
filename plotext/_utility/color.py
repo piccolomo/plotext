@@ -1,4 +1,5 @@
 from plotext._utility.data import no_duplicates, join, round, mean, memorize
+from plotext._utility.style import *
 
 # A user could specify three types of colors 
   # an integer for 256 color codes
@@ -39,35 +40,9 @@ def is_string_color(color):
 color_sequence = ["blue+", "green+", "red+", "cyan+", "magenta+", "yellow", "gray", "blue", "green", "red", "cyan", "magenta", "gold", "black"] # standard color sequence for multiple data plots
 color_sequence += [el for el in colors if el not in color_sequence] 
 
-##############################################
-############     Style Codes    ##############
-##############################################
-
-style_codes = {"bold": 1, "dim": 2, "italic": 3, "underline": 4, "double-underline": 21, "strike": 9, "inverted": 7, "flash": 5} # text styles and their ascii code
-
-styles = list(style_codes.keys()) + [no_color]
-
-def get_style_code(style): # from single style to style number code
-    style = style.strip()
-    return style_codes[style]
-
-def get_style_codes(style): # from many styles (separated by space) to as many number codes
-    style = style.strip().split()
-    codes = [get_style_code(el) for el in style if el in styles]
-    codes = no_duplicates(codes)
-    return codes
-    
-def get_style_name(code): # from style number code to style name
-    codes = list(style_codes.values())
-    return styles[codes.index(code)] if code in codes else no_color
-
-def clean_styles(style): # it returns a well written sequence of styles (separated by spaces) from a possible confused one
-    codes = get_style_codes(style)
-    return ' '.join([get_style_name(el) for el in codes])
-
-def is_style(style):
-    style = style.strip().split() if isinstance(style, str) else ['']
-    return any([el in styles for el in style])
+positive_color = 'green+'
+negative_color = 'red'
+title_color = 'cyan+'
 
 ##############################################
 #########    Other Color Types    ############
@@ -85,73 +60,32 @@ def is_rgb_color(color):
 def is_color(color):
     return is_string_color(color) or is_integer_color(color) or is_rgb_color(color)
 
-##############################################
-###########    Color Themes    ###############
-##############################################
-
-themes = {}
-ls = len(color_sequence)
-
-themes["default"] = ["white", "white", "black", no_color, color_sequence]
-
-sequence = [no_color] * ls
-themes['clear'] = [no_color, no_color, no_color, no_color, sequence]
-
-themes['pro'] = [no_color, no_color, no_color, no_color, color_sequence]
-
-sequence = [(0, 255, 65), (0, 143, 17), (0, 59, 0)]
-sequence += [el for el in color_sequence if el not in sequence]
-themes['matrix'] = [(13,2,8), (13,2,8), sequence[0], 'bold', sequence]
-
-blue = (0, 64, 239); red = (242,80,34); yellow = (255,185,0); green = (127,186,0)
-sequence = [blue, red, green, yellow]
-sequence += [el for el in color_sequence if el not in sequence]
-themes['windows'] = ['gray+', 'gray+', 'black', no_color, sequence]
-
-pink = (255, 200, 200)
-sequence = [(86, 186, 236), 'green+']
-sequence += [el for el in color_sequence if el not in sequence]
-themes['girly'] = [pink, pink, 'blue+', no_color, sequence]
-
-sequence = ['blue', 22, 54]
-sequence += [el for el in color_sequence if el not in sequence]
-themes['dark'] = ['black', 'black', 'orange', no_color, sequence]
-
-sequence = [21, 41, 196]
-sequence += [el for el in color_sequence if el not in sequence]
-themes['retro'] = [250, 234, 186, no_color, sequence]
-            
-sequence = [111, 174, 186]
-sequence += [el for el in color_sequence if el not in sequence]
-themes['elegant'] = [66, 4, 216, "bold", sequence]
-
-sequence = [27, 88, 11]
-sequence += [el for el in color_sequence if el not in sequence]
-themes['grandpa'] = [66, 94, 155, "bold", sequence]
-
-sequence = [142, 124, 57]
-sequence += [el for el in color_sequence if el not in sequence]
-themes['salad'] = [95, 22, 221, "bold", sequence]
-
-sequence = [27, 34, 52]
-sequence += [el for el in color_sequence if el not in sequence]
-themes['serious'] = [95, 52, 190, "bold", sequence]
-
-sequence = [26, 85, 124]
-sequence += [el for el in color_sequence if el not in sequence]
-themes['scream'] = [130,88,227, "bold", sequence]
-
-sequence = [6, 125, 190]
-sequence += [el for el in color_sequence if el not in sequence]
-themes['dreamland'] = [180, 2, 221, "bold", sequence]
-
-sequence = [39, 202, 228]
-sequence += [el for el in color_sequence if el not in sequence]
-themes['sand'] = [180, 172, 192, "bold", sequence]
-
-sequence = [39, 202, 228]
-sequence += [el for el in color_sequence if el not in sequence]
-themes['mature'] = [180, 24, 184, "bold", sequence]
+def colors_doc():
+    from plotext._utility import no_duplicates, pad_string
+    print(colorize("String Color Codes", style = 'bold'))
+    c = no_duplicates([el.replace('+', '') for el in colors if el not in ['default', 'black', 'white']])
+    cp = [colorize(el + '+', el + '+') for el in c]
+    c = [colorize(pad_string(el, 10), el) for el in c]
+    c = [' ' + c[i]  + cp[i] for i in range(len(c))]
+    c = '\n'.join(c)
+    print(' default')
+    print(colorize(' ' + pad_string('black', 10), 'black') + colorize('white', 'white'))
+    print(c)
+    print()
+    #print(colorize("\n\nInteger Color Codes:", style = ''))
+    c = colorize("Integer Color Codes", style = 'bold', show = False) + '\n'
+    for row in range(16):
+        cr = ' '
+        for col in range(16):
+            i = row * 16 + col
+            cr += colorize(pad_string(i, 5), i)
+        c += cr + '\n'
+    print(c)
+    c = '\n'
+    rgb = (100, 200, 85)
+    rgb_string = '(' + ', '.join([str(el) for el in rgb]) + ')'
+    print(colorize("RGB Tuples like:", style = "bold"), colorize(rgb_string, rgb, "bold"))
+    
 
 ##############################################
 #########    Colorizing Strings    ###########

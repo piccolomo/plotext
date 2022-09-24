@@ -200,6 +200,9 @@ class _figure_class():
 
     def plot(self, *args, xside = None, yside = None, marker = None, color = None, style = None, fillx = None, filly = None, label = None):
         self._draw(*args, xside = xside, yside = yside, lines = True, marker = marker, color = color,  fillx = fillx, filly = filly, label = label)
+        
+    def error(self, *args, xerr = None, yerr = None, xside = None, yside = None, color = None, label = None):
+        self.monitor.draw_error(*args, xerr = xerr, yerr = yerr, xside = xside, yside = yside, color = color, label = label)
 
     def candlestick(self, dates, data, orientation = None, colors = None, label = None):
         self.monitor.draw_candlestick(dates, data, orientation = orientation, colors = colors, label = label) if self._no_plots else [[self._get_subplot(row, col).candlestick(dates, data, orientation = orientation, colors = colors, label = label) for col in self._Cols] for row in self._Rows]
@@ -348,6 +351,12 @@ class _figure_class():
         
     def string_to_datetime(self, string, input_form = None):
         return self.monitor.date.string_to_datetime(string, input_form = input_form)
+    
+    def string_to_time(self, string, input_form = None):
+        return self.monitor.date.string_to_time(string, input_form = input_form)
+    
+    def strings_to_time(self, string, input_form = None):
+        return self.monitor.date.strings_to_time(string, input_form = input_form)
 
 ##############################################
 ############     Docstrings    ###############

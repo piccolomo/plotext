@@ -1,5 +1,7 @@
 from plotext._utility.marker import space
-from plotext._utility.color import colorize
+from plotext._utility.color import colorize, title_color
+from plotext._utility.style import info_style
+import re
 
 def only_spaces(string): # it returns True if string is made of only empty spaces or is None or '' 
     return (type(string) == str) and (string == len(string) * space) #and len(string) != 0
@@ -12,7 +14,7 @@ def format_time(name, time): # it properly formats the computational time
     l = len(str(int(t)))
     t = str(t)
     t = ' ' * (3 - l) + t
-    return colorize(name + ': ', "", "dim") + colorize(t + ' ' + unit, "cyan", "bold")
+    return colorize(name + ': ', title_color, "bold") + colorize(t + ' ' + unit, "", info_style)
 
 def insert_string(string, label, coord, alignment = "center", extra_space = 0): # it inserts label inside string, at a given coordinate and alignment
     s, l = len(string), len(label)
@@ -46,5 +48,7 @@ def pad_string(num, length): # pad a number with spaces before to reach length
     l = len(num)
     return num + ' ' * (length - l)
     
-
-
+def no_char_duplicates(string, char):
+    pattern = char + '{2,}'
+    string = re.sub(pattern, char, string)
+    return string

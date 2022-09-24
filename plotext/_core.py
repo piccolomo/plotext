@@ -1,6 +1,10 @@
 # /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+####### TO - DO
+# Test Function Doc String
+# Adam label from test() image plot and title  CORRECT
+
 ##############################################
 ###########    Initialization    #############
 ##############################################
@@ -46,8 +50,8 @@ def take_min():
     return figure._active.take_min()
 takemin = take_min
 
-def title(*args):
-    return figure._active.title(*args)
+def title(label):
+    return figure._active.title(label)
 
 def xlabel(label = None, xside = None):
     return figure._active.xlabel(label = label, xside = xside)
@@ -130,50 +134,53 @@ clt = clear_terminal
 ##############################################
 
 def scatter(*args, xside = None, yside = None, marker = None, color = None, style = None, fillx = None, filly = None, label = None):
-    return figure._active.scatter(*args, xside = xside, yside = yside, marker = marker, color = color, style = style, fillx = fillx, filly = filly, label = label)
+    figure._active.scatter(*args, xside = xside, yside = yside, marker = marker, color = color, style = style, fillx = fillx, filly = filly, label = label)
 
 def plot(*args, xside = None, yside = None, marker = None, color = None, style = None, fillx = None, filly = None, label = None):
-    return figure._active.plot(*args, xside = xside, yside = yside, marker = marker, color = color,  fillx = fillx, filly = filly, label = label)
+    figure._active.plot(*args, xside = xside, yside = yside, marker = marker, color = color,  fillx = fillx, filly = filly, label = label)
+
+def error(*args, xerr = None, yerr = None, xside = None, yside = None, color = None, label = None):
+    figure.error(*args, xerr = xerr, yerr = yerr, xside = xside, yside = yside, color = color, label = label)
 
 def candlestick(dates, data, orientation = None, colors = None, label = None):
-    return figure._active.candlestick(dates, data, orientation = orientation, colors = colors, label = label)
+    figure._active.candlestick(dates, data, orientation = orientation, colors = colors, label = label)
 
 def bar(*args, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None):
-    return figure._active.bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum)
+    figure._active.bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum)
 
 def multiple_bar(*args, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None):
-    return figure._active.multiple_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum)
+    figure._active.multiple_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum)
 
 def stacked_bar( *args, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None):
-    return figure._active.stacked_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum)
+    figure._active.stacked_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum)
 
 def hist(data, bins = None, norm = None, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None):
-    return figure._active.hist(data, bins = bins, norm = norm, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum)
+    figure._active.hist(data, bins = bins, norm = norm, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum)
 
 def matrix_plot(matrix, marker = None, style = None, fast = False):
-    return figure._active.matrix_plot(matrix, marker = marker, style = style, fast = fast)
+    figure._active.matrix_plot(matrix, marker = marker, style = style, fast = fast)
 
 def image_plot(path, marker = None, style = None, grayscale = False, fast = False):
-    return figure._active.image_plot(path, marker = marker, style = style, grayscale = grayscale, fast = fast)
+    figure._active.image_plot(path, marker = marker, style = style, grayscale = grayscale, fast = fast)
 
 ##############################################
 ###########    Plotting Tools    #############
 ##############################################
 
 def event_plot(data, orientation = None, marker = None, color = None, side = None):
-    return figure._active.event_plot(data, orientation = orientation, marker = marker, color = color, side = side)
+    figure._active.event_plot(data, orientation = orientation, marker = marker, color = color, side = side)
 eventplot = event_plot
 
 def vertical_line(coordinate, color = None, xside = None):
-    return figure._active.vertical_line(coordinate, color = color, xside = xside)
+    figure._active.vertical_line(coordinate, color = color, xside = xside)
 vline = vertical_line
 
 def horizontal_line(coordinate, color = None, yside = None):
-    return figure._active.horizontal_line(coordinate, color = color, yside = yside)
+    figure._active.horizontal_line(coordinate, color = color, yside = yside)
 hline = horizontal_line
 
 def text(text, x, y, xside = None, yside = None, color = None, style = None, alignment = None):
-    return figure._active.text(text, x, y, xside = xside, yside = yside, color = color, style = style, alignment = alignment)
+    figure._active.text(text, x, y, xside = xside, yside = yside, color = color, style = style, alignment = alignment)
 
 ##############################################
 ##########    Build Functions    #############
@@ -220,6 +227,12 @@ def datetimes_to_string(datetimes, output_form = None):
 def string_to_datetime(string, input_form = None):
     return figure._active.string_to_datetime(string, input_form = input_form)
 
+def string_to_time(string, input_form = None):##########ADD DOC############
+    return figure._active.string_to_time(string, input_form = input_form)
+
+def strings_to_time(string, input_form = None):##########ADD DOC############
+    return figure._active.strings_to_time(string, input_form = input_form)
+
 ##############################################
 ##########     Other Functions    ############
 ##############################################
@@ -229,11 +242,6 @@ def colorize(string, fullground = None, style = None, background = None, show = 
 
 def uncolorize(string):
     return _ut.uncolorize(string)
-
-# # #markers = _utility.markers
-
-# # #colors = _utility.colors
-
 
 terminal_size = _ut.terminal_size
 ts = terminal_size
@@ -250,6 +258,11 @@ version = _ut.version
 platform = _ut.platform
 
 
+colors = _ut.colors_doc
+
+styles = _ut.styles_doc
+
+
 def sin(periods = 2, length = 200, amplitude = 1, phase = 0, decay = 0):
     return _ut.sin(periods = periods, length = length, amplitude = amplitude, phase = phase, decay = decay)
 
@@ -264,26 +277,26 @@ def parent_folder(path, level = 1):
 def join_paths(*args):
     return _ut.join_paths(*args)
 
-def save_text(text, path):
-    return _ut.save_text(text, path)
+def save_text(text, path, log = True):
+    return _ut.save_text(text, path, log = log)
 
-def read_data(path, delimiter = None, columns = None, header = None):
-    return _ut.read_data(path, delimiter = delimiter, columns = columns, header = header)
+def read_data(path, delimiter = None, columns = None):
+    return _ut.read_data(path, delimiter = delimiter, columns = columns)
 
-def write_data(data, path, delimiter = None, columns = None):
-    return _ut.write_data(data, path, delimiter = delimiter, columns = columns)
+def write_data(data, path, delimiter = None, columns = None, log = True):
+    return _ut.write_data(data, path, delimiter = delimiter, columns = columns, log = log)
 
-def download(url, path):
-    return _ut.download(url, path)
+def download(url, path, log = True):
+    return _ut.download(url, path, log)
 
-def delete_file(path):
-    return _ut.delete_file(path)
+def delete_file(path, log = True):
+    return _ut.delete_file(path, log = log)
 
-_test_data_folder = _ut.join_paths(_ut.script_folder(), '_data')
-test_data_path  = _ut.join_paths(_test_data_folder, 'data.txt')
-test_image_path  = _ut.join_paths(_test_data_folder, 'adam.jpg')
-test_gif_path    = _ut.join_paths(_test_data_folder, 'homer.gif')
-test_video_path  = _ut.join_paths(_test_data_folder, 'moonwalk.mp4')
+test_data_url = "https://raw.githubusercontent.com/piccolomo/plotext/master/data/data.txt"
+test_bar_data_url = "https://raw.githubusercontent.com/piccolomo/plotext/master/data/bar_data.txt"
+test_image_url  = "https://raw.githubusercontent.com/piccolomo/plotext/master/data/cat.jpg"
+test_gif_url    = "https://raw.githubusercontent.com/piccolomo/plotext/master/data/homer.gif"
+test_video_url  = "https://raw.githubusercontent.com/piccolomo/plotext/master/data/moonwalk.mp4"
 test_youtube_url = 'https://www.youtube.com/watch?v=2Z4s8xbuegQ'
 
 ##############################################
@@ -321,13 +334,13 @@ def play_youtube(url):
     best = video.getbest()
     _play_video(best.url, from_youtube = True)
 
-def get_youtube(url, path):
+def get_youtube(url, path, log = True):
     import pafy
     video = pafy.new(url)
     best = video.getbest(preftype = "mp4")
     path = _ut.correct_path(path)
     path = best.download(filepath = path)
-    print('video downloaded in', path)
+    print('video downloaded in', path) if log else None
     return path
 
 def _play_video(path, from_youtube = False):

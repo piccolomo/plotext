@@ -28,9 +28,6 @@ class monitor_class():
         self.ylabel = [None, None]
 
     def axes_init(self):
-        self.xlim = [[None, None], [None, None]] # the x axis plot limits for lower and upper xside
-        self.ylim = [[None, None], [None, None]] # the y axis plot limits for left and right yside
-
         self.xscale = [self.default.xscale[0]] * 2 # the scale on x axis
         self.yscale = [self.default.xscale[0]] * 2
 
@@ -51,6 +48,9 @@ class monitor_class():
         self.set_theme('default')
 
     def data_init(self):
+        self.xlim = [[None, None], [None, None]] # the x axis plot limits for lower and upper xside
+        self.ylim = [[None, None], [None, None]] # the y axis plot limits for left and right yside
+
         self.fast_plot = False
         self.lines_init()
         self.text_init()
@@ -373,8 +373,21 @@ class monitor_class():
         self.add_styles(kwargs.get("style"))
         self.add_fillx(kwargs.get("fillx"))
         self.add_filly(kwargs.get("filly"))
-        self.add_label(kwargs.get("label"))
-
+        self.add_label(kwargs.get("label"))  
+        
+    def draw_error(self, *args, xerr = None, yerr = None, xside = None, yside = None, color = None, label = None):
+        x, y = set_data(*args)
+        x, y = remove_non_numerical(x, y)
+        l = len(x)
+        xerr = [0] * l if xerr is None else xerr
+        yerr = [0] * l if yerr is None else yerr
+        for i in range(l):
+            col = self.color[-1][-1] if i > 0 else color
+            self.draw([x[i], x[i]], [y[i] - yerr[i] / 2, y[i] + yerr[i] / 2], xside = xside, yside = yside, marker = "│", color = col, lines = True)
+            col = self.color[-1][-1] if i == 0 else col
+            self.draw([x[i] - xerr[i] / 2, x[i] + xerr[i] / 2], [y[i], y[i]], xside = xside, yside = yside, marker = "─", color = col, lines = True)
+            self.draw([x[i]], [y[i]], xside = xside, yside = yside, marker = "┼", color = col, lines = True)
+   
     def draw_candlestick(self, dates, data, orientation = None, colors = None, label = None):
         orientation = 'v' if orientation is None else orientation
         markers = ['sd', '│', '─'] #if markers is None else markers
@@ -818,13 +831,15 @@ class monitor_class():
         signals = len(self.x)
         Signals = list(range(signals))
 
-        # Get Factor for HD Markers 
-        xf = [ut.marker_factor(self.marker[s], 2, 2) for s in Signals]
-        yf = [ut.marker_factor(self.marker[s], 2, 3) for s in Signals]
-            
+        # Expand Canvas to accommodate HD markers
+        xf = [max([ut.marker_factor(el, 2, 2, 2) for el in self.marker[s]], default = 1) for s in Signals]
+        yf = [max([ut.marker_factor(el, 2, 3, 4) for el in self.marker[s]], default = 1) for s in Signals]
+        width_expanded = [width_canvas * el for el in xf]
+        height_expanded = [height_canvas * el for el in yf]
+        
         #Get Relative Data to Be Plotted on Matrix
-        x = [get_matrix_data(self.x[s], xlim[s], width_canvas * xf[s])  for s in Signals]
-        y = [get_matrix_data(self.y[s], ylim[s], height_canvas * yf[s]) for s in Signals]
+        x = [get_matrix_data(self.x[s], xlim[s], width_expanded[s])  for s in Signals]
+        y = [get_matrix_data(self.y[s], ylim[s], height_expanded[s]) for s in Signals]
         m, c, st = self.marker, self.color, self.style
 
         # Add Lines between Data Points
@@ -832,24 +847,32 @@ class monitor_class():
         #x, y, m, c, st = ut.transpose([ut.brush(x[s], y[s], m[s], c[s], st[s]) for s in Signals], 5)
         
         # Fillx
-        zeroy = [[min(max(0, ylim[s][0]), ylim[s][1])] for s in Signals]
-        y0 = [get_matrix_data(zeroy[s], ylim[s], height_canvas * yf[s])[0] for s in Signals]
+        zeroy = [min(max(0, ylim[s][0]), ylim[s][1]) if None not in ylim[s] else 0 for s in Signals]
+        y0 = [get_matrix_data([zeroy[s]], ylim[s], height_expanded[s])[0] if None not in ylim[s] else 0 for s in Signals]
         x, y, m, c, st = ut.transpose([fill_data(x[s], y[s], y0[s], m[s], c[s], st[s]) if self.fillx[s] else (x[s], y[s], m[s], c[s], st[s]) for s in Signals], 5)
 
         # Filly
-        zerox = [[min(max(0, xlim[s][0]), xlim[s][1])] for s in Signals]
-        x0 = [get_matrix_data(zerox[s], xlim[s], width_canvas * xf[s])[0] for s in Signals]
+        zerox = [[min(max(0, xlim[s][0]), xlim[s][1])] if None not in ylim[s] else 0 for s in Signals]
+        x0 = [get_matrix_data(zerox[s], xlim[s], width_expanded[s])[0] if None not in ylim[s] else 0 for s in Signals]
         y, x, m, c, st = ut.transpose([fill_data(y[s], x[s], x0[s], m[s], c[s], st[s]) if self.filly[s] else (y[s], x[s], m[s], c[s], st[s]) for s in Signals], 5)
+
+        # Reduce Canvas size if expanded
+        #x = [reduce_canvas(x[s], xf) for s in Signals]
+        #y = [reduce_canvas(y[s], yf) for s in Signals]
+        x, y, m, c, st = ut.transpose([ut.brush(x[s], y[s], m[s], c[s], st[s]) for s in Signals], 5)
 
         # Get Actual HD Markers
         for s in Signals:
-            if xf[s] * yf[s] != 1:
-                x[s], y[s], mxy = hd_group(x[s], y[s], xf[s], yf[s])
-                m[s] = [ut.get_hd_marker(mxy[i]) if m[s][i] in ut.hd_symbols else m[s][i] for i in range(len(x[s]))]
-                #x[s], y[s], m[s], c[s], st[s] = ut.brush(x[s], y[s], m[s], c[s], st[s])
-                    
+            xf = [ut.marker_factor(el, 2, 2, 2) for el in m[s]]
+            yf = [ut.marker_factor(el, 2, 3, 4) for el in m[s]]
+            if max(xf, default = 1) * max(yf, default = 1) != 1:
+                 x[s], y[s], mxy = hd_group(x[s], y[s], xf, yf)
+                 m[s] = [ut.get_hd_marker(mxy[i]) if m[s][i] in ut.hd_symbols else m[s][i] for i in range(len(x[s]))]
+        #         x[s], y[s], m[s], c[s], st[s] = ut.brush(x[s], y[s], m[s], c[s], st[s])
+        #print(x[0], y[0], xf[0], yf[0], m[0])
+
         # Add Data to Canvas
-        x, y, m, c, st = ut.transpose([ut.brush(x[s], y[s], m[s], c[s], st[s]) for s in Signals], 5)
+        #x, y, m, c, st = ut.transpose([ut.brush(x[s], y[s], m[s], c[s], st[s]) for s in Signals], 5)
         for s in Signals:
             for i in range(len(x[s])):
                 row, col = height_canvas - 1 - y[s][i], x[s][i]
@@ -866,8 +889,8 @@ class monitor_class():
                 if col == 0 or self.matrix[row][col][1:] != self.matrix[row][col - 1][1:]:
                     ansi = ut.all_ansi(*self.matrix[row][col][1:])
                     self.matrix[row][col][0] = ansi + self.matrix[row][col][0]
-                #if col != width_canvas - 1 and self.matrix[row][col][1:] != self.matrix[row][col + 1][1:]:
-                #    self.matrix[row][col][0] = self.matrix[row][col][0] + ut.ansi_end + ut.ansi(cc, 0)[0]
+                if col != width_canvas - 1 and self.matrix[row][col][1:] != self.matrix[row][col + 1][1:]:
+                    self.matrix[row][col][0] = self.matrix[row][col][0] + ut.ansi_end + ut.ansi(cc, 0)[0]
                 if col == width_canvas - 1:
                     self.matrix[row][col][0] = self.matrix[row][col][0] + ut.ansi_end
 
@@ -1092,28 +1115,22 @@ def get_lim(data): # it returns the data minimum and maximum limits
     return [m, M]
 
 def get_matrix_data(data, lim, bins): # from data to relative canvas coordinates
-    if bins <= 1:
-        return [0] * len(data)
-    dz = (lim[1] - lim[0]) / (bins - 1) 
-    change = lambda el: math.floor((el - lim[0]) / dz + 0.5)
-    return [change(el) for el in data]
+    change = lambda el: 0.5 + (bins - 1) * (el - lim[0]) / (lim[1] - lim[0])
+    return [math.floor(change(el)) for el in data]
 
-def get_lines(x, y, m, c, s): # it returns the lines between all couples of data points like x[i], y[i] to x[i + 1], y[i + 1]; m and c are the list of markers and colors that needs to be elongated
-    xl, yl, ml, cl, sl = [[] for i in range(5)] 
+def get_lines(x, y, *other): # it returns the lines between all couples of data points like x[i], y[i] to x[i + 1], y[i + 1]; other are the list of markers and colors that needs to be elongated
+    o = ut.transpose(other, len(other))
+    xl, yl, ol = [[] for i in range(3)] 
     for n in range(len(x) - 1):
         xn, yn = x[n : n + 2], y[n : n + 2]
         xn, yn = get_line(xn, yn)
         xl += xn[:-1]
         yl += yn[:-1]
-        ml += [m[n]] * len(xn)
-        cl += [c[n]] * len(xn)
-        sl += [s[n]] * len(xn)
+        ol += [o[n]] * len(xn[:-1])
     xl = xl + [x[-1]] if x != [] else xl
     yl = yl + [y[-1]] if x != [] else yl
-    ml = ml + [m[-1]] if x != [] else ml
-    cl = cl + [c[-1]] if x != [] else cl
-    sl = sl + [s[-1]] if x != [] else sl
-    return xl, yl, ml, cl, sl
+    ol = ol + [o[-1]] if x != [] else ol
+    return xl, yl, *ut.transpose(ol, len(other))
 
 def get_line(x, y): # it returns a line of points from x[0],y[0] to x[1],y[1] distanced between each other in x and y by at least 1.
     x0, x1 = x
@@ -1121,14 +1138,14 @@ def get_line(x, y): # it returns a line of points from x[0],y[0] to x[1],y[1] di
     dx, dy = int(x1) - int(x0), int(y1) - int(y0)
     ax, ay = abs(dx), abs(dy)
     a = int(max(ax, ay) + 1)
-    x = ut.linspace(x0, x1, a)
-    y = ut.linspace(y0, y1, a)
-    return [ut.floor(x), ut.floor(y)]
+    x = [int(el) for el in ut.linspace(x0, x1, a)]
+    y = [int(el) for el in ut.linspace(y0, y1, a)]
+    return [x, y]
 
-def fill_data(x, y, y0, m, c, s): # it fills x, y with y data points reaching y0;  and c are the list of markers and colors that needs to be elongated
-    y0 = int(y0)
+def fill_data(x, y, y0, *other): # it fills x, y with y data points reaching y0;  and c are the list of markers and colors that needs to be elongated
+    o = ut.transpose(other, len(other))
     xy = []
-    xf, yf, mf, cf, sf = [[] for i in range(5)] 
+    xf, yf, of = [[] for i in range(3)] 
     for i in range(len(x)):
         xi, yi = x[i], y[i]
         if [xi, yi] not in xy:
@@ -1138,23 +1155,28 @@ def fill_data(x, y, y0, m, c, s): # it fills x, y with y data points reaching y0
             xn = [xi] * len(yn)
             xf += xn
             yf += yn
-            mf += [m[i]] * len(xn)
-            cf += [c[i]] * len(xn)
-            sf += [s[i]] * len(xn)
-    return [xf, yf, mf, cf, sf]
+            of += [o[i]] * len(xn)
+    return [xf, yf, *ut.transpose(of, len(other))]
+
+def reduce_canvas(x, xf):
+    return [int(el // xf) for el in x]
 
 side_symbols = {("lower", "left"): 'L', ("lower", "right"): '⅃', ("upper", "left"): 'Γ', ("upper", "right"): '⅂'} # symbols used in the legend to indentify the axes used for plot
 
 def get_labels(ticks): # it returns the approximated string version of the data ticks
     d = distinguishing_digit(ticks)
-    labels = [str(ut.round(el, d + 1)) for el in ticks]
-    labels = [el[: el.index('.') + d + 2] for el in labels]
+    formatting_string = "{:." + str(d + 1) + "f}"
+    labels = [formatting_string.format(el) for el in ticks]
+    #labels = [str(ut.round(el, d + 1)) for el in ticks]
+    pos = [el.index('.') + d + 2 for el in labels]
+    labels = [labels[i][: pos[i]] for i in range(len(labels))]
     labels = [add_extra_zeros(el, d + 1) if len(labels) > 1 else el for el in labels]
-    sign = any([el < 0 for el in ticks])
+    #sign = any([el < 0 for el in ticks])
     #labels = ['+' + labels[i] if ticks[i] > 0 and sign else labels[i] for i in range(len(labels))]
     return labels
 
 def distinguishing_digit(data): # it return the minimum amount of decimal digits necessary to distinguish all elements of a list
+    #data = [el for el in data if 'e' not in str(el)]
     d = [_distinguishing_digit(data[i], data[i + 1]) for i in range(len(data) - 1)]
     return max(d, default = 1)
 
@@ -1167,7 +1189,7 @@ def _distinguishing_digit(a, b): # it return the minimum amount of decimal digit
     return d
     
 def add_extra_zeros(label, d): # it adds 0s at the end of a label if necessary
-    zeros = len(label) - 1 - label.index('.')
+    zeros = len(label) - 1 - label.index('.' if 'e' not in label else 'e')
     if zeros < d:
         label += '0' * (d - zeros)
     return label
@@ -1185,18 +1207,23 @@ def add_ticks(axis, coords, tick): # adds ticks to an axis at each coordinate
         axis = ut.insert_string(axis, tick, coords[i], 'left') if tick is not None else axis
     return axis
 
-def hd_group(x, y, xf, yf): # it returns the real coordinates of the HD markers and the matrix that defines the,
-    lx = max(x) // xf + 1; ly = max(y) // yf + 1
-    m0 = [[0 for x in range(xf)] for y in range(yf)]
-    m = [[[r[:] for r in m0] for x in range(lx)] for y in range(ly)]
-    xy = []
-    for i in range(len(x)):
-        xi, xk = x[i] // xf, x[i] % xf
-        yi, yk = y[i] // yf, yf - y[i] % yf - 1
-        m[yi][xi][yk][xk] = 1
-        xy.append((xi, yi))
-    x, y = ut.transpose(ut.no_duplicates(xy), 2)
-    m = [tuple(ut.join(m[y[i]][x[i]])) for i in range(len(x))]
+def hd_group(x, y, xf, yf): # it returns the real coordinates of the HD markers and the matrix that defines the marker
+    l, xfm, yfm = len(x), max(xf), max(yf)
+    xm = [el // xfm for el in x]
+    ym = [el // yfm for el in y]
+    m = {}
+    for i in range(l):
+        xyi = xm[i], ym[i]
+        xfi, yfi = xf[i], yf[i]
+        mi = [[0 for x in range(xfi)] for y in range(yfi)]
+        m[xyi] = mi
+    for i in range(l):
+        xyi = xm[i], ym[i]
+        xk, yk = x[i] % xfi, y[i] % yfi
+        xk, yk = math.floor(xk), math.floor(yk)
+        m[xyi][yk][xk] = 1
+    x, y = ut.transpose(m.keys(), 2)
+    m = [tuple(ut.join(el[::-1])) for el in m.values()]
     return x, y, m
 
 ###############################################

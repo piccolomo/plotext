@@ -48,8 +48,8 @@ class date_class():
         except:
             raise ValueError('Date Form should be: ' + input_form)
 
-    def strings_to_time(self, strings):
-        return [self.string_to_time(el) for el in strings]
+    def strings_to_time(self, strings, input_form = None):
+        return [self.string_to_time(el, input_form) for el in strings]
 
     def time_to_string(self, time, output_form = None):
         return self.datetime_to_string(dt.fromtimestamp(time + self.time0), output_form)
