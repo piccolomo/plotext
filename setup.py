@@ -8,11 +8,11 @@ HERE = pathlib.Path(__file__).parent
 # The text of the README file
 README = (HERE / "README.md").read_text()
 
-setup(
+setup( 
     author="Savino Piccolomo",
     author_email="piccolomo@gmail.com",
     name='plotext',
-    version='2.3.1',
+    version='3.0.1',
     description='plotext plots data directly on terminal',
     long_description=README,
     long_description_content_type="text/markdown",  
