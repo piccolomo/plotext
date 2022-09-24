@@ -16,9 +16,10 @@ class _parameters():
         self.xlabel = None
         self.ylabel = None
         self.legend = []
+        self.legend_show = []
 
         self.axes = [None, None]
-        self.ticks = [None, None] 
+        self.ticks = [None, None]
         self.xticks = None
         self.xlabels = []
         self.yticks = None
@@ -42,7 +43,8 @@ class _parameters():
         self.xlim_plot = [None, None]
         self.ylim_plot = [None, None]
 
-        self.fill = []
+        self.fillx = []
+        self.filly = []
 
 class _constants():
     def __init__(self):
@@ -93,7 +95,6 @@ if par.shell == "idle" or par.shell == "spyder":
 def _draw(*args, **kwargs):
     width()
     height()
-    #force_size()
 
     title()
     xlabel()
@@ -119,15 +120,25 @@ def _draw(*args, **kwargs):
     xlim()
     ylim()
     
-    _fill(kwargs.get("fill"))
+    _fillx(kwargs.get("fillx"))
+    _filly(kwargs.get("filly"))
     
 ##############################################
 ########    Draw Called Functions     ########
 ##############################################
+def _label(label = None):
+    if label == None:
+        par.legend_show.append(0)
+    else:
+        par.legend_show.append(1)
+    label_none =  "_signal" + str(len(par.legend)) 
+    label = _set_var_if_none(label, label_none)
+    par.legend.append(label)
+    
 def _point_marker(x = None):
     if type(x) == int:
         x = _marker[x]
-    x_none = [el for el in _marker if el not in (par.point_marker + par.line_marker)]
+    x_none = [el for el in _marker if el not in par.point_marker]
     x_none = "none" if x_none == [] else x_none[0]
     x = _set_var_if_none(x, x_none)
     if x == " ":
@@ -137,7 +148,7 @@ def _point_marker(x = None):
 def _line_marker(x = None):
     if type(x) == int:
         x = _marker[x]
-    x_none = [el for el in _marker if el not in (par.point_marker + par.line_marker)]
+    x_none = [el for el in _marker if el not in par.line_marker]
     x_none = "none" if x_none == [] else x_none[0]
     x = _set_var_if_none(x, x_none)
     if x == " ":
@@ -145,20 +156,16 @@ def _line_marker(x = None):
     par.line_marker.append(x[:1])
 
 def _point_color(x = None):
-    x_none = [el for el in _color_sequence if el not in (par.point_color + par.line_color)]
+    x_none = [el for el in _color_sequence if el not in par.point_color]
     x_none = "none" if x_none == [] else x_none[0]
     x = _set_var_if_none(x, x_none)
     par.point_color.append(x)
 
 def _line_color(x = None):
-    x_none = [el for el in _color_sequence if el not in (par.point_color + par.line_color)]
+    x_none = [el for el in _color_sequence if el not in par.line_color]
     x_none = "none" if x_none == [] else x_none[0]
     x = _set_var_if_none(x, x_none)
     par.line_color.append(x)
-
-def _label(x = None):
-    x = _set_var_if_none(x, "")
-    par.legend.append(x)
 
 def _data(*args):
     if len(args) == 0:
@@ -177,11 +184,17 @@ def _data(*args):
     par.x.append(x)
     par.y.append(y)
 
-def _fill(x = None):
+def _fillx(x = None):
     x = _set_var_if_none(x, False)
     if x == " ":
         x = ""
-    par.fill.append(x)
+    par.fillx.append(x)
+
+def _filly(y = None):
+    y = _set_var_if_none(y, False)
+    if y == " ":
+        y = ""
+    par.filly.append(y)
 
 ##############################################
 ########    Other Set Functions     ##########
@@ -218,8 +231,8 @@ Note that ticks(width, height) is equivalent to ticks([width, height]) and that 
     x, y = _set_list_to_both(x, y)
     xl = max(map(len, par.x))
     yl = max(map(len, par.y))
-    x = _set_var_if_none(x, min(7, xl))
-    y = _set_var_if_none(y, min(5, yl))
+    x = _set_var_if_none(x, min(7, max(3, xl)))
+    y = _set_var_if_none(y, min(5, max(3, yl)))
     par.ticks = [x, y]
     
 def grid(x = None, y = None):
@@ -465,10 +478,14 @@ def _add_data():
         x_line, y_line = [], []
         if line_marker != "":
             x_line, y_line = _get_line(x_point, y_point)
-        if par.fill[s]:
-            c0 = _get_matrix_data([0], par.ylim_plot, par.rows)[0]
-            x_point, y_point = _fill_data(x_point, y_point, c0)
-            x_line, y_line = _fill_data(x_line, y_line, c0)
+        if par.fillx[s]:
+            row0 = _get_matrix_data([0], par.ylim_plot, par.rows)[0]
+            x_point, y_point = _fillx_data(x_point, y_point, row0)
+            x_line, y_line = _fillx_data(x_line, y_line, row0)
+        if par.filly[s]:
+            col0 = _get_matrix_data([0], par.xlim_plot, par.cols)[0] 
+            x_point, y_point = _filly_data(x_point, y_point, col0)
+            x_line, y_line = _filly_data(x_line, y_line, col0)
         if line_marker != "":
             line_marker = _add_color(line_marker, line_color, par.canvas_color)
             par.matrix = _update_matrix(par.matrix, x_line, y_line, line_marker)
@@ -477,8 +494,7 @@ def _add_data():
             par.matrix = _update_matrix(par.matrix, x_point, y_point, point_marker)
 
 def _legend():
-    if (par.legend == [""] * len(par.legend)):
-        return
+    #par.legend = list(set(par.legend))
     legend = par.legend
     l = len(legend)
     legend = [" " + legend[i] if legend[i] != "" else " signal " + str(i + 1) for i in range(l)]
@@ -495,7 +511,8 @@ def _legend():
         line_marker = _add_color(line_marker, line_color, par.canvas_color)
         marker = [line_marker] * 2 + [point_marker] + [line_marker] * 2
         markers += [marker]
-    legend = [[space] + markers[i] + legend[i] +  [space] for i in range(l)]
+    legend = [[space] + markers[i] + legend[i] +  [space] for i in range(l) if par.legend_show[i]]
+    l = len(legend)
     #legend = [[add_color(sub_el, "bold", "white") for sub_el in el] for el in legend]
     if len(legend) > par.rows:
         return
@@ -632,13 +649,16 @@ def _set_list_to_both(x = None, y = None): # by setting a parameter to a list, b
 def _set_var_if_none(x = None, x_none = None): # set a parameter when none is provided. 
     if x == None:
         x = x_none
-    elif x_none != None:
-        x = type(x_none)(x)
+    #elif x_none != None:
+    #    x = type(x_none)(x)
     return x
 
 def _get_lim_data(data):
     m = min([min(el, default = 0) for el in data])
     M = max([max(el, default = 0) for el in data])
+    if m == M:
+        m = m - 1
+        M = M + 1
     return [m, M]
 
 def _linspace(lower, upper, length):
@@ -709,8 +729,12 @@ def _get_line(x, y):
     for n in range(len(x) - 1):
         Dy, Dx = y[n + 1] - y[n], x[n + 1] - x[n]
         l = x[n + 1] - x[n]
-        x_line_n = [x[n] + i           for i in range(l)]
-        y_line_n = [int(y[n] + i * Dy / Dx) for i in range(l)]
+        if Dx != 0:
+            x_line_n = [x[n] + i           for i in range(l)]
+            y_line_n = [int(y[n] + i * Dy / Dx) for i in range(l)]
+        else:
+            y_line_n = _arange(y[n], y[n + 1] + 1)
+            x_line_n = [x[n]] * len(y_line_n)
         x_line.extend(x_line_n)
         y_line.extend(y_line_n)
     x_line += [x[-1]]
@@ -725,12 +749,22 @@ def _update_matrix(matrix, x, y, marker):
             matrix[r][c] = marker
     return matrix
 
-def _fill_data(x, y, y0):
+def _filly_data(x, y, x0):
+    y_new = y
+    x_new = x
+    for i in range(len(y)):
+        xi = x[i]
+        x_temp = range(min(x0, xi), max(x0, xi))
+        x_new += x_temp
+        y_new += [y[i]] * len(x_temp)
+    return [x, y]
+
+def _fillx_data(x, y, y0):
     y_new = y
     x_new = x
     for i in range(len(y)):
         yi = y[i]
-        y_temp = range(min(y0, yi), max(y0, yi))
+        y_temp = range(min(y0, yi), max(y0, yi) )
         y_new += y_temp
         x_new += [x[i]] * len(y_temp)
     return [x, y]
@@ -764,36 +798,48 @@ def _remove_color(string):
     return string
 
 ##############################################
+########    Histogram Functions    ###########
+##############################################
+
+def hist_data(data, bins = 10):
+    """It returns the frequency data used to create the histogram plot. The parameter bins defines the number of equal-width bins in the range (default 10).\n"""
+    m, M = min(data), max(data)
+    data = [(el - m) / (M - m) * bins if el != M else bins - 1 for el in data]
+    data = [int(el) for el in data]
+    histx = _linspace(m, M, bins)
+    histy = [0] * bins
+    for el in data:
+        histy[el] += 1
+    return histx, histy
+
+def _hist_data_plot(histx, histy, bin_size):
+    bins = len(histx)
+    x = []
+    y = []
+    xbin = [[0, bin_size]] + [[-bin_size / 2, bin_size / 2]] * (bins - 2) + [[-bin_size, 0]]
+    ybin = [1, 1]
+    for i in range(bins):
+        if histy[i] != 0:
+            x_new = []
+            y_new = []
+            for j in range(2):
+                x_new.append(histx[i] + xbin[i][j])
+                y_new.append(histy[i] * ybin[j])
+            x.append(x_new)
+            y.append(y_new)
+    return x, y
+
+##############################################
 ##########    Basic Functions    #############
 ##############################################
 def scatter(*args,
-        #width = None,
-        #height = None,
-        #force_size = None,
-
-        #title = None,
-        #xlabel = None,
-        #ylabel = None,
         label = None,
-
-        #axes = None,
-        #ticks = None,
-        #grid = None,
-        #frame = None,
-
         point_marker = None,
         line_marker = "",
-
-        #axes_color = None,
-        #ticks_color = None,
-        #canvas_color = None,
         point_color = None,
         line_color = "none",
-
-        #xlim = None,
-        #ylim = None,
-            
-        fill = None):
+        fillx = None,
+        filly = None):
     """\nIt creates a scatter plot of coordinates given by the x and y lists. Optionally, a single y list could be provided. Here is a basic example:
 
 \x1b[32mimport plotext as plt
@@ -823,62 +869,22 @@ It sets the color of the data points. Use the function plt.colors() to find the 
 \x1b[33mline_color\x1b[0m
 It sets the color of the lines, if plotted. Use the function plt.colors() to find the available full-ground color codes.\n"""
     _draw(*args,
-          #width = width,
-          #height = height,
-          #force_size = force_size,
-          
-          #title = title,
-          #xlabel = xlabel,
-          #ylabel = ylabel,
           label = label,
-          
-          #axes = axes,
-          #ticks = ticks,
-          #grid = grid,
-          #frame = frame,
-          
           point_marker = point_marker,
           line_marker = line_marker,
-          
-          #axes_color = axes_color,  
-          #ticks_color = ticks_color,  
-          #canvas_color = canvas_color,
           point_color = point_color,
           line_color = line_color,
-          
-          #xlim = xlim,
-          #ylim = ylim,
-          
-          fill = fill)
+          fillx = fillx,
+          filly = filly)
 
 def plot(*args,
-        #width = None,
-        #height = None,
-        #force_size = None,
-
-        #title = None,
-        #xlabel = None,
-        #ylabel = None,
         label = None,
-         
-        #axes = None,
-        #ticks = None,
-        #grid = None,
-        frame = None,
-
         point_marker = "",
         line_marker = None,
-
-        #axes_color = None,
-        #ticks_color = None,
-        #canvas_color = None,
         point_color = "none",
         line_color = None,
-
-        #xlim = None,
-        #ylim = None,
-
-        fill = None):
+        fillx = None,
+        filly = None):
     """\nIt plots y versus x as lines and it is equivalent to the scatter function with the point_marker set to the empty string and the line_marker set to '•'. This means that no data points will be plotted, and the lines between consecutive points will be plotted instead. Here is a basic example: 
 
 \x1b[32mimport plotext as plt
@@ -887,34 +893,74 @@ plt.show()\x1b[0m
 
 Access the scatter function docstring for further documentation.\n"""
     _draw(*args,
-          #width = width,
-          #height = height,
-          #force_size = force_size,
-          
-          #title = title,
-          #xlabel = xlabel,
-          #ylabel = ylabel,
           label = label,
-          
-          #axes = axes,
-          #ticks = ticks,
-          #grid = grid,
-          frame = frame,
-          
           point_marker = point_marker,
-          line_marker = line_marker,
-          
-          #axes_color = axes_color,
-          #ticks_color = ticks_color,
-          #canvas_color = canvas_color,
+          line_marker = line_marker,          
           point_color = point_color,
-          line_color = line_color,
-          
-          #xlim = xlim,
-          #ylim = ylim,
-          
-          fill = fill)
+          line_color = line_color,          
+          fillx = fillx,
+          filly = filly)
 
+def hist(data,
+         bins = 10,
+         label = None,
+         bar_marker = "█",
+         bar_color = None,
+         fill = True,
+         orientation = "v"
+):
+    """It returns the histogram plot relative to the data provided. 
+Here is a basic example: 
+
+\x1b[32mimport plotext as plt
+plt.hist(data, bins)
+plt.show()\x1b[0m
+
+\x1b[33mbins\x1b[0m
+It defines the number of equal-width bins in the range (default 10).
+
+\x1b[33mbar_marker\x1b[0m
+It sets the marker used to identify each bar plotted (default █).
+
+\x1b[33mbar_color\x1b[0m
+It sets the color of the bars.
+
+\x1b[33mfill\x1b[0m
+If True (as by default), it plot the entire bars (including their body), otherwise only their top. 
+
+\x1b[33mlabel\x1b[0m
+It sets the label of the current data set, which will appear in the legend at the top left of the plot.  
+
+\x1b[33morientation\x1b[0m
+It sets the orientation of the bars, it accepts either 'vertical' (in short 'v') or 'horizontal' (in short 'h'). 
+
+Access the scatter function docstring for further documentation.\n"""
+    mx, Mx = min(data), max(data)
+    bin_size = (Mx - mx) / bins
+
+    histx, histy = hist_data(data, bins)
+    
+    x, y = _hist_data_plot(histx, histy, bin_size)
+    fillx = fill
+    filly = False
+    if orientation == 'horizontal' or orientation == 'h':
+        fillx = False
+        filly = fill
+        x, y = y, x
+    bins = len(x)
+    for b in range(bins):
+        _draw(x[b], y[b], fillx = fillx, filly = filly, point_marker = bar_marker, point_color = bar_color, line_marker = bar_marker, line_color = bar_color, label = label)
+        if b != 0:
+            par.legend_show[-1] = False
+            par.point_color[-1] = par.point_color[-2] # in case none
+            par.line_color[-1] = par.line_color[-2] # in case none
+    if orientation == 'vertical' or orientation == 'v':
+    	ylim(0, 1.0 * max(histy))
+    elif orientation == 'horizontal' or orientation == 'h':
+        xlim(0, 1.0 * max(histy))
+    #xlim(mx - bin_size / 4, Mx + bin_size / 4)
+    #xticks(_linspace(mx, Mx, min(par.ticks[0], bins + 1)))
+    
 def clear_terminal():
     """\nIt clears the terminal and it is generally useful when plotting a continuous stream of data. The function clt() is equivalent.\n"""
     if par.nocolor:
@@ -930,9 +976,17 @@ def clear_plot():
 
 clp = clear_plot
 
+def sleep_1us():
+    time = 1 / 10 ** 6
+    [i for i in range(int(time * 2.58 * 10 ** 7))]
+
 def sleep(time):
     """\nIt adds a sleeping time to the computation and it is useful when continuously plotting a stream of data, in order to decrease a possible screen flickering. An input of, for example, 0.01 would add approximately 0.01 secs to the computation. Manually tweak this value to reduce the flickering.\n"""
-    [i for i in range(int(time * 15269989))]
+    ms = int(time * 10 ** 6)
+    #print(ms)
+    for m in range(ms):
+        sleep_1us()
+    #[i for i in range(int(time * 15269989))]
 
 def terminal_size():
     """\nIt returns the terminal size\n"""
@@ -1016,7 +1070,7 @@ def parameters():
 def docstrings():
     """\nIt prints all the available docstrings\n"""    
     functions = [width, height, figsize, axes, ticks, scatter, plot, xticks, yticks, show, clear_terminal, clear_plot, sleep, savefig, colors, version]
-    functions = [width, height, figsize, axes, ticks, grid, frame, axes_color, canvas_color, ticks_color, nocolor, title, xlabel, ylabel, legend, xlim, ylim, xticks, yticks, show, scatter, plot, clt, clp, sleep, terminal_size, savefig, colors, markers, version, parameters, docstrings]
+    functions = [width, height, figsize, axes, ticks, grid, frame, axes_color, canvas_color, ticks_color, nocolor, title, xlabel, ylabel, legend, xlim, ylim, xticks, yticks, show, scatter, plot, hist, hist_data, clt, clp, sleep, terminal_size, savefig, colors, markers, version, parameters, docstrings]
     for fun in functions:
         name = _add_color(_add_color(fun.__name__, "bold"), "indigo")
         if par.nocolor:
@@ -1027,6 +1081,22 @@ def docstrings():
         print(fun.__doc__)
 
 if __name__ == "__main__":
-    import plot as plt
-    #plt.docstrings()
     pass
+    data = [1,1,2,2,2,4,4,5,5,5,5,7,7,15,14]
+    bins = 10
+    o = 'vertical'
+    #o = 'horizontal'
+    import matplotlib.pyplot as plt
+    plt.cla()
+    plt.hist(data, bins, orientation=o)
+    plt.pause(0.01)
+    #plt.show(block=0)
+    
+    import plot as plt
+    plt.clp()
+    plt.hist(data, bins, orientation=o)
+    plt.show()
+
+
+
+
