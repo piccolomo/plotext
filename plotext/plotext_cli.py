@@ -2,14 +2,14 @@
 from plotext._utility import all_markers, colors
 import argparse, sys, os
 import plotext as plt
-#import shtab
+import shtab
 
 # For Possible Colors and Markers Completion 
-# def dict_to_complete(d={}):
-#     return {'zsh': '((' + ' '.join(map(lambda x: str(x[0]) + '\\:' + x[1], d.items())) + '))'}
+def dict_to_complete(d={}):
+    return {'zsh': '((' + ' '.join(map(lambda x: str(x[0]) + '\\:' + x[1], d.items())) + '))'}
 
-# def list_to_complete(data):
-#     return {'zsh': '((' + ' '.join([el + '\\:' for el in data]) + '))'}
+def list_to_complete(data):
+    return {'zsh': '((' + ' '.join([el + '\\:' for el in data]) + '))'}
 
 
 def build_parser():
@@ -21,7 +21,7 @@ def build_parser():
         description     = "plotting directly on terminal",
         epilog          = examples,
         formatter_class = argparse.RawDescriptionHelpFormatter)
-    #shtab.add_argument_to(parser,  ["-s", "--print-completion"])
+    shtab.add_argument_to(parser,  ["-s", "--print-completion"])
 
     parser.set_defaults(type = "scatter")
 
@@ -33,7 +33,7 @@ def build_parser():
                              type    = str,
                              metavar = "FILE",
                              help    = "file path of the data table; if not used it will read from stdin. Use 'test' to automatically download, in your user folder, some test data/image/gif or video, depending on the function used; the file will be removed after the plot",
-                             )#.complete = shtab.FILE
+                             ).complete = shtab.FILE
 
     common_parser = argparse.ArgumentParser(add_help = False)
 
@@ -86,7 +86,7 @@ def build_parser():
                                 choices = all_markers.keys(),
                                 metavar = "marker",
                                 help    = "character or marker code identifying the data points in the plot, eg: x, braille, sd, heart, fhd; by default hd",
-                                )#.complete = dict_to_complete(all_markers)
+                                ).complete = dict_to_complete(all_markers)
     
     options_parser.add_argument("-c", "--color",
                                 type    = str,
@@ -95,7 +95,7 @@ def build_parser():
                                 choices = colors,
                                 metavar = "COLOR",
                                 help    = "color of the data points in the plot, between: " + ",".join(colors) + "; add + at the end of the color (except black and white) for clearer colors, eg: red+"
-                                )#.complete = list_to_complete(colors)
+                                ).complete = list_to_complete(colors)
 
     options_parser.add_argument("-t", "--title",
                                 nargs   = 1,

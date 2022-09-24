@@ -741,7 +741,7 @@ class monitor_class(build_class):
         default = self.default.alignment[0:-1]
         default_first_letter = [el[0] for el in default]
         alignment = default[default_first_letter.index(alignment)] if alignment in default_first_letter else alignment
-        alignment = default[1] if alignment not in default else alignment
+        alignment = default[0] if alignment not in default else alignment
         return alignment
 
     def _draw_image(self, image, marker = None, style = None, grayscale = False, fast = False):

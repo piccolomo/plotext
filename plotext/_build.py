@@ -263,7 +263,7 @@ class build_class():
 
         # Add Text to Canvas
         [self.matrix.add_horizontal_string(col_start + tcticks[s], row_start + trticks[s], self.text[s], self.tfull[s], self.tstyle[s], self.tback[s], self.talign[s], False, True) for s in Texts if self.torien[s] is self.default.orientation[0]] 
-        [self.matrix.add_vertical_string(col_start + tcticks[s], row_start + trticks[s], self.text[s], self.tfull[s], self.tstyle[s], self.tback[s], self.talign[s], False, True) for s in Texts if self.torien[s] is self.default.orientation[1]]
+        [self.matrix.add_vertical_string(col_start + tcticks[s], row_start + trticks[s], self.text[s], self.tfull[s], self.tstyle[s], self.tback[s], self.talign[s], True) for s in Texts if self.torien[s] is self.default.orientation[1]]
 
 
 

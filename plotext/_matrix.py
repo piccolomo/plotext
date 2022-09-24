@@ -72,17 +72,30 @@ class matrix_class():
             self.set_style(col, row, style) if style is not None else None
     
     def add_horizontal_string(self, col, row, string, fullground = None, style = None, background = None, alignment = "left", check_space = False, check_canvas = False):
-        l = len(string); L = range(l)
-        col = col if alignment == "left" else col - l // 2 if alignment == "center" else col - l + 1 if alignment == "right" else ut.correct_coord(self.get_marker_row(row), string, col) # if dynamic
-        b, e = max(col - 1, 0), min(col + l + 1, self.cols)
-        test_space = all([self.get_marker(c, row) == ut.space for c in range(b, e)]) and col >= 0 and col + l <= self.cols if check_space else True
-        [self.insert_element(col + i, row, string[i], fullground, style, background, check_canvas) for i in L] if test_space else None
+        strings = ''.join(string).split('\n'); S = len(strings)
+        for s in range(S):
+            string = strings[s]
+            l = len(string); L = range(l)
+            Col = col if alignment == "left" else col - l // 2 if alignment == "center" else col - l + 1 if alignment == "right" else ut.correct_coord(self.get_marker_row(row), string, col) # if dynamic
+            b, e = max(Col - 1, 0), min(Col + l + 1, self.cols)
+            test_space = all([self.get_marker(c, row) == ut.space for c in range(b, e)]) and Col >= 0 and Col + l <= self.cols if check_space else True
+            [self.insert_element(Col + i, row - s, string[i], fullground, style, background, check_canvas) for i in L] if test_space else None
         return test_space
 
-    def add_vertical_string(self, col, row, string, fullground = None, style = None, background = None,  alignment = "bottom", check_canvas = False):
-        l = len(string); L = range(l)
-        row = row if alignment == "bottom" else row - l // 2 if alignment == "center" else row - l + 1 #if alignment == "top"
-        [self.insert_element(col, row + i, string[i], fullground, style, background, check_canvas) for i in L]
+    def add_vertical_string(self, col, row, string, fullground = None, style = None, background = None, alignment = "bottom", check_canvas = False):
+        strings = ''.join(string).split('\n'); S = len(strings)
+        for s in range(S):
+            string = strings[s]
+            l = len(string); L = range(l)
+            Row = row if alignment == "bottom" else row - l // 2 if alignment == "center" else row - l + 1 #if alignment == "top"
+            [self.insert_element(col - s, Row + i, string[i], fullground, style, background, check_canvas) for i in L]
+
+    def add_multiple_horizontal_strings(self, col, row, string, fullground = None, style = None, background = None, alignment = "left", check_space = False, check_canvas = False):
+        strings = ''.join(string).split('\n'); S = len(strings)
+        for s in range(S):
+            string = strings[s]
+            [self.add_horizonelement(Col + i, row - s, string[i], fullground, style, background, check_canvas) for i in L] if test_space else None
+        return test_space
 
     def get_colors(self, col, row):
         return [self.fullground[row][col], self.style[row][col], self.background[row][col]] #if self.legal(col, row) else ["OUT"] * 3
