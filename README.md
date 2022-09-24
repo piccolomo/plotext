@@ -346,7 +346,7 @@ python3 -m plotext "import plotext as plt; l, n = 1000, 2; x = range(1, l + 1); 
 # Plot Aspect
 You can personalize the plot aspect in many ways. You could use the following parameters - to be placed inside the `scatter`, `plot`, `bar` and `hist` calls:
 
- - `marker` sets the marker used to identify each data point to the specified character. For example `plt.scatter(data, point_marker = "x")`. Access the `markers()` function for further marker codes. 
+ - `marker` sets the marker used to identify each data point to the specified character. For example `plt.scatter(data, marker = "x")`. Access the `markers()` function for further marker codes. 
  - `color = color` sets the color of the `marker` used. Access the `colors()` function for the color codes available. 
  - `fillx = True` fills the area between the data and the `x` axis with data points (if used inside `scatter`) or line points (if used inside `plot`). For example: `plt.plot(data, fillx = True)`. By default `fillx = False`
  - `filly` is the correspondent parameter of `fillx` but for the `y` axis.
@@ -398,7 +398,7 @@ Here are the colors and markers codes:
 
 ![colors](https://raw.githubusercontent.com/piccolomo/plotext/master/images/colors.png)
 
-Note: using `flash` will result in an actual flashing marker.
+Note: using `flash` will result in an actual white flashing marker (therefore it will not work with white canvas background color).
 
 ![colors](https://raw.githubusercontent.com/piccolomo/plotext/master/images/markers.png)
 
@@ -445,8 +445,9 @@ python3 -m plotext "import plotext as plt; l, n = 1000, 5; y = plt.sin(l, n); pl
 <a name="streaming"></a>
 # Streaming Data
 When streaming a continuos flow of data, consider using the following functions:
-
+ - `clear_figure` (in short `clf`) clears the entire figure, including its subplots. 
  - `clear_plot()` (in short `clp()`) clears the plot and all its internal parameters; it is useful when running the same script several times in order to avoid adding the same data to the plot; it is very similar to `cla()` in `matplotlib`.
+ - `clear_data()` (in short `cld()`) clear only the plot data (without clearing the plot style).
  - `clear_terminal()` (in short `clt()`) clear the terminal before the actual plot.
  - `sleep(time)` is used in order to reduce a possible screen flickering; for example `sleep(0.01)` would add approximately 10 ms to the computation. Note that the `time` parameters will depend on your processor speed and it needs some manual tweaking.
  - The function `colorless()` is recommended to make the streaming more responsive, but not mandatory.
@@ -455,34 +456,34 @@ Here is a coded example:
 ```
 import plotext as plt
 import numpy as np
-
 l, n = 1000, 2
 x = np.arange(0, l)
 xticks = np.linspace(0, l - 1, 5)
 xlabels = [str(i) + "π" for i in range(5)]
-frames = 500
-
+frames = 100
+    
 plt.clf()
-for i in range(frames):
-    y = plt.sin(l, n, 0, phase = 2 * i  / frames)
+plt.ylim(-1, 1)
+plt.xticks(xticks, xlabels)
+plt.yticks([-1, 0, 1])
+plt.plotsize(100, 30)
+plt.title("Streaming Data")
+plt.colorless()
 
-    plt.clp()
+for i in range(frames):
+    y = plt.sin(l, n, 0, phase = 2 * i  / frames)	
+
+    plt.cld()
     plt.clt()
     plt.scatter(x, y, marker = "dot")
-    plt.ylim(-1, 1)
-    plt.xticks(xticks, xlabels)
-    plt.yticks([-1, 0, 1])
-    plt.plotsize(100, 30)
-    plt.title("Streaming Data")
-    plt.colorless()
-    plt.sleep(0.001)
+    plt.sleep(0.01)
     plt.show()
 ```
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/stream.gif)
 
 The equivalent direct terminal command line is:
 ```
-python3 -m plotext "import plotext as plt; import numpy as np; l, n = 1000, 2; x = np.arange(0, l); xticks = np.linspace(0, l - 1, 5); xlabels = [str(i) + 'pi' for i in range(5)]; frames = 500; plt.clf(); y = lambda i: plt.sin(l, n, 0, phase = 2 * i  / frames); [(plt.clp(), plt.clt(), plt.scatter(x, y(i), marker = 'dot'), plt.ylim(-1, 1), plt.xticks(xticks, xlabels), plt.yticks([-1, 0, 1]), plt.plotsize(100, 30), plt.title('Streaming Data'), plt.colorless(), plt.sleep(0.001), plt.show()) for i in range(frames)]"
+python3 -m plotext "import plotext as plt; import numpy as np; l, n = 1000, 2; x = np.arange(0, l); xticks = np.linspace(0, l - 1, 5); xlabels = [str(i) + 'pi' for i in range(5)]; frames = 100; plt.clf(); plt.ylim(-1, 1); plt.xticks(xticks, xlabels); plt.yticks([-1, 0, 1]); plt.plotsize(100, 30); plt.title('Streaming Data'); plt.colorless();  y = lambda i: plt.sin(l, n, 0, phase = 2 * i  / frames); [(plt.cld(), plt.scatter(x, y(i), marker = 'dot'), plt.sleep(0.01), plt.show()) for i in range(frames)]"
 ```
 Plotting the same data using `matplotlib` was roughly 10 to 50 times slower on my Linux-based machine (depending on the colors settings and data size).
 
@@ -491,12 +492,16 @@ Plotting the same data using `matplotlib` was roughly 10 to 50 times slower on m
 
 <a name="other"></a>
 ## Other Functions
-- `clear_figure` (in short `clf`) clears the entire figure, including its subplots. 
 - `savefig(path)` saves the plot as a text file at the `path` provided. Note: no colors are preserved at the moment, when saving.
 - `get_canvas()` return the plot final canvas as a string. To be used after the `show` function possibly with its `hide` parameter set to True.
 - `version()` returns the version of the current installed `plotext` package.
 - `sin()` returns a sinusoidal function usefull for testing. Access its docstring for durther documentation.
 - `plt.docstrings()` prints all the available doc-strings.
+- `test()` runs all the above tests in sequence:
+```
+import plotext as plt
+plt.test()
+```
 
 [ Table of Contents ](https://github.com/piccolomo/plotext#table-of-contents)
 
@@ -510,6 +515,11 @@ To install the latest version of `plotext` use: `pip install plotext --upgrade` 
 
 <a name="updates"></a>
 ## Main Updates:
+ - from version 3.1.0: fixed issue of plot resizing reported by @nicrip
+ - from version 3.0.1: added `clear_data()` and `test()` functions
+
+from version 2:
+
  - Direct terminal command line tool added
  - Smaller marker added (with improved resolution), with new marker codes
  - Subplots added

@@ -101,7 +101,7 @@ def get_labels(ticks):
     else:
         c = max([distinguish(ticks[i], ticks[i + 1]) for i in range(l - 1)])
     ticks = [round_to_character(el, c) for el in ticks]
-    ticks = [int(el) if int(el) == el else el for el in ticks]
+    #ticks = [int(el) if int(el) == el else el for el in ticks]
 
     #ticks_sn = [scientific_notation(*scientific_base(el)) for el in ticks]
     ticks = [str(el) for el in ticks]
@@ -161,16 +161,12 @@ def update_matrix_small(matrix, x, y, color):
     for i in range(len(x)):
         c, r = x[i], y[i]
         new = small_marker(c, r)
-        #print("-----------")
-        #print("\n", add_color(matrix_to_block(new), "none", "blue"))
         c, r = int(c), int(r)
         if 0 <= r < rows and 0 <= c < cols:
             old = matrix[rows - 1 - r][c][0]
             old = " " if old not in blocks.keys() else old
             old = blocks[old]
-            #print("\n", add_color(matrix_to_block(old), "none", "blue"))
             new = sum_small(old, new)
-            #print("\n", add_color(matrix_to_block(new), "none", "blue"))
             new = matrix_to_block(new)
             matrix[rows - 1 - r][c][:2] = [new, color]
     return matrix
@@ -420,6 +416,7 @@ def docstrings():
     name = [add_color(el, 'bold') for el in name]
     for i  in range(len(fun)):
         print()
+        print()
         print(name[i])
         print(fun[i])
 
@@ -458,7 +455,7 @@ def sin(length = 1000, peaks = 2, decay = 0, phase = 0):
 ##############################################
 fullground_color = {'none': 0, 'black': 30, 'iron': 90, 'gray': 2, 'cloud': 37, 'white': 97, 'red': 31, 'tomato': 91, 'basil': 32, 'green': 92, 'yellow': 93, 'gold': 33, 'blue': 34, 'indigo': 94, 'teal': 36, 'artic': 96, 'lilac': 95, 'violet': 35, 'italic': 3, 'bold': 1, 'flash': 5}
 background_color = {'none': 28, 'black': 40, 'iron': 100, 'cloud': 47, 'white': 107, 'red': 41, 'tomato': 101, 'basil': 42, 'green': 102, 'yellow': 103, 'gold': 43, 'blue': 44, 'indigo': 104, 'teal': 46, 'artic': 106, 'lilac': 105, 'violet': 45}
-color_sequence = ["blue", "tomato", "gold", "iron", "basil", "none", "gray", "cloud", "lilac", "black", "artic", "red", "green", "yellow", "indigo", "teal", "violet", "white"]
+color_sequence = ["blue", "tomato", "gold", "iron", "basil", "none", "gray", "cloud", "lilac", "black", "artic", "red", "green", "yellow", "indigo", "teal", "violet", "white", "flash"]
 
 def apply_color(text, code):
     if code == 0 or code == 28:

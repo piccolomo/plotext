@@ -4,22 +4,22 @@
 ##############################################
 ##############    Importing    ###############
 ##############################################
-import utility as _ut
+import utility as _utility
 import docstrings as _docstrings
-import subprocess as _sp
+import subprocess as _subprocess
 
 ##############################################
 ###########    Initialization    #############
 ##############################################
-_platform = _ut.platform()
+_platform = _utility.platform()
 #_platform = "windows"
 
 if _platform == "windows":
-    _sp.call('', shell = True)
-    _ut.marker.pop('small')
-    _ut.marker_sequence.remove('small')
+    _subprocess.call('', shell = True)
+    _utility.marker.pop('small')
+    _utility.marker_sequence.remove('small')
 
-_shell = _ut.shell()
+_shell = _utility.shell()
 
 ##############################################
 ##########    Basic Containers    ############
@@ -72,6 +72,9 @@ class _subplot():
 
         self.width = None
         self.height = None
+        
+        self.width_set = None
+        self.height_set = None
 
         self.title = ""
         self.xlabel = ""
@@ -99,13 +102,14 @@ class _subplot():
 
 
 _fig = _figure()
-#fig = _fig
+#figure = _fig
+#utility = _utility
 
 ##############################################
 #########    Subplots Function    ############
 ##############################################
 def subplots(rows = None, cols = None, ):
-    rows, cols = _ut.set_first_to_both(rows, cols)
+    rows, cols = _utility.set_first_to_both(rows, cols)
     _set_rows(rows)
     _set_cols(cols)
     _fig.set_subplots()
@@ -113,11 +117,11 @@ def subplots(rows = None, cols = None, ):
 subplots.__doc__ = _docstrings.subplots_doc
 
 def _set_cols(cols = None):
-    cols = _ut.set_if_none(cols, 1)
+    cols = _utility.set_if_none(cols, 1)
     _fig.cols = cols
     
 def _set_rows(rows = None):
-    rows = _ut.set_if_none(rows, 1)
+    rows = _utility.set_if_none(rows, 1)
     _fig.rows = rows
 
 def subplot(row = 1, col = 1):
@@ -127,11 +131,11 @@ def subplot(row = 1, col = 1):
 subplot.__doc__ = _docstrings.subplot_doc
 
 def _set_col(col = None):
-    col = _ut.set_if_none(col, 1)
+    col = _utility.set_if_none(col, 1)
     _fig.col = col - 1
 
 def _set_row(row = None):
-    row = _ut.set_if_none(row, 1)
+    row = _utility.set_if_none(row, 1)
     _fig.row = row - 1
 
 subplots(1, 1)
@@ -158,65 +162,65 @@ def _draw(*args, **kwargs):
 
 def _yaxis(axis = None):
     axis_none = "left"
-    axis = _ut.set_if_none(axis, axis_none)
+    axis = _utility.set_if_none(axis, axis_none)
     axis = "left" if axis != "left" and axis != "right" else axis
     _fig.subplot.yaxis.append(axis)
 
 def _label(label = None):
     label_none = ""
-    label = _ut.set_if_none(label, label_none)
+    label = _utility.set_if_none(label, label_none)
     label_show = True
     _fig.subplot.label.append(label)
     _fig.subplot.label_show.append(label_show)
     #To-do: data with same label
 
 def _point_marker(marker = None):
-    index = len(set(_fig.subplot.point_marker)) % len(_ut.marker_sequence)
-    marker_none = _ut.marker_sequence[index]
+    index = len(set(_fig.subplot.point_marker)) % len(_utility.marker_sequence)
+    marker_none = _utility.marker_sequence[index]
     marker = "" if marker == "" else marker
-    marker = _ut.set_if_none(marker, marker_none)
+    marker = _utility.set_if_none(marker, marker_none)
     small_test = marker == "small" and _platform == "linux"
-    marker = _ut.marker[marker] if marker in _ut.marker and not small_test else marker
+    marker = _utility.marker[marker] if marker in _utility.marker and not small_test else marker
     marker = "small" if small_test else (marker[0] if len(marker) > 0 else marker)
     _fig.subplot.point_marker.append(marker)
     
 def _line_marker(marker = None):
-    index = len(set(_fig.subplot.line_marker)) % len(_ut.marker_sequence)
-    marker_none = _ut.marker_sequence[index]
+    index = len(set(_fig.subplot.line_marker)) % len(_utility.marker_sequence)
+    marker_none = _utility.marker_sequence[index]
     marker = "" if marker == "" else marker
-    marker = _ut.set_if_none(marker, marker_none)
+    marker = _utility.set_if_none(marker, marker_none)
     small_test = marker == "small" and _platform == "linux"
-    marker = _ut.marker[marker] if marker in _ut.marker and not small_test else marker
+    marker = _utility.marker[marker] if marker in _utility.marker and not small_test else marker
     marker = "small" if small_test else (marker[0] if len(marker) > 0 else marker)
     _fig.subplot.line_marker.append(marker)
-    
+
 def _point_color(color = None):
-    color = None if color not in _ut.color_sequence else color
-    index = len(set(_fig.subplot.point_color)) % len(_ut.color_sequence)
-    color_none = _ut.color_sequence[index]
-    color = _ut.set_if_none(color, color_none)
+    color = None if color not in _utility.color_sequence else color
+    index = len(set(_fig.subplot.point_color)) % len(_utility.color_sequence)
+    color_none = _utility.color_sequence[index]
+    color = _utility.set_if_none(color, color_none)
     _fig.subplot.point_color.append(color)
     
 def _line_color(color = None):
-    color = None if color not in _ut.color_sequence else color
-    index = len(set(_fig.subplot.line_color)) % len(_ut.color_sequence)
-    color_none = _ut.color_sequence[index]
-    color = _ut.set_if_none(color, color_none)
+    color = None if color not in _utility.color_sequence else color
+    index = len(set(_fig.subplot.line_color)) % len(_utility.color_sequence)
+    color_none = _utility.color_sequence[index]
+    color = _utility.set_if_none(color, color_none)
     _fig.subplot.line_color.append(color)
 
 def _data(*args):
-    x, y = _ut.get_data(*args)
+    x, y = _utility.get_data(*args)
     _fig.subplot.x.append(x)
     _fig.subplot.y.append(y)
     _fig.subplot.signals += 1
 
 def _fillx(fill = None):
-    fill = _ut.set_if_none(fill, False)
+    fill = _utility.set_if_none(fill, False)
     fill = bool(fill)
     _fig.subplot.fillx.append(fill)
 
 def _filly(fill = None):
-    fill = _ut.set_if_none(fill, False)
+    fill = _utility.set_if_none(fill, False)
     fill = bool(fill)
     _fig.subplot.filly.append(fill)
 
@@ -224,7 +228,7 @@ def _filly(fill = None):
 ###########    Clear Functions    ############
 ##############################################
 def clear_terminal():
-    _ut.write('\033c')
+    _utility.write('\033c')
 clear_terminal.__doc__ = _docstrings.clear_terminal_doc
 clt = clear_terminal
 
@@ -237,79 +241,86 @@ def clear_plot():
     _fig.subplot.__init__(_fig.row, _fig.col)
 clear_plot.__doc__ = _docstrings.clear_plot_doc
 clp = clear_plot
+
+def clear_data():
+    _fig.subplot.x = []
+    _fig.subplot.y = []
+    _fig.subplot.signals = 0
+clear_data.__doc__ = _docstrings.clear_data_doc
+cld = clear_data
     
 ##############################################
 ############    Set Functions    #############
 ##############################################
 def plotsize(width = None, height = None):
-    width, height = _ut.set_first_to_both(width, height)
-    width, height = _ut.set_list_to_both(width, height)
-    _fig.subplot.width = width
-    _fig.subplot.height = height
+    width, height = _utility.set_first_to_both(width, height)
+    width, height = _utility.set_list_to_both(width, height)
+    _fig.subplot.width_set = width
+    _fig.subplot.height_set = height
 plotsize.__doc__ = _docstrings.plotsize_doc
 plot_size = plotsize
 
 
 def title(label = None):
-    label = _ut.set_if_none(label, _fig.subplot.title)
+    label = _utility.set_if_none(label, _fig.subplot.title)
     label = None if label == "" else label
     _fig.subplot.title = label
 title.__doc__ = _docstrings.title_doc
 
 def xlabel(label = ""):
-    label = _ut.set_if_none(label, _fig.subplot.xlabel)
+    label = _utility.set_if_none(label, _fig.subplot.xlabel)
     _fig.subplot.xlabel = label
 xlabel.__doc__ = _docstrings.xlabel_doc
     
 def ylabel(label_left = "", label_right = ""):
-    label_left = _ut.set_if_none(label_left, _fig.subplot.ylabel[0])
-    label_right = _ut.set_if_none(label_right, _fig.subplot.ylabel[1])
+    label_left = _utility.set_if_none(label_left, _fig.subplot.ylabel[0])
+    label_right = _utility.set_if_none(label_right, _fig.subplot.ylabel[1])
     _fig.subplot.ylabel = [label_left, label_right]
 ylabel.__doc__ = _docstrings.ylabel_doc
 
 def xaxes(x = None, y = None):
-    x, y = _ut.set_first_to_both(x, y)
+    x, y = _utility.set_first_to_both(x, y)
     y = bool(y)
-    x, y = _ut.set_list_if_none([x, y], _fig.subplot.xaxes)
+    x, y = _utility.set_list_if_none([x, y], _fig.subplot.xaxes)
     x = bool(x)
-    x, y = _ut.set_list_to_both(x, y)
+    x, y = _utility.set_list_to_both(x, y)
     _fig.subplot.xaxes = [x, y]
 xaxes.__doc__ = _docstrings.xaxes_doc
 
 def yaxes(x = None, y = None):
-    x, y = _ut.set_first_to_both(x, y)
+    x, y = _utility.set_first_to_both(x, y)
     y = bool(y)
-    x, y = _ut.set_list_if_none([x, y], _fig.subplot.yaxes)
+    x, y = _utility.set_list_if_none([x, y], _fig.subplot.yaxes)
     x = bool(x)
-    x, y = _ut.set_list_to_both(x, y)
+    x, y = _utility.set_list_to_both(x, y)
     _fig.subplot.yaxes = [x, y]
 yaxes.__doc__ = _docstrings.yaxes_doc
 
 def grid(x = None, y = None):
-    x, y = _ut.set_first_to_both(x, y)
+    x, y = _utility.set_first_to_both(x, y)
     y = bool(y)
-    x, y = _ut.set_list_if_none([x, y], _fig.subplot.grid)
+    x, y = _utility.set_list_if_none([x, y], _fig.subplot.grid)
     x = bool(x)
-    x, y = _ut.set_list_to_both(x, y)
+    x, y = _utility.set_list_to_both(x, y)
     _fig.subplot.grid = [x, y]
 grid.__doc__ = _docstrings.grid_doc
 
 
 def axes_color(color = "white"):
-    color = _ut.set_if_none(color, _fig.subplot.axes_color)
-    color = "white" if color not in list(_ut.background_color.keys()) else color
+    color = _utility.set_if_none(color, _fig.subplot.axes_color)
+    color = "white" if color not in list(_utility.background_color.keys()) else color
     _fig.subplot.axes_color = color
 axes_color.__doc__ = _docstrings.axes_color_doc
 
 def ticks_color(color = "black"):
-    color = _ut.set_if_none(color, _fig.subplot.ticks_color)
-    color = "black" if color not in list(_ut.fullground_color.keys()) else color
+    color = _utility.set_if_none(color, _fig.subplot.ticks_color)
+    color = "black" if color not in list(_utility.fullground_color.keys()) else color
     _fig.subplot.ticks_color = color
 ticks_color.__doc__ = _docstrings.ticks_color_doc
 
 def canvas_color(color = "white"):
-    color = _ut.set_if_none(color, _fig.subplot.canvas_color)
-    color = "white" if color not in list(_ut.background_color.keys()) else color
+    color = _utility.set_if_none(color, _fig.subplot.canvas_color)
+    color = "white" if color not in list(_utility.background_color.keys()) else color
     _fig.subplot.canvas_color = color
 canvas_color.__doc__ = _docstrings.canvas_color_doc
 
@@ -327,13 +338,13 @@ cls = colorless
 
 
 def xlim(left = None, right = None):
-    left, right = _ut.set_list_to_both(left, right)
+    left, right = _utility.set_list_to_both(left, right)
     left, right = min(left, right), max(left, right)
     _fig.subplot.xlim_plot = [left, right]
 xlim.__doc__ = _docstrings.xlim_doc
 
 def ylim(lower = None, upper = None, yaxis = "left"):
-    lower, upper = _ut.set_list_to_both(lower, upper)
+    lower, upper = _utility.set_list_to_both(lower, upper)
     lower, upper = min(lower, upper), max(lower, upper)
     if yaxis == "left":
         _fig.subplot.ylim_plot_left = [lower, upper]
@@ -343,26 +354,26 @@ ylim.__doc__ = _docstrings.ylim_doc
 
 
 def ticks(x = None, y = None):
-    x, y = _ut.set_first_to_both(x, y)
-    x, y = _ut.set_list_to_both(x, y)
+    x, y = _utility.set_first_to_both(x, y)
+    x, y = _utility.set_list_to_both(x, y)
     x_none, y_none = 5, 7
-    x = _ut.set_if_none(x, x_none)
-    y = _ut.set_if_none(y, y_none)
+    x = _utility.set_if_none(x, x_none)
+    y = _utility.set_if_none(y, y_none)
     _fig.subplot.ticks = [x, y]
 ticks.__doc__ = _docstrings.ticks_doc
 
 def xticks(ticks = [], labels = None):
-    ticks, labels = _ut.set_first_to_both(list(ticks), labels)
+    ticks, labels = _utility.set_first_to_both(list(ticks), labels)
     labels = list(map(str, list(labels)))
-    ticks, labels = _ut.sort_data(ticks, labels)
+    ticks, labels = _utility.sort_data(ticks, labels)
     _fig.subplot.xticks, _fig.subplot.xlabels = ticks, labels
     _fig.subplot.ticks[0] = len(ticks)
 xticks.__doc__ = _docstrings.xticks_doc
 
 def yticks(ticks = [], labels = None, yaxis = "left"):
-    ticks, labels = _ut.set_first_to_both(list(ticks), labels)
+    ticks, labels = _utility.set_first_to_both(list(ticks), labels)
     labels = list(map(str, list(labels)))
-    ticks, labels = _ut.sort_data(ticks, labels)
+    ticks, labels = _utility.sort_data(ticks, labels)
     if yaxis == "left":
         _fig.subplot.yticks_left, _fig.subplot.ylabels_left = ticks, labels
     elif yaxis == "right":
@@ -371,13 +382,13 @@ def yticks(ticks = [], labels = None, yaxis = "left"):
 yticks.__doc__ = _docstrings.yticks_doc
 
 def xscale(scale = None):
-    scale = _ut.set_if_none(scale, _fig.subplot.xscale)
+    scale = _utility.set_if_none(scale, _fig.subplot.xscale)
     scale = "linear" if not (scale in ["linear", "log"]) else scale
     _fig.subplot.xscale = scale
 xscale.__doc__ = _docstrings.xscale_doc
 
 def yscale(scale = None, yaxis = "left"):
-    scale = _ut.set_if_none(scale, _fig.subplot.xscale)
+    scale = _utility.set_if_none(scale, _fig.subplot.xscale)
     scale = "linear" if not (scale in ["linear", "log"]) else scale
     if yaxis == "right":
         _fig.subplot.yscale[1] = scale
@@ -431,10 +442,10 @@ def show(hide = False):
             
     _join_matrices()
 
-    _fig.canvas = _ut.get_canvas(_fig.matrix)
+    _fig.canvas = _utility.get_canvas(_fig.matrix)
     if hide:
         return
-    _ut.write(_fig.canvas)
+    _utility.write(_fig.canvas)
         
 show.__doc__ = _docstrings.show_doc
 
@@ -445,17 +456,17 @@ def _figure_size_max():
     _fig.height_max -= (_fig.rows - 1)
 
 def _figure_size():
-    width = _ut.set_if_none(_fig.width, _fig.width_max)
-    height = _ut.set_if_none(_fig.height, _fig.height_max)
+    # width = _utility.set_if_none(_fig.width, _fig.width_max)
+    # height = _utility.set_if_none(_fig.height, _fig.height_max)
 
-    width = abs(int(width))
-    height = abs(int(height))
+    # width = abs(int(width))
+    # height = abs(int(height))
 
-    width = _fig.width_max if width > _fig.width_max else width
-    height = _fig.height_max if height > _fig.height_max else height
+    # width = _fig.width_max if width > _fig.width_max else width
+    # height = _fig.height_max if height > _fig.height_max else height
 
-    _fig.width = width
-    _fig.height = height
+    _fig.width = _fig.width_max
+    _fig.height = _fig.height_max
 
 def _coherent_sizes():
     width = []
@@ -498,12 +509,11 @@ def _sort_data(subplot):
     subplot.data_left = subplot.x_left != [] and subplot.y_left != []
     subplot.data_right = subplot.x_right != [] and subplot.y_right != []
     subplot.data = subplot.data_left or subplot.data_right
-
     
 def _height(subplot):
     subplot.height_max = _fig.height - _fig.previous_height
     height_none = subplot.height_max // (_fig.rows - subplot.row)
-    height = _ut.set_if_none(subplot.height, height_none)
+    height = _utility.set_if_none(subplot.height_set, height_none)
     height = abs(int(height))
     
     height = subplot.height_max if height > subplot.height_max else height
@@ -527,37 +537,37 @@ def _height(subplot):
     subplot.height_canvas = subplot.height - tot
 
 def _ylim_data(subplot):
-    y_left = [_ut.log(subplot.y_left[s]) if subplot.yscale[0] == "log" else subplot.y_left[s] for s in range(subplot.signals_left)]
-    y_right = [_ut.log(subplot.y_right[s]) if subplot.yscale[1] == "log" else subplot.y_right[s] for s in range(subplot.signals_right)]
-    subplot.ylim_data_left = _ut.get_lim_data(y_left)
-    subplot.ylim_data_right = _ut.get_lim_data(y_right)
+    y_left = [_utility.log(subplot.y_left[s]) if subplot.yscale[0] == "log" else subplot.y_left[s] for s in range(subplot.signals_left)]
+    y_right = [_utility.log(subplot.y_right[s]) if subplot.yscale[1] == "log" else subplot.y_right[s] for s in range(subplot.signals_right)]
+    subplot.ylim_data_left = _utility.get_lim_data(y_left)
+    subplot.ylim_data_right = _utility.get_lim_data(y_right)
 
 def _ylim_plot(subplot):
-    subplot.ylim_plot_left = _ut.set_list_if_none(subplot.ylim_plot_left, subplot.ylim_data_left)
-    subplot.ylim_plot_right = _ut.set_list_if_none(subplot.ylim_plot_right, subplot.ylim_data_right)
+    subplot.ylim_plot_left = _utility.set_list_if_none(subplot.ylim_plot_left, subplot.ylim_data_left)
+    subplot.ylim_plot_right = _utility.set_list_if_none(subplot.ylim_plot_right, subplot.ylim_data_right)
     #subplot.dy = (subplot.ylim_plot[1] - subplot.ylim_plot[0]) / subplot.height_canvas
 
 def _yticks(subplot):
     if subplot.yticks_left == [] and subplot.ticks[1] and subplot.data_left:
         if subplot.yscale[0] == "linear":
-            subplot.yticks_left = _ut.get_ticks(subplot.ylim_plot_left, subplot.ticks[1])
-            subplot.ylabels_left = _ut.get_labels(subplot.yticks_left)
+            subplot.yticks_left = _utility.get_ticks(subplot.ylim_plot_left, subplot.ticks[1])
+            subplot.ylabels_left = _utility.get_labels(subplot.yticks_left)
         if subplot.yscale[0] == "log":
-            subplot.yticks_left, subplot.ylabels_left = _ut.get_log_ticks(subplot.ylim_plot_left, subplot.ticks[1])
-    subplot.yticks_rows_left = _ut.get_matrix_data(subplot.yticks_left, subplot.ylim_plot_left, subplot.height_canvas)
+            subplot.yticks_left, subplot.ylabels_left = _utility.get_log_ticks(subplot.ylim_plot_left, subplot.ticks[1])
+    subplot.yticks_rows_left = _utility.get_matrix_data(subplot.yticks_left, subplot.ylim_plot_left, subplot.height_canvas)
 
     if subplot.yticks_right == [] and subplot.ticks[1] and subplot.data_right:
         if subplot.yscale[1] == "linear":
-            subplot.yticks_right = _ut.get_ticks(subplot.ylim_plot_right, subplot.ticks[1])
-            subplot.ylabels_right = _ut.get_labels(subplot.yticks_right)
+            subplot.yticks_right = _utility.get_ticks(subplot.ylim_plot_right, subplot.ticks[1])
+            subplot.ylabels_right = _utility.get_labels(subplot.yticks_right)
         if subplot.yscale[1] == "log":
-            subplot.yticks_right, subplot.ylabels_right = _ut.get_log_ticks(subplot.ylim_plot_right, subplot.ticks[1])
-    subplot.yticks_rows_right = _ut.get_matrix_data(subplot.yticks_right, subplot.ylim_plot_right, subplot.height_canvas)
+            subplot.yticks_right, subplot.ylabels_right = _utility.get_log_ticks(subplot.ylim_plot_right, subplot.ticks[1])
+    subplot.yticks_rows_right = _utility.get_matrix_data(subplot.yticks_right, subplot.ylim_plot_right, subplot.height_canvas)
 
 def _width(subplot):
     subplot.width_max = _fig.width - _fig.previous_width
     width_none = subplot.width_max // (_fig.cols - subplot.col)
-    width = _ut.set_if_none(subplot.width, width_none)
+    width = _utility.set_if_none(subplot.width_set, width_none)
     width = abs(int(width))
     
     width = subplot.width_max if width > subplot.width_max else width
@@ -586,21 +596,21 @@ def _width(subplot):
         subplot.height_canvas += 1
 
 def _xlim_data(subplot):
-    x = [_ut.log(subplot.x[s]) if subplot.xscale == "log" else subplot.x[s] for s in range(subplot.signals)]
-    subplot.xlim_data = _ut.get_lim_data(x)
+    x = [_utility.log(subplot.x[s]) if subplot.xscale == "log" else subplot.x[s] for s in range(subplot.signals)]
+    subplot.xlim_data = _utility.get_lim_data(x)
 
 def _xlim_plot(subplot):
-    subplot.xlim_plot = _ut.set_list_if_none(subplot.xlim_plot, subplot.xlim_data)
+    subplot.xlim_plot = _utility.set_list_if_none(subplot.xlim_plot, subplot.xlim_data)
     #subplot.dy = (subplot.ylim_plot[1] - subplot.ylim_plot[0]) / subplot.height_canvas
 
 def _xticks(subplot):
     if subplot.xticks == [] and subplot.ticks[0]:
         if subplot.xscale == "linear":
-            subplot.xticks = _ut.get_ticks(subplot.xlim_plot, subplot.ticks[0])
-            subplot.xlabels = _ut.get_labels(subplot.xticks)
+            subplot.xticks = _utility.get_ticks(subplot.xlim_plot, subplot.ticks[0])
+            subplot.xlabels = _utility.get_labels(subplot.xticks)
         if subplot.xscale == "log":
-            subplot.xticks, subplot.xlabels = _ut.get_log_ticks(subplot.xlim_plot, subplot.ticks[0])
-    subplot.xticks_cols = _ut.get_matrix_data(subplot.xticks, subplot.xlim_plot, subplot.width_canvas)
+            subplot.xticks, subplot.xlabels = _utility.get_log_ticks(subplot.xlim_plot, subplot.ticks[0])
+    subplot.xticks_cols = _utility.get_matrix_data(subplot.xticks, subplot.xlim_plot, subplot.width_canvas)
 
 def _matrix(subplot):
     marker = [" ", "none", subplot.canvas_color]
@@ -611,23 +621,23 @@ def _add_xgrid(subplot):
         return 
     grid_color = subplot.ticks_color
     for c in subplot.xticks_cols:
-        x, y = _ut.get_line([c, c], [0, subplot.height_canvas])
+        x, y = _utility.get_line([c, c], [0, subplot.height_canvas])
         marker = "│"
-        subplot.matrix = _ut.update_matrix(subplot.matrix, x, y, marker, grid_color)
+        subplot.matrix = _utility.update_matrix(subplot.matrix, x, y, marker, grid_color)
 
 def _add_ygrid(subplot):
     if not subplot.grid[1]:
         return 
     grid_color = subplot.ticks_color
     for r in subplot.yticks_rows_left + subplot.yticks_rows_right:
-        x, y = _ut.get_line([0, subplot.width_canvas], [r, r])
+        x, y = _utility.get_line([0, subplot.width_canvas], [r, r])
         marker = "─"
-        subplot.matrix = _ut.update_matrix(subplot.matrix, x, y, marker, grid_color)
+        subplot.matrix = _utility.update_matrix(subplot.matrix, x, y, marker, grid_color)
         if subplot.grid[0]:
             x = subplot.xticks_cols
             y = [r] * len(x)
             marker = "┼"
-            subplot.matrix = _ut.update_matrix(subplot.matrix, x, y, marker, grid_color)
+            subplot.matrix = _utility.update_matrix(subplot.matrix, x, y, marker, grid_color)
 
 def _add_data(subplot):
     for s in range(len(subplot.x)):
@@ -636,36 +646,36 @@ def _add_data(subplot):
         
         x, y = subplot.x[s], subplot.y[s]
         x_test = subplot.xscale == "log"
-        x = _ut.log(x) if x_test else x
+        x = _utility.log(x) if x_test else x
         y_test = (subplot.yscale[0] == "log" and subplot.yaxis[s] == "left") or (subplot.yscale[1] == "log" and subplot.yaxis[s] == "right")
-        y = _ut.log(y) if y_test else y
+        y = _utility.log(y) if y_test else y
         mf = 2 if point_marker == "small" or line_marker == "small" else 1 # small marker factor
         ylim_plot = subplot.ylim_plot_left if subplot.yaxis[s] == "left" else subplot.ylim_plot_right
-        x_point = _ut.get_matrix_data(x, subplot.xlim_plot, mf * subplot.width_canvas)
-        y_point = _ut.get_matrix_data(y, ylim_plot, mf * subplot.height_canvas)
+        x_point = _utility.get_matrix_data(x, subplot.xlim_plot, mf * subplot.width_canvas)
+        y_point = _utility.get_matrix_data(y, ylim_plot, mf * subplot.height_canvas)
 
         x_line, y_line = [], []
         if line_marker != "":
-            x_line, y_line = _ut.get_line(x_point, y_point)
+            x_line, y_line = _utility.get_line(x_point, y_point)
         
         if subplot.fillx[s]:
-            height0 = _ut.get_matrix_data([0], ylim_plot, mf * subplot.height_canvas)[0]
-            x_point, y_point = _ut.fill_data(x_point, y_point, height0)
-            x_line, y_line = _ut.fill_data(x_line, y_line, height0)
+            height0 = _utility.get_matrix_data([0], ylim_plot, mf * subplot.height_canvas)[0]
+            x_point, y_point = _utility.fill_data(x_point, y_point, height0)
+            x_line, y_line = _utility.fill_data(x_line, y_line, height0)
         if subplot.filly[s]:
-            width0 = _ut.get_matrix_data([0], subplot.xlim_plot, mf * subplot.width_canvas)[0] 
-            y_point, x_point = _ut.fill_data(y_point, x_point, width0)
-            y_line, x_line = _ut.fill_data(y_line, x_line, width0)
+            width0 = _utility.get_matrix_data([0], subplot.xlim_plot, mf * subplot.width_canvas)[0] 
+            y_point, x_point = _utility.fill_data(y_point, x_point, width0)
+            y_line, x_line = _utility.fill_data(y_line, x_line, width0)
             
         x_line = [el / mf for el in x_line]
         y_line = [el / mf for el in y_line]
         if line_marker != "":
-            subplot.matrix = _ut.update_matrix(subplot.matrix, x_line, y_line, line_marker, line_color)
+            subplot.matrix = _utility.update_matrix(subplot.matrix, x_line, y_line, line_marker, line_color)
             
         x_point = [el / mf for el in x_point]
         y_point = [el / mf for el in y_point]
         if point_marker != "":
-            subplot.matrix = _ut.update_matrix(subplot.matrix, x_point, y_point, point_marker, point_color)
+            subplot.matrix = _utility.update_matrix(subplot.matrix, x_point, y_point, point_marker, point_color)
 
 def _add_legend(subplot):
     label = subplot.label
@@ -695,10 +705,10 @@ def _add_legend(subplot):
         legend_color[i] += [subplot.ticks_color] * w
     legend = [legend[i] for i in range(len(legend)) if subplot.label_show[i]]
     legend_color = [legend_color[i] for i in range(len(legend_color)) if subplot.label_show[i]]
-    legend = _ut.frame_matrix(legend)
-    legend_color = _ut.frame_matrix(legend_color, subplot.ticks_color)
+    legend = _utility.frame_matrix(legend)
+    legend_color = _utility.frame_matrix(legend_color, subplot.ticks_color)
     legend = [[ [legend[i][j], legend_color[i][j], subplot.canvas_color] for j in range(len(legend[0]))] for i in range(len(legend))]
-    subplot.matrix = _ut.insert(legend, subplot.matrix) if show or side_test else subplot.matrix
+    subplot.matrix = _utility.insert(legend, subplot.matrix) if show or side_test else subplot.matrix
     # To do: Legend frame interferes with grid lines  
 
 def _add_yaxis(subplot):
@@ -752,7 +762,7 @@ def _add_yaxis(subplot):
 
 def _add_xaxis(subplot):
     if subplot.x == []:
-        return
+        returnsa
     axis_lower = [" "] * subplot.ylabels_width_left + ["└"] * subplot.yaxes[0]
     axis_lower += ["─" for r in range(subplot.width_canvas)]
     axis_lower += ["┘"] * subplot.yaxes[1] + [" "] * subplot.ylabels_width_right
@@ -862,12 +872,13 @@ def _join_matrices():
     for c in range(_fig.cols):
         matrix_c = []
         for r in range(_fig.rows):
-            matrix_c = _ut.join(matrix_c, _fig.subplots[r][c].matrix, sep, "vertical")
-        matrix = _ut.join(matrix, matrix_c, sep, "horizontal")
+            matrix_c = _utility.join(matrix_c, _fig.subplots[r][c].matrix, sep, "vertical")
+        matrix = _utility.join(matrix, matrix_c, sep, "horizontal")
         
     _fig.matrix = matrix
     size = [0, 0] if matrix == [] else [len(matrix[0]), len(matrix)]
     _fig.width, _fig.height = size
+
 
 ##############################################
 #########    Plotting Functions    ###########
@@ -918,9 +929,9 @@ def bar(*args,
         fill = True,
         width = 4 / 5,
         orientation = 'vertical'):
-    x, y = _ut.get_data(*args)
-    x, x_labels = _ut.bar_xdata(x)
-    xbar, ybar = _ut.bars(x, y, width)
+    x, y = _utility.get_data(*args)
+    x, x_labels = _utility.bar_xdata(x)
+    xbar, ybar = _utility.bars(x, y, width)
     if orientation in ['vertical', 'v']:
          fillx, filly = fill, False
          x_ticks = _fig.subplot.xticks + x
@@ -947,7 +958,7 @@ def bar(*args,
     # y_plot = _fig.subplot.y_left if yaxis == "left" else _fig.subplot.y_right
     # if orientation in ['horizontal', 'h']:
     #     y_plot = _fig.subplot.x_left if yaxis == "left" else _fig.subplot.x_right
-    # m, M = _ut.get_lim_data(y_plot)
+    # m, M = _utility.get_lim_data(y_plot)
     # if m * M > 0:
     #     m = 0
     # if orientation in ['vertical', 'v']:
@@ -967,51 +978,54 @@ def hist(data,
          fill = True,
          width = 4 / 5,
          orientation = 'vertical'):
-    x, y = _ut.hist_data(data, bins)
+    x, y = _utility.hist_data(data, bins)
     bar(x, y, yaxis = yaxis, label = label, marker = marker, color = color, fill = fill, width = width, orientation= orientation)
 hist.__doc__ = _docstrings.plot_doc
 
 ##############################################
 ##########    Other Functions    #############
 ##############################################
-string_to_time = _ut.string_to_time
+string_to_time = _utility.string_to_time
 string_to_time.__doc__ = _docstrings.string_to_time_doc
 
 def get_canvas():
     return _fig.canvas
 get_canvas.__doc__ = _docstrings.get_canvas_doc
 
-sleep = _ut.sleep
+sleep = _utility.sleep
 sleep.__doc__ = _docstrings.sleep_doc
 
 def savefig(path = None):
-    path = _ut.check_path(path)
+    path = _utility.check_path(path)
     with open(path , "w+", encoding = "utf-8") as file:
-        file.write(_ut.remove_color(_fig.canvas))
+        file.write(_utility.remove_color(_fig.canvas))
     print("plot saved as " + path)
 savefig.__doc__ = _docstrings.savefig_doc
 save_fig = savefig
 
-terminal_size = _ut.terminal_size
+terminal_size = _utility.terminal_size
 terminal_size.__doc__ = _docstrings.terminal_size_doc
 
-version = _ut.version
+version = _utility.version
 version.__doc__ = _docstrings.version_doc
 
-docstrings = _ut.docstrings
+docstrings = _utility.docstrings
 docstrings.__doc__ = _docstrings.docstrings_doc
 
-colors = _ut.colors
+colors = _utility.colors
 colors.__doc__ = _docstrings.colors_doc
 
-markers = _ut.markers
+markers = _utility.markers
 markers.__doc__ = _docstrings.markers_doc
 
-sin = _ut.sin
+sin = _utility.sin
 sin.__doc__ = _docstrings.sin_doc
 
 
 if __name__ == "__main__":
-    pass
+    #test()
+    import plotext as plt
+    plt.test()
+
 
 

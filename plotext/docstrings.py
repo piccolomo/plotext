@@ -14,6 +14,9 @@ The functions clf() and clear_figure() are equivalent."""
 clear_plot_doc = """It clear all internal definitions of the active subplot. 
 The functions clp() and clear_plot() are equivalent."""
 
+clear_data_doc = """It clear only the data relative to the active subplot, without clearing the plot style.
+The functions cld() and clear_data() are equivalent."""
+
 
 #    Set Functions
 plotsize_doc = """It sets the plot size of the active subplot. It requires two parameters: the desired width and height of the plot. 

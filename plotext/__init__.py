@@ -7,10 +7,11 @@ _sys.path.insert(0, _script_folder)
 
 import utility as _utility 
 import docstrings as _docstrings
+from test import test
 
 _sys.path.pop(0)
 
 from plotext.plot import *
 
 __name__ = "plotext"
-__version__ = "3.0.1"
+__version__ = "3.1.3"
