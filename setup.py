@@ -12,7 +12,7 @@ setup(
     author="Savino Piccolomo",
     author_email="piccolomo@gmail.com",
     name='plotext',
-    version='0.1.16',
+    version='1.0.11',
     description='plotext plots data directly on terminal',
     long_description=README,
     long_description_content_type="text/markdown",  
@@ -21,7 +21,7 @@ setup(
     packages=find_packages(),
     python_requires=">=3.5",
     include_package_data=True,
-    install_requires=["numpy"],
+    #install_requires=[],
     classifiers=[
         # Trove classifiers
         # (https://pypi.python.org/pypi?%3Aaction=list_classifiers)

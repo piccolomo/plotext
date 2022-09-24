@@ -1,367 +1,165 @@
-The package **plotext** allows to plot data directly on terminal. 
+The package **`plotext`** allows to plot data directly on terminal. 
 
 
-Basic Example
-=============
+# Basic Example
+You can use `plotext` to plot directly on terminal, as you would normally with `matplotlib`. Here is a basic example on how to use it:
+```
+import plotext.plot as plx
+plx.scatter(x, y)
+plx.show()
+```
+where `x` and `y` are the lists for the of points coordinates; optionally, a single `y` list could be provided. Alternatively, you could plot data points with lines connecting them using the `plot` function instead of the `scatter` one. Multiple data set could also be plotted using consecutive `scatter` or `plot` functions.  Here is an output example:
 
-Here is a basic example of plotting data on terminal using the *plotext* package
-
-![example](https://user-images.githubusercontent.com/56689657/73862927-2dfa4900-4837-11ea-926a-4718821368ea.png)
-Each data point is represented by a character (in this case a blue •).
-The column and row numbers are displayed respectively on the *x* and *y* axis; the two equations at the end of the plot allow the user to convert the column/row numbers in the correspondent real *x/y* coordinates of the original data; the uncertainties are due to the terminal pixel dimension correspondent to one character.
+![example](https://github.com/piccolomo/plotext/raw/master/images/example.png)
 
 
+Each data point is represented by a character (in this case a `•`).
 
-Installation
-============
-
-To install the latest version of the *plotext* package use the following command:
+## Installation
+To install the latest version of the `plotext` package use the following command:
 ```
 sudo -H pip install plotext
 ```
 
+# Parameters
+You can personalize the plots in different ways using the `scatter` and `plot` function parameters. Here they are:
+
+- **cols**
+It sets the number of columns of the plot. Only integers are allowed. By default, it is set to the highest value allowed by the the terminal size. Alternatively you could set the number of rows using `set_cols(cols)` after the scatter function.
+
+- **rows**
+It sets the number of rows of the plot. Only integers are allowed. By default, it is set to the highest value allowed by the the terminal size. Alternatively you could set the number of columns using `set_rows(rows)` after the `scatter` or `plot` function.
+
+- **force_size**
+The plot dimensions are limited by the terminal size, when `force_size `is False and are allowed to be bigger otherwise. The default value is `False`. Alternatively you could set `force_size` using `set_force_size(force_size)` after the `scatter` or `plot` function but before `set_cols(cols)` and `set_rows(rows)`.
+
+- **xlim**
+It sets the minimum and maximum limits of the plot in the `x` axis. It requires a list of two numbers, where the first sets the left (minimum) limit and the second the right (maximum) limit. If one or both values are not provided, they are calculated automatically. Alternatively you could use `set_xlim(xlim)` after the `scatter` or `plot` function.
+
+- **ylim**
+It sets the minimum and maximum limits of the plot in the `y` axis. It requires a list of two numbers, where the first sets the lower (minimum) limit and the second the upper (maximum) limit. If one or both values are not provided, they are calculated automatically. Alternatively you could use `set_ylim(ylim)` after the `scatter` or `plot` function.
+
+- **point**
+When `True`, the plot shows the scatter data points. The default value is `True`.
+
+- **point_marker**
+It sets the marker used to identify each data point on the plot. Only single characters are allowed (eg: `'*'`). The default value is `'•'`.
+
+- **point_color**
+It sets the color used for the point marker. Use `get_colors()` to find the available color codes. The default value is `'norm'`.
+
+- **line**
+When True, the plot shows the lines between each data points. The default value is `False`.
+
+- **line_marker**
+It sets the marker used to identify the lines between data points. Only single characters are allowed (eg: `'*')`. The default value is `'•'`.
+
+- **line_color**
+It sets the color used for the line marker. Use `get_colors()` to find the available color codes. The default value is `'norm'`.
+
+- **background**
+It sets the plot background color. Use `get_colors()` to find the available color codes. The default value is `'norm'`. Alternatively you could set the background color using `set_background(background)` after the `scatter` or `plot` function.
+
+- **axes**
+When True, the `x` and `y` axes are added to the plot. A list of two Boolean will set the `x` and `y` axes separately (eg: `axes = [True, False]`). The default value is `True`.
+
+- **axes_color**
+It sets the color of the axes, ticks and equations, when present. Use `get_colors()` to find the available color codes. The default value is `'norm'`. Alternatively you could set the axes color using `set_axes_color(axes_color)` after the scatter function.
+
+- **ticks**
+When `True`, the `x` and `y` ticks are added to the respective axes (even when absent). A list of two Boolean will set the `x` and `y` ticks separately (eg: `ticks = [True, False]`). The default value is `True`.
+
+- **spacing**
+It sets the spacing between the `x` and `y` ticks. When a list of two numbers is given, the spacing of the `x` and `y` ticks are set separately (eg: `spacing = [5, 8]`). Only positive integers are allowed. The default value is `[10, 5]`. Alternatively you could use `set_spacing(spacing)` after the `scatter` or `plot` function.
+
+- **equations**
+When `True`, the equations - needed to to find the real `x` and `y` values from the plot coordinates - are added at the end of the plot. The default value is `False`.
+
+- **decimals**
+It sets the number of decimal points shown in the equations. Only positive integers are allowed. The default value is `2`. Alternatively you could set the decimal points using `set_decimals(decimals)` after the `scatter` or `plot` function.
 
 
-How to Use
-==========
-
-To import the package in python 3 use the command:
-```
-import plotext.plot as plx
-```
-To plot a scatter plot of data you could use a command like this:
-```
-plx.scatter(x, y)
-```
-where x and y are the lists of data for respectively the *x* and *y* coordinates; optionally, a single *y* list could be provided.  
-
-To plot data points connected by straight lines use instead:
-```
-plx.plot(x, y)
-```
-In order to show the final result just add:
-```
-plx.show()
-```
-In the following we provide examples on how to use the *scatter* function with additional options; the same options could be used for the *plot* function.
+## Save Plot
+You can save your plot, as a text file, using `plx.savefig(path)` where `path` is the file address where the data will be written. Note that (for now), this function doesn't preserve the plot colors. 
 
 
+## Streaming Data
+The following functions are useful for example when continuously plotting a stream of data.
 
-Plot Dimensions
-===============
+In order to clear the plot canvas use:
+```
+plx.clear_plot()
+```
+and to clear the terminal use:
+```
+plx.clear_terminal()
+```
+A common problem when plotting streaming data is the screen flickering. In order to remove or reduce this problem use:
+```
+plx.sleep(time)
+```
+which adds a sleeping time to the computation. An input of, for example, `0.01` would add approximately `0.01` secs to the computation. The `time` parameters will depend on your processor speed and it needs some manual tweaking. 
+Here is an example of plotting a continuous stream of data:
 
-If no dimension settings are provided, the plot will automatically cover the entire terminal canvas. To manually set the plot canvas dimension, use a command like this:
-```
-plx.scatter(x, y, cols=90, rows=30)
-```
-which would set the width of the plot to 90 characters and the height to 30 characters. If only one of the two dimensions are provided, the other will automatically be set to the highest value allowed by the the terminal size. If one of the dimensions provided is bigger then the maximum allowed by the canvas size, it will automatically be reset to its highest value allowed by the the terminal size.
-
-An alternative way to set the canvas dimension is to use the following equivalent commands:
-```
-plx.scatter(x, y)
-plx.set_cols(90)
-plx.set_rows(30)
-```
-You can access the value set for *cols* and *rows* respectively with the following commands:
-```
-plx.get_cols()
-plx.get_rows()
-```
-You can access the terminal size with the command:
-```
-plx.get_terminal_size()
-```
-which returns the width and height of the terminal canvas.
+![stream](https://github.com/piccolomo/plotext/raw/master/images/animation.gif)
 
 
+## Equations
+As previously written, you could add two equations at the end of the plot to transform the column and row coordinatesdisplayeddisplayed into real `x` and `y` coordinates. Here is an example of a plot with equations at the end:
 
- 
-Point Style
-===========
+![example_old](https://github.com/piccolomo/plotext/raw/master/images/example_old.png)
 
-In order to chose whatever or not to show each data point use a command like this:
-```
-plx.scatter(x, y, point=True)
-```
-where the default value is True for the *scatter* function and *False* for the *plot* function. Alternatively after the *scatter* function with:
-```
-plx.set_point(True)
-```
-You can access the value set for the option *point* with the following command:
-```
-plx.get_point()
-```
-In order to change the marker used for each data point use a command like this:
-```
-plx.scatter(x, y, point_marker='*')
-```
-where only single characters are allowed; the default value is •. Alternatively after the *scatter* function with:
-```
-plx.set_point_marker('*')
-```
-You can access the value set for the option *point_marker* with the following command:
-```
-plx.get_point_marker()
-```
-In order to change the color of the point marker use a command like this:
-```
-plx.scatter(x, y, point_color='red')
-```
-or, alternatively after the *scatter* function with:
-```
-plx.set_point_color('red')
-```
-To access the available color codes use the commands:
-```
-plx.get_colors()
-```
-You can access the value set for the option *point_color* with the following command:
-```
-plx.get_point_color()
-```
+The errors in the equations are due to the fact that the pixel size reduces the resolution of the data displayed.
+
+Alternatively you could access the functions `plx.get_x_from_col(col)` and `plx.get_y_from_row(row)` to make python do the transformation from your chosen column and row  to real, respectively, `x` and `y` coordinates.
 
 
+## Colors
+You can access the function `plx.get_colors()` in order to find the available full ground and background color codes. Here is the output for simplicity:
 
-Line Style
-==========
-
-In order to chose whatever or not to plot lines between the data points use a command like this:
-```
-plx.scatter(x, y, line=True)
-```
-the default value is False for the *scatter* function and True for the *plot* function. Alternatively after the *scatter* function with:
-```
-plx.set_line(True)
-```
-You can access the value set for the option *line* with the following command:
-```
-plx.get_line()
-```
-In order to change the marker used to draw the lines use a command like this:
-```
-plx.scatter(x, y, line_marker='*')
-```
-where only single characters are allowed; the default value is •. Alternatively after the *scatter* function with:
-```
-plx.set_line_marker('*')
-```
-You can access the value set for the option *line_marker* with the following command:
-```
-plx.get_line_marker()
-```
-In order to change the color of the marker used for the lines use a command like this:
-```
-plx.scatter(x, y, line_color='red')
-```
-or, alternatively after the *scatter* function with:
-```
-plx.set_line_color('red')
-```
-To access the available color codes use the commands:
-```
-plx.get_colors()
-```
-You can access the value set for the option *line_color* with the following command:
-```
-plx.get_line_color()
-```
+![colors](https://github.com/piccolomo/plotext/raw/master/images/colors.png)
 
 
-
-Plot Axes
-=========
-
-You could chose whatever or not to show the *x* and *y* axes with a command like this:
-```
-plx.scatter(x, y, axes=[True, False])
-```
-which would show the *x* axis while hiding the *y* axis.
-
-Alternatively you could use one of the following formats:
-```
-plx.scatter(x, y, axes=True)
-plx.scatter(x, y, axes=False)
-```
-which would add, in the first case, and remove, in the second, both axes.
-
-Alternatively the same options could be provided outside the *scatter* function, in this way:
-```
-plx.scatter(x, y)
-plx.set_axes([True, False])
-```
-You can access the value set for the option *axes* with the following command:
-```
-plx.get_axes()
-```
-In order to change the axes color (including axes ticks and equations, when present) use a command like this:
-```
-plx.scatter(x, y, axes_color='blue')
-plx.scatter(x, y, axes_color='igreen')
-```
-which would set the color of the axes to blue, in the first case, and inverted green in the second.
-
-To access the available color codes use the following command:
-```
-plx.get_colors()
-```
-You can access the value set for the option *axes_color* with the following command:
-```
-plx.get_axes_color()
-```
+## Test
+You can run a simple initial test of your newly installed package, to check that `plotext` works well in your machine. Just use `plx.run_test()`
 
 
-Axes Ticks
-==========
-
-You could chose whatever or not to show the *x* and *y* axes numerical ticks with commands like these:
-```
-plx.scatter(x, y, ticks=[True, False])
-plx.scatter(x, y, ticks=True)
-plx.scatter(x, y, ticks=False)
-```
-or, alternatively after the *scatter* function with a command like this:
-```
-plx.set_ticks([True, False])
-```
-You can access the value set for the option *ticks* with the following command:
-```
-plx.get_ticks()
-```
-In order to set the spacing between *x* and *y* ticks use a command like this:
-```
-plx.scatter(x, y, spacing=5)
-plx.scatter(x, y, spacing=[5, 8])
-```
-where only positive integers are allowed; a list of two numbers would set the spacing of the *x* and *y* ticks independently. Alternatively after the *scatter* function with:
-```
-plx.set_spacing([True, False])
-```
-You can access the value set for the option *spacing* with the following command:
-```
-plx.get_spacing()
-```
+## Version
+In order to check the installed version of the package use the command `plx.get_version()`
 
 
-Equations
-=========
-
-In order to chose whatever or not to show the equations at the end of the plot use a command like this:
-```
-plx.scatter(x, y, equations=True)
-plx.scatter(x, y, equations=False)
-```
-or, alternatively after the *scatter* function with:
-```
-plx.set_equations(False)
-```
-You can access the value set for the option *equations* with the following command:
-```
-plx.get_equations()
-```
-In order to set the number of decimal points in the equations use a command like this:
-```
-plx.scatter(x, y, decimals=4)
-```
-where only positive integers are allowed.
-
-You can access the value set for the option *decimals* with the following command:
-```
-plx.get_decimals()
-```
-In order to manually determine the real *x* coordinate from the plot column coordinates use a command like this:
-```
-plx.get_x_from_xaxis(50)
-```
-In order to manually determine the real *y* coordinate from the plot row coordinates use a command like this:
-```
-plx.get_y_from_yaxis(20)
-```
-
-
-
-Plot Limits
-===========
-
-You could define the plot limits with a command like this:
-```
-plx.scatter(x, y, xlim=[0, 100], ylim=[-1, 1])
-```
-which would sets the limits on the *x* axis between 0 and 90 and the limits on the *y* axis between -1 and 1. Note that if one of the limits is *None*, that limit would be set automatically.
-
-Alternatively the plot limits could be set outside the *scatter* function, in this way:
-```
-plx.scatter(x, y)
-plx.set_xlim([0, 100])
-plx.set_ylim([-1, 1])
-```
-You can access the plot limit values with the following commands:
-```
-plx.get_xlim()
-plx.get_ylim()
-```
-
-
-
-Plot Data
-=========
-
-In order to access the data being plotted you could use the following command:
-```
-plx.get_data()
-```
-which would return the *x* and *y* list provided in the *scatter* or *plot* function. 
-
-In order to access the length of the data list being plotted you could use the following command:
-```
-plx.get_length()
-```
-
-
-
-Show Options
-============
-
-In order to clean the terminal before plotting the data (useful, for example, when continuously plotting data) use a command like this after the *scatter* or *plot* function:
-```
-plx.show(clear=True)
-```
-You can access the value set for the option *clear* with the following command:
-```
-plx.get_clear()
-```
-When continuously plotting data it may be useful to add a sleeping time between plots in order to minimize undesired screen flashing. Use a command like this:
-```
-plx.show(sleep=0.01)
-plx.show(sleep=False)
-```
-where the unit is seconds.
-
-You can access the value set for the option *sleep* with the following command:
-```
-plx.get_sleep()
-```
-
-
-Package Version
-===============
-In order to check the installed version of the package use a command like this:
-```
-plx.get_version()
-
-```
-
-Further Documentation
-=====================
+## Other Documentation
 
 The full documentation of any of the functions shown above could be accessed using commands like these:
 ```
 print(plx.scatter.__doc__)
 print(plx.plot.__doc__)
-print(plx.clear.__doc__)
+print(plx.show.__doc__)
 ```
 
 
-Credits
-=======
+### Main Updates:
+- `plotext` now works also in **Windows** comand line (CMD) with colors
+- `plotext` now works also using Python IDLE3 but with no colors and no adaptive dimensions
+- new color codes with **background** codes added
+- **`force_size`** option added
+- **`savefig`** function added
+- **`get_version`** function added
+- **`run_test`** function added
+- no need for `numpy` or `time` packages
+- the code has been updated and it is more legible
+- the documentation has been updated
+- `equations` options now is set by default to `False`
+- When `thick` is `False`, the axes non numerical thicks are also removed
+- Removed get functions for plot parameters
+
+
+### Creator
 - Author: Savino Piccolomo
 - e-mail: piccolomo@gmail.com
+
+
+### Contributors
+- Dominik Wetzel, Schmetzler for the Windows support
+- Dominik Wetzel for force_size idea
+- Kexul, Madrian for their inputs regarding plotting multiple lines
