@@ -1,6 +1,6 @@
-"""plotext plots data on terminal."""
+"""plotext plots data directly on terminal"""
 
 from plotext.plot import *
 
-name = "plotext"
-__version__ = "2.0.2"
+__name__ = "plotext"
+__version__ = "2.1.0"

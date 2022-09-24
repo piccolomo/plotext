@@ -1,174 +1,189 @@
-The package **`plotext`** allows to plot data directly on terminal. 
+Plotting directly on terminal.
 
 
-# Basic Example
-You can use `plotext` to plot data as you would with `matplotlib`. Here is a basic example of a scatter plot:
+# Scatter Plot
+Use `plotext` to plot data directly on terminal: the syntax is very similar to `matplotlib`. Here is an example:
 ```
 import plotext as plt
-plt.scatter(x, y)
+import numpy as np
+
+l = 100
+x = np.arange(0, l + 1)
+f = 2 * np.pi / l
+y = np.sin(2 * f * x)
+
+plt.scatter(y)
 plt.show()
 ```
-where `x` and `y` are the coordinates of the points to be plotted; optionally, a single `y` list could be provided. 
-
-Alternatively, you could plot the lines between each point using the `plot` function instead. 
-
-Multiple data set could be plotted using consecutive `scatter` or `plot` functions.  Here is a plot example:
-
-![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/example.png)
-
-Each data point is represented by a character (in this case `•`).
+which outputs this plot on terminal:
+![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/scatter.png)
+Each data point is represented by the character • and the plot automatically extends to fill the entire terminal.
 
 
-# Parameters
-You can personalize the plots in many ways using the following parameters (of both the `plot` and `scatter` functions):
-
-- **xlim**
-It sets the minimum and maximum limits of the plot in the x axis. It requires a list of two numbers, where the first sets the left (minimum) limit and the second the right (maximum) limit. If one or both values are not provided, they are calculated automatically. Alternatively use `set_xlim(xlim)` after the scatter function. 
-
-- **ylim**
-It sets the minimum and maximum limits of the plot in the y axis. It requires a list of two numbers, where the first sets the lower (minimum) limit and the second the upper (maximum) limit. If one or both values are not provided, they are calculated automatically. Alternatively use `set_ylim(ylim)` after the scatter function. 
-
-- **cols**
-It sets the number of columns of the plot. By default, it is the highest value allowed by the terminal size. Alternatively use `set_cols(cols)` or `set_canvas_size(cols, rows)` after the scatter function.
-
-- **rows**
-It sets the number of rows of the plot. By default, it is the highest value allowed by the terminal size. Alternatively use `set_rows(rows)` or `set_canvas_size(cols, rows)` after the scatter function.
-
-- **force_size**
-By default, the plot dimensions are limited by the terminal size. Set force_size to True in order to allow bigger plots. Alternatively use `set_force_size(True)` after the scatter function (but before the functions `set_cols` and `set_rows`, if present).
-Note: plots bigger then the terminal size may not be readable. 
-
-- **point_marker**
-It sets the marker used to identify each data point plotted. It should be a single character and it could be a different value for each data set. If an empty string is provided, no data point is plotted. The default value is '•'. This parameter can only be set internally, because it is associated to the current data set plotted. 
-
-- **line_marker**
-It sets the marker used to identify the lines between two consecutive data points. It should be a single character and it could be a different value for each data set. If an empty string is provided (as by default), no lines are plotted. This parameter can only be set internally, because it is associated to the current data set plotted.
-
-- **canvas_color**
-It sets the canvas background color, without affecting the axes color. Alternatively use `set_canvas_color(color)` after the scatter function. Use `get_colors()` to find the available color codes. The default value is 'norm'.
-
-- **point_color**
-It sets the color of the data points. Use `get_colors()` to find the available color codes. The default value is 'norm'. This parameter can only be set internally, because it is associated to the current data set plotted.
-
-- **line_color**
-It sets the color of the lines, if plotted. Use `get_colors()` to find the available color codes. The default value is 'norm'. This parameter can only be set internally, because it is associated to the current data set plotted.
-
-- **axes**
-When set to True (as by default), the x and y axes are added to the plot. A list of two Booleans will set the x and y axis independently (eg: `axes = [True, False]`). Alternatively, use `set_axes(axes)` after the scatter function.  
-
-- **axes_color**
-It sets the axes color, without affecting the canvas. The same color is applied to the axes ticks, labels, equations, legend and title, if present. Use `get_colors()` to find the available color codes. The default value is 'norm'. If a list of two colors is provided, the second is interpreted as a background color. Alternatively use `set_axes_color(color)` after the scatter function. 
-
-- **ticks_number**
-It sets the number of data ticks printed on each axis. If a list of two values is provided, the number of ticks for each axis is set independently (eg: `ticks_number = [5, 6]`). If set to 0, no ticks are printed. The default value is 5. Alternatively use `set_ticks_number(num)` after the scatter function.
-Note: you could also directly provide all ticks coordinates and labels for each axis using the functions `set_xticks` and `set_yticks`. Access their docstrings for further guidance. In this case the value of `ticks_number` would not affect what is printed. 
-
-- **ticks_length**
-It sets the maximum allowed number of characters of all data ticks on each axes. If the number of characters of any of the ticks coordinates is longer then this value, the ticks are re-scaled and an equation would appear at the end of the plot to clarify the conversion. If a list of two values is provided, the ticks length are set independently (eg: `ticks_length = [5, 6]`). If set to 0, no ticks are printed. The default value is 4. Alternatively use `set_ticks_length(num)` after the scatter function. 
-Note: you could also directly provide all ticks coordinates and labels for each exes using the functions `set_xticks` and `set_yticks`. Access their docstrings for further guidance. In this case the value of `ticks_length` needs to be higher that the maximum number of characters of the chosen ticks, otherwise some of the characters could be cut out of the plot. 
-
-- **title**
-It sets the title of the plot. Alternatively use `set_title(label)` after the scatter function. 
-
-- **xlabel**
-It sets the label of the x axis. Alternatively use `set_xlabel(label)` after the scatter function. 
-
-- **ylabel**
-It sets the label of the y axis. Alternatively use `set_ylabel(label)` after the scatter function. 
-
-- **label**
-It sets the label of the current data set, which will appear in the legend at the end of the plot. The default value is an empty string. If all labels are an empty string no legend is printed. Alternatively use `set_legend(labels)` to set all labels (as a list of strings) after the scatter function.
-
-
-## Usefull Functions
-- **set_xticks** and **set_yticks**
-respectivelly set the ticks on the x and y axis. The ticks should be provided as a list of values. If two lists are provided, the second is intended as the list of labels to be printed at the coordinates given by the first list. Here is an example:
+# Line Plot
+For a line plot use the the `plot` function instead:
 ```
-plt.scatter(data)
-plt.set_xticks(xticks, xlabels)
-plt.set_yticks(yticks, ylabels)
+import plotext as plt
+import numpy as np
+
+l = 1000
+x = np.arange(0, l + 1)
+f = 2 * np.pi / l
+y = np.sin(2 * f * x)
+
+plt.plot(x, y)
 plt.show()
 ```
-If no list is provided, the ticks will be calculated automatically. If the ticks are not calculated automatically, any value given to the `ticks_number` parameter of the scatter or plot function will not affect the ticks plotted. On the contrary, the value of the `ticks_length` parameter needs to be higher that the maximum number of characters of the chosen ticks (or labels if present), otherwise some or all of the characters could be cut out of the plot. 
-- **set_legend**
-sets the labels of each plot (as a list of strings) to be printed as a legend. If all labels are an empty string, no legend will be printed. Here is an example:
+![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/plot.png)
+Incidentally here we have shown that both the `x` and `y` coordinates could be inputted in either the `plot` or `scatter` function (or `y` alone as in the first example).
+
+
+# Multiple Data
+Multiple data sets could be plotted using consecutive `scatter` or `plot` functions:
+```
+import plotext as plt
+import numpy as np
+
+l = 1000
+x = np.arange(0, l + 1)
+f = 2 * np.pi / l
+y1 = np.sin(2 * f * x)
+y2 = y1 * np.exp(-0.25 * f * x)
+plt.plot(x, y1, label = "periodic signal")
+plt.scatter(x, y2, label = "decaying signal")
+plt.show()
+```
+![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/multiple.png)
+where using the `label` parameter, a legend is automatically added in the upper left corner of the plot.
+
+# Plot Aspect
+You can personalize the plot aspect in many ways. Here is an example:
+```
+import plotext as plt
+import numpy as np
+
+l = 1000
+x = np.arange(0, l + 1)
+n = 2
+f = n * np.pi / l
+y1 = np.sin(n * f * x)
+y2 = y1 * np.exp(-0.25 * f * x)
+
+plt.plot(x, y1, label="periodic signal", line_color="tomato")
+plt.scatter(x, y2, label="decaying signal", point_color="blue")
+plt.canvas_size(150, 40)
+plt.grid(1)
+plt.title("plotext demonstrative plot")
+plt.xlabel("x axis")
+plt.ylabel("y axis")
+plt.canvas_color("white")
+plt.facecolor("cloud")
+plt.ticks_color("iron")
+plt.show()
+```
+![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/aspect.png)
+Here we have changed the color of each line plotted, changed the figure dimensions, added a title on the top and the axes labels on the bottom, changed the background color of the canvas (`canvas_color`), the color of the surrounding elements (`facecolor`) and the ticks full-ground color (`ticks_color`).
+
+# Data Ticks
+You can change the numerical ticks on both axes:
+```
+import plotext as plt
+import numpy as np
+
+l = 1000
+x = np.arange(0, l + 1)
+n = 2
+f = n * np.pi / l
+y1 = np.sin(n * f * x)
+y2 = y1 * np.exp(-0.25 * f * x)
+xticks = np.arange(0, l + l / (2 * n), l / (2 * n))
+xlabels = [str(i) + "𝜋" for i in range(2*n+1)]
+
+plt.plot(x, y1, label="periodic signal")
+plt.scatter(x, y2, label="decaying signal")
+plt.ticks(7)
+plt.xticks(xticks, xlabels) 
+plt.show()
+```
+![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/ticks.png)
+where we have first set 7 ticks on both axes (using `plt.ticks()`) and then we have directly changed only the x axis ticks coordinates and corresponding labels (with `plt.xticks()`).
+
+
+# Streaming Data
+You can use plotext to plot a continuous flow of data:
+```
+import plotext as plt
+import numpy as np
+
+n = 2
+frames = 18
+l = 30 * frames
+f = 2 * np.pi / l
+x = np.arange(0, l)
+xticks = np.arange(0, l + l / (2 * n), l / (2 * n))
+xlabels = [str(i) + "π" for i in range(2*(n+1))]
+for i in range(frames):
+    y = np.sin(n * f * x + 2 * np.pi / frames * i)
+    plt.clear_terminal()
+    plt.clear_plot()
+    plt.scatter(x, y, point_color = "blue")
+    plt.ylim(-1, 1)
+    plt.canvas_size(150, 40)
+    plt.title("plotting streaming data using plotext")
+    plt.ticks_color("blue")
+    plt.xticks(xticks, xlabels)
+    plt.sleep(0.001)
+    plt.show()
+```
+![example](https://raw.githubusercontent.com/piccolomo/plotext/master/images/stream.gif)
+where before each plot we have used the function `clear_terminal` (or in short `clt`) to clear the terminal, and the function `clear_plot` (or short `clp`) to resets all the plot parameters to their default value, including the data coordinates. Without it, the previous code would add the trailing data to the same plot.
+Also note that we have set the plot limits, on the `y` axis, using `ylim`. Finally, in order to reduce a possible screen flickering, we have used the `sleep` function: an input of, for example, `0.001` to it would add approximately `0.001` secs to the computation; this `time` parameters will depend on your processor speed and it needs some manual tweaking.
+Plotting the same data using `matplotlib` was roughly 15 to 50 times slower on my Linux-based machine (depending on the colors and data size).
+
+## Other Functions
+- **fill** is a parameter (of the `scatter` or `plot` function) which allows to fill the area between the data and the `y=0` level:
+```
+import plotext as plt
+import numpy as np
+
+l = 1000
+x = np.arange(0, l + 1)
+f = 2 * np.pi / l
+y = np.sin(2 * f * x)
+plt.scatter(x, y, point_color="blue", fill=True)
+plt.ylim(-1.2 , 1.2)
+plt.canvas_size(150, 40)
+plt.title("plotext demonstrative plot using fill")
+plt.canvas_color("cloud")
+plt.facecolor("iron")
+plt.ticks_color("gold")
+plt.show()
+```
+![colors](https://raw.githubusercontent.com/piccolomo/plotext/master/images/fill.png)
+
+- **set_legend** provides and alternative way to set the labels of each plot (as a list of strings) to be printed as a legend. If all labels are an empty string, no legend will be printed. Here is the idea:
 ```
 plt.scatter(y1)
 plt.plot(y2)
 plt.set_legend(["signal 1", "signal2"])
 plt.show()
 ```
-Alternatively the labels can be provided directly inside the scatter or plot function. Here is an example:
-```
-plt.scatter(y1, label = "signal 1")
-plt.plot(y2, label = "signal 2")
-plt.show()
-```
-- **clear_terminal**
-It clears the terminal screen and it useful to make the plot cleared as it would be printed at the beginning of a clean terminal. Here is an example:
-```
-plt.clear_terminal()
-plt.scatter(x, y)
-plt.show()
-```
-- **clear_plot**
-is similar to `cla` and `clf` in `matplotlib`, as it resets all the plot parameters to their default value, including the data coordinates. Here is an example:
-```
-plt.scatter(y1, cols = 10)
-plt.show()
-
-plt.clear_plot()
-plt.plot(y2, rows = 20, title = "new plot")
-plt.show()
-```
-which would print two independent plots. Without `clear_plot`, the previous code would result in a single plot including both data sets (y1 and y2).
-
-- **save_fig**
-saves your plot as a text file. Here is an example:
+- **save_fig** saves your plot as a text file. Here is the idea:
 ```
 plt.scatter(y)
 plt.show()
 plt.save_fig(path)
 ```
-where `path` is the file address where the data will be written. Note that (for now), this function doesn't preserve the plot colors. 
+where `path` is the file address where the data will be written. Note that (for now), this function doesn't preserve the plot colors.
 
-- **sleep**
-A common problem when plotting streaming data is the screen flickering. In order to remove or reduce this problem use:
-```
-plt.sleep(time)
-```
-which adds a sleeping time to the computation. An input of, for example, `0.01` would add approximately `0.01` secs to the computation. The `time` parameters will depend on your processor speed and it needs some manual tweaking. 
-
-Here is an example of plotting a continuous stream of data:
-
-![stream](https://raw.githubusercontent.com/piccolomo/plotext/master/images/animation.gif)
-
-Plotting the same data using `matplotlib` was roughly 15 to 50 times slower on a linux machine.
-
-
-## Colors
-You can access the function `plx.get_colors()` in order to find the available full ground and background color codes. Here is the output for simplicity:
+- **colors** You can uce `plt.colors()` to see the available full-ground and background color codes. Here is the output for simplicity:
 ![colors](https://raw.githubusercontent.com/piccolomo/plotext/master/images/colors.png)
+where using `flash` will result in an actually flashing character. 
 
+- **version** In order to check the installed plotext version use `plt.version()` 
 
-## Installation
-In Windows, to install the latest version of the `plotext` package use this command :
-```
-pip install plotext --upgrade
-```
-while in Linux:
-```
-sudo -H pip install plotext --upgrade
-```
-In order to check the version of the installed package use: 
-```
-import plotext as plt
-plt.get_version()
-```
-
-
-## Other Documentation
-Other relevant documentation could be accessed using commands like these:
+### Other Documentation
+Other relevant documentation could be accessed using the following commands:
 ```
 print(plx.scatter.__doc__)
 print(plx.plot.__doc__)
@@ -181,20 +196,19 @@ print(plx.sleep.__doc__)
 print(plx.save_fig.__doc__)
 ```
 
+### Installation
+Use `pip install plotext --upgrade` 
+
 
 ### Main Updates:
-- the plot now shows the actual data ticks, which was more complicated then expected as the ticks should adapt to a limited amount of characters available (`ticks_length`). This is a new features and it may require some adjustments. Please communicate any issues regarding data ticks.
-- `set_xticks` and `set_yticks` functions added to set the ticks values, directly.
-- labels can be added to the axes.
-- a title can be added to the plot.
-- a legend can be shown when plotting multiple data sets.
-- set functions involving a list of two parameters can be used in two different ways. For example `set_xlim([xmin, xmax])` is equivalent to `set_xlim(xmin, xmax)`.
-- `point` and `line` parameters removed. To remove the data points (or lines), it is sufficient to set the point marker (or line marker) to an empty string.
-- `background` parameter removed and `canvas_color` takes his place, but can set only the canvas background color.
-- `axes_color` could now also be a list of two colors where the second sets the axes background color.
-- `spacing` parameter removed, `ticks_number` takes his place.
-- `equations `parameter removed as the equations will be printed automatically if needed.
-- `decimals` parameter removed.
+- the plot now shows the actual data ticks using a simpler algorithm (no necessity for `ticks_length`).
+- `ticks_number` is now simply `ticks`
+- set functions like plt.set_title have reduced to `plt.title()`
+- an optional grid can be added
+- `fill` option added
+- `axes_color` is now `facecolor` to adapt to matplotlib standards
+- new legend positioning
+- new color codes
 - code restructured and revised. 
 
 
@@ -202,15 +216,8 @@ print(plx.save_fig.__doc__)
 Any help on the following or new ideas is more then welcomed.
 
 - creation of an *histogram plot*.
+- creation of logarithmic plots
 - data ticks for time based data.
 - color and terminal size support for IDLE python editor and compiler.
 - same as previous point but for Spider. 
-- add new colors using ansi codes.
 - saving text files with color.
-- adding an optional grid (not sure how).
-
-
-### Contributors
-- Dominik Wetzel, Schmetzler for the Windows support.
-- Dominik Wetzel for force_size idea.
-- Kexul, Madrian for their inputs regarding plotting multiple lines.
