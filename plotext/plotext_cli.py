@@ -2,7 +2,10 @@
 from plotext._utility import all_markers, colors
 import argparse, sys, os
 import plotext as plt
-import shtab
+try:
+    import shtab
+except ImportError:
+    from . import _shtab as shtab
 
 # For Possible Colors and Markers Completion 
 def dict_to_complete(d={}):
