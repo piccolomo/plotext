@@ -2,10 +2,12 @@
 from plotext._utility import no_color
 
 class default_figure_class():
+    
     def __init__(self):
         self.set_limitsize()
         self.set_size_term()
         self.set_size_term_inf()
+        self.interactive = False
 
     def set_limitsize(self, limit_width = None, limit_height = None):
         self.limit_width = True if limit_width is None else bool(limit_width)
@@ -23,7 +25,9 @@ class default_figure_class():
         self.height_term_inf = m * self.height_term if height is None else int(height)
         self.size_term_inf = [self.width_term, self.height_term]
 
+        
 class default_monitor_class():
+    
     def __init__(self):
         self.color_init()
         self.axes_init()
@@ -41,10 +45,10 @@ class default_monitor_class():
     def axes_init(self):  # Default Values for Variables Set with Outside Functions
         self.xaxes = [True, True]
         self.yaxes = [True, True]
-        
         self.xfrequency = [5, 5] # lower and upper xaxes ticks frequency
         self.yfrequency = [7, 7] # left and right yaxes ticks frequency
-
+        self.xdirection = [1, 1] # direction of x axes
+        self.ydirection = [1, 1]
         self.xticks = [None, None] # xticks coordinates for both axes
         self.yticks = [None, None]
 
@@ -54,22 +58,20 @@ class default_monitor_class():
         self.grid = [False, False]
     
     def text_init(self):
-        self.talign = ['left', 'center', 'right']
+        self.alignment = ['left', 'center', 'right', 'top', 'bottom', 'dynamic']
+        self.orientation = ['horizontal', 'vertical'] # the two possible orientations, the first is the default: v = vertical, h = horizontal
         
     def draw_init(self): # Default Values for Variables Set with Draw internal Arguments
         self.xside = ["lower", "upper"] # the two possibilities, the first is default
         self.yside = ["left", "right"] # the two possibilities, the first is default
-        
         self.lines = False
-        
-        self.fillx = False
-        self.filly = False
-        
+        self.fill = False
+        self.fill_internal = "internal"
+        #self.filly = False
         self.label = None
 
     def bar_init(self):
         self.bar_marker = "sd"
         self.bar_fill = True # bar plot filled or not
         self.bar_width = 4 / 5 # bar width
-        self.bar_orientation = ['vertical', 'v', 'horizontal', 'h'] # the two possible orientations, the first is the default: v = vertical, h = horizontal
         self.hist_bins = 10

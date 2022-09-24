@@ -25,11 +25,12 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.scatter(y); plt.title('Sca
 ```
 ![scatter](https://raw.githubusercontent.com/piccolomo/plotext/master/data/scatter.png)
 
-- By default, the plot size adapts to the terminal size; to change this use the function `plot_size(width, height)`, described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-size),
-- the default marker is `hd` (the 2 x 2 higher definition marker) and it is available only in `Unix` systems, as it doesn't seem to render well in Windows,
-- the 3 x 2 higher definition marker, named `fhd`, works only in `Unix` systems and only in some terminals,
-- the 4 x 2 highest definition marker, named `braille`, is now available (from version 5.1) and should work in Unix systems,
-- to save the plot as colorless `txt` or as colored `html`, use the function `save_fig(path)` described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions),
+**First Things to Know**:
+- Use the function `plot_size(width, height)` described [here](https://github.com/piccolomo/plotext/blob/master/readme/settings.md#plot-size), to change the **plot dimensions**, which by default adapt to the terminal size,
+- to display the **plot dynamically**, without using the `show()` function, use the function `interactive(True)` described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions),
+- to change the **plot marker** use the `marker` parameter and follow [this section](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#markers). 
+- to **save the plot** use the function `save_fig(path)` described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions),
+- to generate a sinusoidal or a square wave signal use the functions `sin()` and `square()` respectively, described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions), 
 - the documentation of the `scatter()` function can be accessed with `doc.scatter()`.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
@@ -50,13 +51,15 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.plot(y); plt.title('Line P
 ```
 ![plot](https://raw.githubusercontent.com/piccolomo/plotext/master/data/plot.png)
 
-The documentation of the `plot()` function can be accessed with `doc.scatter()`.
+The documentation of the `plot()` function can be accessed with `doc.plot()`.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
 
 ## Stem Plot
-For a stem plot use either the `fillx` or `filly` parameters (available for most plotting functions) to fill the canvas with data points till the `y = 0` or `x = 0` level, respectively. Here is an example:
+For a stem plot use either the `fillx` or `filly` parameters (available for most plotting functions) to fill the canvas with data points till the `y = 0` or `x = 0` level, respectively. 
+
+Here is an example:
 ```python
 import plotext as plt
 y = plt.sin()
@@ -68,8 +71,9 @@ or directly on terminal:
 ```console
 python3 -c "import plotext as plt; y = plt.sin(); plt.plot(y, fillx = True); plt.title('Stem Plot'); plt.show()"
 ```
-
 ![stem](https://raw.githubusercontent.com/piccolomo/plotext/master/data/stem.png)
+If a numerical value is provided, it is intended as the `y` or `x` level, respectively, where the filling stops. If the code `internal` is provided, the filling will stop when another data point is reached horizontally or vertically (if it exists).
+
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
@@ -95,7 +99,7 @@ python3 -c "import plotext as plt; y1 = plt.sin(); y2 = plt.sin(phase = -1); plt
 ```
 ![multiple-data](https://raw.githubusercontent.com/piccolomo/plotext/master/data/multiple-data.png)
 
-The `label` parameter, inside any plotting function, can be used to add an entry in the plot legend, shown in the upper left corner of the plot canvas.
+The `label` parameter, inside any plotting function, can be used to add an entry in the **plot legend**, shown in the upper left corner of the plot canvas.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
@@ -161,12 +165,7 @@ python3 -c "import plotext as plt; l = 10 ** 4; y = plt.sin(periods = 2, length 
 
 
 ## Streaming Data
-When streaming a continuous flow of data, consider using the following functions:
-
-- `plt.clear_data()` - in short `plt.cld()` - to clear only the plot data (without clearing the plot style) of the active subplot,
-- `plt.clear_terminal()` - in short `plt.clt()` - to clear the terminal screen before the actual plot,
-- `plt.sleep(time)` to reduce a possible screen flickering: for example `sleep(0.01)` would add approximately 10 ms to the computation,
-- optionally `plt.clear_color()` - in short `plt.clc()` - to remove the plot coloring, at the beginning, and so to make the streaming more responsive.
+When streaming a continuous flow of data, consider using the clearing functions, described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#clearing-functions), and the function `plt.sleep(time)`, to reduce a possible screen flickering: for example `sleep(0.01)` would add approximately 10 ms to the computation.
 
 Here is a coded example:
 
@@ -180,13 +179,13 @@ plt.title("Streaming Data")
 # plt.clc()
 
 for i in range(frames):
-    plt.clt()
-    plt.cld()
+    plt.clt() # to clear the terminal
+    plt.cld() # to clear the data only
 
     y = plt.sin(periods = 2, length = l, phase = 2 * i  / frames)
     plt.scatter(y)
 
-    #plt.sleep(0.001)
+    #plt.sleep(0.001) # to add 
     plt.show()
 ```
 or directly on terminal:
