@@ -1,5 +1,5 @@
 from plotext._utility.plot import get_labels
-from plotext._utility.data import linspace
+from plotext._utility.data import linspace, get_lim
 
 ##############################################
 ############   Bar Functions    ##############
@@ -24,7 +24,7 @@ def update_bars(x, bars, offset): # it updates the bar coordinates using the pas
 
 def update_bar_xlim(y): # it updates the bar limits along their base dimension  (x if orientation is vertical otherwise y)
     y = [el for el in y if el is not None]
-    bar_lim = [min(y, default = None), max(y, default = None)]
+    bar_lim = get_lim(y)
     return bar_lim
 
 def update_bar_ylim(y): # it updates the bar limits along their heights (y if orientation is vertical otherwise x)
@@ -56,7 +56,7 @@ def bars(x, y, width, minimum): # given the bars center coordinates and height, 
 ###########   Hist Functions    ##############
 ##############################################
 
-def hist_data(data, bins = 10): # it returns data in histogram form 
+def hist_data(data, bins = 10, norm = False): # it returns data in histogram form if norm is False. Otherwise, it returns data in density form where all bins sum to 1.
     #data = [round(el, 15) for el in data]
     if data == []:
         return [], []
@@ -67,4 +67,6 @@ def hist_data(data, bins = 10): # it returns data in histogram form
     histy = [0] * bins
     for el in data:
         histy[el] += 1
+    if norm:
+        histy = [el / len(data) for el in histy]
     return histx, histy

@@ -21,8 +21,8 @@ if _platform == "windows":
     import subprocess 
     subprocess.call('', shell = True)
 
-    import win_unicode_console
-    win_unicode_console.enable()
+    #import win_unicode_console
+    #win_unicode_console.enable()
 
     #to enable higher definition markers in windows: it didn't work....
     #import ctypes

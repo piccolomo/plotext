@@ -483,11 +483,13 @@ class subplot_class():
             self.xlim[xpos] = self.bar_ylim
             self.bar_xlim = update_bar_xlim(self.bar_xlim + self.ylim[ypos] + xticks + join(ybar))
             self.ylim[ypos] = self.bar_xlim
+
+        firstbar = min([b for b in range(len(x)) if ybar[b][1] != 0], default = 0) # finds the position of the first non zero bar
             
         for b in range(len(x)):
             xb = xbar[b][1:3] if fill else xbar[b]
             yb = ybar[b][1:3] if fill else ybar[b]
-            plot_label = label if b == 0 else None
+            plot_label = label if b == firstbar else None
             plot_color = color if b == 0 else self.color[-1]
             nobar = (yb[1] == 0 and orientation[0] == 'v') or (xb[1] == 0 and orientation[0] == 'h')
             plot_marker = " " if nobar else marker
@@ -548,7 +550,8 @@ class subplot_class():
     def draw_hist(self, data, **kwargs):
         bins = kwargs.get("bins")
         bins = self.default.hist_bins if bins is None else bins
-        x, y = hist_data(data, bins)
+        norm = kwargs.get("norm", False)
+        x, y = hist_data(data, bins, norm)
         self.draw_single_bar(x, y, **kwargs)
 
     def draw_matrix(self, matrix, **kwargs):
