@@ -3,4 +3,4 @@
 from plotext.plot import *
 
 __name__ = "plotext"
-__version__ = "2.1.0"
+__version__ = "2.2.2"
