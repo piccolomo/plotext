@@ -1,62 +1,56 @@
-from plotext._utility.file import script_folder, parent_folder, join_paths
-import sys
-import os
+from plotext._utility import join_paths, script_folder, parent_folder
+import sys, shutil
 
+def is_ipython(): # true if running in ipython shenn
+    try:
+        __IPYTHON__
+        return True
+    except NameError:
+        return False
 
+def version(): # returns plotext version
+   init_file = join_paths(parent_folder(script_folder()), "__init__.py")
+   with open(init_file, 'r') as fp:
+       lines = fp.read()
+   for line in lines.splitlines():
+       if line.startswith('__version__'):
+           delim = '"' if '"' in line else "'"
+           version = line.split(delim)[1]
+           print("plotext version:", version)
+           return version
+   else:
+       print("unable to find version string")
+       
 def platform(): # the platform (eg: linux) you are using plotext with
-    platform = sys.platform
-    # According to the docs, this returns one of: 'aix', 'linux', 'win32', 'cygwin', 
-    # 'darwin', or the modified result of `uname -s` on other Unix systems.
-    if platform in {'win32', 'cygwin'}:
-        # These are the only two possible outputs on Windows systems
-        return 'windows'
-    else:
-        # Anything that is not Windows and that runs Python is a flavor of Unix
-        return 'unix'
+   platform = sys.platform
+   if platform in {'win32', 'cygwin'}:
+       return 'windows'
+   else:
+       return 'unix'
 
-_platform = platform()
+platform = platform()
 
-if _platform == "windows":
-    # to enable ascii escape color sequences
+# to enable ascii escape color sequences
+if platform == "windows":
     import subprocess 
     subprocess.call('', shell = True)
 
-    #import win_unicode_console
-    #win_unicode_console.enable()
+def terminal_size(): # it returns the terminal size as [width, height]
+    try:
+        size = shutil.get_terminal_size()
+        return list(size)
+    except OSError:
+        return [None, None]
 
-    #to enable higher definition markers in windows: it didn't work....
-    #import ctypes
-    #kernel32 = ctypes.windll.kernel32
-    #kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7) 
-
-    #import win32console 
-    #win32console.SetConsoleCP(65001)
-    #win32console.SetConsoleOutputCP(65001)
-
-    #import sys, codecs
-    #sys.stdout = codecs.getwriter('utf8')(sys.stdout)
-    #sys.stderr = codecs.getwriter('utf8')(sys.stderr)    
-
-    #from ctypes import WINFUNCTYPE, windll, POINTER, byref, c_int
-    #from ctypes.wintypes import BOOL, HANDLE, DWORD, LPWSTR, LPCWSTR, LPVOID
-
-    #codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
-
-    #import codecs, sys,locale
-    #sys.stdout = codecs.getwriter('UTF-8')(sys.stdout)   
-    #print(u"valued at £9.2 billion.")
-    #sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout);
-
-    
-def version():
-    init_file = join_paths(parent_folder(script_folder()), "__init__.py")
-    with open(init_file, 'r') as fp:
-        lines = fp.read()
-    for line in lines.splitlines():
-        if line.startswith('__version__'):
-            delim = '"' if '"' in line else "'"
-            version = line.split(delim)[1]
-            print("plotext version:", version)
-            return version
+def clear_terminal(lines = None): # it cleat the entire terminal, or the specified number of lines
+    if lines is None:
+        write('\033c')
     else:
-        print("Unable to find version string.")
+        for r in range(lines):
+            write("\033[A") # moves the curson up
+            write("\033[2K") # clear the entire line
+
+def write(string): # the print function used by plotext
+    sys.stdout.write(string)
+
+

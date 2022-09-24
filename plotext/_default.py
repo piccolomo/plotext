@@ -1,56 +1,75 @@
-from plotext._utility.marker import bar_marker
+#from plotext._utility import bar_marker
+from plotext._utility import no_color
 
-class figure_default(): # storing default values for figure class
+class default_figure_class():
     def __init__(self):
-        self.terminal_size = [200, 50] # the terminal size if no size is detected
-        self.terminal_infinite_size = [10 ** 10, 10 ** 10] # the maximum size allowed if force_size (basically infinity)
-        self.limit_size = [True, True]
-        self.cols_max = 10 # max number of subplots columns and rows
-        self.rows_max = 10
+        self.set_limitsize()
+        self.set_size_term()
+        self.set_size_term_inf()
 
-class subplot_default(): # storing default values for subplot class
+    def set_limitsize(self, limit_width = None, limit_height = None):
+        self.limit_width = True if limit_width is None else bool(limit_width)
+        self.limit_height = True if limit_height is None else bool(limit_height)
+        self.limit_size = [self.limit_width, self.limit_height]
+
+    def set_size_term(self, width = None, height = None):
+        self.width_term = 211 * 2 // 3 if width is None else int(width)
+        self.height_term = 53 * 2 // 3 if height is None else int(height)
+        self.size_term = [self.width_term, self.height_term]
+
+    def set_size_term_inf(self, width = None, height = None):
+        m = 5
+        self.width_term_inf = m * self.width_term if width is None else int(width)
+        self.height_term_inf = m * self.height_term if height is None else int(height)
+        self.size_term_inf = [self.width_term, self.height_term]
+
+class default_monitor_class():
     def __init__(self):
-        # Default Values for Variables Set with Draw internal Arguments
-        
-        self.xside = ["lower", "upper"] # the two possibilities, the first is default
-        self.yside = ["left", "right"] # the two possibilities, the first is default
+        self.color_init()
+        self.axes_init()
+        self.canvas_init()
+        self.text_init()
+        self.draw_init()
+        self.bar_init()
 
-        self.lines = False
+    def color_init(self): # Default Values for Color Set with Outside Functions
+        self.canvas_color = "white"
+        self.axes_color = "white"
+        self.ticks_color = "black"
+        self.ticks_style = no_color
 
-        self.fillx = False
-        self.filly = False
-
-        self.label = None 
-        #self.label_show = True
-
-        # Default Values for Variables Set with Outside Functions
-        
+    def axes_init(self):  # Default Values for Variables Set with Outside Functions
         self.xaxes = [True, True]
         self.yaxes = [True, True]
-
-        self.grid = [False, False]
-
-        self.canvas_color = "bright-white"
-        self.ticks_color = "black"
-        self.axes_color = "bright-white"
-
-        self.xscale = ["linear", "log"] # the two possibilities, the first is default
-        self.yscale = ["linear", "log"]
-
+        
         self.xfrequency = [5, 5] # lower and upper xaxes ticks frequency
         self.yfrequency = [7, 7] # left and right yaxes ticks frequency
 
-        self.xticks = [[], []] # xticks coordinates for both axes
-        self.yticks = [[], []]
+        self.xticks = [None, None] # xticks coordinates for both axes
+        self.yticks = [None, None]
 
-        self.alignment = ["left", "center", "right"] # the three text alignments possibilities, the first is default
+    def canvas_init(self):
+        self.xscale = ["linear", "log"] # the two possibilities, the first is default
+        self.yscale = ["linear", "log"]
+        self.grid = [False, False]
+    
+    def text_init(self):
+        self.talign = ['left', 'center', 'right']
+        
+    def draw_init(self): # Default Values for Variables Set with Draw internal Arguments
+        self.xside = ["lower", "upper"] # the two possibilities, the first is default
+        self.yside = ["left", "right"] # the two possibilities, the first is default
+        
+        self.lines = False
+        
+        self.fillx = False
+        self.filly = False
+        
+        self.label = None
 
-        # bar plot defaults
+    def bar_init(self):
+        self.bar_marker = "sd"
+        self.bar_fill = True # bar plot filled or not
         self.bar_width = 4 / 5 # bar width
         self.bar_orientation = ['vertical', 'v', 'horizontal', 'h'] # the two possible orientations, the first is the default: v = vertical, h = horizontal
-        self.bar_fill = True # bar plot filled or not
-        self.bar_marker = bar_marker
-        
-        # hist plot defaults
         self.hist_bins = 10
-

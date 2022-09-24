@@ -1,19 +1,70 @@
-[Plotext Guide](https://github.com/piccolomo/plotext#guide)
-
-# Project Notes
-- [Main Updates](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#main-updates)
-- [Future Plans](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#future-plans)
+# Notes
+- [Updates](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#updates)
+- [Plans](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#plans)
 - [Credits](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#credits)
+- [Similar Projects](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#similar-projects)
+
+[Main Guide](https://github.com/piccolomo/plotext#guide)
 
 
-## Main Updates
-
+## Updates
 Note: there are many new features from the previous version: any bug report is useful and very welcomed.
 
-**In version 4.1**:
+#### In version 5.1:
+For now only available in GitHub
+- all `.md` files corrected and integrated
+- test files are now available on line and not downloaded during installation, to make package lighter
+- 4 x 2 `braille` markers now available, as requested in in [Issue 89](https://github.com/piccolomo/plotext/issues/89)
+- changed `--file` flag in command line tool to `--path`
+- added `--lines` flag  in command line tool to deal with big data
+- added `--xcolumn` and `--ycolumns` flags to easily set the `x` and `y` data from the data table
+- added `log` parameter to most of the [file functions](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities)
+- solved [Issue 90](https://github.com/piccolomo/plotext/issues/90) to plot small axes numerical ticks in exponential form and in 'log' scale
+- added `error()` function as requested in [Issue 91](https://github.com/piccolomo/plotext/issues/91)
 
+
+#### In version 5.0
+- added `play_gif()`, `play_video()`, `play_youtube()`, `download()`, `get_youtube()` functions, to play GIFs and videos 
+- rewritten command line tool
+- added the backend function `from_matplotlib()`, as requested in [Issue 75](https://github.com/piccolomo/plotext/issues/75)
+- added `candlestick()` plot function
+- new logic behind the creation of a matrix of subplots, with nested sub-matrices allowed and settings on top level peculating on lower levels
+- removed `span()` function
+- added `take_min()` function
+- re-written entire code 
+- faster plotting from 2 (for long data) to 5 (for small data) times faster (on my machine)
+- replaced `xaxis()` with `xaxes()` to set the presence of both axes at the same time, without the `xside` parameter; analogously for `yaxis()`
+- added `ticks_style()` function 
+- added `theme()` function
+- removed `clear_plot()` function, `clear_figure()` takes its place depending on which level of the subplot matrix is applied
+- removed `colorless()` function, `clear_color()` takes its place depending on which level of the subplot matrix is applied
+- introduced `fast` parameter in `matrix_plot()` and `image_plot()` for faster plotting
+- removed `size`, `keep_ratio` and `resample` parameters from `image_plot()`
+- introduced `event_plot()` as inspired by [Issue 83](https://github.com/piccolomo/plotext/issues/83)
+- added `text()` function to add string labels to the plot
+- added `keep_colors` parameter in `save_fig()` to keep ansi color codes in `txt` files (file could be read with `less -R file_path.txt`)
+- removed datetime class, all tools rewritten and moved to normal level
+- introduced `input_form` and `output_form` for date/time string objects
+- removed `plot_date()` and `scatter_date()` functions: date/time plots are now dealt freely by `plot()` and `scatter()`
+- most of the plotting functions accept now date/time strings as well as coordinates
+- removed file class, all tools moved to normal level
+- introduced `test()` function
+- new simpler string color codes
+- `xside` and `yside` parameter could accept 1 and 2 as well for simplicity
+- larger plots outside `ipython`, which prints an extra line or two
+
+#### In version 4.3
+- accounted for exponential float notation as requested in [Pull 82](https://github.com/piccolomo/plotext/pull/82) by `@soraxas`
+- added functionality to properly read `numpy` data as requested in [Issue 84](https://github.com/piccolomo/plotext/issues/84) and [Issue 85](https://github.com/piccolomo/plotext/issues/85). 
+
+
+#### In version 4.2
+- added `norm` parameter in `hist()` function as requested in [Issue 76](https://github.com/piccolomo/plotext/issues/76) and pulled in [Pull 79](https://github.com/piccolomo/plotext/pull/79) by `@ZaydH`
+
+
+#### In version 4.1
  - added `horizontal_line` and `vertical_line` functions, as requested in [Issue 65](https://github.com/piccolomo/plotext/issues/65)
- - the plotting functions should now deal also with non numerical values (by not plotting them) as requested in [Issue 65](https://github.com/piccolomo/plotext/issues/65)
+ - the plotting functions now deal also with non numerical values (by not plotting them) as requested in [Issue 65](https://github.com/piccolomo/plotext/issues/65)
  - solved single bar plot error discussed in [Issue 63](https://github.com/piccolomo/plotext/issues/63)
  - added command line tool discussed in [Issue 47](https://github.com/piccolomo/plotext/issues/47) and [Pull 57](https://github.com/piccolomo/plotext/pull/57), [52](https://github.com/piccolomo/plotext/pull/52) and [51](https://github.com/piccolomo/plotext/pull/51)
  - set default marker to `hd` to avoid complications with `fhd` marker in some terminals [Issue 62](https://github.com/piccolomo/plotext/issues/62)
@@ -28,8 +79,7 @@ Note: there are many new features from the previous version: any bug report is u
  - `shell` function and parameter removed as found to be useless
  - all `.md` files corrected and integrated
 
-**In version 4.0**:
-
+#### In version 4.0
   - entire code re-written
   - faster plotting
   - 2 x 2 marker is now called `hd` (as for *high resolution*) instead of `small`
@@ -57,13 +107,11 @@ Note: there are many new features from the previous version: any bug report is u
   - `get_canvas()` is now `build()`
   - `plt.frame()` function reinstated
 
-**In version 3.1**:
-
+#### In version 3.1
   - fixed [Issue 23](https://github.com/piccolomo/plotext/issues/23) on plot resizing 
   - added `plt.clear_data()` and `plt.test()` functions
 
-**In version 3.0**:
-
+#### In version 3.0
   - direct terminal command line tool added (of first type)  
   - added marker "small" (with improved resolution), and new marker codes  
   - added matrix of subplots  
@@ -80,14 +128,12 @@ Note: there are many new features from the previous version: any bug report is u
   - `plt.frame()` function removed and replaced with `plt.xaxes()` and `plt.yaxes()`
   - re-written most of the code 
 
-**In version 2.3**:
-
+#### In version 2.3
   - solved histogram error reported on [Issue 15](https://github.com/piccolomo/plotext/issues/15)  
   - added histogram plot
   - added `fillx` and `filly` parameters  
 
-**In version 2.2**:
-
+#### In version 2.2
   - new `readme.md` description file, 
   - changed `plt.fig_size()` to `plt.figsize()`
   - changed `plt.facecolor()` to `plt.axes_color()`
@@ -106,8 +152,7 @@ Note: there are many new features from the previous version: any bug report is u
   - added function `plt.parameters()`
   - added function `docstrings()`
 
-**In version 2.1**:
-
+#### In version 2.1
  - the plot now shows the actual data ticks using a simpler algorithm  
  - changed `ticks_number` to `ticks`  
  - changed set functions like plt.set_title() to `plt.title()`  
@@ -118,8 +163,7 @@ Note: there are many new features from the previous version: any bug report is u
  - new color codes  
  - code restructured and revised
 
-**In version 2.0**:
-
+#### In version 2.0
  - the plot now shows the actual data ticks, which was more complicated then expected as the ticks should adapt to a limited amount of characters available (ticks_length)  
  - added `plt.set_xticks()` and `plt.set_yticks()` functions 
  - labels can be added to the axes  
@@ -134,8 +178,8 @@ Note: there are many new features from the previous version: any bug report is u
  - `decimals` parameter removed  
  - code restructured and revised
 
-**In version 1.0**:
 
+#### In version 1.0
   - `plotext` now works also in Windows with colors
   - `plotext` now works also using Python IDLE3 but with no colors and no adaptive dimensions
   - new color codes with background codes added
@@ -150,11 +194,10 @@ Note: there are many new features from the previous version: any bug report is u
   - when `thick` is `False`, the axes non numerical ticks are also removed
   - removed `get` functions for plot parameters
 
-[Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
 
 
-## Future Plans
-
+## Plans
  - finalize the command tool, created by `asartori86`, and discussed in [ Issue 47 ](https://github.com/piccolomo/plotext/issues/47) to handle more options, settings and funtions
  - high resolution mosaic markers available on windows and other more rare terminals (not sure how)
  - remove grid span areas intersection problems (if issue is raised)
@@ -166,28 +209,40 @@ Note: there are many new features from the previous version: any bug report is u
  - solve issue log scale on y axes in `hist` plot 
  - `hd` and `fhd` markers on legend that adapts to `plot` or `scatter` functions
 
-Any help or new ideas are welcomed.
-
-[Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
 
 
 ## Credits
- - `NLKNguyen` for ideas inspiring the `horizontal_line` and `vertical_line` functions: [Issue 65](https://github.com/piccolomo/plotext/issues/65)
- - `asartori86` for the awesome command line tool: [Issue 47](https://github.com/piccolomo/plotext/issues/47)
- - `jtplaarj` for the great ideas and codes regarding multiple and stacked bar plots: [Issue 48](https://github.com/piccolomo/plotext/issues/48)
- - `ethack` for  requiring log scale on bar plot: [Issue 37](https://github.com/piccolomo/plotext/issues/37)
- - `ethack` for  solving single bar error: [Pull 43](https://github.com/piccolomo/plotext/issues/43)
- - `gregwa1953` for  inspiring `plt.limit_size()`: [Issue 33](https://github.com/piccolomo/plotext/issues/33)
- - `rbanffy` for suggestion of using 3 x 2 unicode mosaic box characters: [Issue 29](https://github.com/piccolomo/plotext/issues/29).
- - `henryiii` for unittest suggestion: [Issue 32](https://github.com/piccolomo/plotext/issues/32)
- - `whisller` and `willmcgugan` for integration with `Rich` package: [Issue 26](https://github.com/piccolomo/plotext/issues/26)
- - `garid3000` for the idea of a function that returns the plot canvas: [Issue 20](https://github.com/piccolomo/plotext/issues/20)
- - `robintw` and `Sauci` for horizontal bar plot idea and code, respectively: [Issue 16](https://github.com/piccolomo/plotext/issues/16)
- - `Zaneo` for multiple data set idea: [Issue 13](https://github.com/piccolomo/plotext/issues/13)
- - `Zaneo` for double axes idea: [Issue 12](https://github.com/piccolomo/plotext/issues/12)
- - users `geoffrey-eisenbarth` and  `matthewhanson` for requesting datetime support: [Issue 7](https://github.com/piccolomo/plotext/issues/7)
- - `kris927b` for requesting histogram plot: [Issue 6](https://github.com/piccolomo/plotext/issues/6)
+ - `@PhilipVinc` for `error()` plot idea, requested in [Issue 91](https://github.com/piccolomo/plotext/issues/91)
+ - `@Neo-Oli` for requesting braille based markers in [Issue 89](https://github.com/piccolomo/plotext/issues/89)
+ - `@MartinThoma` for inspiring the idea behind `event_plot()` in [Issue 83](https://github.com/piccolomo/plotext/issues/83)
+ - `@soraxas` for functionality that accounts for exponential float notation: [Pull 82](https://github.com/piccolomo/plotext/pull/82)
+ - `@wookayin` for requesting the backend function `from_matplotlib()` in [Issue 75](https://github.com/piccolomo/plotext/issues/75)
+ - `@NLKNguyen` for ideas inspiring the `horizontal_line` and `vertical_line` functions: [Issue 65](https://github.com/piccolomo/plotext/issues/65)
+ - `@asartori86` for the awesome command line tool: [Issue 47](https://github.com/piccolomo/plotext/issues/47)
+ - `@jtplaarj` for the great ideas and codes regarding multiple and stacked bar plots: [Issue 48](https://github.com/piccolomo/plotext/issues/48)
+ - `@ethack` for  requesting log scale on bar plot: [Issue 37](https://github.com/piccolomo/plotext/issues/37)
+ - `@ethack` for  solving single bar error: [Pull 43](https://github.com/piccolomo/plotext/issues/43)
+ - `@gregwa1953` for  inspiring `plt.limit_size()`: [Issue 33](https://github.com/piccolomo/plotext/issues/33)
+ - `@rbanffy` for suggestion of using 3 x 2 unicode mosaic box characters: [Issue 29](https://github.com/piccolomo/plotext/issues/29).
+ - `@henryiii` for unittest suggestion: [Issue 32](https://github.com/piccolomo/plotext/issues/32)
+ - `@whisller` and `@willmcgugan` for integration with `Rich` package: [Issue 26](https://github.com/piccolomo/plotext/issues/26)
+ - `@garid3000` for the idea of a function that returns the plot canvas: [Issue 20](https://github.com/piccolomo/plotext/issues/20)
+ - `@robintw` and `@Sauci` for horizontal bar plot idea and code, respectively: [Issue 16](https://github.com/piccolomo/plotext/issues/16)
+ - `@Zaneo` for multiple data set idea: [Issue 13](https://github.com/piccolomo/plotext/issues/13)
+ - `@Zaneo` for double axes idea: [Issue 12](https://github.com/piccolomo/plotext/issues/12)
+ - users `@geoffrey-eisenbarth` and  `@matthewhanson` for requesting datetime support: [Issue 7](https://github.com/piccolomo/plotext/issues/7)
+ - `@kris927b` for requesting histogram plot: [Issue 6](https://github.com/piccolomo/plotext/issues/6)
 
-[Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Project Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#project-notes)
 
-[Plotext Guide](https://github.com/piccolomo/plotext#guide)
+## Similar Projects
+These count, as well, as source of inspiration:
+- [plotille](https://github.com/tammoippen/plotille)
+- [termplot](https://github.com/justnoise/termplot)
+- [termgraph](https://github.com/sgeisler/termgraph)
+- [terminalplot](https://github.com/kressi/terminalplot)
+- [asciichart](https://github.com/cashlo/asciichart)
+- [uniplot](https://github.com/olavolav/uniplot)
+- [bashplotlib](https://github.com/glamp/bashplotlib)
+- [termplotlib](https://github.com/nschloe/termplotlib)

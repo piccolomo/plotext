@@ -1,396 +1,407 @@
-from plotext._utility.color import colorize as colorizing
+from plotext._utility import colorize as colorizing
 
 __doc__ = "It contains the doc-strings of all the main plotext functions."
 
-_figure = """It contains all internal parameters of the plot figure including its subplots. It is meant to be used only for maintenance and testing and not in normal conditions."""
-figure = lambda: print(_figure)
 
-##############################################
-##########    Subplot Functions    ###########
-##############################################
-
-_subplots = """It creates a matrix of subplots. It requires two integers: the first sets the number of rows and the second the number of columns of the matrix of subplots. If only one integer is provided, the other is set to 1. 
-Note that the dimensions of the plot is rearranged such that the plot widths of each column is the same; likewise the heights of each row is the same."""
+_subplots = """It creates a matrix of subplots with the given number of rows and columns and returns the figure containing the subplots. 
+Note that each subplot - accessible with subplot() - could creates its own matrix of subplots. Eg: subplots(2, 2); subplot(1, 1); subplots(3, 4) or directly subplots(2, 2).subplot(1, 1).subplots(3, 4) will create a 2 by 2 matrix where the first subplot is a 3 by 4 matrix."""
 subplots = lambda: print(_subplots)
 
-_subplot = """It sets the active subplot such that further commands will refer to it. It requires two integers, where the first sets the row (from above) and the second the column (from left) of the chosen subplot in the matrix of subplots. 
-Both values start from 1 and have to be lower or equal to the correspondent subplots matrix dimension set using subplots().
-If only one integer is provided, the other is set to 1."""
+_subplot = """It sets and returns the active subplot from the matrix of subplots, such that further commands will refer to it. It requires the row (from above) and column (from left) of the chosen subplot, starting from 1. 
+Note that most of the commands referring to the active subplot, could be alternatively passed directly. Eg: subplot(1, 3); plotsize(100, 30) becomes subplot(1, 3).plotsize(300, 30)."""
 subplot = lambda: print(_subplot)
 
-##############################################
-###########    Clear Functions    ############
-##############################################
+_main = """It returns the main figure at the uppermost level, and sets the active figure to it. Any further commands will refer to the entire figure and to any of its subplots."""
+main = lambda: print(_main)
 
-_clear_figure = """It clears all internal definitions of the final figure, including its subplots.
-The functions clf() and clear_figure() are equivalent."""
-clear_figure = clf = lambda: print(_clear_figure)
+_active = """The active figure."""
+active = lambda: print(_active)
 
-_colorless = """It remove all colors from the entire figure, including its subplots.
-The functions cls() and colorless() are equivalent."""
-colorless = cls = lambda: print(_colorless)
 
-_clear_plot = """It clears all the internal definitions relative only to the active subplot. 
-The functions clp() and clear_plot() are equivalent."""
-clear_plot = clp = lambda: print(_clear_plot)
 
-_clear_data = """It clears only the data information relative to the active subplot, without clearing all the other plot settings.
-The functions cld() and clear_data() are equivalent."""
-clear_data = cld = lambda: print(_clear_data)
-
-_clear_color = """It clears only the color settings relative to the active subplot, without clearing all other plot settings. The final rendering of this subplot will be colorless.
-The functions clc() and clear_color() are equivalent."""
-clear_color = clc = lambda: print(_clear_color)
-
-_clear_terminal = """It clears the terminal screen and it is generally useful before plotting a continuous stream of data. It is recommended to use it before show().
-If the parameter 'lines' is set to an integer (it is 'None' by default), only the specified lines will be cleared. In this case, it is recommended to use it after show(). Note that, the shell used may print extra lines, which need to be added to 'lines' in order for the clearing to have an effect. 
-The functions clt() and clear_terminal() are equivalent."""
-clear_terminal = clt = lambda: print(_clear_terminal)
-
-##############################################
-###########    Set Functions    ##############
-##############################################
-
-_plot_size = """It sets the plot size of the active subplot (in units of character size). It requires two integers for the desired width and height of the plot. 
-If the plot is part of a matrix of subplots, the final plot dimensions may be different from the one chosen and are changed in order for the plot widths of each column and heights of each row to be the same.
-Note that the functions plotsize() and plot_size() are equivalent."""
+_plot_size = """It sets the plot size - width and height - of the active subplot (in units of character size). 
+If the plot is part of a matrix of subplots, the final widths/heights will be the same for each column/row: by default the maximum is taken, use take_min() to take the minimum instead.
+The functions plotsize() and plot_size() are equivalent."""
 plot_size = lambda: print(_plot_size)
 
-_limit_size = """If is used to limit the figure size to the terminal dimensions. It needs two Booleans, one for each dimension. 
-By default the plot is limited by the terminal size in both directions. 
-Note that limit_size(True) is equivalent to limit_size(True True). 
-The functions 'limitsize' and 'limit_size' are equivalent."""
+_limit_size = """If is used to limit (by default) or not the main figure size to the terminal dimensions. It needs two Booleans, one for each dimension (width and height). 
+The functions limitsize() and limit_size() are equivalent."""
 limit_size = lambda: print(_limit_size)
 
-_span = """When a matrix of subplots is build, this function could be used to specify whatever the dimensions of a particular subplot should span as specified by the parameters 'colspan' and 'rowspan' (by default both 1)."""
-span = lambda: print(_span)
+_take_min = """In a matrix of subplot, the final widths/heights will be the same for each column/row: by default the maximum is taken. If take_min() is called, the minimum is considered instead. Note that this setting could made different for different levels of nested matrices."""
+take_min = lambda: print(_take_min)
+
+
 
 _title = """It set the title of the active subplot."""
 title = lambda: print(_title)
 
-_xlabel = """It sets the label of the x axis, relative to the active subplot. The parameter 'xside' allows to the independently set either the 'lower' (by default) or 'upper' x axis label."""
+_xlabel = """It sets the label of the x axis, relative to the active subplot. 
+The parameter 'xside' allows to the independently address either the 'lower' (by default) or 'upper' x axis (1 or 2 in short)."""
 xlabel = lambda: print(_xlabel)
 
-_ylabel = """It sets the label of the y axis, relative to the active subplot. The parameter 'yside' allows to the independently set either the 'left' (by default) or 'right' y axis label."""
+_ylabel = """It sets the label of the y axis, relative to the active subplot. 
+The parameter 'yside' allows to the independently address either the 'left' (by default) or 'right' x axis (1 or 2 in short)."""
 ylabel = lambda: print(_ylabel)
 
-_xaxis = """It sets whatever or not to show the x axis and it requires a Boolean input. The parameter 'xside' allows to the independently set either the 'lower' (by default) or 'upper' x axis.""" 
-xaxis = lambda: print(_xaxis)
+_xlim = """It sets the minimum and maximum values that could be plotted on the x axis. 
+The parameter 'xside' allows to the independently address either the 'lower' (by default) or 'upper' x axis (1 or 2 in short)."""
+xlim = lambda: print(_xlim)
 
-_yaxis = """It sets whatever or not to show the y axis and it requires a Boolean input. The parameter 'yside' allows to the independently set either the 'left' (by default) or 'right' y axis."""
-yaxis = lambda: print(_yaxis)
+_ylim = """It sets the minimum and maximum values that could be plotted on the y axis. 
+The parameter 'yside' allows to the independently address either the 'left' (by default) or 'right' y axis (1 or 2 in short)."""
+ylim = lambda: print(_ylim)
 
-_frame = """It sets whatever or not to include all subplot axes (which constitute the plot frame) and it requires a Boolean. 
-Note that this function can interfere with xaxis() and yaxis(). """
+_xscale = """It sets the scale of the x axis:  either 'linear' (as by default) or 'log' (for logarithmic plots). 
+The parameter 'xside' allows to the independently address either the 'lower' (by default) or 'upper' x axis (1 or 2 in short)."""
+xscale = lambda: print(_xscale)
+
+_yscale = """It sets the scale of the x axis:  either 'linear' (as by default) or 'log' (for logarithmic plots). 
+The parameter 'yside' allows to the independently address either the 'left' (by default) or 'right' y axis (1 or 2 in short)."""
+yscale = lambda: print(_yscale)
+
+_xticks = """It sets the data ticks on the x axis. If two lists are provided, the second is intended as the list of labels to be printed at the coordinates given by the first list. 
+The parameter 'xside' allows to the independently address either the 'lower' (by default) or 'upper' x axis (1 or 2 in short)."""
+xticks = lambda: print(_xticks)
+
+_yticks = """It sets the data ticks on the y axis. If two lists are provided, the second is intended as the list of labels to be printed at the coordinates given by the first list. 
+The parameter 'yside' allows to the independently address either the 'left' (by default) or 'right' y axis (1 or 2 in short)."""
+yticks = lambda: print(_yticks)
+
+_xfrequency = """It sets the number of numerical ticks to show on the x axis. 
+The parameter 'xside' allows to the independently address either the 'lower' (by default) or 'upper' x axis (1 or 2 in short)."""
+xfrequency = lambda: print(_xfrequency)
+
+_yfrequency = """It sets the number of numerical ticks to show on the y axis. 
+The parameter 'yside' allows to the independently address either the 'left' (by default) or 'right' y axis (1 or 2 in short)."""
+yfrequency = lambda: print(_yfrequency)
+
+_xaxes = """It sets whatever or not to show the x axes and accepts two Boolean inputs, one for each x axis (lower and upper).""" 
+xaxes = lambda: print(_xaxes)
+
+_yaxes = """It sets whatever or not to show the y axes and accepts two Boolean inputs (the second is optional), one for each y axis (left and right).""" 
+yaxes = lambda: print(_yaxes)
+
+_frame = """It sets whatever or not to include all subplot axes (which constitute the plot frame) and it requires a single Boolean. To address any individual axis use the functions xaxes() or yaxes() instead."""
 frame = lambda : print(_frame)
 
-_grid = """It sets whatever or not to show the horizontal and vertical grid lines on the active subplot. It requires two Boolean parameters, one for each direction. 
-Note that grid(True) is equivalent to grid(True, True). """
+_grid = """It sets whatever or not to show the 'horizontal' and 'vertical' grid lines on the active subplot and accepts two Boolean inputs."""
 grid = lambda: print(_grid)
 
-_canvas_color = """It sets the background color of the plot canvas, which is the area where data points are plotted. 
+_canvas_color = """It sets the background color of the plot canvas: the area where data points are plotted. 
 Access the function plt.colors() for the available color codes."""
 canvas_color = lambda: print(_canvas_color)
 
-_ticks_color = """It sets the color relative to any writing in the plot (title, legend, axes labels, axes and numerical ticks). 
-Access the function plt.colors() for the available color codes."""
-ticks_color = lambda: print(_ticks_color)
-
-_axes_color = """It sets the color of the axes background, including numerical ticks, title and axes labels (but not the plot legend). 
+_axes_color = """It sets the background color of the axes area, including its numerical ticks, title and axes labels (not the plot legend). 
 Access the function plt.colors() for the available color codes."""
 axes_color = lambda: print(_axes_color)
 
-_xlim = """It sets the minimum and maximum values that could be plotted on the x axis. It requires a list of two numbers, where the first sets the left (minimum) limit and the second the right (maximum) limit.
-The parameter 'xside' allows to the independently set either the 'lower' (by default) or 'upper' x axis limits."""
-xlim = lambda: print(_xlim)
+_ticks_color = """It sets the color relative to any writing on the plot: the axes and its numerical ticks, title and axes labels, including the legend labels. 
+Access the function plt.colors() for the available color codes."""
+ticks_color = lambda: print(_ticks_color)
 
-_ylim = """It sets the minimum and maximum values that could be plotted on the y axis. It requires a list of two numbers, where the first sets the lower (minimum) limit and the second the upper (maximum) limit.
-The parameter 'yside' allows to the independently set either the 'left' (by default) or 'right' y axis limits."""
-ylim = lambda: print(_ylim)
+_ticks_style = """It sets the style relative to any writing on the plot: the axes and its numerical ticks, title and axes labels, including the legend labels. 
+Access the function plt.styles() for the available style codes."""
+ticks_style = lambda: print(_ticks_style)
 
-_xscale = """It sets the scale with which to plot data relative to the x axis: it could be either 'linear' (as by default) or 'log' (for logarithmic plots).
-The parameter 'xside' allows to the independently set either the 'lower' (by default) or 'upper' x axis scale."""
-xscale = lambda: print(_xscale)
+_theme = """It sets the color theme for the active plot.
+Access the function plt.themes() for the available theme codes."""
+theme = lambda: print(_theme)
 
-_yscale = """It sets the scale with which to plot data relative to the y axis: it could be either 'linear' (as by default) or 'log' (for logarithmic plots).
-The parameter 'yside' allows to the independently set either the 'left' (by default) or 'right' y axis scale."""
-yscale = lambda: print(_yscale)
 
-_xfrequency = """It sets the number of numerical ticks to show on the x axis and it requires one positive integer. 
-The parameter 'xside' allows to the independently set either the 'lower' (by default) or 'upper' x axis ticks frequency.  
-Note that the function xticks() and xfrequency() can interfere."""
-xfrequency = lambda: print(_xfrequency)
 
-_yfrequency = """It sets the number of numerical ticks to show on the y axis and it requires one positive integer. 
-The parameter 'yside' allows to the independently set either the 'left' (by default) or 'right' y axis ticks frequency.
-Note that the function yticks() and yfrequency() can interfere."""
-yfrequency = lambda: print(_yfrequency)
+_clear_figure = """It clears all internal definitions of the addressed figure, including its subplots.
+The functions clf() and clear_figure() are equivalent."""
+clear_figure = clf = lambda: print(_clear_figure)
 
-_xticks = """It sets the data ticks on the x axis. The ticks should be provided as a list of values. If two lists are provided, the second is intended as the list of labels to be printed at the coordinates given by the first list. If empty list are provided, no ticks are printed. If 'None' is provided (as by default), the ticks are calculated automatically.
-The parameter 'xside' allows to the independently set either the 'lower' (by default) or 'upper' x axis ticks and labels.
-Note that the function xticks() and xfrequency() can interfere."""
-xticks = lambda: print(_xticks)
+_clear_data = """It clears only the data of the addressed figure, including its subplots, without clearing all other plot settings.
+The functions cld() and clear_data() are equivalent."""
+clear_data = cld = lambda: print(_clear_data)
 
-_yticks = """It sets the data ticks on the y axis. The ticks should be provided as a list of values. If two lists are provided, the second is intended as the list of labels to be printed at the coordinates given by the first list. If empty list are provided, no ticks are printed. If 'None' is provided (as by default), the ticks are calculated automatically.
-The parameter 'yside' allows to the independently set either the 'left' (by default) or 'right' y axis ticks and labels.
-Note that the function yticks() and yfrequency() can interfere."""
-yticks = lambda: print(_yticks)
+_clear_color = """It clears only the color settings of the addressed figure, including its subplots, without clearing all other plot settings. The final rendering of this subplot will be colorless.
+The functions clc() and clear_color() are equivalent."""
+clear_color = clc = lambda: print(_clear_color)
 
-##############################################
-#########    Plotting Functions    ###########
-##############################################
+_clear_terminal = """It clears the terminal screen and it is generally useful before plotting a continuous stream of data. It is recommended to use it before show().
+If the parameter 'lines' is set to an integer, only the specified terminal lines will be cleared. In this case, it is recommended to use it after show(). 
+Note that, the shell used may print extra lines after the plot, which may need to be added to 'lines' in order for the clearing to have an effect. 
+The functions clt() and clear_terminal() are equivalent."""
+clear_terminal = clt = lambda: print(_clear_terminal)
 
-_scatter = """It creates a scatter plot of data coordinates given by the x and y lists. Optionally, a single y list could be provided. Here is a basic example:
 
-  \x1b[96mimport plotext as plt
-  plt.scatter(x, y)
-  plt.show()\x1b[0m
 
-Multiple data sets could also be plotted using consecutive scatter functions:
+_scatter = """It creates a scatter plot of data coordinates given by the x and y lists. Optionally, only y could be provided. Either x or y could be a list of string based dates. Multiple data sets could also be plotted using consecutive scatter() functions. Here is a basic example:
 
-  \x1b[96mplt.scatter(x1, y1)
-  plt.scatter(y2)
-  plt.show()\x1b[0m
+ \x1b[96mplt.scatter(x, y1)
+ plt.scatter(y2)
+ plt.show()\x1b[0m
 
-Here are all the parameters of the scatter function:
- 
-\x1b[96mmarker\x1b[0m sets the marker used to identify each data point for the current data set. A single character could be provided or the available marker codes, which could be accessed using the function markers(). If 'None' is provided (as by default), the marker is set automatically. A list of strings could also be provided, to give to each data point its own marker. 
+Here are all of its parameters:
 
-\x1b[96mcolor\x1b[0m sets the color of the data points. Access the function plt.colors() for the available full-ground color codes. If 'None' is provided (as by default) the color is set automatically. A list of colors could also be provided, to give to each data point its own color.
+\x1b[96mmarker\x1b[0m sets the marker used to identify each data point on the canvas. A single character could be provided or the available marker codes. A list of markers - one for each data point - could also be provided. Access the function plt.markers() for the available marker codes.
 
-\x1b[96mlabel\x1b[0m sets the label of the current data set, which will appear in the legend menu at the top left of the plot. If 'None' is provided (as by default), the label will not be printed in the legend. 
+\x1b[96mcolor\x1b[0m sets the color of the data points. A list of colors - one for each data point - could also be provided. Access the function plt.colors() for the available color codes.
 
-\x1b[96mfillx\x1b[0m sets whatever to fill the canvas of markers from each data point to the xaxis. The default value is False.
+\x1b[96mstyle\x1b[0m sets the style of the data points. A list of styles - one for each data point - could also be provided. Access the function plt.styles() for the available style codes.
 
-\x1b[96mfilly\x1b[0m sets whatever to fill the canvas of markers from each data point to the yaxis. The default value is False.
+\x1b[96mlabel\x1b[0m sets the label of the current data set, which will appear in the legend menu at the top left corner of the plot canvas.
 
-\x1b[96mxside\x1b[0m sets whatever to plot the data relative to the 'lower' or 'upper' x axis.
+\x1b[96mfillx\x1b[0m sets whatever to fill the canvas of markers from each data point, towards the x axis, till level y = 0. The default value is False.
 
-\x1b[96myside\x1b[0m sets whatever to plot the data relative to the 'left' or 'right' y axis.""" 
+\x1b[96mfilly\x1b[0m sets whatever to fill the canvas of markers from each data point, towards the y axis, till level x = 0. The default value is False.
+
+\x1b[96mxside\x1b[0m sets whatever to plot the data on the 'lower' or 'upper' x axis (1 or 2 in short).
+
+\x1b[96myside\x1b[0m sets whatever to plot the data on the 'left' or 'right' x axis (1 or 2 in short).""" 
 scatter = lambda: print(_scatter)
 
-_plot = """It is identical to the scatter function, except that lines between two consecutive data points are plotted.
-Access the scatter function doc-string for further documentation on its internal parameters."""
+_plot = """It creates a plot of lines between consecutive data points. It accept the same parameters as scatter()."""
 plot = lambda: print(_plot)
 
-_build = """It created and returns the final figure canvas in string form, without actually printing it."""
-build = lambda: print(_build)
+_candlestick = """It creates a candlestick plot. As the scatter() function, it accepts the 'label' parameter and as the bar() function the 'orientation' parameter. Here are its extra parameters.
 
-_show = """It builds and prints the final figure on terminal."""
-show = lambda: print(_show)
+\x1b[96mdates\x1b[0m is the list of strings, each representing a date/time object. Use the function date_form() to set accepted date/time form.
 
-##############################################
-########     DateTime Functions    ###########
-##############################################
+\x1b[96mdata\x1b[0m is a dictionary with the following mandatory keys: 'Open', 'Close', 'High', 'Low'. Each value should be a list of prices.
 
-_datetime = """It contains tools to easily manipulate datetime objects."""
-datetime = lambda: print(_datetime)
+\x1b[96mcolors\x1b[0m is list of two colors, where the first is used for positive and the second for negative candlesticks. Access the function plt.colors() for the available color codes."""
+candlestick = lambda: print(_candlestick)
 
-_datetime_functions = ["today", "set_time0", "set_datetime_form", "clear", "string_to_datetime", "datetime_to_timestamp", "string_to_timestamp", "datetime_to_string"]
+_bar = """It creates a bar plot using the x and y values provided. Optionally, only y could be provided. Either x or y could be a list of string based dates or labels. As the scatter() function, it accepts the parameters 'marker', 'color', 'xside', 'yside' and 'label'. Here are its extra parameters:
 
-_today = """It stores today's date in string, tuple, or datetime form."""
-
-_set_time0 = """It sets the origin of time to the 'year', 'month', 'day', 'hour', 'minute' and 'second' provided as integer. The default value is 01/01/1900. 
-This function is useful when using log scale with date plots in order to avoid "hitting" the 0 timestamp.
-Note that 'hour', 'minute' and 'second' are set to 0, if not provided."""
-set_time0 = lambda: print(_set_time0)
-
-_set_datetime_form = """It sets how to interpret string based datetime objects and accepts two parameters: 'date_form' for date forms (by default '%d/%m/%Y') and 'time_form' for time forms (by default '%H:%M:%S')."""
-set_datetime_form = lambda: print(_set_datetime_form)
-
-_clear = """It restores the internal definitions of the datetime class."""
-clear = lambda: print(_clear)
-
-_string_to_datetime = """It turns a string based datetime object into a datetime object of the datetime package according to the datetime forms set using the function set_datetime_form()."""
-string_to_datetime = lambda: print(_string_to_datetime)
-
-_datetime_to_timestamp = """It turns a datetime object of the datetime package to a timestamp. The values is relative to the origin of time, which could be fixed using the function set_time0()."""
-datetime_to_timestamp = lambda: print(_datetime_to_timestamp)
-
-_string_to_timestamp = """It turns a string based datetime object into a timestamp. The conversion is done according to the datetime form which can be changed using the function set_datetime_form(). 
-The final value is relative to the origin of time, which could be fixed using the function set_time0(). """
-string_to_timestamp = lambda: print(_string_to_timestamp)
-
-_datetime_to_string = """It turns a datetime object of the datetime package to a string according to the datetime forms set using the function set_datetime_form()."""
-datetime_to_string = lambda: print(_datetime_to_string)
-
-_scatter_date = """It creates a scatter plot of coordinates given by the x and y lists, where x is a list of strings, each representing a date and/or time. 
-It has the same internal parameters as the scatter() function."""
-scatter_date = lambda: print(_scatter_date)
-
-_plot_date = """It creates a plot (with lines connecting each pair of data points) of coordinates given by the x and y lists, where x is a list of strings, each representing a date and/or time. 
-It has the same internal parameters as the plot() function."""
-plot_date = lambda: print(_plot_date)
-
-##############################################
-###########     Bar Functions    #############
-##############################################
-
-_bar = """It creates a bar plot using the x and y values provided. The x values could be a list of numbers or of strings, or optionally not provided. 
-It accepts the same parameters as the scatter() and plot() functions (except for 'fillx' and 'filly', which are substituted by 'fill'). 
-
-Here are its extra parameters:
-
-\x1b[96mfill\x1b[0m if set to 'True' (as by default), the plot bars are filled with the given colored markers. If 'False' only the bars borders are plotted.
+\x1b[96mfill\x1b[0m sets whatever to fill each bar with the the given colored markers, or just show the bars borders.
 
 \x1b[96mwidth\x1b[0m is the relative width of the bars and could be a float ranging from 0 to 1. The default value is 4 / 5.
 
 \x1b[96morientation\x1b[0m sets the orientation of the bar plot and could be either 'vertical' (in short 'v', as by default) or 'horizontal' (in short 'h').
 
-\x1b[96mminimum\x1b[0m sets the minimum value of all the bars. By default a non-zero convinient value is calculated. This value could be easily tweaked, particularly where log scale is chosen along the bars height."""
+\x1b[96mminimum\x1b[0m sets the minimum value of all the bars. By default a non-zero convinient value is calculated. This value could be easily tweaked, particularly where 'log' scale is chosen along the bars height."""
 bar = lambda: print(_bar)
 
-_multiple_bar = """It allows to plot multiple bars with the same labels or coordinates. It requires the bars x coordinates or labels and the matrix of bar heights. Each row of the matrix will add a bar plot at the given x coordinates, with a slight offset. 
-It accepts the same parameters as the bar() function."""
+_multiple_bar = """It creates a bar plot where multiple bars are grouped together (along the bar width axis) and have the same labels. It requires the bars x coordinates or labels and the matrix Y, where each of its element is a list of heights. Optionally, only Y could be provided. Either x or Y could be a list of string based dates or labels.
+As the scatter() function, it accepts the parameters 'marker', 'color', 'xside', 'yside' and 'label' and as the bar() function, all of its extra parameters."""
 multiple_bar = lambda: print(_multiple_bar)
- 
-_stacked_bar = """It allows to plot multiple bars with the same labels or coordinates, stacked on top of each other along the bar height. It requires the bars x coordinates or labels and the matrix of bar heights. Each row of the matrix will add a bar plot at the given x coordinates on top of the previous. 
-It accepts the same parameters as the bar() function."""
+
+_stacked_bar = """It creates a bar plot where multiple bars are stacked on top of each other (along the bar height axis). It requires the bars x coordinates or labels and the matrix Y, where each of its element is a list of heights. Optionally, only Y could be provided. Either x or Y could be a list of string based dates or labels.
+As the scatter() function, it accepts the parameters 'marker', 'color', 'xside', 'yside' and 'label' and as the bar() function, all of its extra parameters."""
 stacked_bar = lambda: print(_stacked_bar)
 
-_hist = """It builds the histogram plot relative to the data provided. It accepts the same parameters as the bar plot (except for 'minimum' which is not available here) with the following extra parameters:
+_hist = """It builds the histogram plot relative to the 'data' provided. As the scatter() function, it accepts the parameters 'marker', 'color', 'xside', 'yside' and 'label' and as the bar() function, all of its extra parameters. Here are hist() extra parameters:
 
-\x1b[96mbins\x1b[0m used to calculate the histogram transform of the data (10 by default).
-\x1b[96mnorm\x1b[0m if True, the bin heights are normalised so that the plot would simulate a probability distribution."""
+\x1b[96mbins\x1b[0m sets the number of channels (10 by default) between the minimum and maximum value of the data set, used to count the data frequency.
+
+\x1b[96mnorm\x1b[0m normalises each frequency count, such that the sum of all counts is 1 (instead of the length of the data set)."""
 hist = lambda: print(_hist)
 
-##############################################
-######     Matrix/Image Functions    #########
-##############################################
+_matrix_plot = """It creates a two dimensional plot of a matrix where the intensity of each element is translated in gray-scale level (whiter for higher values). If a matrix of rgb colors is provided, each pixel (eg: (13, 45, 176)) will have its actual rgb color instead.
+As the scatter() function, it accepts the parameters 'marker' and 'style', with the following extra parameter:
 
-_matrix_plot = """It creates a two dimensional plot of a matrix where the intensity of each element is translated in gray-scale levels (whiter for higher values). If a matrix of rgb colors (eg: (13, 45, 176)) is provided, each pixel will have its actual color instead.
-As for the scatter() function, it accepts the parameters 'marker', 'xside', 'yside', but no others. 
-Note that using higher resolution markers ('hd' and 'fhd') will not result in an improved spatial resolution as the color resolution is limited by a full character in all cases."""
+\x1b[96mfast\x1b[0m if True the final plot is elaborated faster, but its final dimensions are locked to the matrix size, and won't adapt to the terminal or subplot size.
+
+Note that using higher resolution markers ('hd' and 'fhd') will not result in an improved spatial resolution as the color resolution is limited by a full character in all cases.
+A list of markers could be provided and will be repeated on the plot: the style 'inverted' is recommended in this case."""
 matrix_plot = lambda: print(_matrix_plot)
 
-_image_plot = """It plots the image located at the given required file path and returns the size of the final plot. 
-
-Here is the list of its optional parameters:
-
-\x1b[96mmarker\x1b[0m sets the marker used to identify each pixel of the plot. The default value is 'sd'.
+_image_plot = """It plots the image located at the given required file 'path'. As the scatter() function, it accepts the parameters 'marker' and 'style', and as the matrix_plot() function the 'fast' parameter (for faster plotting). Here is its extra parameter:
 
 \x1b[96mgrayscale\x1b[0m if True allows to plot pictures in gray-scale.
 
-\x1b[96msize\x1b[0m fixes the size of the picture and it is highly recommended for big pictures, as the reduction to a smaller size, drastically diminishes the plotting time. If this parameter is used, one still need to use plotsize(size) right after image_plot()
-
-\x1b[96mkeep_ratio\x1b[0m changes the plot size to keep the original image ratio. In this case, it is recommended to use the size image_plot() returns to make sure the aspect ratio is preserved.
-
-\x1b[96mresample\x1b[0m when the image size is adapted to the plot canvas a smoothing algorithm could be optionally applied (as by default)."""
+It is recommended to use the function plotsize() before, especially for larger images, to reduce the image size and so the computational load. If 'fast' is True, only the raw image is displayed (with no possible title or frame). 
+"""
 image_plot = lambda: print(_image_plot)
 
-##############################################
-#############     Line Plot    ###############
-##############################################
 
-_vertical_line = """It plots a vertical line at the given 'coordinate' and specified 'color'. Use the parameter 'xside' to specify which x axis, 'lower' (as by default) or 'upper', the parameter 'coordinate' refers to. It also works with string based datetime coordinates."""
+
+
+_event_plot = """It plots parallel lines at the given positions given by 'data', which could be a list of number or date/time strings. As the bar plot it accepts the 'orientation' parameter and as the scatter() function the 'marker' and 'color' parameters. 
+
+The parameter 'side' is used to identify on which axis to plot the events coordinates. It could be 'lower' or 'upper' x axis (1 or 2 in short) for 'vertical' orientation, and 'left' and 'right' y axis (1 or 2 in short) for 'horizontal' orientation."""
+event_plot = lambda: print(_event_plot)
+
+_vertical_line = """It plots a vertical line at the given 'coordinate' and specified 'color'. The coordinate could be a number or a date/time string or a bar label.
+The parameter 'xside' allows to the independently address either the 'lower' (by default) or 'upper' x axis (1 or 2 in short)"""
 vertical_line = lambda: print(_vertical_line)
 
-_horizontal_line = """It plots a horizontal line at the given 'coordinate' and specified 'color'. Use the parameter 'yside' to specify which y axis, 'left' (as by default) or 'right', the parameter 'coordinate' refers to. It also works with string based datetime coordinates."""
+_horizontal_line = """It plots a horizontal line at the given 'coordinate' and specified 'color'. The coordinate could be a number or a date/time string or a bar label.
+The parameter 'yside' allows to the independently address either the 'left' (by default) or 'right' y axis (1 or 2 in short)."""
 horizontal_line = lambda: print(_horizontal_line)
 
-##############################################
-##########     File Functions    #############
-##############################################
+_text = """It adds a 'text' to the plot at the given 'x' and 'y' coordinates. The coordinates could be a number, a date/time string or a bar label. As the scatter() function it accepts the parameters 'color', 'style', 'xside', 'yside', with the following extra parameter:
 
-_file = """It contains tools to easily access and manipulate files and file paths."""
-file = lambda: print(_file)
+\x1b[96malignment\x1b[0m to set the text horizontal alignment at the given coordinates, as either 'left', 'center', 'right'."""
+text = lambda: print(_text)
 
-_file_functions = ['parent_folder', 'script_folder', 'join_paths', 'save_text', 'read_data', 'write_data']
 
-_parent_folder = """It returns the parent folder of the given path. The 'level' parameter is used to specify how many levels above the provided path the parent folder should be (1 by default)."""
-parent_folder = lambda: print(_parent_folder)
 
-_script_folder = """It returns the folder containing the current script."""
-script_folder = lambda: print(_script_folder)
+_show = """It builds and prints the final figure on terminal."""
+show = lambda: print(_show)
 
-_join_paths = """It accepts as many strings as necessary and returns a properly formatted path. Eg: join_paths("/", "home", "file.txt") = "/home/file.txt".
-If the first parameter is "~", it will be interpreted as the user home folder."""
-join_paths = lambda: print(_join_paths)
+_build = """It created and returns the final figure canvas in string form, without actually printing it."""
+build = lambda: print(_build)
 
-_save_text = """It saves text to the path selected. The first parameter is 'path' and the second the 'text' to be saved."""
-save_text = lambda: print(_save_text)
+_sleep = """It adds a sleeping time to the computation and it is generally useful when continuously plotting a stream of data, in order to reduce a possible screen flickering effect. Manually tweak this value to reduce the flickering."""
+sleep = lambda: print(_sleep)
 
-_read_data = """It reads and formats data from the 'path' selected. 
+_time = """It returns the computational time of the latest show() or build() function. Note that in the case of matrix_plot() or image_plot() there is a non-negligible computational time before."""
+time = lambda: print(_time)
 
-Here are its parameters:
-
-\x1b[96mdelimiter\x1b[0m the delimiter between each data column (by default " ").
-
-\x1b[96mcolumns\x1b[0m the list of columns to be returned (starting from 0). If 'None' (as by default) all columns will be returned.
-
-\x1b[96mheader\x1b[0m if 'True' (as by default) the columns header (i.e. their first element) will be included. Set it to 'False' to exclude those values."""
-read_data = lambda: print(_read_data)
-
-_write_data = """It writes a matrix of data to the 'path' selected. 
-
-Here are its parameters:
-
-\x1b[96mdelimiter\x1b[0m the delimiter between each data column (by default " ").
-
-\x1b[96mcolumns\x1b[0m the list of columns to be saved (starting from 0). If 'None' (as by default) all columns will be returned."""
-write_data = lambda: print(_write_data)
-
-##############################################
-##########     Other Functions    ############
-##############################################
-
-_save_fig = """It saves the plot canvas to a file. To be used after the show() function. If the file extension is '.html' the colors will be preserved. For all other file text extensions (like '.txt') no colors will be preserved.
+_save_fig = """It saves the plot canvas to the file 'path'. If the file extension is '.html' the colors will be preserved. For all other file text extensions (like '.txt') all ansi color codes will be removed, unless the parameter 'keep_colors' is set to True. 
+To be used after the show() or build() function.
 The functions save_fig() and savefig() are equivalent."""
 save_fig = lambda: print(_save_fig)
 
-_terminal_size = """It returns the terminal size as [width, height]."""
-terminal_size = lambda: print(_terminal_size)
 
-_markers = """It prints the list of available marker codes."""
-markers = lambda: print(_markers)
 
-_colors = """It prints the list of available color codes."""
-colors = lambda: print(_colors)
 
-_sleep = """It adds a sleeping time to the computation and it is generally useful when continuously plotting a stream of data, in order to decrease a possible screen flickering effect. This function returns the actual time slept.
-Manually tweak this value to reduce the possible flickering."""
-sleep = lambda: print(_sleep)
+_date_form = """It sets how some functions interpret string based datetime objects; it accepts these two parameters: 
 
-_time = """It returns the computational time of the last show() or build() function. Note that in the case of matrix_plot() or image_plot() there is a not negligible computational time outside and before the show() function. """
-time = lambda: print(_time)
+\x1b[96minput_form\x1b[0m to control how some functions - like string_to_datetime() - take strings as input and interpret them as date/time object.
 
-_sin = """It creates a sinusoidal signal useful, for example, to test the plotext package. Here are its parameters:
+\x1b[96moutput_form\x1b[0m to control how some functions - like datetime_to_string() - translates date/time objects into output strings. If not provided, it is internally set to 'input_form'. 
 
-\x1b[96mamplitude\x1b[0m: the maximum value of the sinusoidal signal (1 by default).
+All the internal functions which deal with date/time objects have an internal 'input_form' or 'output_form' parameter (by default set to the previous values) for further flexibility. 
+Date/time forms are the standard ones with the '%' removed for simplicity. Common forms are 'd/m/Y' (by default), 'H:M:S', 'd/m/Y H:M:S'."""
+date_form = lambda: print(_date_form)
 
-\x1b[96mperiods\x1b[0m: the number of signal repetitions (2 by default).
+_set_time0 = """It sets the origin of time to the date/time string provided. The default value is 01/01/1900. This function is useful when using 'log' scale with date plots, in order to avoid "hitting" the 0 timestamp.
+The date/time form could be set either with its 'input_form' parameter or with the date_form() function. Note that, for simplicity, '%' is not allowed in the forms."""
+set_time0 = lambda: print(_set_time0)
 
-\x1b[96mlength\x1b[0m: the number of data points (1000 by default).
+_today_datetime = """It returns today's date/time as a datetime object."""
+today_datetime = lambda: print(_today_datetime)
 
-\x1b[96mphase\x1b[0m: if 0 (as by default), the sine function is returned; if 0.5, the cosine; if -1, the function -sine; if -0.5, -cosine. Any float number is allowed.  
+_today_string = """It returns today's date/time in string form. The date/time form could be set either with its 'output_form' parameter or with the date_form() function. Note that, for simplicity, '%' is not allowed in the forms."""
+today_string = lambda: print(_today_string)
 
-\x1b[96mdecay\x1b[0m: adds a decay rate (normalized to the number of data points) which will cause the signal to exponentially decay for positive values or increase for negative ones. It is 0 by default. """
-sin = lambda: print(_sin)
+_datetime_to_string = """It turns a datetime object to a string. The date/time form could be set either with its 'output_form' parameter or with the date_form() function. Note that, for simplicity, '%' is not allowed in the forms."""
+datetime_to_string = lambda: print(_datetime_to_string)
 
-_colorize = """It "paints" a string with the fullground and/or background colors provided to either or both the parameters 'fullground' and 'background'. 
-If the parameter 'show' is set to 'True' the colored string is printed on terminal, otherwise it is returned (as by default).
-Access the function plt.colors() for the available color codes."""
+_datetimes_to_string = """It turns a list of datetime objects to a list of strings. The date/time form could be set either with its 'output_form' parameter or with the date_form() function. Note that, for simplicity, '%' is not allowed in the forms."""
+datetimes_to_string = lambda: print(_datetimes_to_string)
+
+_string_to_datetime = """It turns a string based date/time object into a datetime object. The date/time form could be set either with its 'input_form' parameter or with the date_form() function. Note that, for simplicity, '%' is not allowed in the forms."""
+string_to_datetime = lambda: print(_string_to_datetime)
+
+
+
+_colorize = """It adds color codes to a 'string'. Here are its parameters:
+
+\x1b[96mfullground\x1b[0m to sets the fullground string color.
+
+\x1b[96mbackground\x1b[0m to sets the background string color.
+
+\x1b[96mstyle\x1b[0m to sets the string style or styles. 
+
+\x1b[96mshow\x1b[0m if True the final string is printed on terminal, otherwise it is returned (as by default).
+
+Access the function plt.colors() and plt.styles() for the available color and style codes."""
 colorize = lambda: print(_colorize)
 
 _uncolorize = """It removes any coloring from a string."""
 uncolorize = lambda: print(_uncolorize)
 
-_version = """It returns the version of the current installed plotext package."""
+_terminal_size = """It returns the terminal size as [width, height]."""
+terminal_size = lambda: print(_terminal_size)
+
+_terminal_width = """It returns the terminal width."""
+terminal_width = lambda: print(_terminal_width)
+
+_terminal_height = """It returns the terminal height."""
+terminal_height = lambda: print(_terminal_height)
+
+
+
+_version = """It returns the version of the currently installed plotext package."""
 version = lambda: print(_version)
+
+
+_sin = """It creates a sinusoidal signal useful, for example, to test the plotext package. Here are its parameters:
+
+\x1b[96mperiods\x1b[0m: the number of periodic repetitions (2 by default).
+
+\x1b[96mamplitude\x1b[0m: the maximum value of the sinusoidal signal (1 by default).
+
+\x1b[96mlength\x1b[0m: the number of data points (200 by default).
+
+\x1b[96mphase\x1b[0m: if 0 (as by default), the sine function is returned; if 0.5, the cosine; if -1, the -sine; if -0.5, -cosine. Any float number is allowed.
+
+\x1b[96mdecay\x1b[0m: adds a decay rate (normalized to the number of data points) which will cause the signal to exponentially decay for positive values or increase for negative ones. It is 0 by default. """
+sin = lambda: print(_sin)
+
+_transpose = """It transposes a matrix."""
+transpose = lambda: print(_transpose)
+
+
+
+
+_script_folder = """It returns the folder containing the current script."""
+script_folder = lambda: print(_script_folder)
+
+_parent_folder = """It returns the parent folder of the given 'path'. The 'level' parameter is used to specify how many levels above to return (1 by default)."""
+parent_folder = lambda: print(_parent_folder)
+
+_join_paths = """It accepts as many strings as necessary and returns a properly formatted path. Eg: join_paths("/", "home", "file.txt") = "/home/file.txt".
+The symbol '~', is interpreted as the user home folder. If no folder is specified, the home folder is considered."""
+join_paths = lambda: print(_join_paths)
+
+_save_text = """It saves some 'text' to the 'path' selected."""
+save_text = lambda: print(_save_text)
+
+_read_data = """It reads and properly interprets some data from the 'path' selected. 
+
+Here are its parameters:
+
+\x1b[96mdelimiter\x1b[0m the delimiter between each data column (by default a space).
+
+\x1b[96mcolumns\x1b[0m the list of columns to be returned (starting from 1): by default, all.
+
+\x1b[96mheader\x1b[0m if True (as by default) the columns headers (i.e. the file first line) will be included. Set it to False to exclude those values."""
+read_data = lambda: print(_read_data)
+
+_write_data = """It writes a matrix of 'data' to the 'path' selected. As the function read_data() it accepts the 'delimiter' and 'columns' parameters. 
+If needed use the transpose() function."""
+write_data = lambda: print(_write_data)
+
+
+_download = """It downloads an image/gif/video or other from the given 'url' to the 'path' selected."""
+download = lambda: print(_download)
+
+_delete_file = """It deletes the file 'path', if it is a file."""
+delete_file = lambda: print(_delete_file)
+
+
+_play_gif = """It plays a gif image on screen. The images will adapt to the screen size unless plot_size() is used before."""
+play_gif = lambda: print(_play_gif)
+
+_play_video = """It plays a video, with audio, from the 'path' selected. The frames will adapt to the screen size unless plot_size() is used before. 
+Set the parameter 'from_youtube' to True (False by default) to make sure that the color rendering is correct for videos downloaded from youtube.
+Note: this feature may require further development."""
+play_video = lambda: print(_play_video)
+
+_play_youtube = """It plays a youtube video, with audio, from the given 'url'. 
+Note: this feature may require further development."""
+play_youtube = lambda: print(_play_youtube)
+
+_get_youtube = """It downloads a youtube video from the given 'url' to the selected 'path'."""
+get_youtube = lambda: print(_get_youtube)
+
+
+
+_from_matplotlib = """It takes a matplotlib figure and turns it into a plotext figure. 
+Note: this feature may require further development."""
+from_matplotlib = lambda: print(_from_matplotlib)
 
 _all_docstrings = []
 for _key, _value in list(locals().items()):
-    if type(_value) == str and _key[:2] != "__":
-        _key = _key[1:]
-        _key = "file." + _key if _key in _file_functions else _key
-        _key = "datetime." + _key if _key in _datetime_functions else _key
-        _all_docstrings.append([_key, _value])
-        
+   if type(_value) == str and _key[:2] != "__":
+       _key = _key[1:]
+       _all_docstrings.append([_key, _value])
+       
 def all():
-    print('\033c', end="")
-    print(colorizing("ALL PLOTEXT DOCSTRINGS\n", "bright-cyan bold"))
-    for el in _all_docstrings:
-        print(colorizing(el[0], "bright-yellow bold"))
-        print(el[1])
-        if el != _all_docstrings[-1]:
-            print("\n")
+   print('\033c', end="")
+   print(colorizing("All Plotext Docstrings\n", "cyan+", "bold"))
+   for el in _all_docstrings:
+       print(colorizing(el[0], "orange+", "bold"))
+       print(el[1])
+       if el != _all_docstrings[-1]:
+           print("\n")

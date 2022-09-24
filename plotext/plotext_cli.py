@@ -1,246 +1,259 @@
 #!/usr/bin/env python
 
 import plotext as plt
-
-import sys
-import argparse
-from collections import defaultdict
+import argparse, sys
+cl = plt.colorize
 
 
-def split_columns(x):
-    """Helper function to parse pair of indexes of columns
+def main(argv = None):
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    plot(args)
 
-
-    This function is called by ArgumentParser
-    """
-    try:
-        a, b = map(int, x.split(","))
-        # columns from command line are numbered starting from 1
-        # but internally we start counting from 0
-        return a - 1, b - 1
-    except ValueError as ex:
-        message = """ 
-        Cannot understand the pair of columns you want to print.
-        Columns are identified by numbers starting from 1. Each pair
-        of columns is identified by two numbers separated by a comma
-        without a space 1,2 1,5 6,4\n\n\n"""
-        print(message, ex)
-        raise ex
-
-
+    
 def build_parser():
-    """Define command line args
-    """
-    examples = """
-    examples:
+    examples = """Access each function documentation for further guidance. eg: plotext scatter -h"""
 
-
-    # plot data from stdin
-    $ cat data.txt | plotext
-
-    # plot data from a file
-    $ plotext -f data.txt
-
-    # bar plot of second-first column
-    $ cat data.txt | plotext --bar --columns 2,1
-
-    # linespoints of first-second and first-third column
-    $ plotext -f data.txt --linespoints --columns 1,2 1,3
-
-    """
     parser = argparse.ArgumentParser(
-        prog="plotext",
-        description="plots directly on terminal",
-        epilog=examples,
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-    )
+        prog            = "plotext",
+        description     = "plotting directly on terminal",
+        epilog          = examples,
+        formatter_class = argparse.RawDescriptionHelpFormatter)
 
-    parser.add_argument(
-        "-f",
-        "--file",
-        help="Read data from file. If this flag is not used, plotext reads from stdin",
-    )
+    parser.set_defaults(type = "scatter")
 
-    # supported types of plots. only one type at time is allowed
-    # e.g., we cannot pass flags -s -b together
-    # this is caught by ArgumentParser because we add the flags
-    # to a set of mutually exclusive group
-    plots = parser.add_mutually_exclusive_group()
-    plots.add_argument(
-        "-s",
-        "--scatter",
-        dest="plot",
-        help="Scatter plot. This is the default",
-        action="store_const",
-        const="scatter",
-    )
-    plots.add_argument(
-        "-l",
-        "--line",
-        dest="plot",
-        help="Line plot.",
-        action="store_const",
-        const="line",
-    )
-    plots.add_argument(
-        "-lp",
-        "--linespoints",
-        dest="plot",
-        help="Linespoints plot.",
-        action="store_const",
-        const="linespoints",
-    )
-    plots.add_argument(
-        "-b", "--bar", dest="plot", help="Bar plot.", action="store_const", const="bar"
-    )
+    file_parser = argparse.ArgumentParser(add_help = False)
 
-    parser.add_argument(
-        "-c",
-        "--columns",
-        help="""Pairs of columns to plot: 1,2 1,3 4,2. By default, the first two columns are used""",
-        nargs="*",
-        type=split_columns,
-        default=[(0, 1)],
-    )
+    file_parser.add_argument("-f", "--file",
+                             action = 'store',
+                             dest   = 'file',
+                             type   = str,
+                             help   = "file path of the data table, if not used it will read from stdin. Use 'test_data' to access some internally saved 3 column test data; 'test_image' for a test image; 'test_gif' for a test gif image; 'test_video' for a test video.")
 
-    parser.add_argument("-xl", "--xlabel", help="Set x label", nargs="?")
+    data_parser = argparse.ArgumentParser(add_help = False)
 
-    parser.add_argument("-yl", "--ylabel", help="Set y label", nargs="?")
+    data_parser.add_argument("-col", "--columns",
+                         nargs   = "+", # 1 or more
+                         type    = int,
+                         default = [1],
+                         help    = "columns from data table to plot, starting from 1. The first one provided is for the x data.")
 
-    parser.add_argument("-t", "--title", help="Set plot title", nargs="?")
+    data_parser.add_argument("-d", "--delimiter",
+                         type    = str,
+                         default = [' '],
+                         nargs   = 1,
+                         help    = "character to be used to separate columns in data file, eg: ';', default is ' ', use apostrophes before and after 'delimiter' to avoid confusion")
 
-    parser.add_argument("-g", "--grid", help="Enable grid", action="store_true")
+    options_parser = argparse.ArgumentParser(add_help = False)
 
-    parser.add_argument(
-        "-d", "--delimiter", help="Use delimiter instead of spaces for field delimiter"
-    )
+    options_parser.add_argument("-m", "--marker",
+                         type    = str,
+                         default = ['hd'],
+                         nargs   = 1,
+                         help    = "character to be used as marker for the data points, eg: 'x', 'sd', 'heart', 'fhd', 'hd' (by default), use apostrophes before and after 'marker' to avoid confusion")
 
-    parser.set_defaults(plot="scatter", delimiter=None)
+    options_parser.add_argument("-c", "--color",
+                         type    = str,
+                         default = [None],
+                         nargs   = 1,
+                         help    = "color used for the data points, between: black, white, red, green, orange, blue, magenta, cyan; add + at the end of the color (except black and white) for clearer colors, eg: red+")
+
+    options_parser.add_argument("-t", "--title",
+                         nargs   = 1,
+                         type    = str,
+                         default = [None],
+                         help    = "the plot title")
+
+    options_parser.add_argument("-xl", "--xlabel",
+                         nargs   = 1,
+                         type    = str,
+                         default = [None],
+                         help    = "the label of the x axis")
+
+    options_parser.add_argument("-yl", "--ylabel",
+                         nargs   = 1,
+                         type    = str,
+                         default = [None],
+                         help    = "the label of the y axis")
+
+    options_parser.add_argument("-g", "--grid",
+                         nargs   = 1,
+                         type = str,
+                         default = ["False"],
+                         choices = ["True", "False"],
+                         help    = "add grid lines if True, removed them if False (as by default)")
+
+    barhist_parser = argparse.ArgumentParser(add_help = False)
+
+    barhist_parser.add_argument("-o", "--orientation",
+                                nargs   = 1,
+                                type = str,
+                                default = ['v'],
+                                choices = ['v', 'h'],
+                                help    = "bar orientation, 'v' for vertical (as by default), 'h' for horizontal")
+
+    barhist_parser.add_argument("-fi", "--fill",
+                                nargs   = 1,
+                                type = str,
+                                default = ["False"],
+                                choices = ["True", "False"],
+                                help    = "bar are color/marker filled if True (as by default)")
+
+    subparser = parser.add_subparsers(dest = 'type',
+                                      help = 'the user defined plot type')
+
+    scatter = subparser.add_parser('scatter',
+                                   description = "plots a series of data points",
+                                   parents = [file_parser, data_parser, options_parser],
+                                   help = 'plots a series of data points',
+                                   epilog = "eg: plotext scatter -f test_data -col 2 3 -m hd -c red+ -t 'Test Data' -xl time -yl Price -g True")
+    
+    plot = subparser.add_parser('plot',
+                                parents = [file_parser, data_parser, options_parser],
+                                description = "plots lines between consecutive data points",
+                                help = 'plots lines between consecutive data points',
+                                epilog = "eg: plotext plot -f test_data -col 1 3 -m hd -c magenta -t 'Test Data' -xl time -yl Price")
+
+    plotter = subparser.add_parser('plotter',
+                                   parents = [file_parser, data_parser, options_parser],
+                                   description = 'plots a series of data points and the lines between consecutive ones', 
+                                   help = 'scatter + plot',
+                                   epilog = "eg: plotext plotter -f data.txt -col 1 2 -d ';' -m x -c blue+ -t 'a title' -g True")
+ 
+    
+    bar = subparser.add_parser('bar',
+                               parents = [file_parser, data_parser, options_parser, barhist_parser],
+                               description = 'builds a bar plot',
+                               help = 'bar plot',
+                               epilog = "eg: plotext bar -f data.txt -m sd -c red+ -fi False -w 0.5")
+
+    bar.add_argument("-w", "--width",
+                            nargs   = 1,
+                            type = float,
+                            default = [None],
+                            help    = "bars width as a float between 0 and 1")
+
+    hist = subparser.add_parser('hist',
+                                parents = [file_parser, data_parser, options_parser, barhist_parser],
+                                description = 'builds a histogram plot',
+                                help = 'histogram plot',
+                                epilog = "eg:  plotext hist -f test_data -col 1 3 -m sd -c orange+ -t 'Test Data'  -fi True -b 15 -n True")
+
+    hist.add_argument("-b", "--bins",
+                            nargs   = 1,
+                            type = int,
+                            default = [10],
+                            help    = "histogram bins (10 by default)")
+    
+    image = subparser.add_parser('image',
+                                 parents = [file_parser],
+                                 description = 'prints an image from file path',
+                                 help = 'prints an image from file path',
+                                 epilog = "eg: plotext image -f test_image")
+    
+    gif = subparser.add_parser('gif',
+                               parents = [file_parser],
+                               description = 'plays a gif image from file path',
+                               help = 'plays a gif image from file path',
+                               epilog = "eg: plotext gif -f test_gif")
+
+    video = subparser.add_parser('video',
+                                 parents = [file_parser],
+                                 description = 'plays a video from file path',
+                                 help = 'plays a video from file path',
+                                 epilog = "eg: plotext video -f test_video -fy True")
+
+    video.add_argument("-fy", "--from_youtube",
+                                nargs   = 1,
+                                type = str,
+                                default = ["False"],
+                                choices = ["True", "False"],
+                                help    = "set to True to renders colors correctly if the video has been downloaded from youtube, default is False")
+
+    youtube = subparser.add_parser('youtube',
+                                   #parents = [file_parser],
+                                   description = 'plays a youtube video from url',
+                                   help = 'plays a youtube video from url',
+                                   epilog = "eg: plotext youtube --url test_youtube")
+
+    youtube.add_argument("-u", "--url",
+                         action = 'store',
+                         dest   = 'url',
+                         nargs  = 1,
+                         type   = str,
+                         help   = "Web Page url. Use 'test_url' for a saved url video.")
+    
     return parser
 
 
-def parse_args(argv):
-    """Helper function: return namespace populated by ArgumentParser"""
+def plot(args):
+    type = args.type
+    
+    plots = ['scatter', 'plot', 'plotter', 'bar', 'hist']
 
-    parser = build_parser()
-    return parser.parse_args(argv)
+    if type in plots:
+        marker = args.marker[0]
+        color = args.color[0]
+        plt.title(args.title[0])
+        plt.xlabel(args.xlabel[0])
+        plt.ylabel(args.ylabel[0])
+        grid = True if args.grid[-1] == 'True' else False
+        plt.grid(grid, grid)
+        x, Y = read_file(args)
+        width = args.width[0]  if type == 'bar' else 0
+        orien = args.orientation[0] if type in ['bar', 'hist']  else 'v'
+        fill = args.fill[0] == 'True' if type in ['bar', 'hist'] else False
+        bins = args.bins[0] if type in 'hist' else None
 
+        for y in Y:
+            plt.plot(x, y, marker = marker, color = color) if type in ['plot', 'plotter'] else None
+            plt.scatter(x, y, marker = marker, color = None if type == 'plotter' else color) if type in ['scatter', 'plotter'] else None
+            plt.bar(x, y, marker = marker, color = color, width = width, orientation = orien, fill = fill) if type == 'bar' else None
+            plt.hist(y, marker = marker, color = color, orientation = orien, fill = fill, bins = bins) if type == 'hist' else None
+            plt.show()
 
-def post_process_all_floats(columns, plot_type):
-    """Convert all data read from file or stdin to float. 
-    This function is invoked by get_data()"""
-    for k, v in columns.items():
-        try:
-            columns[k] = list(map(float, v))
-        except ValueError:
-            print("All elements of a", plot_type, "plot must numbers.")
-            print("Cannot convert elements of column", k + 1, "to float.\n\n")
-            raise
-    return columns
+    if type == 'image':
+        if args.file == 'test_image':
+            args.file = plt.test_image_path
+        plt.image_plot(args.file, fast = True)
+        plt.show()
 
+    if type == 'gif':
+        if args.file == 'test_gif':
+            args.file = plt.test_gif_path
+        plt.play_gif(args.file)
+    
+    if type == 'video':
+        if args.file == 'test_video':
+            args.file = plt.test_video_path
+        from_youtube = True if args.from_youtube[-1] == 'True' else False
+        plt.play_video(args.file, from_youtube)
+        
+    if type == 'youtube':
+        args.url = args.url[-1]
+        if args.url == 'test_youtube':
+            args.url = plt.test_youtube_url
+        plt.play_youtube(args.url)
+        
 
-def post_process_bar(columns, pairs):
-    """Convert y-axis values into float. x-axis values are left str"""
-    # in a bar plot, x-axis elements are left string
-    # y elements, must be conveterd to float
+def read_file(args):
+    if args.type == 'youtube':
+        return [], [[]]
+    columns = args.columns
+    delimiter = args.delimiter[0]
 
-    # get all y indexs
-    idx = {i for _, i in pairs}
-
-    for i in idx:
-        try:
-            columns[i] = list(map(float, columns[i]))
-        except ValueError:
-            print("In a bar plot, elements on the y-axis must be numbers.")
-            print("Cannot convert elements of column", i + 1, "to float.\n\n")
-            raise
-    return columns
-
-
-def get_data_from(file_descriptor, args):
-    """Read line from file_descriptor, which is a file or stdin. 
-
-    Each line is plit according to the delimiter passed from command line. 
-
-    Returns a dictionary with column-id:['list', 'of', 'values']"""
-
-    # the user can pass several pairs of columns where one column is repeated
-    # e.g., 1,2 1,3 1,4
-    # therefore, we remove duplicates using a set
-    idx = {i for t in args.columns for i in t}
-
-    d = defaultdict(list)
-    for line in file_descriptor:
-        line = line.split(sep=args.delimiter)
-        for i in idx:
-            d[i].append(line[i])
-    return d
-
-
-def get_data(args):
-    """returns dict{idx:[values]}. 
-
-    Depending on the plot type selected, [values] may contain floats or strings
-    """
-
-    if args.file:
-        with open(args.file) as f:
-            columns = get_data_from(f, args)
+    if args.file == 'test_data':
+        args.file = plt.test_data_path
+        
+    if args.file != None:
+        path = args.file
+        print(path)
+        data = plt.read_data(path, columns = columns, delimiter = delimiter)
     else:
-        columns = get_data_from(sys.stdin, args)
-
-    # here we basically convert x and/or y elements to float
-    if args.plot == "bar":
-        columns = post_process_bar(columns, args.columns)
-    else:
-        columns = post_process_all_floats(columns, args.plot)
-
-    return columns
-
-
-def plot_properties(args):
-    """Apply optional configurations to the plot"""
-    if args.xlabel:
-        plt.xlabel(args.xlabel)
-
-    if args.ylabel:
-        plt.ylabel(args.ylabel)
-
-    if args.title:
-        plt.title(args.title)
-
-    if args.grid:
-        plt.grid(True)
-
-
-def plot(data, args):
-    """Draw the plot."""
-
-    pairs = args.columns
-
-    for i, j in pairs:
-        if args.plot == "scatter":
-            plt.scatter(data[i], data[j])
-        elif args.plot == "bar":
-            plt.bar(data[i], data[j])
-        elif args.plot == "line":
-            plt.plot(data[i], data[j])
-        elif args.plot == "linespoints":
-            plt.plot(data[i], data[j], marker=".")
-            plt.scatter(data[i], data[j], marker="small")
-
-    plot_properties(args)
-    plt.show()
-
-
-def main(argv=None):
-    # parse command line args
-    args = parse_args(argv)
-
-    # get relevant data from stdin or file
-    data = get_data(args)
-
-    plot(data, args)
+        lines = sys.stdin
+        data = plt._utility.read_lines(lines, columns = columns, delimiter = delimiter)
+    x = data[0]; Y = data[1:]
+    return x, Y
 
 
 if __name__ == "__main__":
