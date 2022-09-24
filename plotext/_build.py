@@ -262,8 +262,8 @@ class build_class():
         [self.matrix.add_horizontal_string(col_start + S + 3, row_end - 1 - s, labels[s], self.ticks_color, self.ticks_style) for s in range(l)] if legend_test else None
 
         # Add Text to Canvas
-        [self.matrix.add_horizontal_string(col_start + tcticks[s], row_start + trticks[s], self.text[s], self.tfull[s], self.tstyle[s], self.tback[s], self.talign[s], False, True) for s in Texts if self.torien[s] is self.default.orientation[0]] 
-        [self.matrix.add_vertical_string(col_start + tcticks[s], row_start + trticks[s], self.text[s], self.tfull[s], self.tstyle[s], self.tback[s], self.talign[s], True) for s in Texts if self.torien[s] is self.default.orientation[1]]
+        [self.matrix.add_multiple_horizontal_strings(col_start + tcticks[s], row_start + trticks[s], self.text[s], self.tfull[s], self.tstyle[s], self.tback[s], self.talign[s], False, True) for s in Texts if self.torien[s] is self.default.orientation[0]] 
+        [self.matrix.add_multiple_vertical_strings(col_start + tcticks[s], row_start + trticks[s], self.text[s], self.tfull[s], self.tstyle[s], self.tback[s], self.talign[s], True) for s in Texts if self.torien[s] is self.default.orientation[1]]
 
 
 

@@ -300,7 +300,9 @@ _text = """It adds a 'text' to the plot at the given 'x' and 'y' coordinates. Th
 
 \x1b[96morientation\x1b[0m sets the orientation of the text and could be either 'vertical' (in short 'v', as by default) or 'horizontal' (in short 'h').
 
-\x1b[96malignment\x1b[0m sets the text horizontal / vertical alignment to either 'left', 'center', and 'right' or 'top', 'center' and 'bottom'."""
+\x1b[96malignment\x1b[0m sets the text horizontal / vertical alignment to either 'left', 'center', and 'right' or 'top', 'center' and 'bottom' ('left' and 'top' by default). 
+
+Note that the new line character \\n is allowed: multiple sub strings will be printed in sequence with same alignment."""
 text = lambda: print(_text)
 
 _rectangle = """It creates a rectangle with coordinates given by x and y, each being a list of length 2. As the scatter() function, it accepts the parameters 'color', 'marker', 'xside', 'yside', and 'label', with the following extra parameters:
