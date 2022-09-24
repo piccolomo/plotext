@@ -548,7 +548,7 @@ def get_lines(x, y, *other): # it returns the lines between all couples of data 
     xl = xl + [x[-1]] if x != [] else xl
     yl = yl + [y[-1]] if x != [] else yl
     ol = ol + [o[-1]] if x != [] else ol
-    return xl, yl, *transpose(ol, len(other))
+    return [xl, yl] + transpose(ol, len(other))
 
 def get_line(x, y): # it returns a line of points from x[0],y[0] to x[1],y[1] distanced between each other in x and y by at least 1.
     if not all_numerical(join([x, y])):
@@ -617,7 +617,7 @@ def fill_data(x, y, y0, *other): # it fills x, y with y data points reaching y0;
             xf += xn
             yf += yn
             of += [o[i]] * len(xn)
-    return [xf, yf, *transpose(of, len(other))]
+    return [xf, yf] + transpose(of, len(other))
 
 def remove_outsiders(x, y, width, height, *other):
     I = [i for i in range(len(x)) if x[i] in range(width) and y[i] in range(height)]
