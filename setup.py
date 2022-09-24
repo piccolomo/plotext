@@ -8,11 +8,11 @@ HERE = pathlib.Path(__file__).parent
 # The text of the README file
 README = (HERE / "README.md").read_text()
 
-setup( 
+setup(
     author = "Savino Piccolomo",
     author_email = "piccolomo@gmail.com",
     name = 'plotext',
-    version='4.0.0',
+    version='4.1.5',
     description = 'plotext plots directly on terminal',
     long_description = README,
     long_description_content_type = "text/markdown",  
@@ -21,6 +21,7 @@ setup(
     packages = find_packages(),
     python_requires = ">=3.5",
     include_package_data = True,
-    #install_requires = [],
+    install_requires = [],
+    extras_require = {"image": ["pillow>=8.4"]},
     classifiers = []
     )

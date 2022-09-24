@@ -1,3 +1,5 @@
+from plotext._utility.marker import bar_marker
+
 class figure_default(): # storing default values for figure class
     def __init__(self):
         self.terminal_size = [200, 50] # the terminal size if no size is detected
@@ -28,9 +30,9 @@ class subplot_default(): # storing default values for subplot class
 
         self.grid = [False, False]
 
-        self.canvas_color = "white"
+        self.canvas_color = "bright-white"
         self.ticks_color = "black"
-        self.axes_color = "white"
+        self.axes_color = "bright-white"
 
         self.xscale = ["linear", "log"] # the two possibilities, the first is default
         self.yscale = ["linear", "log"]
@@ -47,7 +49,7 @@ class subplot_default(): # storing default values for subplot class
         self.bar_width = 4 / 5 # bar width
         self.bar_orientation = ['vertical', 'v', 'horizontal', 'h'] # the two possible orientations, the first is the default: v = vertical, h = horizontal
         self.bar_fill = True # bar plot filled or not
-        self.bar_marker = 'fhd'
+        self.bar_marker = bar_marker
         
         # hist plot defaults
         self.hist_bins = 10

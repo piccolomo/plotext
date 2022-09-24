@@ -1,14 +1,14 @@
-from plotext._utility.marker import space_marker, marker_codes, hd_marker_codes, marker_sequence, marker_factor
+from plotext._utility.marker import space_marker, marker_codes, hd_marker_codes, plot_marker, marker_factor
 from plotext._utility.color import no_color_name, color_sequence, color_code, to_gray_rgb
 from plotext._utility.string import only_spaces
 from plotext._matrices import subplot_matrices
 from plotext._default import subplot_default
 from plotext._datetime import datetime_class
+from plotext._utility.data import mean
 from plotext._utility.image import *
 from plotext._utility.data import *
 from plotext._utility.plot import *
 from plotext._utility.bar import *
-from PIL import Image, ImageOps
 from math import floor
 
 datetime = datetime_class() # usefull for datetime plot
@@ -30,8 +30,8 @@ class subplot_class():
         self.settings_init()
 
     def set_size(self, width = None, height = None):
-        self.width = width if width == None else int(width)
-        self.height = height if height == None else int(height)
+        self.width = width if width is None else int(width)
+        self.height = height if height is None else int(height)
         self.size = [self.width, self.height]
 
     def data_init(self): 
@@ -93,19 +93,25 @@ class subplot_class():
         self.yticks = [[], []]
         self.ylabels = [[], []]
 
+        self.vlines = [[], []] # those are user defined extra grid lines, vertical or horizontal
+        self.hlines = [[], []]
+        
+        self.vcolors = [[], []] # their color
+        self.hcolors = [[], []]
+
 ##############################################
 #########    Utility Functions    ############
 ##############################################
 
     def xside_to_pos(self, xside = None): # from axis side to position
         xaxis = self.default.xside
-        xside = xaxis[0] if xside == None or xside not in xaxis else xside
+        xside = xaxis[0] if xside is None or xside not in xaxis else xside
         pos = self.default.xside.index(xside)
         return pos
 
     def yside_to_pos(self, yside = None):
         yaxis = self.default.yside
-        yside = yaxis[0] if yside == None or yside not in yaxis else yside
+        yside = yaxis[0] if yside is None or yside not in yaxis else yside
         pos = self.default.yside.index(yside)
         return pos
 
@@ -134,31 +140,34 @@ class subplot_class():
 ##############################################
 
     def add_xside(self, xside = None):
-        xside = self.default.xside[0] if xside == None or xside not in self.default.xside else xside
+        xside = self.default.xside[0] if xside is None or xside not in self.default.xside else xside
         self.xside.append(xside)
 
     def add_yside(self, yside = None):
-        yside = self.default.yside[0] if yside == None or yside not in self.default.yside else yside
+        yside = self.default.yside[0] if yside is None or yside not in self.default.yside else yside
         self.yside.append(yside)
 
     def add_data(self, *args):
         x, y = set_data(*args)
+        x, y = remove_non_numerical(x, y)
         self.x.append(x)
         self.y.append(y)
         self.signals += 1
 
     def add_lines(self, lines):
-        lines = self.default.lines if lines == None else bool(lines) 
+        lines = self.default.lines if lines is None else bool(lines) 
         self.lines.append(lines)
 
     def add_markers(self, marker = None):
         l = len(self.x[-1])
+        marker = list(marker) if type(marker) == range else marker
         marker = repeat([self.check_marker(el) for el in marker], l) if type(marker) == list else self.check_marker(marker)
         self.marker.append(marker)
 
     def check_marker(self, marker = None):
-        marker = marker if marker in marker_codes or marker in hd_marker_codes else marker if type(marker) == str else None
-        marker = first(marker_sequence, self.marker) if marker == None else marker
+        marker = None if marker is None else str(marker)
+        marker = marker if marker in marker_codes or marker in hd_marker_codes else marker
+        marker = plot_marker if marker is None else marker
         spaces = only_spaces(marker)
         marker = space_marker if spaces else marker
         marker = marker if marker in hd_marker_codes or marker in marker_codes else marker[0]
@@ -166,6 +175,7 @@ class subplot_class():
 
     def add_colors(self, color = None):
         l = len(self.x[-1])
+        color = list(color) if type(color) == range else color
         past_colors = no_duplicates(join(self.color))
         color = repeat([self.check_color(el, past_colors) for el in color], l) if type(color) == list else self.check_color(color, past_colors)
         self.color.append(color)
@@ -173,21 +183,21 @@ class subplot_class():
     def check_color(self, color = None, past_colors = []): # past colors are not calcuated here to reduce time for list based colors
         code = color_code(color, 1)
         nocolor = code[0] == 3
-        color = None if color == None or nocolor else color
-        color = first(self.color_sequence, past_colors) if color == None else color
+        color = None if color is None or nocolor else color
+        color = first(self.color_sequence, past_colors) if color is None else color
         return color
         
     def add_fillx(self, fillx = None):
-        fillx = self.default.fillx if fillx == None else bool(fillx) 
+        fillx = self.default.fillx if fillx is None else bool(fillx) 
         self.fillx.append(fillx)
 
     def add_filly(self, filly = None):
-        filly = self.default.filly if filly == None else bool(filly) 
+        filly = self.default.filly if filly is None else bool(filly) 
         self.filly.append(filly)
 
     def add_label(self, label = None):
         spaces = only_spaces(label)
-        label = self.default.label if label == None or spaces else str(label).strip() # strip to remove spaces before and after
+        label = self.default.label if label is None or spaces else str(label).strip() # strip to remove spaces before and after
         self.label.append(label)
         #figure.subplot.label_show.append(default.label_show)
 
@@ -196,8 +206,8 @@ class subplot_class():
 ##############################################
 
     def correct_frequency(self):
-        self.xfrequency = [0 if self.default.xside[i] not in self.xside else self.xfrequency[i] for i in range(2)]
-        self.yfrequency = [0 if self.default.yside[i] not in self.yside else self.yfrequency[i] for i in range(2)]
+        self.xfrequency = [self.xfrequency[i] if self.default.xside[i] in self.xside or self.vlines[i] != [] else 0 for i in range(2)]
+        self.yfrequency = [self.yfrequency[i] if self.default.yside[i] in self.yside or self.hlines[i] != [] else 0 for i in range(2)]
 
     def adjust_height(self):
         self.xaxes[0] = False if self.height <= 1 else self.xaxes[0]
@@ -226,14 +236,18 @@ class subplot_class():
         return [replace(lim_set[s], lim[s]) for s in range(2)]
 
     def get_xlim(self):
-        self.xlim = self.get_lim(self.x, self.xside, self.default.xside, self.xlim)
+        x = self.x + self.vlines # to include the vertical lines in the limits
+        xside = self.xside + self.default.xside
+        self.xlim = self.get_lim(x, xside, self.default.xside, self.xlim)
 
     def get_ylim(self):
-        self.ylim = self.get_lim(self.y, self.yside, self.default.yside, self.ylim)
+        y = self.y + self.hlines # to include the vertical lines in the limits
+        yside = self.yside + self.default.yside
+        self.ylim = self.get_lim(y, yside, self.default.yside, self.ylim)
 
     def get_height_canvas(self):
-        self.title_width = any([el != None for el in [self.title, self.xlabel[1]]])
-        self.labels_width = any([el != None for el in [self.xlabel[0], self.ylabel[0], self.ylabel[1]]])
+        self.title_width = any([el is not None for el in [self.title, self.xlabel[1]]])
+        self.labels_width = any([el is not None for el in [self.xlabel[0], self.ylabel[0], self.ylabel[1]]])
         self.height_canvas = self.height - sum(self.xaxes) - sum(map(bool, self.xfrequency)) - self.labels_width - self.title_width
 
     def get_yticks(self):
@@ -263,15 +277,19 @@ class subplot_class():
         self.xfrequency = [min(el, self.width_canvas) for el in self.xfrequency]
         self.xticks = [get_ticks(self.xlim[i], self.xfrequency[i]) if self.xticks[i] == [] else self.xticks[i] for i in range(2)]
         self.xlabels = [get_labels(self.xticks[i], self.xscale[i]) if self.xlabels[i] == [] else self.xlabels[i] for i in range(2)]
-      # self.xlabels = [_utility.get_labels(el) for el in self.xticks]
+        # self.xlabels = [_utility.get_labels(el) for el in self.xticks]
         self.xlabels_height = [0 if l == [] else 1 for l in self.xlabels]
 
-    def get_absolute_ticks(self):
-        self.cticks = [get_matrix_data(self.xticks[s], self.xlim[s], self.width_canvas) for s in range(2)]
-        self.rticks = [get_matrix_data(self.yticks[s], self.ylim[s], self.height_canvas) for s in range(2)]
-        self.cticks = [list(map(floor, el)) for el in self.cticks]
-        self.rticks = [list(map(floor, el)) for el in self.rticks]
-        # here i use floor instead of int because otherwise int(-0.8) = 0 would appear in the plot, which shouldn't: floor(-0.8) = -1 won't appear; for positive numbers int and floor are the same function
+    def get_relative_ticks(self):
+        self.cticks = self._get_relative_ticks(self.xticks, self.xlim, self.width_canvas)
+        self.rticks = self._get_relative_ticks(self.yticks, self.ylim, self.height_canvas)
+
+        self.vticks = self._get_relative_ticks(self.vlines, self.xlim, self.width_canvas) #relative ticks for user defined lines
+        self.hticks = self._get_relative_ticks(self.hlines, self.ylim, self.height_canvas)
+
+    def _get_relative_ticks(self, ticks, lim, bins):
+        ticks = [get_matrix_data(ticks[s], lim[s], bins) for s in range(2)]
+        return [list(map(floor, el)) for el in ticks] # here i use floor instead of int because otherwise int(-0.8) = 0 would appear in the plot, which shouldn't: floor(-0.8) = -1 won't appear; for positive numbers int and floor are the same function
 
     def create_matrices(self):
         self.matrices.create(self.width_canvas, self.height_canvas, space_marker, no_color_name, self.canvas_color)
@@ -279,6 +297,17 @@ class subplot_class():
     def add_grid(self):
         [self.matrices.update_same_elements(*get_line([c, c], [0, self.height_canvas - 1]), "│", self.ticks_color) for c in join(self.cticks) if self.grid[0]]
         [self.matrices.update_same_elements(*get_line([0, self.width_canvas - 1], [r, r]), "─", self.ticks_color) for r in join(self.rticks) if self.grid[1]]
+        
+    def add_extra_lines(self):
+        for s in range(2):
+            for i in range(len(self.vticks[s])):
+                c = self.vticks[s][i]
+                x, y = get_line([c, c], [0, self.height_canvas - 1])
+                self.matrices.update_same_elements(x, y, "│", self.vcolors[s][i])
+            for i in range(len(self.hticks[s])):
+                r = self.hticks[s][i]
+                x, y = get_line([0, self.width_canvas - 1], [r, r])
+                self.matrices.update_same_elements(x, y, "─", self.hcolors[s][i])
 
     def update_matrix(self):
         xlim = [self.xlim[0] if self.xside[s] == self.default.xside[0] else self.xlim[1] for s in range(self.signals)]
@@ -315,6 +344,7 @@ class subplot_class():
         y = [correct_data(y[s], yfactor[s]) for s in range(self.signals)]
 
         xy = [brush(x[s], y[s]) for s in range(self.signals)]
+
         empty = [[]] * self.signals
         x, y = (empty, empty) if xy == [] else transpose(xy)
 
@@ -347,6 +377,9 @@ class subplot_class():
         axis = [update_axis(axis[i], self.rticks[i], primary_tick[i]) for i in range(2)]
         secondary_tick = [('├'  if i == 0 else '┤') if self.grid[1] else None for i in range(2)]
         axis = [update_axis(axis[i], self.rticks[i - 1], secondary_tick[i]) for i in range(2)]
+        hline_tick = [('├'  if i == 0 else '┤') for i in range(2)]
+        axis = [update_axis(axis[i], join(self.hticks), hline_tick[i]) for i in range(2)]
+
         axis = [transpose([list(el)[::-1]]) for el in axis]
         [self.matrices.pad(self.default.yside[i], axis[i], self.ticks_color, self.axes_color) for i in range(2) if self.yaxes[i]]
 
@@ -354,9 +387,10 @@ class subplot_class():
         [self.matrices.pad(self.default.yside[i], ticks[i], self.ticks_color, self.axes_color) for i in range(2) if self.yfrequency[i]]
 
     def add_xaxis(self):
-        ticks = [get_xticks(self.width_canvas, self.xlabels[i], self.cticks[i]) for i in range(2)]
+        ticks = [get_xticks(self.width_canvas, self.xlabels[i], self.cticks[i]) for i in range(2)] # numerical ticks
         ticks, cticks = transpose(ticks)
-        pad_stop = [len(self.xlabels[i]) > 0 for i in range(2)]
+        
+        pad_stop = [len(self.xlabels[i]) > 0 for i in range(2)] # spaces before and after numerical ticks
         pad_length = [(self.ylabels_width[i] + self.yaxes[i]) for i in range(2)]
         ticks = [pad_list(ticks[i], "left", space_marker, pad_length[0] * pad_stop[i]) for i in range(2)]
         ticks = [pad_list(ticks[i], "right", space_marker, pad_length[1] * pad_stop[i]) for i in range(2)]
@@ -366,6 +400,8 @@ class subplot_class():
         axis = [update_axis(axis[i], cticks[i], primary_tick[i]) for i in range(2)]
         secondary_tick = [('┴'  if i == 0 else '┬') if self.grid[0] else None for i in range(2)]
         axis = [update_axis(axis[i], cticks[i - 1], secondary_tick[i]) for i in range(2)]
+        vline_tick = [('┴'  if i == 0 else '┬') for i in range(2)]
+        axis = [update_axis(axis[i], join(self.vticks), vline_tick[i]) for i in range(2)]
         axis = [list(el) for el in axis]
         axis = [pad_list(axis[i], "left", '└' if i == 0 else '┌', self.yaxes[0]) for i in range(2)]
         axis = [pad_list(axis[i], "right", '┘' if i == 0 else '┐', self.yaxes[1]) for i in range(2)]
@@ -412,12 +448,12 @@ class subplot_class():
         x, y = set_data(x, y)
         xside, yside, marker, color, fill, width, orientation, label, minimum, offset = self.get_bar_parameters(**kwargs)
         
-        marker = self.default.bar_marker if marker == None else marker
-        fill = self.default.bar_fill if fill == None else fill
-        width = self.default.bar_width if width == None else width
+        marker = self.default.bar_marker if marker is None else marker
+        fill = self.default.bar_fill if fill is None else fill
+        width = self.default.bar_width if width is None else width
         width = 1 if width > 1 else 0 if width < 0 else width
-        orientation = self.default.bar_orientation[0] if orientation == None or orientation not in self.default.bar_orientation else orientation
-        offset = 0 if offset == None else offset
+        orientation = self.default.bar_orientation[0] if orientation is None or orientation not in self.default.bar_orientation else orientation
+        offset = 0 if offset is None else offset
 
         xpos = self.xside_to_pos(xside)
         ypos = self.xside_to_pos(yside)
@@ -469,10 +505,10 @@ class subplot_class():
         xside, yside, marker, color, fill, width, orientation, label, minimum, offset = self.get_bar_parameters(**kwargs)
         ly = len(y)
 
-        width = self.default.bar_width if width == None else width
-        marker = [marker] * ly if marker == None or type(marker) != list else marker
-        color = [color] * ly if color == None else color
-        label = [label] * ly if label == None else label
+        width = self.default.bar_width if width is None else width
+        marker = [marker] * ly if marker is None or type(marker) != list else marker
+        color = [color] * ly if color is None else color
+        label = [label] * ly if label is None else label
         width = width / ly if ly != 0 else 0
         offset = linspace(-1 / 2 + 1 / (2 * ly), 1 / 2 - 1 / (2 * ly), ly) if ly!= 0 else []
         
@@ -492,9 +528,9 @@ class subplot_class():
     def draw_stacked_bar(self, x, y, **kwargs):
         xside, yside, marker, color, fill, width, orientation, label, minimum, offset = self.get_bar_parameters(**kwargs)
         ly = len(y)
-        marker = [marker] * ly if marker == None or type(marker) != list else marker
-        color = [color] * ly if color == None else color
-        label = [label] * ly if label == None else label
+        marker = [marker] * ly if marker is None or type(marker) != list else marker
+        color = [color] * ly if color is None else color
+        label = [label] * ly if label is None else label
 
         y = transpose([cumsum(el) for el in transpose(y)])
         for i in range(ly - 1, -1, -1):
@@ -511,7 +547,7 @@ class subplot_class():
 
     def draw_hist(self, data, **kwargs):
         bins = kwargs.get("bins")
-        bins = self.default.hist_bins if bins == None else bins
+        bins = self.default.hist_bins if bins is None else bins
         x, y = hist_data(data, bins)
         self.draw_single_bar(x, y, **kwargs)
 
@@ -522,7 +558,8 @@ class subplot_class():
         xpos = self.xside_to_pos(xside)
         ypos = self.xside_to_pos(yside)
         marker = kwargs.get("marker")
-        marker = "sd" if marker in [None, "hd", "fhd"] else marker
+        marker = [marker] if type(marker) != list else marker
+        marker = ["sd" if el in [None, "hd", "fhd"] else self.check_marker(el) for el in marker]
         
         rgb_test = lambda data: (type(data) == tuple or type(data) == list) and len(data) == 3
         
@@ -537,7 +574,7 @@ class subplot_class():
             self.add_yside(yside)
             self.add_data(x, y)
             self.add_lines(False)
-            self.marker.append([marker] * cols)
+            self.marker.append(repeat(marker, cols))
             self.color.append(color)
             self.add_fillx(False)
             self.add_filly(False)
@@ -560,6 +597,8 @@ class subplot_class():
         self.ylabel[ypos] = "row"
 
     def draw_image(self, path, size = [None, None], marker = None, grayscale = False, keep_ratio = False, resample = True):
+        from PIL import Image, ImageOps
+
         image = Image.open(path)
         image = ImageOps.grayscale(image) if grayscale else image
         image = image.convert('RGB')
@@ -580,3 +619,17 @@ class subplot_class():
         self.ylabel = [None, None]
 
         return size
+
+    def draw_vertical_line(self, coordinate, xside = None, color = None):
+        coordinate = datetime.string_to_timestamp(coordinate) if type(coordinate) == str else coordinate
+        pos = self.xside_to_pos(xside)
+        self.vlines[pos].append(coordinate)
+        color = self.ticks_color if color is None else color
+        self.vcolors[pos].append(self.check_color(color))
+        
+    def draw_horizontal_line(self, coordinate, yside = None, color = None):
+        coordinate = datetime.string_to_timestamp(coordinate) if type(coordinate) == str else coordinate
+        pos = self.xside_to_pos(yside)
+        self.hlines[pos].append(coordinate)
+        color = self.ticks_color if color is None else color
+        self.hcolors[pos].append(self.check_color(color))

@@ -278,8 +278,19 @@ Here is the list of its optional parameters:
 image_plot = lambda: print(_image_plot)
 
 ##############################################
+#############     Line Plot    ###############
+##############################################
+
+_vertical_line = """It plots a vertical line at the given 'coordinate' and specified 'color'. Use the parameter 'xside' to specify which x axis, 'lower' (as by default) or 'upper', the parameter 'coordinate' refers to. It also works with string based datetime coordinates."""
+vertical_line = lambda: print(_vertical_line)
+
+_horizontal_line = """It plots a horizontal line at the given 'coordinate' and specified 'color'. Use the parameter 'yside' to specify which y axis, 'left' (as by default) or 'right', the parameter 'coordinate' refers to. It also works with string based datetime coordinates."""
+horizontal_line = lambda: print(_horizontal_line)
+
+##############################################
 ##########     File Functions    #############
 ##############################################
+
 _file = """It contains tools to easily access and manipulate files and file paths."""
 file = lambda: print(_file)
 
@@ -381,4 +392,4 @@ def all():
         print(colorizing(el[0], "bright-yellow bold"))
         print(el[1])
         if el != _all_docstrings[-1]:
-            print()
+            print("\n")

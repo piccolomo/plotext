@@ -2,15 +2,16 @@ from math import log10, ceil, floor, pi, exp, log10
 from time import sleep as sleeping
 from time import time as timing
 from math import sin as _sin
+from math import isnan
 
 ##############################################
 ############    Set Functions    #############
 ##############################################
 
 def set_data(x = None, y = None): # it return properly formatted x and y data lists
-    if x == None and y == None :
+    if x is None and y is None :
         x, y = [], []
-    elif x != None and y == None:
+    elif x is not None and y is None:
         y = x
         x = range(1, len(y) + 1)
     x, y = list(x), list(y)
@@ -24,6 +25,13 @@ def set_data(x = None, y = None): # it return properly formatted x and y data li
 ##############################################
 #########    List Manipulation     ###########
 ##############################################
+
+def remove_non_numerical(x, y):
+    l = len(x)
+    numerical = lambda el: isinstance(el, int) or (isinstance(el, float) and el != None and not isnan(el))
+    xn = [x[i] for i in range(l) if numerical(x[i]) and numerical(y[i])]
+    yn = [y[i] for i in range(l) if numerical(x[i]) and numerical(y[i])]
+    return xn, yn
 
 def brush(x, y): # remove duplicates from x and y and sort both according to x only
     l = min(len(x), len(y))
@@ -70,7 +78,7 @@ def replace(data, data2, element = None): # replace element in data with corresp
 def get_lim(data): # it returns the data minimum and maximum limits
     m = min(data, default = None)
     M = max(data, default = None)
-    m, M = (m - 1, M + 1) if m == M and m != None else (m, M)
+    m, M = (m - 1, M + 1) if m == M and m is not None else (m, M)
     lim = [m, M]
     return lim
 
@@ -87,7 +95,7 @@ def remove_outsiders(x, y, width, height): # it removes elements from x and y th
     return xn, yn
     
 def correct_data(data, factor): # it is useful when using higher resolution markers where factor is 2 or 3
-    return [el / factor for el in data]
+    return [int(el) / factor for el in data]
 
 def pad_list(data, side, element, length):
     element = [element] * int(length)
@@ -112,7 +120,7 @@ def distinguish_list(data): # it return the minimum amount of decimal digits nec
     d = [distinguish(data[i], data[i + 1]) for i in range(len(data) - 1)]
     return max(d, default = 1)
 
-def sin(amplitude = 1, periods = 2, length = 1000, phase = 0, decay = 0): # sinusoidal data with given parameters
+def sin(amplitude = 1, periods = 2, length = 200, phase = 0, decay = 0): # sinusoidal data with given parameters
     f = 2 * pi * periods / (length - 1) 
     phase =  pi * phase
     d = decay / length

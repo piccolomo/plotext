@@ -20,14 +20,13 @@ def terminal_size(): # it returns the terminal size as [width, height]
 ##############################################
 
 def size_span(size, span): # it divides the plot size in the span dimension
-    subsize = None if size == None else size / span
-    sizes = [None] * span if size == None else [size - subsize * (span - 1)] + [subsize] * (span - 1)
+    subsize = None if size is None else size / span
+    sizes = [None] * span if size is None else [size - subsize * (span - 1)] + [subsize] * (span - 1)
     return sizes
 
 def get_matrix_data(data, lim, bins): # it returns the actual data to be plotted in the plot canvas matrix  
-    if bins >= 2 and None not in lim:
-        dz = (lim[1] - lim[0]) / (bins - 1) if bins != 1 and None not in lim else 1
-        data = [round((el - lim[0]) / dz + 0.5, 1)   for el in data]
+    dz = (lim[1] - lim[0]) / (bins - 1) if (bins != 1) and (None not in lim) else 1
+    data = [round((el - lim[0]) / dz + 0.5, 1) for el in data] if lim[0] != None else [None] * len(data)
     return data
     
 def sum_elements(past, present): # sums markers or colors
@@ -60,8 +59,8 @@ def get_lines(x, y, m, c): # it returns the lines between all couples of data po
     for n in range(len(x) - 1):
         xn, yn = x[n : n + 2], y[n : n + 2]
         xn, yn = get_line(xn, yn)
-        xl += xn
-        yl += yn
+        xl += xn[:-1]
+        yl += yn[:-1]
         ml += [m[n]] * len(xn)
         cl += [c[n]] * len(xn)
     xl, yl, ml, cl = [xl + [x[-1]], yl + [y[-1]], ml + [m[-1]], cl + [c[-1]]] if x != [] else [xl, yl, ml, cl]
@@ -94,14 +93,14 @@ def modify_widths(matrix, colspan, rowspan, maximum):# it returns the rightly fo
     matrix = span_zeros(matrix, colspan, rowspan)
     effective = span_sizes(matrix, colspan, rowspan)
     
-    Max = lambda data: max([el for el in data if el != None], default = None)
+    Max = lambda data: max([el for el in data if el is not None], default = None)
     max_col = lambda col: Max([effective[row][col] for row in range(rows)])
     sizes = [max_col(col) for col in range(cols)]
-    size_required = sum([el for el in sizes if el != None])
+    size_required = sum([el for el in sizes if el is not None])
     available = maximum - size_required
     for c in range(cols):
-        notset = len([el for el in sizes if el == None])
-        if sizes[c] == None:
+        notset = len([el for el in sizes if el is None])
+        if sizes[c] is None:
             sizes[c] = int(available / notset)
             available -= sizes[c]
         successive = maximum - sum(sizes[:c])
@@ -131,8 +130,8 @@ def span_sizes(matrix, colspan, rowspan): # it divides the size according to the
             cspan = colspan[row][col]
             rspan = rowspan[row][col]
             m = matrix[row][col]
-            size = int(m / cspan) if m != None else None
-            size = [m - size * (cspan - 1)] + [size] * (cspan - 1) if m != None else [None] * cspan
+            size = int(m / cspan) if m is not None else None
+            size = [m - size * (cspan - 1)] + [size] * (cspan - 1) if m is not None else [None] * cspan
             size = [size] * rspan
             for r in range(rspan):
                 for c in range(cspan):
@@ -170,10 +169,10 @@ def get_side_symbols(xside, yside):
 
 def get_legend(label, marker, color):
     signals = len(marker)
-    marker = [repeat(marker[i], 3) for i in range(signals) if label[i] != None]
+    marker = [repeat(marker[i], 3) for i in range(signals) if label[i] is not None]
     marker = [[refine_marker(m, 0, 0) for m in el] for el in marker]
-    color = [repeat(color[i], 3) for i in range(signals) if label[i] != None] 
-    label = [list(label[i])  for i in range(signals) if label[i] != None]
+    color = [repeat(color[i], 3) for i in range(signals) if label[i] is not None] 
+    label = [list(label[i])  for i in range(signals) if label[i] is not None]
     l = max(map(len, label), default = 0)
     color = [[no_color_name] +  el for el in color]
     marker = [[space_marker] +  el for el in marker]
@@ -182,7 +181,7 @@ def get_legend(label, marker, color):
 
 def update_axis(axis, coords, tick): # adds ticks to an axis at each coordinate
     for i in range(len(coords)):
-        if tick != None:
+        if tick is not None:
             axis = insert_label(axis, tick, coords[i], 'left')[0]
     return axis
 
@@ -209,7 +208,7 @@ def get_xticks(length, labels, coords):
     return ticks, ticks_coords
 
 def get_plot_labels(xlabel, ylabel, title, width, width_canvas, ylabels_width):
-    no_string = lambda string: '' if string == None else string
+    no_string = lambda string: '' if string is None else string
     xlabel = list(map(no_string, xlabel))
     ylabel = list(map(no_string, ylabel))
     title = no_string(title)

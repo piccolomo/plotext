@@ -18,7 +18,6 @@ from plotext._utility.data import sleep as _sleep
 from plotext._utility.platform import _platform as platform 
 from plotext._utility.data import sin as _sin
 from plotext._utility.data import linspace
-from plotext._utility.platform import _shell as shell
 from plotext._utility import doc
 import plotext._utility.file as file
 
@@ -296,6 +295,26 @@ def image_plot(path,
     keep_ratio = keep_ratio,
     resample = resample)
     
+##############################################
+#############     Line Plot    ###############
+##############################################
+
+def vertical_line(coordinate,
+    xside = None,
+    color = None):
+    figure.subplot.draw_vertical_line(
+    coordinate = coordinate,
+    xside = xside,
+    color = color)
+
+def horizontal_line(coordinate,
+    yside = None,
+    color = None):
+    figure.subplot.draw_horizontal_line(
+    coordinate = coordinate,
+    yside = yside,
+    color = color)
+
 ##############################################
 ##########     Other Functions    ############
 ##############################################
