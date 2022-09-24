@@ -1,5 +1,6 @@
-"""The plotext package allows you to plot data directly on terminal."""
+"""plotext plots data on terminal."""
 
 from plotext.plot import *
+
 name = "plotext"
-__version__ = "1.0.11"
+__version__ = "2.0.2"

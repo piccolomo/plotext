@@ -1,175 +1,110 @@
 # /usr/bin/env python3
 # -*- coding: utf-8 -*-
-import sys
-import os
+##############################################
+###########    Initialization    #############
+##############################################
+import sys as _sys
+import os as _os
+_sys.path.append(_os.path.abspath(_os.path.dirname(__file__)))
+import utility as ut
+
+class _variables():
+    def __init__(self):
+        self.x = []
+        self.y = []
+
+        self.plot_xmin = None
+        self.plot_xmax = None
+        self.plot_ymin = None
+        self.plot_ymax = None
+
+        self.force_size = [False, False]
+        self.cols = None
+        self.rows = None
+
+        self.point_marker = []
+        self.line_marker = []
+
+        self.canvas_color = []
+        self.point_color = []
+        self.line_color = []
+
+        self.axes = [True, True]
+        self.axes_color = []
+        self.ticks_number = [5, 5]
+        self.ticks_length = [4, 4]
+
+        self.title = ""
+        self.xlabel = ""
+        self.ylabel = ""
+        
+        self.label = []
+
+        # Constants
+        self.default_marker = "•"
+        self.empty_marker = ""
+
+        self.xticks = None
+        self.yticks = None
+        self.abx = [1, 0]
+        self.aby = [1, 0]
+        
+        self.grid = [[]]
+        self.canvas = ""
+        
+
+var = _variables()
+
+def _set_platform():
+    var.platform = "linux"
+    var.nocolor = False
+    if "win" in _sys.platform:
+        var.platform = "windows"
+        import subprocess
+        subprocess.call('', shell = True)       
+    if ('idlelib.run' in _sys.modules):
+        var.nocolor = True
+
+_set_platform()
+if var.platform == "windows":
+    from shutil import get_terminal_size as get_terminal_size_windows
+
 
 ##############################################
-###########    Basic Functions    ############
+#########    Scatter Function    #############
 ##############################################
-    
 def scatter(*args, **kwargs):
-    _set_platform()
     _set_data(*args)
+    set_xlim(kwargs.get("xlim"))
+    set_ylim(kwargs.get("ylim"))
 
-    _set_axes(kwargs.get("axes"))
-    _set_ticks(kwargs.get("ticks"))
-    _set_equations(kwargs.get("equations"))
-
-    _set_terminal_size()
-    _set_cols_max()
-    _set_rows_max()
-    
     set_force_size(kwargs.get("force_size"))
     set_cols(kwargs.get("cols"))
     set_rows(kwargs.get("rows"))
-
-    set_xlim(kwargs.get("xlim"))
-    set_ylim(kwargs.get("ylim"))
     
-    _set_point(kwargs.get("point"))
     _set_point_marker(kwargs.get("point_marker"))
-    _set_point_color(kwargs.get("point_color"))
-    _set_line(kwargs.get("line"))
     _set_line_marker(kwargs.get("line_marker"))
+
+    set_canvas_color(kwargs.get("canvas_color"))
+    _set_point_color(kwargs.get("point_color"))
     _set_line_color(kwargs.get("line_color"))
-    set_background(kwargs.get("background"))
 
+    set_axes(kwargs.get("axes"))
     set_axes_color(kwargs.get("axes_color"))
-    set_spacing(kwargs.get("spacing"))
-    set_decimals(kwargs.get("decimals"))
 
-def plot(*args, force_size = None, cols = None, rows = None, xlim = None, ylim = None, point = False, point_marker = None, point_color = None, line = True, line_marker = None, line_color = None, background = None, axes = None, axes_color = None, ticks = None, spacing = None, equations = None, decimals = None):
+    set_ticks_number(kwargs.get("ticks_number"))
+    set_ticks_length(kwargs.get("ticks_length"))
+
+    set_title(kwargs.get("title"))
+    set_xlabel(kwargs.get("xlabel"))
+    set_ylabel(kwargs.get("ylabel"))
     
-    scatter(*args, cols = cols, rows = rows, xlim = xlim, ylim = ylim, point = point, point_marker = point_marker, point_color = point_color, line = line, line_marker = line_marker, line_color = line_color, background = background, axes = axes, ticks = ticks, axes_color = axes_color, spacing = spacing, equations = equations, decimals = decimals)    
-
-def show():
-    _set_xlim()
-    _set_ylim()
-    _set_grid()
-    _add_yaxis()
-    _add_xaxis()
-    _set_canvas()
-    _add_equations()
-    _print_canvas()
-    #clear_plot()
+    _set_label(kwargs.get("label"))
     
-def clear_terminal():
-    _print('\033c')
     
-def clear_plot():
-    _vars.__init__()
-
-def sleep(time):
-    [i for i in range(int(time*15269989))]
-    
-def savefig(path):
-    with open(path , "w+", encoding = "utf-8") as file:
-        file.write(_remove_color(_get_canvas()))
-    print("plot saved as", path)
-
-def get_colors():
-    fg_colors = [_set_color(fg_c, fg_c, "norm") for fg_c in _fg_colors]
-    _print("\nFullground colors: " + ", ".join(fg_colors))
-    bg_colors = [_set_color(bg_c, "norm", bg_c) for bg_c in _bg_colors]
-    _print("\n\nBackground colors: " + ", ".join(bg_colors) + '\n')
-    
-def get_version():
-    init_path = "__init__.py"
-    here = os.path.abspath(os.path.dirname(__file__))
-    with open(os.path.join(here, init_path), 'r') as fp:
-        lines = fp.read()
-    for line in lines.splitlines():
-        if line.startswith('__version__'):
-            delim = '"' if '"' in line else "'"
-            return line.split(delim)[1]
-    else:
-        print("Unable to find version string.")
-
-def get_x_from_col(col=0):
-    return 1. * _vars.dx * col + _vars.xmin + _vars.dx/2.
-
-def get_y_from_row(row=0):
-    return 1. * _vars.dy * row + _vars.ymin + _vars.dy/2.
-
-def run_test():
-    clear_terminal()
-    l = 7
-    y1 = list(range(7)) + list(range(7, 0, -1))
-    y2 = list(range(7, 0, -1)) + list(range(7))
-    scatter(y1, point_color = "red", point_marker = "o")
-    plot(y2, line_color = "blue", line_marker = '=', ticks=1, axes=1)
-    #set_force_size(True)
-    set_cols(300)
-    set_rows(300)
-    set_xlim([-1, 2 * l + 1])
-    set_ylim([-1, l + 1])
-    set_spacing([10, 5])
-    set_axes_color("green")
-    set_background("black")
-    show()
-    #savefig(r"test.txt")
-    clear_plot()
-
 ##############################################
-#########    Internal Variables    ###########
+######    Scatter Called Functions     #######
 ##############################################
-    
-class _vars_class():
-    def __init__(self):
-        self.ip = 6 #internal precision
-        self.x = []
-        self.y = []
-        self.xmin = 0
-        self.xmax = 0
-        self.dx = 0
-        self.ymin = 0
-        self.ymax = 0
-        self.dy = 0
-
-        self.cols_term = None
-        self.rows_term = None
-        self.cols_max = None
-        self.rows_max = None
-        self.force_size = False
-        self.cols = None
-        self.rows = None
-        
-        self.point = []
-        self.point_marker = []
-        self.point_color = []
-        self.line = []
-        self.line_marker = []
-        self.line_color = []
-        self.background = "norm"
-
-        self.axes = [True, True]
-        self.axes_color = "norm"
-        self.ticks = [True, True]
-        self.spacing = [10, 5]
-        self.equations = False
-        self.decimals = 2
-
-        self.grid = [[]]
-        self.no_color = False
-        self.canvas = ""
-
-_vars = _vars_class()
-
-##############################################
-##########    Called Functions     ###########
-##############################################
-
-def _set_platform():
-    if "win" in sys.platform:
-        import subprocess
-        subprocess.call('', shell = True)
-    if ('idlelib.run' in sys.modules):
-        _vars.no_color = True
-       # _vars.force_size = True
-
-def _print(string):
-    sys.stdout.write(string)
-
 def _set_data(*args):
     if len(args) == 0:
         x, y = [], []
@@ -179,401 +114,578 @@ def _set_data(*args):
     else:
         x = args[0]
         y = args[1]
+    x, y = list(x), list(y)
     length = min(len(x), len(y))
     if len(x) != len(y):
         x = x[ : length]
         y = y[ : length]
-    _vars.x.append(x)
-    _vars.y.append(y)
+    var.x.append(x)
+    var.y.append(y)
 
-def _set_axes(axes = None):
-    axes =_set_var_if_none(axes, [True, True])
-    if type(axes) == list:
-        axes = [axes[0], axes[1]]
-    else: 
-        axes = [axes, axes]
-    _vars.axes = axes
-    
-def _set_var_if_none(var, value):
-    if var == None:
-        return value
-    else:
-        return var
-    
-def _set_ticks(ticks = None):
-    ticks =_set_var_if_none(ticks, [True, True])
-    if type(ticks) == list:
-        ticks = [ticks[0], ticks[1]]
-    else: 
-        ticks = [ticks, ticks]
-    _vars.ticks = ticks
-    
-def _set_equations(equations = None):
-    _vars.equations =_set_var_if_none(equations, False)
 
-def _set_terminal_size():
-    _vars.cols_term, _vars.rows_term = get_terminal_size()
 
-def get_terminal_size():
-    if "win" in sys.platform:
-        import shutil
-        return shutil.get_terminal_size()
-    elif 'idlelib.run' in sys.modules:
-        return [185, 45]
-    else:
-        return os.get_terminal_size()
+def set_xlim(*plot_xlim):
+    plot_xmin, plot_xmax = ut.set_vars(plot_xlim)
+    if plot_xmin != None:
+        var.plot_xmin = plot_xmin
+    if plot_xmax != None:
+        var.plot_xmax = plot_xmax
+    var.plot_xlim = [var.plot_xmin, var.plot_xmax]
 
-def _set_cols_max():
-    _vars.cols_max = _vars.cols_term - 2 * _vars.ticks[1] - 1 * _vars.axes[1] - 0
-    
-def _set_rows_max():
-    _vars.rows_max = _vars.rows_term - 1 * _vars.ticks[0] - 1 * _vars.axes[0] - 2 * _vars.equations - 2
+def set_ylim(*plot_ylim):
+    plot_ymin, plot_ymax = ut.set_vars(plot_ylim)
+    if plot_ymin != None:
+        var.plot_ymin = plot_ymin
+    if plot_ymax != None:
+        var.plot_ymax = plot_ymax
+    var.plot_ylim = [var.plot_ymin, var.plot_ymax]
 
-def set_force_size(force_size = False):
-    _vars.force_size = _set_var_if_none(force_size, False)
-    
+def set_force_size(*force_size):
+    force_xsize, force_ysize = ut.set_vars(force_size)
+    if force_xsize != None:
+        var.force_size[0] = bool(force_xsize)
+    if force_ysize != None:
+        var.force_size[1] = bool(force_ysize)
+
 def set_cols(cols = None):
-    cols = _set_var_if_none(cols, _vars.cols_max)
-    if cols <= 0:
-        cols = 1
-    if cols > _vars.cols_max and not _vars.force_size:
-       _vars.cols = _vars.cols_max
-    else:
-       _vars.cols = max(1, abs(int(cols)))
+    var.cols = cols
 
 def set_rows(rows = None):
-    rows = _set_var_if_none(rows, _vars.rows_max)
-    if rows <= 0:
-        rows = 1
-    if rows > _vars.rows_max and not _vars.force_size:
-       _vars.rows = _vars.rows_max
-    else:
-       _vars.rows = max(1, abs(int(rows)))
-
-def set_xlim(xlim = None):
-    _vars.xmin, _vars.xmax = _set_var_if_none(xlim, [None, None])
-
-def set_ylim(ylim = None):
-    _vars.ymin, _vars.ymax = _set_var_if_none(ylim, [None, None])
-
-def _set_point(point = None):
-    _vars.point.append(_set_var_if_none(point, True))
-
+    var.rows = rows
+    
 def _set_point_marker(point_marker = None):
-    point_marker = _set_var_if_none(point_marker, "•")
-    _vars.point_marker.append(point_marker[0])
-
-def _set_point_color(point_color = None):
-    _vars.point_color.append(_set_var_if_none(point_color, "norm"))
-
-def _set_line(line = None):
-    _vars.line.append(_set_var_if_none(line, False))
+    if point_marker == None:
+        point_marker = var.default_marker
+    var.point_marker.append(point_marker[0:1])
 
 def _set_line_marker(line_marker = None):
-    line_marker = _set_var_if_none(line_marker, "•")
-    _vars.line_marker.append(line_marker[0])
+    if line_marker == None:
+        line_marker = var.empty_marker
+    var.line_marker.append(line_marker[0:1])
+
+def set_canvas_color(canvas_color = None):
+    if canvas_color == None:
+        canvas_color = "norm"
+    var.canvas_color = canvas_color
+
+def _set_point_color(point_color = None):
+    if point_color == None:
+        point_color = "norm"
+    var.point_color.append(point_color)
 
 def _set_line_color(line_color = None):
-    _vars.line_color.append(_set_var_if_none(line_color, "norm"))
+    if line_color == None:
+        line_color = "norm"
+    var.line_color.append(line_color)
 
-def set_background(background = None):
-    _vars.background = _set_var_if_none(background, "norm")
+def set_axes(*axes):
+    xaxis, yaxis = ut.set_vars(axes)
+    if xaxis != None:
+        var.axes[0] = bool(xaxis)
+    if yaxis != None:
+        var.axes[1] = bool(yaxis)
 
-def set_axes_color(axes_color = None):
-    _vars.axes_color = _set_var_if_none(axes_color, "norm")
+def set_axes_color(*axes_color):
+    axes_color = ut.set_vars(axes_color, "norm")
+    var.axes_color = axes_color
 
-def set_spacing(spacing = None):
-    spacing = _set_var_if_none(spacing, [10, 5])
-    if type(spacing) == list:
-        spacing = [spacing[0], spacing[1]]
-    else: 
-        spacing = [spacing, spacing]
-    _vars.spacing = spacing
+def set_ticks_number(*ticks_number):
+    xticks_number, yticks_number = ut.set_vars(ticks_number)
+    if xticks_number != None:
+        var.ticks_number[0] = xticks_number
+    if yticks_number != None:
+        var.ticks_number[1] = yticks_number
 
-def set_decimals(decimals = None):
-    _vars.decimals = _set_var_if_none(decimals, 2)
+def set_ticks_length(*ticks_length):
+    xticks_length, yticks_length = ut.set_vars(ticks_length)
+    if xticks_length != None:
+        var.ticks_length[0] = xticks_length
+    if yticks_length != None:
+        var.ticks_length[1] = yticks_length
+
+def set_title(label = None):
+    if label == None:
+        label = ""
+    var.title = label
+
+def set_xlabel(label = None):
+    if label == None:
+        label = ""
+    var.xlabel = label
+
+def set_ylabel(label = None):
+    if label == None:
+        label = ""
+    var.ylabel = label
+
+def _set_label(label = None):
+    if label == None:
+        label = ""
+    var.label.append(label)
+
+
+##############################################
+########    Other Set Functions     ##########
+##############################################
+def set_canvas_size(*size):
+    cols, rows = ut.set_vars(size)
+    set_cols(cols)
+    set_rows(rows)
+
+def set_legend(legend = None):
+    if legend == None:
+        legend = [None] * len(var.legend)
+    var.label = legend
+
+##############################################
+############    Show Function     ############
+##############################################
+def show():
+    _set_terminal_size()
+    _set_cols_max()
+    _set_rows_max()
+    _set_cols()
+    _set_rows()
+
+    _set_data_lim()
+    _set_xlim()
+    _set_ylim()
+
+    _set_grid()
+
+    _get_yticks()
+    _get_xticks()
+    _add_yaxis()
+    _add_xaxis()
+
+    _set_canvas()
+    
+    _add_title()
+    _add_axes_labels()
+    _add_legend()
+    _add_equations()
+
+    _print_canvas()
+    #clear_plot()
+    
+##############################################
+########    Show Called Functions     ########
+##############################################
+def _set_terminal_size():
+    var.cols_term, var.rows_term = get_terminal_size()
+    
+def _set_cols_max():
+     var.cols_yaxis = int(var.axes[1])
+     var.cols_yticks = var.ticks_length[1] * bool(var.ticks_number[1])
+     var.cols_yticks += bool(var.ticks_length[1] *var.ticks_number[1])
+     var.cols_max = var.cols_term - var.cols_yaxis - var.cols_yticks
+    
+def _set_rows_max():
+    var.rows_xaxis = int(var.axes[0])
+    var.rows_xticks = bool(var.ticks_number[0] * var.ticks_length[0])
+    var.rows_equations = 1
+    var.rows_legend = not (var.label == [""] * len(var.label))
+    var.rows_axes_labels = not (var.xlabel == "")
+    var.rows_title = not (var.title == "")
+    var.rows_max = var.rows_term - var.rows_xaxis - var.rows_xticks - var.rows_equations - var.rows_legend - var.rows_axes_labels - var.rows_title - 1
+
+def _set_cols():
+    cols = var.cols
+    if cols == None:
+        cols = var.cols_max
+    cols = abs(int(cols))
+    if cols > var.cols_max and not var.force_size[0]:
+        cols = var.cols_max
+    var.cols = cols
+    var.cols_plot = var.cols + var.cols_yaxis + var.cols_yticks
+    
+def _set_rows():
+    rows = var.rows
+    if rows == None:
+        rows = var.rows_max
+    rows = abs(int(rows))
+    if rows > var.rows_max and not var.force_size[1]:
+        rows = var.rows_max
+    var.rows = rows
+    var.rows_plot = var.rows + var.rows_xaxis + var.rows_xticks + var.rows_equations + var.rows_legend + var.rows_axes_labels
+
+def _set_data_lim():
+    var.xmin = min(map(min, var.x))
+    var.xmax = max(map(max, var.x))
+    var.xlim = [var.xmin, var.xmax]
+    
+    var.ymin = min(map(min, var.y))
+    var.ymax = max(map(max, var.y))
+    var.ylim = [var.ymin, var.ymax]
 
 def _set_xlim(xlim = None):
-    _vars.xmin, _vars.xmax =_set_lim(_vars.x, _vars.xmin, _vars.xmax, _vars.cols)
-    _vars.dx = 1. * (_vars.xmax - _vars.xmin) / _vars.cols
-    _vars.dx = round(_vars.dx, _vars.ip)
-
-# the set minimum (maximum) value should be inside the first (last) data bin
-# this changes the actual minimum (maximum) value by a bin_offset 
-def _set_lim(z = [], zmin = None, zmax = None, bins = 2):
-    dzmin, dzmax = zmin == None, zmax == None
-    zmin = _set_var_if_none(zmin, min(map(min, z)))
-    zmax = _set_var_if_none(zmax, max(map(max, z)))
-    if zmin == zmax:
-        zm = [0.5 * zmin, 1.5 * zmax]
-        zm.sort()
-        zmin, zmax = zm
-    if bins - 1 == 0:
-        bins += 1
-    dz = (zmax - zmin) / (bins - 1)
-    return zmin - dzmin * dz / 2, zmax + dzmax * dz / 2
+    var.plot_xlim = ut.set_lim(var.xlim, var.plot_xlim, var.cols)
+    var.dx = (var.plot_xlim[1] - var.plot_xlim[0]) / var.cols
 
 def _set_ylim(ylim = None):
-    _vars.ymin, _vars.ymax = _set_lim(_vars.y, _vars.ymin, _vars.ymax, _vars.rows)
-    _vars.dy = 1.*(_vars.ymax - _vars.ymin) / _vars.rows
-    _vars.dy = round(_vars.dy, _vars.ip)
-
-def _set_grid():
-    space = _set_color(" ", background = _vars.background)
-    _vars.grid = [[space for c in range(_vars.cols)] for r in range(_vars.rows)]
-    for s in range(len(_vars.x)):
-        if _vars.line[s]:
-            _add_to_grid(*_get_line(_vars.x[s], _vars.y[s]), _vars.line_marker[s], _vars.line_color[s])
-        if _vars.point[s]:
-            _add_to_grid(_vars.x[s], _vars.y[s], _vars.point_marker[s], _vars.point_color[s])
-
-_fg_colors = ['norm', 'black', 'gray', 'red', 'green', 'yellow', 'orange', 'blue', 'violet', 'cyan', 'bold']
-_fg_color_codes = [0, 30, 2, 91, 92, 93, 33, 94, 95, 96, 1]
-_bg_colors = ['norm', 'black', 'gray', 'red', 'green', 'yellow', 'orange', 'blue', 'violet', 'cyan', 'white']
-_bg_color_codes = [28, 40, 100, 41, 42, 103, 43, 44, 45, 106, 47]
+    var.plot_ylim = ut.set_lim(var.ylim, var.plot_ylim, var.rows)
+    var.dy =  (var.plot_ylim[1] - var.plot_ylim[0]) / var.rows
     
-# it applies the proper color codes to a string
-def _set_color(text = "", color = "norm", background = "norm"):
-    code = '\033['
-    if type(color) == str:
-        for c in range(len(_fg_colors)):
-            if color == _fg_colors[c]:
-                code += str(_fg_color_codes[c])
-    code += 'm'
-    code += '\033['
-    if type(background) == str:
-        for c in range(len(_bg_colors)):
-            if background == _bg_colors[c]:
-                code += str(_bg_color_codes[c])
-    code += 'm'
-    return code + text + '\033[0m'
+def _set_grid():
+    space = ut.add_color(" ", ["norm", var.canvas_color])
+    var.grid = [[space for c in range(var.cols)] for r in range(var.rows)]
+    for s in range(len(var.x)):
+        
+        if var.line_marker[s] != var.empty_marker:
+            x, y = ut.get_line(var.x[s], var.y[s], var.dx)
+            marker = ut.add_color(var.line_marker[s], [var.line_color[s], var.canvas_color])
+            x = ut.discretization(x, var.plot_xlim, var.cols)
+            y = ut.discretization(y, var.plot_ylim, var.rows)
+            var.grid = ut.update_grid(var.grid, x, y, marker)
+            
+        if var.point_marker[s] != var.empty_marker:
+            x, y = var.x[s], var.y[s]
+            marker = ut.add_color(var.point_marker[s], [var.point_color[s], var.canvas_color])
+            x = ut.discretization(x, var.plot_xlim, var.cols)
+            y = ut.discretization(y, var.plot_ylim, var.rows)
+            var.grid = ut.update_grid(var.grid, x, y, marker)
 
-def _add_to_grid(x, y, marker, color):
-    for n in range(len(x)):
-        c = int(round((x[n] - _vars.xmin) / _vars.dx, _vars.ip))
-        r = int(round((y[n] - _vars.ymin) / _vars.dy, _vars.ip))
-        if 0 <= r < _vars.rows and 0 <= c < _vars.cols:
-            _vars.grid[r][c] = _set_color(marker, color, _vars.background)
-    return _vars.grid
+def _get_xticks():
+    if var.xticks == None:
+        inp = var.ticks_number[0], var.ticks_length[0], var.plot_xlim, var.dx
+        ticks, labels, ab =ut.get_ticks(*inp)
+        set_xticks(ticks, labels)
+        var.abx = ab
 
-# it returns all the lines connecting the data points 
-def _get_line(x, y): 
-    x_line = []
-    y_line = []
-    for n in range(len(x) - 1):
-        slope = 1. * (y[n + 1] - y[n]) / (x[n + 1] - x[n])
-        dy = slope * _vars.dx
-        x_line_n = _range(x[n], x[n + 1], _vars.dx)
-        if dy == 0:
-            y_line_n = [y[n]] * len(x_line_n)
-        else:
-            #y_line_n = _range(y[n], y[n + 1], dy)
-            y_line_n = [(x_line_n[i]-x[n])*slope+y[n] for i in range(len(x_line_n))]
-        x_line.extend(x_line_n)
-        y_line.extend(y_line_n)
-    return x_line, y_line
+def _get_yticks():
+    if var.yticks == None:
+        inp = [var.ticks_number[1], var.ticks_length[1], var.plot_ylim, var.dy]
+        ticks, labels, ab =ut.get_ticks(*inp)
+        set_yticks(ticks, labels)
+        var.aby = ab
 
-def _range(start, stop, step = 1):
-    res = []
-    i = start
-    while i < stop:
-        res.append(i)
-        i = i+step
-        #i=_round(i,14)
-    return res
+def set_xticks(ticks = None, labels = None):
+    if ticks == None:
+        ticks = []
+    if labels == None:
+        labels = ticks
+    var.xticks, var.xlabels = ticks, labels
 
-def _round(n, dec):
-    return round(n * 10 ** dec) / 10 ** dec
+def set_yticks(ticks = None, labels = None):
+    if ticks == None:
+        ticks = []
+    if  labels == None:
+        labels = ticks
+    var.yticks, var.ylabels = ticks, labels
 
 def _add_yaxis():
-    spacing = _vars.spacing[1] * _vars.ticks[1]
-    axis = ["│" for r in range(_vars.rows)]
-    dr = len(str(_vars.rows))
-    ticks = [" " * dr for r in range(_vars.rows)]
-    for r in range(_vars.rows):
-        if spacing != 0 and r % spacing == 0:
-            axis[r] = "├"
-            space = " " * (dr - len(str(r)))
-            ticks[r] = num_to_string(_vars.ymin + r * _vars.dy +   _vars.dy / 2) + space
-            ticks[r] = str(r) + space
-        axis[r] = _set_color(axis[r], _vars.axes_color, _vars.background)
-        ticks[r] = _set_color(ticks[r], _vars.axes_color, _vars.background)
-        if _vars.axes[1]:
-            _vars.grid[r].append(axis[r]) 
-        if _vars.ticks[1] * _vars.spacing[1]:
-            _vars.grid[r].append(ticks[r])
+    axis = ["│" for r in range(var.rows)]
+    l = var.ticks_length[1]
+    ticks = [" " * (l + 1) for r in range(var.rows)]
+    rticks = ut.discretization(var.yticks, var.plot_ylim, var.rows)
 
-def num_to_string(num):
-    if abs(num) < 10 ** 5:
-        num = str(round(num, 1))
-    else:
-        exp = len(str(abs(num))) - 1
-        num = num / 10 ** exp
-        num = str(num) + 'e' + str(exp)
-    return num
+    for i in range(len(rticks)):
+        r = rticks[i]
+        if 0 <= r < var.rows and var.ylabels != []:
+            axis[r] = "├"
+            ticks[r] = str(var.ylabels[i])[:l]
+            ticks[r] = " " + ticks[r] + " " * (l - len(ticks[r]))
+
+    axis = [ut.add_color(el, var.axes_color) for el in axis]
+    ticks = [ut.add_color(el, var.axes_color) for el in ticks]
+
+    for r in range(var.rows):
+        if var.axes[1]:
+            var.grid[r].append(axis[r]) 
+        if bool(var.ticks_length[1] * var.ticks_number[1]):
+            var.grid[r].append(ticks[r])
             
 def _add_xaxis():
-    spacing = _vars.spacing[0] * _vars.ticks[0]
-    axis = ["─" for r in range(_vars.cols)]
-    ticks = [" " for r in range(_vars.cols)]
-    final_spaces = " " * _vars.ticks[1] * len(str(_vars.rows))
-    axis += "┘" * _vars.axes[1] + final_spaces
-    ticks += " " * _vars.axes[1] + final_spaces
-    c = 0
-    while c < _vars.cols:
-        dc = 1 
-        if spacing != 0 and c % spacing == 0:
-            new = list(num_to_string(_vars.xmin + c * _vars.dx +   _vars.dx / 2))
-            new = list(str(c))
-            dc = len(new)
-            if c + dc <= _vars.cols :
-                ticks[c : c + dc] = new
-                axis[c : c + dc] = "┬" + "─" * (dc - 1)
-        c += dc
-    axis = [_set_color(el, _vars.axes_color, _vars.background) for el in axis]
-    ticks = [_set_color(el, _vars.axes_color, _vars.background) for el in ticks]
-    if _vars.axes[0]:
-        _vars.grid.insert(0, axis) 
-    if _vars.ticks[0] * _vars.spacing[0]:
-        _vars.grid.insert(0, ticks) 
+    axis = ["─" for r in range(var.cols)]
+    axis += ["┘"]
+    axis += [" "] * (var.cols_plot - len(axis))
+    
+    l = var.ticks_length[0]
+    labels = [str(el)[:l] for el in var.xlabels]
+    labels = [el + " " * (l + 1 - len(el)) for el in labels]
+    labels = [list(el) for el in labels]
+    ticks = [" " for r in range(var.cols_plot)]
+    cticks = ut.discretization(var.xticks, var.plot_xlim, var.cols)
+    
+    for i in range(len(cticks)):
+        c = cticks[i]
+        if c <= var.cols and c + l + 1 <= var.cols_plot and ticks[c - 1] == " ":
+            ticks[c:c+l+1] = labels[i]
+            if c < var.cols:
+                axis[c] = "┬"
+            if c == var.cols:
+               axis[c] = "┤"
+
+    axis = [ut.add_color(el, var.axes_color) for el in axis]
+    ticks = [ut.add_color(el, var.axes_color) for el in ticks]
+
+    if var.axes[0]:
+        var.grid.insert(0, axis) 
+    if bool(var.ticks_length[0] * var.ticks_number[0]):
+        var.grid.insert(0, ticks)
 
 def _set_canvas():
-    canvas = '\n'
-    for r in range(len(_vars.grid) -1, -1, -1):
-        canvas += "".join(_vars.grid[r]) + '\n'
-    _vars.canvas = canvas[:-1]
+    canvas = ''
+    for r in range(len(var.grid) -1, -1, -1):
+        canvas += "".join(var.grid[r]) + '\n'
+    var.canvas = canvas
 
 def _add_equations():
-    dx, dy = _add_spaces(_vars.dx, _vars.dy, _vars.decimals, True)
-    cx, cy = _add_spaces(_vars.xmin + _vars.dx / 2, _vars.ymin + _vars.dy / 2, _vars.decimals)
-    ex, ey = _add_spaces(_vars.dx / 2, _vars.dy / 2, _vars.decimals)
-    x_eq = "x = " + dx + " × col " + cx + " " + chr(177) + " " + ex[2:]
-    y_eq = "y = " + dy + " × row " + cy + " " + chr(177) + " " + ey[2:]
-    final_spaces = " " * (_vars.cols + _vars.axes[1] + _vars.ticks[1] * len(str(_vars.rows)) - len(x_eq))
-    x_eq =  '\n' + _set_color(x_eq + final_spaces, _vars.axes_color, _vars.background)
-    y_eq =  '\n' + _set_color(y_eq + final_spaces, _vars.axes_color, _vars.background)
-    if _vars.equations:
-        _vars.canvas += x_eq + y_eq
+    label = ["x", "y"]
+    ab = [var.abx, var.aby]
+    eq = []
+    for i in  range(2):
+        eq.append(ut.get_equation(label[i], *ab[i], 7))
+    eq = ut.get_opposite_labels(eq, var.cols_plot, var.axes_color)
+    var.canvas = var.canvas + eq
 
-def _add_spaces(a, b, decimals = 2, negative_only = False):
-    a_round, b_round = _round_with_zeros(a, decimals), _round_with_zeros(b, decimals)
-    space = int_length(a) - int_length(b)
-    a = sign(a, negative_only) + ' ' * (0 - space) + a_round
-    b = sign(b, negative_only) + ' ' * (0 + space) + b_round
-    return a, b
+def _add_title():
+    if var.rows_title == 1:
+        label = ut.get_centered_label(var.title, var.cols_plot, var.axes_color)
+        var.canvas = ''.join(label) + '\n' + var.canvas 
 
-def _round_with_zeros (num, decimals): #It rounds to the specified decimal points
-    num = str(round(num, decimals))
-    if decimals == 0:
-        num = str(int(float(num_round)))
-    floats = "0"
-    if float(num) != int(float(num)):
-        floats = num[num.index(".") + 1 : num.index(".") + 1 + decimals]
-    zeros = "0" * (decimals-len(floats))
-    return num + zeros
+def _add_axes_labels():
+    labels = [var.xlabel, var.ylabel]
+    labels = ut.get_opposite_labels(labels, var.cols_plot, var.axes_color)
+    var.canvas = var.canvas + labels
 
-def sign(num, negative_only = False): # Similar to to str(numpy.sign)
-    if num == 0:
-        return "+ "
-    elif num / abs(num) > 0:
-        if negative_only:
-            return ""
-        else:
-            return "+ "
-    else:
-        return "- "
-
-def int_length(num):  
-    return len(str(int(abs(float(num)))))
+def _add_legend():
+    if var.rows_legend == 1:
+        legend = "legend: "
+        legend_string_length = len(legend)
+        axes_color = var.axes_color
+        canvas_color = var.canvas_color
+        legend = ut.add_color(legend, axes_color)
+        sep = 4
+        legend_length = len(var.label) 
+        for i in range(legend_length):
+            label = var.label[i]
+            if label == "":
+                label = "signal" + str(i + 1)
+            label_length = len(label)
+            label_color = var.line_color[i]
+            if var.line_marker[i] == "":
+                label_color = var.point_color[i]
+            label_color = [label_color, canvas_color]
+            label = ut.add_color(label, label_color)
+            legend_string_length += label_length
+            if i != legend_length - 1:
+                legend_string_length += sep
+                label += ut.add_color(" " * sep, axes_color)
+            legend += label
+        space = " " * (var.cols_plot - legend_string_length)
+        space = ut.add_color(space, axes_color)
+        legend += space
+        var.canvas = var.canvas + legend + '\n'
 
 def _get_canvas():
-    return _vars.canvas
+    return var.canvas
     
 def _print_canvas():
     canvas = _get_canvas()
-    if _vars.no_color:
-        canvas=_remove_color(canvas)
-    _print(canvas+"\n")
+    if var.nocolor:
+        canvas = ut.remove_color(canvas)
+        print("color removed")
+    ut.print(canvas)
     
-def _remove_color(string):
-    for color_code in _fg_color_codes + _bg_color_codes:
-        string = string.replace('\x1b[' + str(color_code) + 'm', '')
-    return string
+##############################################
+##########    Basic Function    ##############
+##############################################
 
+def plot(*args,
+         xlim = None,
+         ylim = None,
+         force_size = None,
+         cols = None,
+         rows = None,
+         point_marker = var.empty_marker,
+         line_marker = var.default_marker,
+         canvas_color = None,
+         point_color = None,
+         line_color = None,
+         axes = None,
+         axes_color = None,
+         ticks_number = None,
+         ticks_length = None,
+         title = None,
+         xlabel = None,
+         ylabel = None,
+         label = None):
+    scatter(*args,
+            xlim = xlim,
+            ylim = ylim,
+            force_size = force_size,
+            cols = cols,
+            rows = rows,
+            point_marker = point_marker,
+            line_marker = line_marker,
+            canvas_color = canvas_color,
+            point_color = point_color,
+            line_color = line_color,
+            axes = axes,
+            axes_color = axes_color,  
+            ticks_number = ticks_number,
+            ticks_length = ticks_length,
+            title = title,
+            xlabel = xlabel,
+            ylabel = ylabel,
+            label = label)
+
+def clear_terminal():
+    ut.print('\033c')
+    
+def clear_plot():
+    var.__init__()
+
+def sleep(time):
+    [i for i in range(int(time * 15269989))]
+       
+def get_terminal_size():
+    if var.platform == "windows":
+        return get_terminal_size_windows()
+    elif var.nocolor:
+        return [185, 45]
+    else:
+        return list(_os.get_terminal_size())
+    
+def savefig(path):
+    path = ut.check_path(path)
+    with open(path , "w+", encoding = "utf-8") as file:
+        file.write(ut.remove_color(_get_canvas()))
+    ut.print("plot saved as " + path)
+    
+def get_colors():
+    fg_colors = [ut.add_color(fg_c, [fg_c, "norm"]) for fg_c in ut.fg_colors]
+    ut.print("\nFullground colors: " + ", ".join(fg_colors))
+    bg_colors = [ut.add_color(bg_c, ["norm", bg_c]) for bg_c in ut.bg_colors]
+    ut.print("\nBackground colors: " + ", ".join(bg_colors) + '\n')
+    
+def get_version():
+    init_path = "__init__.py"
+    here = _os.path.abspath(_os.path.dirname(__file__))
+    with open(_os.path.join(here, init_path), 'r') as fp:
+        lines = fp.read()
+    for line in lines.splitlines():
+        if line.startswith('__version__'):
+            delim = '"' if '"' in line else "'"
+            version = line.split(delim)[1]
+            print("plotext version:", version)
+            return version
+    else:
+        print("Unable to find version string.")
+
+        
 ##############################################
 ############     Docstrings     ##############
 ##############################################
-
 scatter.__doc__ = """
-It creates a scatter plot of coordinates given by x and y lists. Here is a basic example:
+It creates a scatter plot of coordinates given by the x and y lists. Optionally, a single y list could be provided. Here is a basic example:
 
-   \x1b[92mimport plotext as plx\x1b[0m
-   \x1b[92mplx.scatter(x, y)\x1b[0m
-   \x1b[92mplx.show()\x1b[0m
+   \x1b[92mimport plotext as plt\x1b[0m
+   \x1b[92mplt.scatter(x, y)\x1b[0m
+   \x1b[92mplt.show()\x1b[0m
 
-Optionally, a single y list could be provided. Multiple data set could be plotted with consecutive scatter functions. Here are all other parameters: 
+Multiple data sets could be plotted using consecutive scatter functions. Here is an example:
 
-\x1b[94mcols\x1b[0m
-It sets the number of columns of the plot. Only integers are allowed. By default, it is set to the highest value allowed by the the terminal size. Alternatively you could set the number of rows using set_cols(cols) after the scatter function.
+   \x1b[92mplt.scatter(x1, y1)\x1b[0m
+   \x1b[92mplt.scatter(y2)\x1b[0m
+   \x1b[92mplt.show()\x1b[0m
 
-\x1b[94mrows\x1b[0m
-It sets the number of rows of the plot. Only integers are allowed. By default, it is set to the highest value allowed by the the terminal size. Alternatively you could set the number of columns using set_rows(rows) after the scatter function.
-
-\x1b[94mforce_size\x1b[0m
-The plot dimensions are limited by the terminal size, when force_size is False and are allowed to be bigger otherwise. The default value is False. Alternatively you could set force_size using set_force_size(force_size) after the scatter function but before set_cols(cols) and set_rows(rows).
+Here are all the parameters of the scatter function: 
 
 \x1b[94mxlim\x1b[0m
-It sets the minimum and maximum limits of the plot in the x axis. It requires a list of two numbers, where the first sets the left (minimum) limit and the second the right (maximum) limit. If one or both values are not provided, they are calculated automatically. Alternatively you could use set_xlim(xlim) after the scatter function. 
+It sets the minimum and maximum limits of the plot in the x axis. It requires a list of two numbers, where the first sets the left (minimum) limit and the second the right (maximum) limit. If one or both values are not provided, they are calculated automatically. Alternatively use set_xlim(xlim) after the scatter function. 
 
 \x1b[94mylim\x1b[0m
-It sets the minimum and maximum limits of the plot in the y axis. It requires a list of two numbers, where the first sets the lower (minimum) limit and the second the upper (maximum) limit. If one or both values are not provided, they are calculated automatically. Alternatively you could use set_ylim(ylim) after the scatter function. 
+It sets the minimum and maximum limits of the plot in the y axis. It requires a list of two numbers, where the first sets the lower (minimum) limit and the second the upper (maximum) limit. If one or both values are not provided, they are calculated automatically. Alternatively use set_ylim(ylim) after the scatter function. 
 
-\x1b[94mpoint\x1b[0m 
-When True, the plot shows the scatter data points. The default value is True.
+\x1b[94mcols\x1b[0m
+It sets the number of columns of the plot. By default, it is the highest value allowed by the terminal size. Alternatively use set_cols(cols) or set_canvas_size(cols, rows) after the scatter function.
+
+\x1b[94mrows\x1b[0m
+It sets the number of rows of the plot. By default, it is the highest value allowed by the terminal size. Alternatively use set_rows(rows) or set_canvas_size(cols, rows) after the scatter function.
+
+\x1b[94mforce_size\x1b[0m
+By default, the plot dimensions are limited by the terminal size. Set force_size to True in order to allow bigger plots. Alternatively use set_force_size(True) after the scatter function (but before the functions set_cols and set_rows, if present).
+Note: plots bigger then the terminal size may not be readable. 
 
 \x1b[94mpoint_marker\x1b[0m 
-It sets the marker used to identify each data point on the plot. Only single characters are allowed (eg: '*'). The default value is '•'.
-
-\x1b[94mpoint_color\x1b[0m
-It sets the color used for the point marker. Use get_colors() to find the available color codes. The default value is 'norm'.
-
-\x1b[94mline\x1b[0m
-When True, the plot shows the lines between each data points. The default value is False.
+It sets the marker used to identify each data point plotted. It should be a single character and it could be a different value for each data set. If an empty string is provided, no data point is plotted. The default value is '•'. This parameter can only be set internally, because it is associated to the current data set plotted. 
 
 \x1b[94mline_marker\x1b[0m 
-It sets the marker used to identify the lines between data points. Only single characters are allowed (eg: '*'). The default value is '•'.
+It sets the marker used to identify the lines between two consecutive data points. It should be a single character and it could be a different value for each data set. If an empty string is provided (as by default), no lines are plotted. This parameter can only be set internally, because it is associated to the current data set plotted.
+
+\x1b[94mcanvas_color\x1b[0m
+It sets the canvas background color, without affecting the axes color. Alternatively use set_canvas_color(color) after the scatter function. Use get_colors() to find the available color codes. The default value is 'norm'.
+
+\x1b[94mpoint_color\x1b[0m
+It sets the color of the data points. Use get_colors() to find the available color codes. The default value is 'norm'. This parameter can only be set internally, because it is associated to the current data set plotted.
 
 \x1b[94mline_color\x1b[0m
-It sets the color used for the line marker. Use get_colors() to find the available color codes. The default value is 'norm'.
-
-\x1b[94mbackground\x1b[0m
-It sets the plot background color. Use get_colors() to find the available color codes. The default value is 'norm'. Alternatively you could set the background color using set_background(background) after the scatter function.
+It sets the color of the lines, if plotted. Use get_colors() to find the available color codes. The default value is 'norm'. This parameter can only be set internally, because it is associated to the current data set plotted.
 
 \x1b[94maxes\x1b[0m
-When True, the x and y axes are added to the plot. A list of two Booleans will set the x and y axes separately (eg: axes=[True, False]). The default value is True. 
+When set to True (as by default), the x and y axes are added to the plot. A list of two Booleans will set the x and y axis independently (eg: axes = [True, False]). Alternatively, use set_axes(axes) after the scatter function.  
 
 \x1b[94maxes_color\x1b[0m
-It sets the color of the axes, ticks and equations, when present. Use get_colors() to find the available color codes. The default value is 'norm'. Alternatively you could set the axes color using set_axes_color(axes_color) after the scatter function.
+It sets the axes color, without affecting the canvas. The same color is applied to the axes ticks, labels, equations, legend and title, if present. Use get_colors() to find the available color codes. The default value is 'norm'. If a list of two colors is provided, the second is interpreted as a background color. Alternatively use set_axes_color(color) after the scatter function. 
 
-\x1b[94mticks\x1b[0m
-When True, the x and y ticks are added to the respective axes (even when absent). A list of two Booleans will set the x and y ticks separately (eg: ticks=[True, False]). The default value is True.
+\x1b[94mticks_number\x1b[0m
+It sets the number of data ticks printed on each axis. If a list of two values is provided, the number of ticks for each axis is set independently (eg: ticks_number = [5, 6]). If set to 0, no ticks are printed. The default value is 5. Alternatively use set_ticks_number(num) after the scatter function.
+Note: you could also directly provide all ticks coordinates and labels for each axis using the functions set_xticks and set_yticks. Access their docstrings for further guidance. In this case the value of ticks_number would not affect what is printed. 
 
-\x1b[94mspacing\x1b[0m
-It sets the spacing between the x and y ticks. When a list of two numbers is given, the spacing of the x and y ticks are set separately (eg: spacing=[5, 8]). Only positive integers are allowed. The default value is [10, 5]. Alternatively you could use set_spacing(spacing) after the scatter function. 
+\x1b[94mticks_length\x1b[0m
+It sets the maximum allowed number of characters of all data ticks on each axes. If the number of characters of any of the ticks coordinates is longer then this value, the ticks are re-scaled and an equation would appear at the end of the plot to clarify the conversion. If a list of two values is provided, the ticks length are set independently (eg: ticks_length = [5, 6]). If set to 0, no ticks are printed. The default value is 4. Alternatively use set_ticks_length(num) after the scatter function. 
+Note: you could also directly provide all ticks coordinates and labels for each exes using the functions set_xticks and set_yticks. Access their docstrings for further guidance. 
 
-\x1b[94mequations\x1b[0m
-When True, the equations - needed to to find the real x and y values from the plot coordinates - are added at the end of the plot. The default value is False.
+\x1b[94mtitle\x1b[0m
+It sets the title of the plot. Alternatively use set_title(label) after the scatter function. 
 
-\x1b[94mdecimals\x1b[0m
-It sets the number of decimal points shown in the equations. Only positive integers are allowed. The default value is 2. Alternatively you could set the decimal points using set_decimals(decimals) after the scatter function.
+\x1b[94mxlabel\x1b[0m
+It sets the label of the x axis. Alternatively use set_xlabel(label) after the scatter function. 
+
+\x1b[94mylabel\x1b[0m
+It sets the label of the y axis. Alternatively use set_ylabel(label) after the scatter function. 
+
+\x1b[94mlabel\x1b[0m
+It sets the label of the current data set, which will appear in the legend at the end of the plot. The default value is an empty string. If all labels are an empty string no legend is printed. Alternatively use set_legend(labels) to set all labels (as a list of strings) after the scatter function. 
 """
  
 plot.__doc__ = """
-It is equivalent to the scatter function with the point option set to False and the line option set to True. See the scatter function docstring for further documentation. 
+It is equivalent to the scatter function with the point_marker option set to "" and the line option set to True. This means that no data points will be plotted, and the lines between consecutive points will be plotted instead. Here is a basic example: 
 
-   \x1b[92mimport plotext as plx\x1b[0m
-   \x1b[92mplx.scatter(x, y)\x1b[0m
-   \x1b[92mplx.show()\x1b[0m
+   \x1b[92mimport plotext as plt\x1b[0m
+   \x1b[92mplt.plot(x, y)\x1b[0m
+   \x1b[92mplt.show()\x1b[0m
+
+Access the scatter function docstring for further documentation. 
+"""
+
+set_xticks.__doc__ = """
+It sets the data ticks on the x axis. The ticks should be provided as a list of values. If two lists are provided, the second is intended as the list of labels to be printed at the coordinates given by the first list. Here is an example:
+
+   \x1b[92mplt.scatter(data)\x1b[0m
+   \x1b[92mplt.set_xticks(xticks, xlabels)\x1b[0m
+   \x1b[92mplt.show()\x1b[0m
+
+If no list is provided, the ticks will be calculated automatically.
+If the ticks are not calculated automatically, any value given to the ticks_number parameter of the scatter or plot function will not affect the ticks plotted. On the contrary, the value of the ticks_length parameter needs to be higher that the maximum number of characters of the chosen ticks (or labels if present), otherwise some or all of the characters could be cut out of the plot. 
+"""
+
+set_yticks.__doc__ = """
+It sets the data ticks on the y axis. The ticks should be provided as a list of values. If two lists are provided, the second is intended as the list of labels to be printed at the coordinates given by the first list. Here is an example:
+
+   \x1b[92mplt.scatter(data)\x1b[0m
+   \x1b[92mplt.set_yticks(yticks, ylabels)\x1b[0m
+   \x1b[92mplt.show()\x1b[0m
+
+If no list is provided, the ticks will be calculated automatically.
+If the ticks are not calculated automatically, any value given to the ticks_number parameter of the scatter or plot function will not affect the ticks plotted. On the contrary, the value of the ticks_length parameter needs to be higher that the maximum number of characters of the chosen ticks (or labels if present), otherwise some or all of the characters could be cut out of the plot. 
+"""
+
+
+set_legend.__doc__ = """
+It sets the labels of each plot (as a list of strings) to be printed as a legend. If all labels are an empty string, no legend will be printed. 
 """
 
 show.__doc__ = """
@@ -585,11 +697,11 @@ It clears the terminal.
 """
 
 clear_plot.__doc__ = """
-It clears the plot canvas. 
+It resets all the plot parameters to their default value, including the data coordinates. 
 """
 
 sleep.__doc__ = """
-It adds a sleeping time to the computation and it is useful when plotting continuously updating data to remove screen flickering. An input of, for example, 0.01 would add approximately 0.01 secs to the computation. Manually tweak this value to reduce the flickering. 
+ It adds a sleeping time to the computation and it is useful when continuously plotting  updating data in order to decrease a possible screen flickering. An input of, for example, 0.01 would add approximately 0.01 secs to the computation. Manually tweak this value to reduce the possible flickering. 
 """
 
 savefig.__doc__ = """
@@ -601,44 +713,16 @@ It shows the available color codes.
 """
 
 get_version.__doc__ = """
-It returns the version of current plotext package.
+It returns the version_ of current plotext package.
 """
 
-get_x_from_col.__doc__ = """
-It returns the estimated x value from the column in which it is plotted, provided as input. 
-"""
-
-get_y_from_row.__doc__ = """
-It returns the estimated y value from the row in which it is plotted, provided as input. 
-"""
-
-run_test.__doc__ = """
-It runs a simple test of the plotext package.
-"""
-
-if 'idlelib.run' in sys.modules:
-    functions = [scatter, plot, show, clear_terminal, clear_plot, sleep, savefig, get_colors, get_version, get_x_from_col, get_y_from_row, run_test]
+if var.nocolor:
+    functions = [scatter, plot, set_xticks, set_yticks, show, clear_terminal, clear_plot, sleep, savefig, get_colors, get_version]
     for fun in functions:
-        fun.__doc__ = _remove_color(fun.__doc__)
+        fun.__doc__ = ut.remove_color(fun.__doc__)
 
-##############################################
 
 if __name__=="__main__":
     pass
-    #run_test()
-
-    import matplotlib.pyplot as plt
-    import numpy as np
-    
-    l1=3*10**10
-    l2=3.0000000000001*10**10
-    y=np.linspace(l1,l2,10)
-    plt.cla()
-    plt.plot(y)
-    #plt.show(block=0)
-
-    scatter(y, cols=170, rows=200, spacing=[2,1])
-    for i in range(1):
-        clear_terminal()
-        show()
-
+    import plot as plt
+    print(plt.set_yticks.__doc__)
