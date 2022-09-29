@@ -254,7 +254,7 @@ class build_class():
         # Add Legend Markers
         take_3 = lambda data: (data[ : 3] * 3)[ : 3]
         marker = [take_3(self.marker[s]) for s in Signals if labelled(s)]
-        replace_hd_marker = lambda marker: '🬗' if marker == 'fhd' else '▞' if marker == 'hd' else marker
+        replace_hd_marker = lambda marker: ut.hd_symbols[marker] if marker in ut.hd_symbols else marker
         marker = [[ut.space] + list(map(replace_hd_marker, el)) for el in marker]
         color =  [[ut.no_color] + take_3(c[s]) for s in Signals if labelled(s)]
         style =  [[ut.no_color] + take_3(st[s]) for s in Signals if labelled(s)]
