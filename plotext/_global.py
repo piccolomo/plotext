@@ -4,7 +4,6 @@ from plotext._utility import marker_codes, hd_symbols, sin
 from plotext._figure import _figure_class
 from plotext._utility import themes as _themes
 import plotext._utility as ut
-import plotext._global as glob
 from time import time, sleep
 from math import sqrt, ceil
 import datetime as dt
@@ -348,7 +347,7 @@ def test():
     
     subplot = figure.subplot(2, 2)
     subplot.canvas_color('gray+'); subplot.axes_color('gray+')
-    ut.download(glob.test_image_url, 'cat.jpg')
+    ut.download(test_image_url, 'cat.jpg')
     subplot.image_plot('cat.jpg', grayscale = False)
     ut.delete_file('cat.jpg')
     subplot.title('A very Cute Cat')
