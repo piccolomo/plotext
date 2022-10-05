@@ -117,7 +117,7 @@ def _play_video(path, from_youtube = False):
         fr = cap.get(cv2.CAP_PROP_FPS)
     frame_time = 1 / fr 
     #to_list = lambda frame: [[tuple(int(el) for el in tup) for tup in row] for row in frame]
-    pt = lambda time: f'{round(10 ** 3 * time, 1):05.1f}' + '  '
+    pt = lambda time: '{time:05.1f}  '.format(time=round(10 ** 3 * time, 1))
     real_time = video_time = 0
     while True:
         load_time = time()
