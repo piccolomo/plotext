@@ -4,7 +4,6 @@ from plotext._utility import marker_codes, hd_symbols, sin
 from plotext._figure import _figure_class
 from plotext._utility import themes as _themes
 import plotext._utility as ut
-import plotext._global as glob
 from time import time, sleep
 from math import sqrt, ceil
 import datetime as dt
@@ -117,7 +116,7 @@ def _play_video(path, from_youtube = False):
         fr = cap.get(cv2.CAP_PROP_FPS)
     frame_time = 1 / fr 
     #to_list = lambda frame: [[tuple(int(el) for el in tup) for tup in row] for row in frame]
-    pt = lambda time: f'{round(10 ** 3 * time, 1):05.1f}' + '  '
+    pt = lambda time: '{time:05.1f}  '.format(time=round(10 ** 3 * time, 1))
     real_time = video_time = 0
     while True:
         load_time = time()
@@ -348,7 +347,7 @@ def test():
     
     subplot = figure.subplot(2, 2)
     subplot.canvas_color('gray+'); subplot.axes_color('gray+')
-    ut.download(glob.test_image_url, 'cat.jpg')
+    ut.download(test_image_url, 'cat.jpg')
     subplot.image_plot('cat.jpg', grayscale = False)
     ut.delete_file('cat.jpg')
     subplot.title('A very Cute Cat')
