@@ -122,6 +122,8 @@ class monitor_class(build_class):
         self.ylabel[pos] = self.set_label(label)
         
     def set_xlim(self, left = None, right = None, xside = None):
+        left = self.date.string_to_time(left) if isinstance(left, str) else left
+        right = self.date.string_to_time(right) if isinstance(right, str) else right
         left = None if left is None else float(left)
         right = None if right is None else float(right)
         xlim = [left, right]
@@ -130,6 +132,8 @@ class monitor_class(build_class):
         self.xlim[pos] = xlim
 
     def set_ylim(self, lower = None, upper = None, yside = None):
+        lower = self.date.string_to_time(lower) if isinstance(lower, str) else lower
+        upper = self.date.string_to_time(upper) if isinstance(upper, str) else upper
         lower = None if lower is None else float(lower)
         upper = None if upper is None else float(upper)
         ylim = [lower, upper]

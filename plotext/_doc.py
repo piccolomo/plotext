@@ -49,11 +49,11 @@ _ylabel = """It sets the label of the y axis, relative to the active subplot.
 The parameter 'yside' allows to independently address either the 'left' (by default) or 'right' x axis (1 or 2 in short)."""
 ylabel = lambda: print(_ylabel)
 
-_xlim = """It sets the minimum and maximum values that could be plotted on the x axis. 
+_xlim = """It sets the minimum and maximum values that could be plotted on the x axis. It accepts dates in string form.
 The parameter 'xside' allows to independently address either the 'left' (by default) or 'right' y axis (1 or 2 in short)."""
 xlim = lambda: print(_xlim)
 
-_ylim = """It sets the minimum and maximum values that could be plotted on the y axis. 
+_ylim = """It sets the minimum and maximum values that could be plotted on the y axis. It accepts dates in string form.
 The parameter 'yside' allows to independently address either the 'lower' (by default) or 'upper' x axis (1 or 2 in short)."""
 ylim = lambda: print(_ylim)
 
@@ -65,11 +65,11 @@ _yscale = """It sets the scale of the x axis:  either 'linear' (as by default) o
 The parameter 'yside' allows to independently address either the 'lower' (by default) or 'upper' x axis (1 or 2 in short)."""
 yscale = lambda: print(_yscale)
 
-_xticks = """It sets the data ticks on the x axis. If two lists are provided, the second is intended as the list of labels to be printed at the coordinates given by the first list. 
+_xticks = """It sets the data ticks on the x axis. If two lists are provided, the second is intended as the list of labels to be printed at the coordinates given by the first list. It accepts dates in string form.
 The parameter 'xside' allows to independently address either the 'lower' (by default) or 'upper' x axis (1 or 2 in short)."""
 xticks = lambda: print(_xticks)
 
-_yticks = """It sets the data ticks on the y axis. If two lists are provided, the second is intended as the list of labels to be printed at the coordinates given by the first list. 
+_yticks = """It sets the data ticks on the y axis. If two lists are provided, the second is intended as the list of labels to be printed at the coordinates given by the first list. It accepts dates in string form.
 The parameter 'yside' allows to independently address either the 'left' (by default) or 'right' y axis (1 or 2 in short)."""
 yticks = lambda: print(_yticks)
 

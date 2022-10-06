@@ -1,0 +1,5 @@
+plotext.egg-info/
+build/
+dist/
+plotext/__pycache__/
+*~
