@@ -169,7 +169,7 @@ test_youtube_url = 'https://www.youtube.com/watch?v=FZM9Ibf0Guk'
 #########     Matplotlib Backend    ##########
 ##############################################
 
-def from_matplotlib(fig):
+def from_matplotlib(fig, marker = None):
     fig.canvas.draw()
     slots = (rows, cols) = fig.axes[0].get_subplotspec().get_gridspec().get_geometry()
     figure.clf(); #clt()
@@ -197,12 +197,12 @@ def from_matplotlib(fig):
             x, y = ut.transpose(point.get_offsets())
             color = [ut.to_rgb(point.to_rgba(el)) for el in point.get_facecolors()[0]]
             # can't find the right point colors
-            monitor.scatter(x, y, label = label, marker= 'x')
+            monitor.scatter(x, y, label = label, marker = marker)
         for line in sub.get_lines():
             label = line.get_label()
             label = label if label[0] != '_' else ''
             x, y = line.get_data()
-            monitor.plot(x, y, color = line.get_c(), label = label)
+            monitor.plot(x, y, marker = marker, color = line.get_c(), label = label)
         for b in sub.patches:
             label = b.get_label()
             label = label if label[0] != '_' else ''
@@ -215,7 +215,7 @@ def from_matplotlib(fig):
             fill = b.get_fill()
             fillx = fill if y0 == 0 else False
             filly = fill if x0 == 0 else False
-            monitor.plot(x, y, fillx = fillx, filly = filly, color = color, label = label)
+            monitor.plot(x, y, fillx = fillx, filly = filly, marker = marker, color = color, label = label)
         monitor.xlim(*sub.get_xlim())
         monitor.ylim(*sub.get_ylim())
 

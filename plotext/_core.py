@@ -305,8 +305,8 @@ def save_fig(path = None, append = False, keep_colors = False):
     figure.save_fig(path, append, keep_colors)
 savefig = save_fig
 
-def from_matplotlib(fig):
-    return _glob.from_matplotlib(fig)
+def from_matplotlib(fig, marker = None):
+    return _glob.from_matplotlib(fig, marker = marker)
 
 ##############################################
 ##########     Date Functions    #############

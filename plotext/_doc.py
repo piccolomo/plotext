@@ -346,7 +346,7 @@ The functions savefig() and save_fig() are equivalent."""
 save_fig = lambda: print(_save_fig)
 savefig = save_fig
 
-_from_matplotlib = """It takes a matplotlib figure and turns it into a plotext figure. 
+_from_matplotlib = """It takes a matplotlib figure and turns it into a plotext figure. It accepts the optional marker parameter.
 Note: this feature may require further development."""
 from_matplotlib = lambda: print(_from_matplotlib)
 
