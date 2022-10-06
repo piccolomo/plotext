@@ -367,7 +367,7 @@ class monitor_class(build_class):
     
     def check_marker(self, marker = None):
         marker = None if marker is None else str(marker)
-        marker = ut.plot_marker if marker is None else marker
+        marker = self.default.marker if marker is None else marker
         marker = ut.marker_codes[marker] if marker in ut.marker_codes else marker
         marker = marker if marker in ut.hd_symbols else marker[0]
         return marker

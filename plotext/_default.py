@@ -1,5 +1,5 @@
 #from plotext._utility import bar_marker
-from plotext._utility import no_color
+from plotext._utility import no_color, plot_marker
 
 class default_figure_class():
     
@@ -29,6 +29,7 @@ class default_figure_class():
 class default_monitor_class():
     
     def __init__(self):
+        self.marker = plot_marker
         self.color_init()
         self.axes_init()
         self.canvas_init()
