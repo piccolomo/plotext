@@ -178,9 +178,9 @@ def from_matplotlib(fig, marker = None):
     to_rgb = lambda rgb_norm: tuple([round(255 * el) for el in rgb_norm[:3]])
     figure.axes_color(to_rgb(fig.patch.get_facecolor()))
     for sub in fig.axes[:]:
-        p = sub.get_geometry()[2]
-        row = int((p - 1) / cols + 1)
-        col = p - (row - 1) * cols
+        p = sub.get_subplotspec().get_geometry()[2]
+        row = int((p - 0) / cols + 1)
+        col = p + 1 - (row - 1) * cols
         monitor = figure.subplot(row, col)
         monitor.xlabel(sub.get_xlabel())
         monitor.ylabel(sub.get_ylabel())
