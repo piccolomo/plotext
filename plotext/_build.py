@@ -128,10 +128,10 @@ class build_class():
         col_title = col_center if self.xlabel[1] is None else 0
         row_title = row_end + self.xaxes[1] + height_xlabels[1]
         alignment_title = "center" if self.xlabel[1] is None else "left"
-        self.matrix.add_horizontal_string(col_title, row_title, self.title, *ticks_colors, alignment = alignment_title, check_space = True) if self.title and height > 0 is not None else None
+        self.matrix.add_horizontal_string(col_title, row_title, self.title, *ticks_colors, alignment = alignment_title, check_space = True) if self.title and height > 0 else None
 
         # Add Upper X Label
-        self.matrix.add_horizontal_string(col_center, row_title, self.xlabel[1], *ticks_colors, alignment = "center", check_space = True) if self.xlabel[1] and height > 0 is not None else None
+        self.matrix.add_horizontal_string(col_center, row_title, self.xlabel[1], *ticks_colors, alignment = "center", check_space = True) if self.xlabel[1] and height > 0 else None
 
         # Add Lower X Ticks
         row_xticks = min(row_start - self.xaxes[0] - 1, height - 1)
@@ -178,13 +178,13 @@ class build_class():
         self.matrix.add_horizontal_string(col_start, row_start - 1, xaxis, self.ticks_color) if self.xaxes[0] and height_canvas >= -1 else None
 
         # Add Left Y Label
-        self.matrix.add_horizontal_string(0, 0, self.ylabel[0], *ticks_colors, check_space = True) if self.ylabel[0] and height > 0 is not None else None
+        self.matrix.add_horizontal_string(0, 0, self.ylabel[0], *ticks_colors, check_space = True) if self.ylabel[0] and height > 0 else None
         
         # Add Right Y Label 
-        self.matrix.add_horizontal_string(width - 1, 0, self.ylabel[1], *ticks_colors, check_space = True, alignment = "right") if self.ylabel[1] and height > 0 is not None else None
+        self.matrix.add_horizontal_string(width - 1, 0, self.ylabel[1], *ticks_colors, check_space = True, alignment = "right") if self.ylabel[1] and height > 0 else None
 
         # Add Lower X Label 
-        self.matrix.add_horizontal_string(col_center, 0, self.xlabel[0], *ticks_colors, alignment = "center", check_space = True) if self.xlabel[0] and height > 0 is not None else None
+        self.matrix.add_horizontal_string(col_center, 0, self.xlabel[0], *ticks_colors, alignment = "center", check_space = True) if self.xlabel[0] and height > 0 else None
 
         # Add Grid Lines
         hline = '─' * width_canvas
