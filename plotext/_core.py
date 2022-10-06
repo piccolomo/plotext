@@ -180,8 +180,8 @@ def plot(*args, xside = None, yside = None, marker = None, color = None, style =
     figure._active.plot(*args, xside = xside, yside = yside, marker = marker, color = color,  fillx = fillx, filly = filly, label = label)
     figure.show() if figure._interactive else None
 
-def candlestick(dates, data, orientation = None, colors = None, label = None):
-    figure._active.candlestick(dates, data, orientation = orientation, colors = colors, label = label)
+def candlestick(dates, data, xside = None, yside = None, orientation = None, colors = None, label = None):
+    figure._active.candlestick(dates, data, xside = xside, yside = yside, orientation = orientation, colors = colors, label = label)
     figure.show() if figure._interactive else None
 
 def bar(*args, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None, reset_ticks = None):

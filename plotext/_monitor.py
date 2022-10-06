@@ -498,7 +498,7 @@ class monitor_class(build_class):
                       minimum = None,
                       reset_ticks = False)
 
-    def draw_candlestick(self, dates, data, orientation = None, colors = None, label = None):
+    def draw_candlestick(self, dates, data, xside = None, yside = None, orientation = None, colors = None, label = None):
         orientation = self.check_orientation(orientation, 1)
         markers = ['sd', '│', '─'] #if markers is None else markers
         colors = ['green', 'red'] if colors is None else colors
@@ -513,13 +513,13 @@ class monitor_class(build_class):
             m, M = min(o, c), max(o, c)
             lab = label if i == 0 else None
             if orientation in ['v', 'vertical']:
-                self.draw([d, d], [M, h], color = color, marker = markers[1], lines = True)
-                self.draw([d, d], [l, m], color = color, marker = markers[1], lines = True)
-                self.draw([d, d], [m, M], color = color, marker = markers[0], lines = True, label = lab)
+                self.draw([d, d], [M, h], xside = xside, yside = yside, color = color, marker = markers[1], lines = True)
+                self.draw([d, d], [l, m], xside = xside, yside = yside, color = color, marker = markers[1], lines = True)
+                self.draw([d, d], [m, M], xside = xside, yside = yside, color = color, marker = markers[0], lines = True, label = lab)
             elif orientation in ['h', 'horizontal']:
-                self.draw([M, h], [d, d], color = color, marker = markers[2], lines = True)
-                self.draw([l, m], [d, d], color = color, marker = markers[2], lines = True)
-                self.draw([m, M], [d, d], color = color, marker = markers[0], lines = True, label = lab)
+                self.draw([M, h], [d, d], xside = xside, yside = yside, color = color, marker = markers[2], lines = True)
+                self.draw([l, m], [d, d], xside = xside, yside = yside, color = color, marker = markers[2], lines = True)
+                self.draw([m, M], [d, d], xside = xside, yside = yside, color = color, marker = markers[0], lines = True, label = lab)
         
 ##############################################
 ###########    Plotting Tools    #############
