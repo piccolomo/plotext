@@ -1,6 +1,6 @@
 # Basic Plots
 
-- [First Things To Know](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#first-things-to-know)
+- [Introduction](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#synopsis)
 - [Scatter Plot](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#scatter-plot)
 - [Line Plot](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#line-plot)
 - [Log Plot](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#log-plot)
@@ -10,15 +10,17 @@
 
 [Main Guide](https://github.com/piccolomo/plotext#guide)
 
-## First Things To Know
+## Introduction
+
+**First Things to Know**:
 
 - The **plot dimensions**, which by default adapt to the terminal size, can be changed using the `plotsize()` method described [here](https://github.com/piccolomo/plotext/blob/master/readme/settings.md#plot-size).
 - To plot a matrix of subplots, use the `subplots()` and `subplot()` methods, described in [this section](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md).
-- The **marker** parameter of most plotting functions can be used to change the marker character used to plot the data, as described in [this section](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#markers). 
-- Similarly the **color** parameter is used to define the color of the data points, as described in [this section](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors).
-- To rapidly generate some test **sinusoidal** or a **square wave** data, use respectively the `sin()` and `square()` methods, described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions).
+- The `marker` parameter of most plotting functions can be used to change the **marker** character used to plot the data, as described in [this section](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#markers). 
+- Similarly the `color` parameter is used to define the **color** of the data points, as described in [this section](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors).
+- To rapidly generate some test **sinusoidal** or a **square wave** data, use respectively the `sin()` or `square()` methods, described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions).
 - To add **labels** to the plot use the `title()`, `xlabel()`, and `ylabel()` methods, described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-labels), as well as the `label` parameter to add an entry to the [plot legend](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#multiple-data-sets).
-- To change the plot colors and ticks style, use the `axes_color()`, `canvas_color()`, `ticks_color()`, `ticks_style()` methods, described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors), or directly using the `theme()` function, described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#themes). 
+- To change the **plot colors** and ticks style, use the `axes_color()`, `canvas_color()`, `ticks_color()`, `ticks_style()` methods, described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors), or directly using the `theme()` function, described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#themes). 
 - To **add lines** to the plot, use the `grid()`, `horizontal_line()` or `vertical_line()` methods, described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-lines). 
 - To add or remove the **axes** use the methods `xaxes()`, `yaxes()`, or `frame()` described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-lines).
 - To change the **axes numerical ticks**, use the functions `xfrequency()`, `xticks()`, `yfrequency()` and `yticks()`, described [here](https://github.com/piccolomo/plotext/blob/master/readme/settings.md#axes-ticks).
@@ -82,7 +84,13 @@ More documentation can be accessed with `doc.plot()`.
 
 ## Log Plot
 
-For a logarithmic plot use the the `xscale("log")` or `yscale("log")` methods. Here is an example:
+For a logarithmic plot use the the `xscale("log")` or `yscale("log")` methods. 
+
+- the function `xscale()` accept the parameter `xside`, to independently set the scale of each `x` axes , `"lower"` or `"upper"` - in short `1` or `2`,
+- Analogously `yscale()` accept the parameter `yside`, to independently set the scale of each `y` axes , `"left"` or `"right"` - in short `1` or `2`,
+- the log function used is `math.log10`.
+
+Here is an example:
 
 ```python
 import plotext as plt
@@ -111,15 +119,13 @@ python3 -c "import plotext as plt; l = 10 ** 4; y = plt.sin(periods = 2, length 
 
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/data/log.png)
 
-- the function `plt.xscale()` accept the parameter `xside`, to independently set the scale of each `x` axes , `"lower"` or `"upper"` - in short `1` or `2`,
-- Analogously `plt.yscale()` accept the parameter `yside`, to independently set the scale of each `y` axes , `"left"` or `"right"` - in short `1` or `2`,
-- the log function used is `math.log10`.
-
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
 ## Stem Plot
 
-For a [stem plot](https://matplotlib.org/stable/gallery/lines_bars_and_markers/stem_plot.html) use either the `fillx` or `filly` parameters (available for most plotting functions) to fill the canvas with data points till the `y = 0` or `x = 0` level, respectively. 
+For a [stem plot](https://matplotlib.org/stable/gallery/lines_bars_and_markers/stem_plot.html) use either the `fillx` or `filly` parameters (available for most plotting functions) to fill the canvas with data points till the `y = 0` or `x = 0` level, respectively.  
+
+If a numerical value is passed to the `fillx` or `filly` parameters, it is intended as the `y` or `x` level, respectively, where the filling should stop. If the string value `"internal"` is provided, the filling will stop when another data point is reached respectively vertically or horizontally (if it exists).
 
 Here is an example:
 
@@ -138,13 +144,13 @@ python3 -c "import plotext as plt; y = plt.sin(); plt.plot(y, fillx = True); plt
 ```
 
 ![stem](https://raw.githubusercontent.com/piccolomo/plotext/master/data/stem.png)
-If a numerical value is passed to the `fillx` or `filly` parameters, it is intended as the `y` or `x` level, respectively, where the filling should stop. If the string value `"internal"` is provided, the filling will stop when another data point is reached respectively vertically or horizontally (if it exists).
-
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
 ## Multiple Data Sets
 
-Multiple data sets can be plotted using consecutive plotting functions. Here is an example:
+Multiple data sets can be plotted using consecutive plotting functions. The `label` parameter, available in most plotting function, is used to add an entry in the **plot legend**, shown in the upper left corner of the plot canvas.
+
+Here is an example:
 
 ```python
 import plotext as plt
@@ -167,13 +173,15 @@ python3 -c "import plotext as plt; y1 = plt.sin(); y2 = plt.sin(phase = -1); plt
 
 ![multiple-data](https://raw.githubusercontent.com/piccolomo/plotext/master/data/multiple-data.png)
 
-The `label` parameter, available in most plotting function, is used to add an entry in the **plot legend**, shown in the upper left corner of the plot canvas.
-
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 
 ## Multiple Axes Plot
 
-Data could be plotted on the lower or upper `x` axis, as well as on the left or right `y` axis, using respectively the `xside` and `yside` parameters. Here is an example:
+Data could be plotted on the lower or upper `x` axis, as well as on the left or right `y` axis, using respectively the `xside` and `yside` parameters. 
+
+On the left side of each legend entry, a symbol is introduce to easily identify on which couple of axes the data has been plotted to: its interpretation should be intuitive.
+
+Here is an example:
 
 ```python
 import plotext as plt
@@ -195,7 +203,5 @@ python3 -c "import plotext as plt; y1 = plt.sin(); y2 = plt.sin(2, phase = -1); 
 ```
 
 ![multiple-axes](https://raw.githubusercontent.com/piccolomo/plotext/master/data/multiple-axes.png)
-
-On the left side of each legend entry, a symbol is introduce to easily identify on which couple of axes the data has been plotted to: its interpretation should be intuitive.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
