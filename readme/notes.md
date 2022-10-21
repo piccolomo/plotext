@@ -10,19 +10,19 @@
 
 ## Install
 
-Here is how:
+Here are the terminal commands to install `plotext` on your machine:
 
 - `pip install plotext` for normal installation and  `pip install plotext --upgrade` to upgrade to the latest PyPi version.
 
 - `pip install "plotext[image]"` to install the optional dependency necessary for **image plotting** (including GIFs).
 
-- `pip install "plotext[video]"` to install the optional dependencies necessary for **video rendering**, which will also allow to plot images,.
+- `pip install "plotext[video]"` to install the optional dependencies necessary for **video rendering**, which will also allow to plot images.
 
 - `pip install "plotext[completion]"` to allow TAB completion in the [command line tool](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#command-line-tool).
 
 - The optional packages are `pillow` (for image plotting), `opencv-python` (for video rendering), `ffpyplayer` (to stream audio), `pafy` and `youtube-dl` (to stream YouTube), `shtab` (for TAB completion).
 
-- `pip install git+https://github.com/piccolomo/plotext`, to install the [GitHub version](https://github.com/piccolomo/plotext), if more updated and you feel courageous,
+- `pip install git+https://github.com/piccolomo/plotext`, to install the [GitHub version](https://github.com/piccolomo/plotext), if more updated and you feel courageous:
   
   - `pip install "plotext[image] @ git+https://github.com/piccolomo/plotext.git"` to include image plotting dependencies,
   - `pip install "plotext[video] @ git+https://github.com/piccolomo/plotext.git"` to include video plotting dependencies,
@@ -36,24 +36,45 @@ Here is how:
 
 ## Future Ideas
 
-Under request:
+From Issue Reports: 
+- solve time gap [Issue 148](https://github.com/piccolomo/plotext/issues/148) in weekends on date-time plots
+- add custom lines (dotted, or any marker), solving [Issue 145](https://github.com/piccolomo/plotext/issues/145)
+- add heatmap plot, solving [Issue 143](https://github.com/piccolomo/plotext/issues/143)
+- remove side symbol on legend if only one data is plotted on other axes, solving [Issue 142](https://github.com/piccolomo/plotext/issues/142)
+- no decimals if all axes ticks are all integers, solving [Issue 136](https://github.com/piccolomo/plotext/issues/138)
+- add unit_testing, as suggested in [Issue 130](https://github.com/piccolomo/plotext/issues/130)
 
+Any new relevant idea is welcomed under request, opening an [issue report](https://github.com/piccolomo/plotext/issues/new), here are some:
+- add bar `alignment` parameter
+- add `clear_settings()` method to clear only the plot settings (labels, title and so on) and not the data and colors
+- add `matrix_plot()` side bar to connect intensity level with actual matrix value
 - high resolution markers available on Windows and other rarer terminals (under request and not sure how)
-- add bar alignment parameter (if requested)
-- `clear_settings()` function to clear only the plot settings (labels, title and so on) and not the data, and colors
-- add `xside` and `yside` to `candlestick()` function
-- `matrix_plot()` side bar to connect intensity level with actual value
+- correct doc strings
+- remove `trend` parameter in `text()` method,
+- change `text` parameter to `label`  in `text()`
+- change `frame` parameter to `show` in `frame()` method
+- resolve this issue: subplots() seems to reset previous settings; eg:
+    `import plotext as plt; plt.clf(); plt.subplots(2,2);plt.subplot(1,2); plt.frame(0); plt.subplots(2,2); plt.show();` but strangely this work: `import plotext as plt; plt.clf(); plt.frame(0); plt.subplots(2,2); plt.show();`
+- add `plotter()` function, to scatter and plot at the same time (under request)
+- add `simple_hist()` function, just like `simple_bar()`
+- change `colorize()` to output a `matrix_class()` object such that it can be inserted in `text()`, `indicator()` or any `label` parameter and any two objects can be easily summed as strings would. 
+- allow simple plots and fast image rendering to fit in subplots 
+- add matrix plot side bar 
+- add bar `alignment` parameter 
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#notes)
 
 ## Credits
+
 From Pull Requests:
+
 - `@luator` for fixing legend symbol for braille markers in [Pull Request 135](https://github.com/piccolomo/plotext/pull/135)
 - `@Freed-Wu` for introducing TAB completions to the command line tool in [Pull Request 118](https://github.com/piccolomo/plotext/pull/118) 
 - `@pankajp` for allowing `plotext` to be used with `python3` with `-m` flag in [Pull Request 107](https://github.com/piccolomo/plotext/pull/107)
 - `@soraxas` for functionality that accounts for exponential float notation: [Pull 82](https://github.com/piccolomo/plotext/pull/82)
 
 From Issue Reports:
+
 - `@luator` for requesting `marker` parameter in the `from_matplotlib()` method in [Issue 134](https://github.com/piccolomo/plotext/issues/134)
 - `@darul75` for requesting multiple lines in [Issue 127](https://github.com/piccolomo/plotext/issues/127)
 - `@PhilipVinc` for `error()` plot idea, requested in [Issue 122](https://github.com/piccolomo/plotext/issues/122)
