@@ -36,24 +36,25 @@ Here are the terminal commands to install `plotext` on your machine:
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#notes)
 
-
 ## Future Ideas
 
 From Issue Reports: 
+
 - solve time gap [Issue 148](https://github.com/piccolomo/plotext/issues/148) in weekends on date-time plots
 - add custom lines (dotted, or any marker), solving [Issue 145](https://github.com/piccolomo/plotext/issues/145)
 - add heatmap plot, solving [Issue 143](https://github.com/piccolomo/plotext/issues/143)
 - remove side symbol on legend if only one data is plotted on other axes, solving [Issue 142](https://github.com/piccolomo/plotext/issues/142)
-- no decimals if all axes ticks are all integers, solving [Issue 136](https://github.com/piccolomo/plotext/issues/138)
-- add unit_testing, as suggested in [Issue 130](https://github.com/piccolomo/plotext/issues/130)
+- no decimals if all axes ticks are all integers, solving [Issue 136](https://github.com/piccolomo/plotext/issues/136)
+- add unit testing, as suggested in [Issue 130](https://github.com/piccolomo/plotext/issues/130)
 
 Any new relevant idea is welcomed under request, opening an [issue report](https://github.com/piccolomo/plotext/issues/new), here are some:
+
 - add bar `alignment` parameter
 - add `clear_settings()` method to clear only the plot settings (labels, title and so on) and not the data and colors
 - add `matrix_plot()` side bar to connect intensity level with actual matrix value
 - high resolution markers available on Windows and other rarer terminals (under request and not sure how)
 - correct doc strings
-- remove `trend` parameter in `text()` method,
+- remove `trend` parameter in `text()` method
 - change `text` parameter to `label`  in `text()`
 - change `frame` parameter to `show` in `frame()` method
 - resolve this issue: subplots() seems to reset previous settings; eg:
@@ -119,7 +120,7 @@ Available on [GitHub](https://github.com/piccolomo/plotext) only:
 - added `xside` and `yside` parameters to `candlestick()` function, solving another bug in [Issue 138](https://github.com/piccolomo/plotext/issues/138)
 - added `marker` parameter to the `from_matplotlib()` method, solving [Issue 134](https://github.com/piccolomo/plotext/issues/134)
 - made `from_matplotlib()` method to be compatible with `matplotlib 3.6`, solving [Issue 133](https://github.com/piccolomo/plotext/issues/133)
-- added date time support for xlim() and ylim() functions, solving [Issue 138](https://github.com/piccolomo/plotext/issues/138)
+- added date time support for `xlim()` and ylim() functions, solving [Issue 138](https://github.com/piccolomo/plotext/issues/138)
 
 Published on [PyPi](https://pypi.org/project/plotext):
 
@@ -127,7 +128,7 @@ Published on [PyPi](https://pypi.org/project/plotext):
 - allowed compatibility with Python 3.7, solving [Issue 130](https://github.com/piccolomo/plotext/issues/130)
 - allowed new line `'\n'` in `text()` to properly plot, solving [Issue 127](https://github.com/piccolomo/plotext/issues/127)
 - allowed TAB completion in command line tool retrieving [Pull Request 126](https://github.com/piccolomo/plotext/pull/126)
-- solved `xlim()` and ylim() wrong definition, solving [Issue 112](https://github.com/piccolomo/plotext/issues/112) and [Issue 123](https://github.com/piccolomo/plotext/issues/123)
+- solved `xlim()` and `ylim()` wrong definition, solving [Issue 112](https://github.com/piccolomo/plotext/issues/112) and [Issue 123](https://github.com/piccolomo/plotext/issues/123)
 - added `indicator()` function as requested in [Issue 121](https://github.com/piccolomo/plotext/issues/121)
 - added `shtab` optional dependency as introduced in [Pull Request 118](https://github.com/piccolomo/plotext/pull/118)
 - integrated changes in [Pull Request 107](https://github.com/piccolomo/plotext/pull/107) related to allowing `plotext` with `python` with `-m` flag 
@@ -351,7 +352,7 @@ This version is only available on [GitHub](https://github.com/piccolomo/plotext/
 
 ## Similar Projects
 
-These count, as well, as source of inspiration:
+These count as well as source of inspiration:
 
 - [plotille](https://github.com/tammoippen/plotille)
 - [termplot](https://github.com/justnoise/termplot)

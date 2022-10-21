@@ -21,7 +21,7 @@ You could easily add the following text labels to the plot:
 
 - The axes labels will all appear at the bottom of the plot, with the exception of the upper `x` axis label, which will appear on the top center of the plot, moving the plot title to the top left, if present.
 
-- To change the labels colors and styles, use the functions `ticks_colors()` and `ticks_style()`, as explained in [this section](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors).
+- To change the labels colors and styles, use the functions `ticks_colors()` and `ticks_style()`, as explained in [this](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors) and [this section](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#styles) respectively.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)
 
@@ -79,6 +79,8 @@ Colors could easily applied to the rest of the plot, using the `color` parameter
 Here are the types of color codes that could be provided to the `color` parameter, as well as the `fullground` or `background` parameters of the `colorize()` method, described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#colored-text):
 
 - the following **color string codes**, where `default` will use the default terminal color:
+
+- 
   ![color-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/data/color-codes.png)
 
 - An **integer between 0 and 255**, where the first 16 integer color codes produce the same results as the previous string color codes:

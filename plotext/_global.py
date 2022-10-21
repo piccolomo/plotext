@@ -163,7 +163,7 @@ test_bar_data_url = "https://raw.githubusercontent.com/piccolomo/plotext/master/
 test_image_url  = "https://raw.githubusercontent.com/piccolomo/plotext/master/data/cat.jpg"
 test_gif_url    = "https://raw.githubusercontent.com/piccolomo/plotext/master/data/homer.gif"
 test_video_url  = "https://raw.githubusercontent.com/piccolomo/plotext/master/data/moonwalk.mp4"
-test_youtube_url = 'https://www.youtube.com/watch?v=FZM9Ibf0Guk'
+test_youtube_url = 'https://www.youtube.com/watch?v=ZNAvVVc4b3E&t=75s'
 
 ##############################################
 #########     Matplotlib Backend    ##########

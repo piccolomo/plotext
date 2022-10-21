@@ -1,6 +1,6 @@
 # Basic Plots
 
-- [Introduction](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#synopsis)
+- [Introduction](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#introduction)
 - [Scatter Plot](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#scatter-plot)
 - [Line Plot](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#line-plot)
 - [Log Plot](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#log-plot)
@@ -8,29 +8,45 @@
 - [Multiple Data Sets](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#multiple-data-sets)
 - [Multiple Axes Plot](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#multiple-axes-plot)
 
-[Main Guide](https://github.com/piccolomo/plotext#guide)
+https://github.com/piccolomo/plotext#guide
 
 ## Introduction
 
 **First Things to Know**:
 
 - The **plot dimensions**, which by default adapt to the terminal size, can be changed using the `plotsize()` method described [here](https://github.com/piccolomo/plotext/blob/master/readme/settings.md#plot-size).
+
 - To plot a matrix of subplots, use the `subplots()` and `subplot()` methods, described in [this section](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md).
+
 - The `marker` parameter of most plotting functions can be used to change the **marker** character used to plot the data, as described in [this section](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#markers). High definition `"hd"` and `"fhd"` markers are available, including `"braille"`. 
+
 - Similarly the `color` parameter is used to define the **color** of the data points, as described in [this section](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors).
+
 - To rapidly generate some test **sinusoidal** or a **square wave** data, use respectively the `sin()` or `square()` methods, described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions).
+
 - To add **labels** to the plot use the `title()`, `xlabel()`, and `ylabel()` methods, described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-labels), as well as the `label` parameter to add an entry to the [plot legend](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#multiple-data-sets).
+
 - To change the **plot colors** and ticks style, use the `axes_color()`, `canvas_color()`, `ticks_color()`, `ticks_style()` methods, described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors), or directly using the `theme()` function, described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#themes). 
+
 - To **add lines** to the plot, use the `grid()`, `horizontal_line()` or `vertical_line()` methods, described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-lines). 
+
 - To add or remove the **axes** use the methods `xaxes()`, `yaxes()`, or `frame()` described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-lines).
+
 - To change the **axes numerical ticks**, use the functions `xfrequency()`, `xticks()`, `yfrequency()` and `yticks()`, described [here](https://github.com/piccolomo/plotext/blob/master/readme/settings.md#axes-ticks).
+
 - As with `matplotlib`, the plot is only displayed when the `show()` method is finally called.
+
 - To **display the plot dynamically** - without using `show()` - use the `interactive(True)` method, before plotting, as described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions).
+
 - To finally **save the plot** use the function `savefig(path)` described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions).
+
 - To **clear the figure, data or color** settings, use the `clear_figure()`, `clear_data()` and `clear_color()` methods, described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#clearing-functions).
+
 - To **clear the screen**, before or after plotting, use the `clear_terminal()` method, described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#clearing-functions).
+
 - The **documentation** of all `plotext` functions is available in its `doc` container, as described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#docstrings).
-- The package is under development, so any **bug report** or f**eature request** is very welcomed, just by [opening an issue](https://github.com/piccolomo/plotext/issues/new). 
+
+- The package is under development, so any **bug report** or **feature request** is very welcomed, just by [opening an issue](https://github.com/piccolomo/plotext/issues/new). 
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
 

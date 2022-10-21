@@ -14,9 +14,9 @@
 
 - The **frames size** will adapt to the screen size unless `plot_size()` is used before the steaming functions.
 
-- To **download videos** from YouTube, use the function `plt.get_youtube()` described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities).
+- To **download videos** from the given YouTube `url` to the specified `path`, use the function `plt.get_youtube()`.
 
-- Both streaming functions may require further development: any bug report or development idea is welcomed. 
+- Both streaming functions may require further development. Any [bug report](https://github.com/piccolomo/plotext/issues/new) or development idea is welcomed. 
 
 ## Video Plot
 
@@ -59,6 +59,6 @@ or directly on terminal:
 python3 -c "import plotext as plt; plt.play_youtube(plt.test_youtube_url)"
 ```
 
-which will render [this youtube video](https://www.youtube.com/watch?v=FZM9Ibf0Guk) on terminal. 
+which will render [this youtube video](https://www.youtube.com/watch?v=ZNAvVVc4b3E&t=75s) on terminal. 
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Play Videos](https://github.com/piccolomo/plotext/blob/master/readme/video.md)
