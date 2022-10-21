@@ -41,7 +41,7 @@ Here are the terminal commands to install `plotext` on your machine:
 
 From Issue Reports: 
 
-- solve time gap [Issue 148](https://github.com/piccolomo/plotext/issues/148) in weekends on date-time plots
+- add OHLC date-time plots, solving [Issue 149](https://github.com/piccolomo/plotext/issues/148)
 - add custom lines (dotted, or any marker), solving [Issue 145](https://github.com/piccolomo/plotext/issues/145)
 - add heatmap plot, solving [Issue 143](https://github.com/piccolomo/plotext/issues/143)
 - remove side symbol on legend if only one data is plotted on other axes, solving [Issue 142](https://github.com/piccolomo/plotext/issues/142)
