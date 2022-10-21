@@ -80,7 +80,7 @@ Here are the types of color codes that could be provided to the `color` paramete
 
 - the following **color string codes**, where `default` will use the default terminal color:
     ![color-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/data/color-codes.png)
-
+    
 - An **integer between 0 and 255**, where the first 16 integer color codes produce the same results as the previous string color codes:
   ![integer-codes](https://raw.githubusercontent.com/piccolomo/plotext/master/data/integer-codes.png)
 
