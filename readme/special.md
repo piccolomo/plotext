@@ -110,7 +110,9 @@ python3 -c "import plotext as plt; l = 1000; frames = 200; plt.title('Streaming 
 To plot a 2D pixelled representation of a matrix, use the function `matrix_plot()`. 
 
 - The intensity of the pixel (how light it is) is proportional to the correspondent element in the matrix.
+
 - The parameter `fast`, if set to True, allows to plot much faster, but the plot final dimensions will be locked to the whatever size was previously chosen, and won't adapt to the terminal or subplot size; also any setting function which follows will not have any effect (like `xlabel()`, `frame()` and so on).
+
 - The same function can **plot in colors**, if each pixel is an RGB tuple of three integers, between 0 and 255.
 
 Here is a coded example:
