@@ -1,10 +1,10 @@
 # Special Plots
 
-- [Error Plot](https://github.com/piccolomo/plotext/blob/master/readme/other.md#error-plot)
-- [Event Plot](https://github.com/piccolomo/plotext/blob/master/readme/other.md#event-plot)
-- [Streaming Data](https://github.com/piccolomo/plotext/blob/master/readme/other.md#streaming-data)
-- [Confusion Matrix](https://github.com/piccolomo/plotext/blob/master/readme/matrix.md#confusion-matrix)
-- [Matrix Plot](https://github.com/piccolomo/plotext/blob/master/readme/matrix.md#matrix-plot)
+- [Error Plot](https://github.com/piccolomo/plotext/blob/master/readme/special.md#error-plot)
+- [Event Plot](https://github.com/piccolomo/plotext/blob/master/readme/special.md#event-plot)
+- [Streaming Data](https://github.com/piccolomo/plotext/blob/master/readme/special.md#streaming-data)
+- [Confusion Matrix](https://github.com/piccolomo/plotext/blob/master/readme/special.md#confusion-matrix)
+- [Matrix Plot](https://github.com/piccolomo/plotext/blob/master/readme/special.md#matrix-plot)
 
 [Main Guide](https://github.com/piccolomo/plotext#guide)
 
@@ -34,11 +34,11 @@ python3 -c "import plotext as plt; plt.clf();  from random import random; l = 20
 
 More documentation can be accessed with `doc.error()`.
 
-[Main Guide](https://github.com/piccolomo/plotext#guide), [Other Plots](https://github.com/piccolomo/plotext/blob/master/readme/other.md)
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Special Plots](https://github.com/piccolomo/plotext/blob/master/readme/special.md)
 
 ## Event Plot
 
-To signal the timing of certain events, `event_plot()` function could be of use. Here is an example:
+To signal the timing of certain events the `event_plot()` function could be of use. Here is an example:
 
 ```python
 import plotext as plt
@@ -67,11 +67,11 @@ python3 -c "import plotext as plt; from random import randint; from datetime imp
 
 More documentation can be accessed with `doc.event_plot()`.
 
-[Main Guide](https://github.com/piccolomo/plotext#guide), [Other Plots](https://github.com/piccolomo/plotext/blob/master/readme/other.md)
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Special Plots](https://github.com/piccolomo/plotext/blob/master/readme/special.md)
 
 ## Streaming Data
 
-When streaming a continuous flow of data, consider using the clearing methods, described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#clearing-functions), and the `sleep()` method to reduce a possible screen flickering.
+When streaming a continuous flow of data, consider using the `sleep()` method, to reduce a possible screen flickering, and the clearing methods described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#clearing-functions).
 
 Here is a coded example:
 
@@ -103,9 +103,9 @@ python3 -c "import plotext as plt; l = 1000; frames = 200; plt.title('Streaming 
 
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/data/stream.gif)
 
-[Main Guide](https://github.com/piccolomo/plotext#guide), [Basic Plots](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#basic-plots)
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Special Plots](https://github.com/piccolomo/plotext/blob/master/readme/special.md#basic-plots)
 
-#### Matrix Plot
+## Matrix Plot
 
 To plot a 2D pixelled representation of a matrix, use the function `matrix_plot()`. 
 
@@ -138,7 +138,7 @@ python3 -c "import plotext as plt; cols, rows = 200, 45; p = 1; matrix = [[(abs(
 
 More documentation can be accessed with `doc.matrix_plot()`.
 
-[Main Guide](https://github.com/piccolomo/plotext#guide), [Matrix Plots](https://github.com/piccolomo/plotext/blob/master/readme/matrix.md#matrix-plots)
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Special Plots](https://github.com/piccolomo/plotext/blob/master/readme/special.md#matrix-plots)
 
 ## Confusion Matrix
 
@@ -166,4 +166,4 @@ python3 -c "import plotext as plt; from random import randrange; l = 300; actual
 
 More documentation can be accessed with `doc.confusion_matrix()`.
 
-[Main Guide](https://github.com/piccolomo/plotext#guide), [Matrix Plots](https://github.com/piccolomo/plotext/blob/master/readme/matrix.md#matrix-plots)
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Special Plots](https://github.com/piccolomo/plotext/blob/master/readme/special.md#matrix-plots)

@@ -35,8 +35,8 @@ These functions are useful to save or change how the final result is outputted.
 - `save_fig(path)` **saves** the colorless version of **the plot**, as a text file, at the `path` specified:
   
   - if the path extension is `.html` the colors will be preserved,
-  - if `append = True` (it is `False` by default), the final result will be appended to the file instead of replacing it,
-  - if `keep_colors = True` (it is `False` by default), the `txt` version will keep the ansi color codes: in Linux systems, use `less -R plot_name.txt` to render the plot on terminal with colors.
+  - if `append = True` (`False` by default), the final result will be appended to the file instead of replacing it,
+  - if `keep_colors = True` (`False` by default), the `txt` version will keep the ansi color codes: in Linux systems, use `less -R plot_name.txt` to render the plot on terminal with colors.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#utilities)
 
@@ -105,7 +105,7 @@ plotext scatter --help
 
 - The  `--path` option is used to read from the specified path,
 
-- `--lines` is used to plot a long data table at chunks of given `LINES` (1000 by default). 
+- the `--lines` option is used to plot a long data table at chunks of given `LINES` (1000 by default). 
 
 - The tool recognizes the keyword `test` as path, to internally downloads and finally remove some test file. Here are some example: 
   
@@ -121,9 +121,9 @@ plotext scatter --help
   plotext youtube --url test
   ```
 
-- you can type `python3 -m plotext` (or `python -m plotext` depending on your system) instead of `plotext` on your terminal, if the command tool is not directly available to your terminal.
+- you can type `python3 -m plotext` (or `python -m plotext` depending on your system) instead of `plotext` on your terminal, if the command tool is not directly available.
 
-- to allow TAB completion, install `plotext` with flag `[completion]`. For issues on this feature, please report [here](https://github.com/piccolomo/plotext/pull/118). 
+- to allow TAB completion, install `plotext` with flag `[completion]`, as explained [here](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#install). For issues on this feature, please report [here](https://github.com/piccolomo/plotext/pull/118). 
 
 The second way to use `plotext` directly on terminal requires the translation of a script into a single string and passing it to the `python3 -c` ` tool. For example:
 
@@ -140,8 +140,9 @@ translates into:
 python3 -c "import plotext as plt; plt.scatter(plt.sin()); plt.title('Scatter Plot'); plt.show();"
 ```
 
-- Each line has to terminate with a `;` and not a new line,
-- strings should be surrounded by the single quote character `'` , and the double quote `"` should be avoided.
+- Each line has to terminate with a `;` and not a new line.
+
+- Strings should be surrounded by the single quote `'` , while the double quote `"` should be avoided.
 
 Each coded example in this [guide](https://github.com/piccolomo/plotext#guide) is followed by the correspondent direct terminal command line (of the second type).
 
@@ -164,9 +165,11 @@ plt.colorize("RGB color codes",             (16, 100, 200), "default",   (200, 1
 
 ![colorize](https://raw.githubusercontent.com/piccolomo/plotext/master/data/colorize.png)
 
-- The available color codes are presented [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors), while the available styles [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#styles),
-- using the `flash` style will result in an actual flashing string,
-- to remove any coloring use the `uncolorize()` method.
+- The available color codes are presented [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors), while the available styles [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#styles).
+
+- Using the `flash` style will result in an actual flashing string.
+
+- To remove any coloring use the `uncolorize()` method.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#utilities)
 
@@ -175,10 +178,12 @@ plt.colorize("RGB color codes",             (16, 100, 200), "default",   (200, 1
 All main `plotext` methods have a doc-string that can be accessed in three ways. For example the doc-string of the `scatter()` function can be accessed:
 
 - using `print(scatter.__doc__)`,
+
 - more easily through the `doc` container with `doc.scatter()`,
+
 - with `doc.all()` which prints all `plotext` doc-strings.
 
-Here are some methods that directly output usefull guides:
+Here are some methods that directly output useful `plotext` guides:
 
 - the `markers()` method displays the available **marker codes**, also discussed  [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#markers),
 

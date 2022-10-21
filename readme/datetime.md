@@ -18,16 +18,16 @@
 
 * The date-time string forms are [the standard ones](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes), with the `%` symbol removed for simplicity; eg: `d/m/Y` (by default), or `d/m/Y H:M:S`.
 
-* Most of the functions that follow allow to set its input and output form independently if needed and possible, with their dedicated parameters.
+* Most of the functions that follow allow to set its input and output form independently, if needed and possible, with their dedicated parameters.
 - To get today in `datetime` or string form use `today_datetime()` and `today_string()` respectively.
 
-- To turn a `datetime` object into a string use `datetime_to_string()` and `datetimes_to_string()` for a list instead. 
+- To turn a `datetime` object into a string use `datetime_to_string()` or `datetimes_to_string()` for a list instead. 
 
 - To turn a string to a `datetime` object use `string_to_datetime()`.
 
 - To turn a string to a numerical timestamp use `string_to_time()` and `strings_to_time()` for a list of strings.
 
-- The method `set_time0()` sets the origin of time to the string provided; this function is useful in `log` scale, in order to avoid *hitting* the 0 timestamp,
+- The method `set_time0()` sets the origin of time to the string provided; this function is useful in `log` scale, in order to avoid *hitting* the 0 timestamp.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Datetime Menu](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#datetime-plots)
 
@@ -72,7 +72,7 @@ Note that you could easily add [text](https://github.com/piccolomo/plotext/blob/
 
 ## Candlestick Plot
 
-For this kind of plot, use the function `candlestick()`, which requires a list of date-time strings and a dictionary with the following mandatory keys: `'Open'`, `'Close'`, `'High'`, and `'Low'`, where each correspondent value should be a list of prices. 
+For this kind of plot, use the function `candlestick()`, which requires a list of date-time strings and a dictionary with the following mandatory keys: `'Open'`, `'Close'`, `'High'`, and `'Low'`, and where each correspondent is a list of prices. 
 
 Here is an example, which requires the package `yfinance`:
 

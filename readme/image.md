@@ -9,15 +9,21 @@
 
 To plot an image use the `image_plot(path)` function. 
 
-- It is recommended to use the function `plotsize()` before `image_plot()`, especially for larger images, to initially reduce the image size and so the computational load.
-- To plot much faster set the `fast` to `True`. Note that, in this case, the plot dimensions will be locked to the whatever size was previously chosen, and won't adapt to the terminal or subplot size; also any setting function which follows will not have any effect (like `xlabel()`, `frame()` and so on).
+- It is recommended to use the `plotsize()` method before `image_plot()`, especially for larger images, to initially reduce the image size and so the computational load.
+
+- To plot much faster set the `fast` parameter to `True`. In this case, the plot dimensions will be locked to the whatever size was previously chosen, and won't adapt to the terminal or subplot size; also any setting function which follows will not have any effect (like `xlabel()`, `frame()` and so on).
+
 - A curious visual effect is obtained using for example `marker = list("CuteCat")` with `style = 'inverted'`: try it out! :-)
+
 - Use the parameter `grayscale` to plot in gray-scale.
+
 - To easily manipulate file paths, use the tools described in [this section](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities).
-- To save the result **in colors**, as an `html` page, use the function `plt.savefig()`, described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions).
+
 - To plot images **beyond the terminal size** use the function `plt.limit_size()`, described [here](https://github.com/piccolomo/plotext/blob/master/readme/settings.md#plot-size), or the app developed [here](https://github.com/piccolomo/plotext/blob/master/readme/environments.md#tkinter), using `tkinter`.
 
-In this example, a test image is downloaded in the home folder, visualized and finally removed:
+- To save the result **in colors**, as an `html` page, use the function `plt.savefig()`, described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions).
+
+In this example, a [test image](https://raw.githubusercontent.com/piccolomo/plotext/master/data/cat.jpg) is downloaded in the home folder, visualized and finally removed:
 
 ```python
 import plotext as plt
@@ -45,7 +51,7 @@ More documentation can be accessed with `doc.image_plot()`.
 
 To render a GIF image use the function `play_gif(path)`. Note that the function `show()` is not necessary in this case, as it is called internally.
 
-In this example, a test GIF is downloaded in the home folder, visualized and finally removed:
+In this example, a [test GIF](https://raw.githubusercontent.com/piccolomo/plotext/master/data/homer.gif) is downloaded in the home folder, visualized and finally removed:
 
 ```python
 import plotext as plt

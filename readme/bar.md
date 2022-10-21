@@ -13,7 +13,7 @@
 Simply, use the `bar()` method:
 
 - the `marker`, `color`, and `fill` properties of the bar plot could be changed using their respective parameters: [markers](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#markers) and [colors](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors) are described in their linked sections.
-- the `orientation` and relative `width` (4 / 5 by default) of the bars could also be changed using their respective parameters.
+- the `orientation` and relative `width` (`4/5` by default) of the bars could also be changed using their respective parameters.
 
 Here is an example:
 
@@ -42,7 +42,7 @@ More documentation can be accessed with `doc.bar()`
 
 ## Horizontal Bar Plot
 
-Simply set `orientation = "horizontal"`  in the `bar()` function. 
+Simply set `orientation = "horizontal"`  in the `bar()` function. Here is an example:
 
 ```python
 import plotext as plt
@@ -204,9 +204,9 @@ data2 = [random.gauss(3, 1) for el in range(6 * l)]
 data3 = [random.gauss(6, 1) for el in range(4 * l)]
 
 bins = 60
-plt.hist(data1, bins, label="mean 0")
-plt.hist(data2, bins, label="mean 3")
-plt.hist(data3, bins, label="mean 6")
+plt.hist(data1, bins, label = "mean 0")
+plt.hist(data2, bins, label = "mean 3")
+plt.hist(data3, bins, label = "mean 6")
 
 plt.title("Histogram Plot")
 plt.show()

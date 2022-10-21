@@ -16,7 +16,7 @@
 
 - The **plot dimensions**, which by default adapt to the terminal size, can be changed using the `plotsize()` method described [here](https://github.com/piccolomo/plotext/blob/master/readme/settings.md#plot-size).
 - To plot a matrix of subplots, use the `subplots()` and `subplot()` methods, described in [this section](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md).
-- The `marker` parameter of most plotting functions can be used to change the **marker** character used to plot the data, as described in [this section](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#markers). 
+- The `marker` parameter of most plotting functions can be used to change the **marker** character used to plot the data, as described in [this section](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#markers). High definition `"hd"` and `"fhd"` markers are available, including `"braille"`. 
 - Similarly the `color` parameter is used to define the **color** of the data points, as described in [this section](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors).
 - To rapidly generate some test **sinusoidal** or a **square wave** data, use respectively the `sin()` or `square()` methods, described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#useful-functions).
 - To add **labels** to the plot use the `title()`, `xlabel()`, and `ylabel()` methods, described [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-labels), as well as the `label` parameter to add an entry to the [plot legend](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#multiple-data-sets).
@@ -84,11 +84,11 @@ More documentation can be accessed with `doc.plot()`.
 
 ## Log Plot
 
-For a logarithmic plot use the the `xscale("log")` or `yscale("log")` methods. 
+For a logarithmic plot use the the `xscale("log")` or `yscale("log")` methods:
 
-- the function `xscale()` accept the parameter `xside`, to independently set the scale of each `x` axes , `"lower"` or `"upper"` - in short `1` or `2`,
-- Analogously `yscale()` accept the parameter `yside`, to independently set the scale of each `y` axes , `"left"` or `"right"` - in short `1` or `2`,
-- the log function used is `math.log10`.
+- `xscale()` accepts the parameter `xside` to independently set the scale on each `x` axes , `"lower"` or `"upper"` (in short `1` or `2`).
+- Analogously `yscale()` accepts the parameter `yside` to independently set the scale on each `y` axes , `"left"` or `"right"` (in short `1` or `2`).
+- The log function used is `math.log10`.
 
 Here is an example:
 

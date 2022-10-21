@@ -14,13 +14,13 @@ By default the plot size adapts to the dimensions of the terminal. To change thi
 
 - `limit_size()` to set, whatever or not, to **limit the plot size to the terminal dimensions**. It requires to Boolean (one for each dimension) and it is only available for the main figure and not for its subplots, if present, and should be used before `plot_size()`.
 
-- In a matrix of subplot, the final widths / heights will be the same for each column / row and, by default, their *maximum* is taken. If `take_min()` is called, the minimum is considered instead.
+- In a matrix of subplot, the final widths / heights will be the same for each column / row and, by default, their *maximum* is taken. If `take_min()` is called, the minimum is considered instead. This method is available to all subplots levels. 
 
 Here are some other useful functions:
 
-- `terminal_size()`, in short `ts()`, returns the width and height of the terminal,
+- `terminal_size()`, in short `ts()`, returns the width and height of the terminal.
 
-- `terminal_width()`, in short `tw()`, returns the width of the terminal,
+- `terminal_width()`, in short `tw()`, returns the width of the terminal.
 
 - `terminal_height()`, in short `th()`, returns the height of the terminal.
 
@@ -30,21 +30,25 @@ Here are some other useful functions:
 
 The plot limits, on each axes, are set automatically; to set them manually you can use the following functions:
 
-- `xlim()` to set the `left` and `right` limits on the `x` axis; use the `xside` parameter, to address a specific `x` axis, `lower` or `upper`, `1` or `2` in short,
+- `xlim()` to set the `left` and `right` limits on the x axis; use the `xside` parameter, to address a specific x axis, `lower` or `upper`, `1` or `2` in short.
 
-- `ylim()` to set the `lower` and `upper` limits on the `y` axis; use the `yside` parameter, to address a specific `y` axis, `left` or `right`, `1` or `2` in short.
+- `ylim()` to set the `lower` and `upper` limits on the y axis; use the `yside` parameter, to address a specific y axis, `left` or `right`, `1` or `2` in short.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Settings](https://github.com/piccolomo/plotext/blob/master/readme/settings.md)
 
 ## Axes Ticks
 
-To change the numerical ticks on the `x` axis, you could use one of the following functions:
+To change the numerical ticks on the x axis, you could use one of the following functions:
 
-- `xfrequency()` to set the numerical ticks frequency on the `x` axis: the actual ticks will be evaluated automatically.
-- `xticks()` to manually sets the ticks to the list of `ticks` provided; if two lists are provided, the second is intended as the list of string `labels` to be placed at the coordinates provided by the first.
-- To change the direction of the axes use the functions `xreverse()`. 
-- In all cases, the parameter `xside` is used to address a specific `x` axis, `lower` or `upper`, `1`or`2` in short.
-- Naturally, the functions used to specify the ticks relative to the `y` axis, are `yfrequency()`, `yticks()` and `yreverse()` and they behave similarly. In all cases, to address a specific `y` axis, set the parameter `yside` to `left` or `right`, `1` or `2` in short.
+- `xfrequency()` to set the numerical ticks frequency on the x axis: the actual ticks will be evaluated automatically.
+
+- `xticks()` to manually sets to x `ticks` provided; if two lists are provided, the second is intended as the list of string `labels` to be placed at the coordinates provided by the first.
+
+- To change the direction of the x axes use the `xreverse()` function. 
+
+- In all cases, the parameter `xside` is used to address a specific x axis, `lower` or `upper`, `1`or`2` in short.
+
+- Naturally, the functions used to specify the ticks on the y axis, are `yfrequency()`, `yticks()` and `yreverse()` and they behave similarly. In all cases, to address a specific y axis, set the parameter `yside` to `left` or `right`, `1` or `2` in short.
 
 Here is a coded example:
 
@@ -74,5 +78,6 @@ python3 -c "import plotext as plt; l, p = 300, 2; plt.plot(plt.sin(length = l, p
 ```
 
 ![ticks](https://raw.githubusercontent.com/piccolomo/plotext/master/data/ticks.png)
+More documentation is available in the correspondent docstrings. 
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Settings](https://github.com/piccolomo/plotext/blob/master/readme/settings.md)

@@ -8,13 +8,13 @@
 
 ## Introduction
 
-- You can stream videos directly on terminal with the functions `play_video()` and `play_youtube(url)`.
+- You can **stream videos** directly on terminal with the functions `play_video()` and `play_youtube(url)`.
 
 - The function `show()` is not necessary in both cases, as it is called internally.
 
-- The frames will adapt to the screen size unless `plot_size()` is used before the steaming functions.
+- The **frames size** will adapt to the screen size unless `plot_size()` is used before the steaming functions.
 
-- To download videos from YouTube, use the function `plt.get_youtube()` described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities).
+- To **download videos** from YouTube, use the function `plt.get_youtube()` described [here](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#file-utilities).
 
 - Both streaming functions may require further development: any bug report or development idea is welcomed. 
 

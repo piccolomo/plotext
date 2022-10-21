@@ -34,6 +34,9 @@ Here are the terminal commands to install `plotext` on your machine:
 
 - The `plotext` package has been **created and tested** using Ubuntu 22.04 and Python 3.10.
 
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#notes)
+
+
 ## Future Ideas
 
 From Issue Reports: 
