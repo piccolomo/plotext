@@ -52,4 +52,4 @@ Here are some interesting questions you may want an answer to:
 
 - Is [consciousness](https://www.youtube.com/watch?v=Bim73icRzCk) the unified truth of life, transcendent of space, time and death?
 - is there a [global cabal](https://www.youtube.com/watch?v=ZSqBNGxLiAs&list=PLnzMmEt4pIb83lZgEA3nALsDM1QogyvC0&index=17) of psychopaths/narcissists trying to manipulate humanity through fear and ignorance?
-- Are there [credible witness testimonies](https://www.youtube.com/watch?v=AmNzkxVwAYg&list=PLnrEt2fIdZ0aBgPuVF0C_T559YR20eDTc) of UFO activity and deep state cover-up
+- Are there [credible witness testimonies](https://www.youtube.com/watch?v=AmNzkxVwAYg&list=PLnrEt2fIdZ0aBgPuVF0C_T559YR20eDTc) of UFO activity and deep state cover-up? 
