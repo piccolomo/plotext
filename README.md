@@ -24,7 +24,7 @@ The installing instructions are [here](https://github.com/piccolomo/plotext/blob
 
 ## Guide
 
-[Initial things to know](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#introduction)
+[Introduction](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#introduction)
 
 ##### Main Plots
 

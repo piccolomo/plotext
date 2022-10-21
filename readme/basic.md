@@ -8,7 +8,7 @@
 - [Multiple Data Sets](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#multiple-data-sets)
 - [Multiple Axes Plot](https://github.com/piccolomo/plotext/blob/master/readme/basic.md#multiple-axes-plot)
 
-https://github.com/piccolomo/plotext#guide
+[Main Guide](https://github.com/piccolomo/plotext#guide)
 
 ## Introduction
 
