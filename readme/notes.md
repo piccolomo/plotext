@@ -29,7 +29,7 @@ Here are the terminal commands to install `plotext` on your machine:
   - `pip install "plotext[video] @ git+https://github.com/piccolomo/plotext.git"` to include video plotting dependencies,
   - `pip install "plotext[completion] @ git+https://github.com/piccolomo/plotext.git"` to include the TAB completion dependency,
 
-- Use the `test()` method to quickly test (up to image rendering) your newly installed version of `plotext`. This function will download and finally remove a test image into your home folder. 
+- Use the `test()` method to quickly test (up to image rendering) your newly installed version of `plotext`. This function will download and finally remove a [test image](https://raw.githubusercontent.com/piccolomo/plotext/master/data/cat.jpg) into your home folder. 
 
 - Any relevant [Issue Report](https://github.com/piccolomo/plotext/issues) or [Pull request](https://github.com/piccolomo/plotext/pulls) is very welcomed. 
 
@@ -39,7 +39,7 @@ Here are the terminal commands to install `plotext` on your machine:
 
 ## Future Ideas
 
-From Issue Reports: 
+From [Issue Reports](https://github.com/piccolomo/plotext/issues): 
 
 - add OHLC date-time plots, solving [Issue 149](https://github.com/piccolomo/plotext/issues/148)
 - add custom lines (dotted, or any marker), solving [Issue 145](https://github.com/piccolomo/plotext/issues/145)
@@ -55,30 +55,31 @@ Any new relevant idea is welcomed under request, opening an [issue report](https
 - add `matrix_plot()` side bar to connect intensity level with actual matrix value
 - high resolution markers available on Windows and other rarer terminals (under request and not sure how)
 - correct doc strings
+- add direct parameters doc strings in the `doc` container
 - remove `trend` parameter in `text()` method
 - change `text` parameter to `label`  in `text()`
 - change `frame` parameter to `show` in `frame()` method
-- resolve this issue: subplots() seems to reset previous settings; eg:
+- resolve this issue: `subplots()` seems to reset previous settings; eg:
     `import plotext as plt; plt.clf(); plt.subplots(2,2);plt.subplot(1,2); plt.frame(0); plt.subplots(2,2); plt.show();` but strangely this work: `import plotext as plt; plt.clf(); plt.frame(0); plt.subplots(2,2); plt.show();`
 - add `plotter()` function, to scatter and plot at the same time (under request)
 - add `simple_hist()` function, just like `simple_bar()`
 - change `colorize()` to output a `matrix_class()` object such that it can be inserted in `text()`, `indicator()` or any `label` parameter and any two objects can be easily summed as strings would. 
 - allow simple plots and fast image rendering to fit in subplots 
 - add matrix plot side bar 
-- add bar `alignment` parameter 
+- allow user to decide plot legend position and frame
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#notes)
 
 ## Credits
 
-From Pull Requests:
+From [Pull requests](https://github.com/piccolomo/plotext/pulls):
 
 - `@luator` for fixing legend symbol for braille markers in [Pull Request 135](https://github.com/piccolomo/plotext/pull/135)
 - `@Freed-Wu` for introducing TAB completions to the command line tool in [Pull Request 118](https://github.com/piccolomo/plotext/pull/118) 
 - `@pankajp` for allowing `plotext` to be used with `python3` with `-m` flag in [Pull Request 107](https://github.com/piccolomo/plotext/pull/107)
 - `@soraxas` for functionality that accounts for exponential float notation: [Pull 82](https://github.com/piccolomo/plotext/pull/82)
 
-From Issue Reports:
+From [Issue Reports](https://github.com/piccolomo/plotext/issues):
 
 - `@luator` for requesting `marker` parameter in the `from_matplotlib()` method in [Issue 134](https://github.com/piccolomo/plotext/issues/134)
 - `@darul75` for requesting multiple lines in [Issue 127](https://github.com/piccolomo/plotext/issues/127)
@@ -99,7 +100,7 @@ From Issue Reports:
 - `@asartori86` for the awesome command line tool: [Issue 47](https://github.com/piccolomo/plotext/issues/47)
 - `@ethack` for  solving single bar error: [Pull 43](https://github.com/piccolomo/plotext/issues/43)
 - `@ethack` for  requesting log scale on bar plot: [Issue 37](https://github.com/piccolomo/plotext/issues/37)
-- `@gregwa1953` for  inspiring `plt.limit_size()`: [Issue 33](https://github.com/piccolomo/plotext/issues/33)
+- `@gregwa1953` for  inspiring `limit_size()`: [Issue 33](https://github.com/piccolomo/plotext/issues/33)
 - `@rbanffy` for suggestion of using 3 x 2 unicode mosaic box characters: [Issue 29](https://github.com/piccolomo/plotext/issues/29).
 - `@henryiii` for unittest suggestion: [Issue 32](https://github.com/piccolomo/plotext/issues/32)
 - `@whisller` and `@willmcgugan` for integration with `Rich` package: [Issue 26](https://github.com/piccolomo/plotext/issues/26)
@@ -121,7 +122,7 @@ Available on [GitHub](https://github.com/piccolomo/plotext) only:
 - added `xside` and `yside` parameters to `candlestick()` function, solving another bug in [Issue 138](https://github.com/piccolomo/plotext/issues/138)
 - added `marker` parameter to the `from_matplotlib()` method, solving [Issue 134](https://github.com/piccolomo/plotext/issues/134)
 - made `from_matplotlib()` method to be compatible with `matplotlib 3.6`, solving [Issue 133](https://github.com/piccolomo/plotext/issues/133)
-- added date time support for `xlim()` and ylim() functions, solving [Issue 138](https://github.com/piccolomo/plotext/issues/138)
+- added date time support for `xlim()` and `ylim()` methods, solving [Issue 138](https://github.com/piccolomo/plotext/issues/138)
 
 Published on [PyPi](https://pypi.org/project/plotext):
 
@@ -237,8 +238,8 @@ This version is only available on [GitHub](https://github.com/piccolomo/plotext/
 - added multiple and stacked bar charts
 - added datetime scatter and plot functions
 - added datetime class to better handle most datetime objects
-- added `plt.matrix_plot()` function
-- added `plt.image_plot()` to plot images
+- added `matrix_plot()` function
+- added `image_plot()` to plot images
 - plots now can also be saved in color using `.html` extension
 - added file class to better handle files and file paths
 - data can now also be plotted on the upper x axis
@@ -254,29 +255,29 @@ This version is only available on [GitHub](https://github.com/piccolomo/plotext/
 - `xfreq()` is now `xfrequency()`, `yfreq()` is `yfrequency()`
 - added doc class to easily access all functions doc-strings 
 - `get_canvas()` is now `build()`
-- `plt.frame()` function reinstated
+- `frame()` function reinstated
 
 #### In version 3.1
 
 - fixed [Issue 23](https://github.com/piccolomo/plotext/issues/23) on plot resizing 
-- added `plt.clear_data()` and `plt.test()` functions
+- added `clear_data()` and `test()` functions
 
 #### In version 3.0
 
 - direct terminal command line tool added (of first type)  
-- added marker "small" (with improved resolution), and new marker codes  
+- added marker `"small"` (with improved resolution), and new marker codes  
 - added matrix of subplots  
 - added log plots  
 - stem plot added  
 - added double `y` axes plot
 - added bar plot  
 - added date/time plot  
-- added function `plt.get_canvas()`  
-- added function `plt.sin()`  
-- added `plt.clear_figure()`  
-- `plt.figsize()` changed to `plt.plotsize()`  
-- `plt.nocolor()` changed to `plt.colorless()`  
-- `plt.frame()` function removed and replaced with `plt.xaxes()` and `plt.yaxes()`
+- added function `get_canvas()`  
+- added function `sin()`  
+- added `clear_figure()`  
+- `figsize()` changed to `plotsize()`  
+- `nocolor()` changed to `colorless()`  
+- `frame()` function removed and replaced with `xaxes()` and `yaxes()`
 - re-written most of the code 
 
 #### In version 2.3
@@ -288,43 +289,43 @@ This version is only available on [GitHub](https://github.com/piccolomo/plotext/
 #### In version 2.2
 
 - new `readme.md` description file, 
-- changed `plt.fig_size()` to `plt.figsize()`
-- changed `plt.facecolor()` to `plt.axes_color()`
+- changed `fig_size()` to `figsize()`
+- changed `facecolor()` to `axes_color()`
 - slightly modified the behaviour under Windows  
 - new markers that are Windows friendly (when the plot is saved, they occupy one character)
 - the plots are printed with a default color combination, instead of being colorless by default  
 - removed the `force_size` parameter  
-- added the `plt.grid()` function to add optional grid lines. 
-- added the `plt.frame()` function to add a frame (present by default)  
-- the only parameters available in the `plot` and `scatter` function are now only those which are dependent on the data set (like `point_marker`, `point_color`, `fill` etc..), all others can be set before the `plt.show()` function with dedicated functions (like `plt.ticks()`, `plt.title()` etc.. )
-- changed `plt.canvas_size()` to `plt-fig_size()` to avoid confusion
-- added `plt.nocolor()` function
+- added the `grid()` function to add optional grid lines. 
+- added the `frame()` function to add a frame (present by default)  
+- the only parameters available in the `plot` and `scatter` function are now only those which are dependent on the data set (like `point_marker`, `point_color`, `fill` etc..), all others can be set before the `show()` function with dedicated functions (like `ticks()`, `title()` etc.. )
+- changed `canvas_size()` to `fig_size()` to avoid confusion
+- added `nocolor()` function
 - improved the algorithm for getting the lines between consecutive points and the filling point (when using `fill = True`)
-- added `plt.clp()` and `plt.clt()` functions, short versions for `plt.clear_plot()` and `plt.clear_terminal()` respectively.
+- added `clp()` and `clt()` functions, short versions for `clear_plot()` and `clear_terminal()` respectively.
 - color codes updated
-- added function `plt.parameters()`
+- added function `parameters()`
 - added function `docstrings()`
 
 #### In version 2.1
 
 - the plot now shows the actual data ticks using a simpler algorithm  
 - changed `ticks_number` to `ticks`  
-- changed set functions like plt.set_title() to `plt.title()`  
+- changed set functions like `set_title()` to `title()`  
 - an optional grid can now be added  
 - added `fill` parameter  
-- changed `plt.axes_color()` to `plt.facecolor()` to adapt to `matplotlib`  
+- changed `axes_color()` to `facecolor()` to adapt to `matplotlib`  
 - new legend positioning  
 - new color codes  
 - code restructured and revised
 
 #### In version 2.0
 
-- the plot now shows the actual data ticks, which was more complicated then expected as the ticks should adapt to a limited amount of characters available (ticks_length)  
-- added `plt.set_xticks()` and `plt.set_yticks()` functions 
+- the plot now shows the actual data ticks, which was more complicated then expected as the ticks should adapt to a limited amount of characters available
+- added `set_xticks()` and `set_yticks()` functions 
 - labels can be added to the axes  
 - a title can be added to the plot  
 - a legend can be shown when plotting multiple data sets  
-- set functions involving a list of two parameters can be used in two different ways. For example `plt.set_xlim([xmin, xmax])` is equivalent to `plt.set_xlim(xmin, xmax)`  
+- set functions involving a list of two parameters can be used in two different ways. For example `set_xlim([xmin, xmax])` is equivalent to `set_xlim(xmin, xmax)`  
 - removed `point` and `line` parameters 
 - removed `background` parameter: `canvas_color` takes his place  
 - `axes_color` could now also be a list of two colors where the second sets the axes background color
@@ -339,9 +340,9 @@ This version is only available on [GitHub](https://github.com/piccolomo/plotext/
 - `plotext` now works also using Python IDLE3 but with no colors and no adaptive dimensions
 - new color codes with background codes added
 - added `force_size` parameter
-- adeed the function `plt.savefig()`
-- added the function `plt.get_version()`
-- added the function `plt.run_test()`
+- adeed the function `savefig()`
+- added the function `get_version()`
+- added the function `run_test()`
 - no need for `numpy` or `time` packages
 - the code has been updated and it is more legible
 - the documentation has been updated

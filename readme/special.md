@@ -103,7 +103,7 @@ python3 -c "import plotext as plt; l = 1000; frames = 200; plt.title('Streaming 
 
 ![example](https://raw.githubusercontent.com/piccolomo/plotext/master/data/stream.gif)
 
-[Main Guide](https://github.com/piccolomo/plotext#guide), [Special Plots](https://github.com/piccolomo/plotext/blob/master/readme/special.md#basic-plots)
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Special Plots](https://github.com/piccolomo/plotext/blob/master/readme/special.md)
 
 ## Matrix Plot
 
@@ -140,7 +140,7 @@ python3 -c "import plotext as plt; cols, rows = 200, 45; p = 1; matrix = [[(abs(
 
 More documentation can be accessed with `doc.matrix_plot()`.
 
-[Main Guide](https://github.com/piccolomo/plotext#guide), [Special Plots](https://github.com/piccolomo/plotext/blob/master/readme/special.md#matrix-plots)
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Special Plots](https://github.com/piccolomo/plotext/blob/master/readme/special.md)
 
 ## Confusion Matrix
 
@@ -168,4 +168,4 @@ python3 -c "import plotext as plt; from random import randrange; l = 300; actual
 
 More documentation can be accessed with `doc.confusion_matrix()`.
 
-[Main Guide](https://github.com/piccolomo/plotext#guide), [Special Plots](https://github.com/piccolomo/plotext/blob/master/readme/special.md#matrix-plots)
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Special Plots](https://github.com/piccolomo/plotext/blob/master/readme/special.md)

@@ -1,22 +1,20 @@
-[Main Guide](https://github.com/piccolomo/plotext#guide)
-
 # Subplots
 
-- Building a grid of subplots is mainly intuitive and requires simply the use of the `subplots(rows, cols)` method, to construct a grid of `rows` x `columns` subplots, and the `subplot(row, col)` to access a specific subplot at the given `row` and `column` (counting from the upper left corner of the matrix of plots and starting from 1) and define what and how to plot data in it.
+- Building a grid of subplots is mainly intuitive and requires simply the use of the `subplots()` method, to construct a grid of `rows` x `cols` subplots, and the `subplot()` method to access a specific subplot at the given `row` and `col` (counting from the upper left corner of the matrix of plots and starting from 1) and define what and how to plot data in it.
 
-- The `main()` method returns the main figure at the uppermost level, and sets the active figure to it; any further commands will refer to the entire figure and to any of its subplots, if present.
+- The `main()` method returns the main figure at the uppermost level, and sets the active figure to it (as by default); any further commands will refer to the entire figure and to any of its subplots, if present.
 
 - The `plot_size()` method sets the plot size of the active subplot (in units of character size), as explained [here](https://github.com/piccolomo/plotext/blob/master/readme/settings.md#plot-size).
 
 - The final widths/heights of a matrix of subplots will be the same for each column/row. By default, the maximum is taken, use `take_min()` to take the minimum instead.
 
-- Most of the commands referring to the active subplot, could be also passed directly; for example `subplot(1, 3); plotsize(100, 30)` becomes `subplot(1, 3).plotsize(300, 30)`.
+- Most of the commands referring to the active subplot, could be also passed directly to the `subplot()` method; for example `subplot(1, 3); plotsize(100, 30)` becomes `subplot(1, 3).plotsize(300, 30)`.
 
 - Subplots can be nested such that any subplot could creates its own matrix of subplots. For example, to create a 2 by 2 matrix where the first subplot is itself a 3 by 4 matrix, use `subplots(2, 2); subplot(1, 1); subplots(3, 4)` or directly `subplots(2, 2).subplot(1, 1).subplots(3, 4)`. 
 
 - Any method referring to a subplot, which itself is a matrix of subplots, will apply to all of them simultaneously. This is useful to avoid rewriting the same code for each element of the matrix.
 
-Here is a coded example, which requires the package `yfinance` and where a test image is downloaded in the home folder, visualized and finally removed:
+Here is a coded example, which requires the package `yfinance` and where a [test image](https://raw.githubusercontent.com/piccolomo/plotext/master/data/cat.jpg) is downloaded in the home folder, visualized and finally removed:
 
 ```python
 import plotext as plt

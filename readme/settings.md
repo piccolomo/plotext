@@ -8,13 +8,13 @@
 
 ## Plot Size
 
-By default the plot size adapts to the dimensions of the terminal. To change this behavior, use the following functions:
+By default the plot size adapts to the dimensions of the terminal. To change this behavior, use the following methods:
 
-- `plot_size(width, height)` to set the **plot size** to the desired `width` and `height`, in units of character dimensions.
+- `plot_size()` to set the **plot size** to the desired `width` and `height`, in units of character dimensions.
 
 - `limit_size()` to set, whatever or not, to **limit the plot size to the terminal dimensions**. It requires to Boolean (one for each dimension) and it is only available for the main figure and not for its subplots, if present, and should be used before `plot_size()`.
 
-- In a matrix of subplot, the final widths / heights will be the same for each column / row and, by default, their *maximum* is taken. If `take_min()` is called, the minimum is considered instead. This method is available to all subplots levels. 
+- In a matrix of subplot, the final widths / heights will be the same for each column / row and, by default, their *maximum* is taken. If `take_min()` is called, the *minimum* is considered instead. This method is available to all subplots levels. 
 
 Here are some other useful functions:
 
@@ -24,7 +24,7 @@ Here are some other useful functions:
 
 - `terminal_height()`, in short `th()`, returns the height of the terminal.
 
-[Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Settings](https://github.com/piccolomo/plotext/blob/master/readme/settings.md#plot-aspect)
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Settings](https://github.com/piccolomo/plotext/blob/master/readme/settings.md)
 
 ## Plot Limits
 

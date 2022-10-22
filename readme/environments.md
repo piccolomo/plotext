@@ -38,13 +38,13 @@ plx.show()
 
 ![matplotlib](https://raw.githubusercontent.com/piccolomo/plotext/master/data/matplotlib.png)
 
-These feature is under development: please report any bug, with some possible idea on how to fix it.
+These feature is under development: please report any bug or development idea.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md)
 
 ## Rich
 
-The integration with the package `rich` has been discussed in [issue 26](https://github.com/piccolomo/plotext/issues/26) and [issue 27](https://github.com/piccolomo/plotext/issues/27). Thanks to the kind help of its creator, `@willmcgugan`, as well as the user `@whisller`, it seems that the following code could be a good working template:
+The integration with the package `rich` has been discussed in [issue 26](https://github.com/piccolomo/plotext/issues/26) and [issue 27](https://github.com/piccolomo/plotext/issues/27). Thanks to the kind help of its creator `@willmcgugan`, as well as the user `@whisller`, it seems that the following code could be a good working template:
 
 ```python
 from rich.layout import Layout

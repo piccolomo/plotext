@@ -35,8 +35,8 @@ These functions are useful to save or change how the final result is outputted.
 - `save_fig(path)` **saves** the colorless version of **the plot**, as a text file, at the `path` specified:
   
   - if the path extension is `.html` the colors will be preserved,
-  - if `append = True` (`False` by default), the final result will be appended to the file instead of replacing it,
-  - if `keep_colors = True` (`False` by default), the `txt` version will keep the ansi color codes: in Linux systems, use `less -R plot_name.txt` to render the plot on terminal with colors.
+  - if `append = True` (`False` by default), the final result will be appended to the file, instead of replacing it,
+  - if `keep_colors = True` (`False` by default), the `txt` version will keep the ansi color codes and in Linux systems, the command `less -R path.txt` can be used to render the colored plot on terminal.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#utilities)
 
@@ -46,9 +46,9 @@ These functions are useful to save or change how the final result is outputted.
 
 - `script_folder()` returns the folder containing the script where it is run.
 
-- `parent_folder()` returns the parent folder of the `path` provided, at the level above specified.
+- `parent_folder()` returns the parent folder of the `path` provided, at the `level` above specified.
 
-- `join_paths()` joins as many strings into a proper file path. The `~` character will be interpreted as the user home folder which is considered by default anyway.
+- `join_paths()` joins as many strings into a proper file path. The `~` character will be interpreted as the user home folder. If no folder is provided, the home folder is considered by default.
 
 - `save_text()` saves some `text` to the `path` specified.
 
@@ -58,7 +58,7 @@ These functions are useful to save or change how the final result is outputted.
 
 - `transpose()` simply transposes a matrix.
 
-- `download()` downloads an image/gif/video or other, from the given `url` to the `path` selected.
+- `download()` downloads the content from the given `url` to the `path` selected.
 
 - `delete_file()` deletes the file at the `path` specified, if it exists.
 
@@ -68,9 +68,9 @@ These functions are useful to save or change how the final result is outputted.
 
 Here are some tools useful to test the `plotext` package:
 
-- `sin(periods, length, amplitude, phase, decay)` outputs a **sinusoidal signal** with the given parameters: its documentation is available using `doc.sin()`.
+- `sin()` outputs a **sinusoidal signal** with the given `periods`, `length`, `amplitude`, `phase` and `decay` rate. More documentation is available using `doc.sin()`.
 
-- `square(periods, length, amplitude)` outputs a **square wave signal** with the given parameters: its documentation is available using `doc.square()`.
+- `square()` outputs a **square wave signal** with the given n `periods`, `length` and `amplitude`. More documentation is available using `doc.square()`.
 
 - `test()` to perform a **quick plotting test** (up to image rendering): it will download and finally remove a test image. 
 
@@ -84,6 +84,8 @@ Here are some tools useful to test the `plotext` package:
   - `test_gif_url` is the url of a test GIF image,
   - `test_video_url` is the url of a test video,
   - `test_youtube_url` is the url to a test YouTube video.
+
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#utilities)
 
 ## Command Line Tool
 
@@ -103,9 +105,9 @@ plotext scatter --help
 
 ![scatter-tool](https://raw.githubusercontent.com/piccolomo/plotext/master/data/scatter-tool.png)
 
-- The  `--path` option is used to read from the specified path,
+- The  `--path` option is used to read from the specified path.
 
-- the `--lines` option is used to plot a long data table at chunks of given `LINES` (1000 by default). 
+- The `--lines` option is used to plot a long data table at chunks of given `LINES` (1000 by default). 
 
 - The tool recognizes the keyword `test` as path, to internally downloads and finally remove some test file. Here are some example: 
   
@@ -125,7 +127,7 @@ plotext scatter --help
 
 - to allow TAB completion, install `plotext` with flag `[completion]`, as explained [here](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#install). For issues on this feature, please report [here](https://github.com/piccolomo/plotext/pull/118). 
 
-The second way to use `plotext` directly on terminal requires the translation of a script into a single string and passing it to the `python3 -c` ` tool. For example:
+The second way to use `plotext` directly on terminal requires the translation of a script into a single string and passing it to the `python3 -c` tool. For example:
 
 ```python
 import plotext as plt
@@ -140,7 +142,7 @@ translates into:
 python3 -c "import plotext as plt; plt.scatter(plt.sin()); plt.title('Scatter Plot'); plt.show();"
 ```
 
-- Each line has to terminate with a `;` and not a new line.
+- Each `python` line has to terminate with a semi-colon `;` and not a new line.
 
 - Strings should be surrounded by the single quote `'` , while the double quote `"` should be avoided.
 
@@ -183,7 +185,7 @@ All main `plotext` methods have a doc-string that can be accessed in three ways.
 
 - with `doc.all()` which prints all `plotext` doc-strings.
 
-Here are some methods that directly output useful `plotext` guides:
+Here are some methods that directly output some useful `plotext` guides:
 
 - the `markers()` method displays the available **marker codes**, also discussed  [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#markers),
 

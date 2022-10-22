@@ -11,7 +11,7 @@ To plot an image use the `image_plot(path)` function.
 
 - It is recommended to use the `plotsize()` method before `image_plot()`, especially for larger images, to initially reduce the image size and so the computational load.
 
-- To plot much faster set the `fast` parameter to `True`. In this case, the plot dimensions will be locked to the whatever size was previously chosen, and won't adapt to the terminal or subplot size; also any setting function which follows will not have any effect (like `xlabel()`, `frame()` and so on).
+- To plot much faster set the `fast` parameter to `True`. In this case, the plot dimensions will be locked to the whatever size was previously chosen, and won't adapt to the terminal or subplot size; also any setting method which follows will not have any effect (like `xlabel()`, `frame()` and so on).
 
 - A curious visual effect is obtained using for example `marker = list("CuteCat")` with `style = 'inverted'`: try it out! :-)
 

@@ -9,7 +9,7 @@
 
 ## Line Plot
 
-To plot extra vertical or horizontal lines use the functions `horizontal_line()` or `vertical_line()` (in short `hline()` and `vline()` respectively). Note that both methods accept as coordinates date-time strings, if the plot allows it.
+To plot extra vertical or horizontal lines use the `horizontal_line()` or `vertical_line()` methods (in short `hline()` and `vline()` respectively). Note that both methods accept as coordinates date-time strings, if the plot allows it.
 
 ```python
 import plotext as plt
@@ -36,7 +36,7 @@ More documentation can be accessed with `doc.vertical_line()` and `doc.horizonta
 
 ## Text Plot
 
-To add text to a plot at certain $x$ and `y` coordinates use the `text()` function.  Note that this method accepts date-time strings as coordinates.
+To add text to the plot at certain `x` and `y` coordinates use the `text()` function which, if needed, accepts date-time strings as coordinates.
 
 Here is how to use it for a labelled bar plot:
 
@@ -63,8 +63,7 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 
 ![text](https://raw.githubusercontent.com/piccolomo/plotext/master/data/text.png)
 
-- 
-- the documentation of the `text()` function can be accessed with `doc.text()`.
+More documentation can be accessed with `doc.text()`.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Decorator Plots](https://github.com/piccolomo/plotext/blob/master/readme/decorator.md)
 
@@ -104,7 +103,7 @@ To add shapes to a plot use the `rectangle()` or `polygon()` functions.
 - The dimensions and position of each shape could be changed using its `x` and `y` parameters (for both rectangles and polygons), `sides` and `radius` (for polygons only).
 - A circle could be simulated by a polygon with high `sides`.
 - The `radius` parameter is the distance of the polygon vertexes to its center: for a simulated circle this corresponds to its actual radius, hence the name.
-- The aspect of the shapes could be changed with the `lines` and `fill` parameters, to plot lines between the vertexes (as by default) and fill the shape with colored markers (False by default),
+- The aspect of the shapes could be changed with the `lines` and `fill` parameters, to plot lines between the vertexes (as by default) and fill the shape with colored markers (`False` by default),
 
 Here is an example:
 

@@ -10,10 +10,10 @@
 
 ## Vertical Bar Plot
 
-Simply, use the `bar()` method:
+Simply use the `bar()` function:
 
 - the `marker`, `color`, and `fill` properties of the bar plot could be changed using their respective parameters: [markers](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#markers) and [colors](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors) are described in their linked sections.
-- the `orientation` and relative `width` (`4/5` by default) of the bars could also be changed using their respective parameters.
+- the `orientation` (vertical by default) and relative bar `width` (`4/5` by default) could also be changed using their respective parameters.
 
 Here is an example:
 
@@ -36,7 +36,7 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 
 ![vertical-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/data/vertical-bar.png)
 
-More documentation can be accessed with `doc.bar()`
+More documentation can be accessed with `doc.bar()`.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
 
@@ -50,7 +50,7 @@ import plotext as plt
 pizzas = ["Sausage", "Pepperoni", "Mushrooms", "Cheese", "Chicken", "Beef"]
 percentages = [14, 36, 11, 8, 7, 4]
 
-plt.bar(pizzas, percentages, orientation = "horizontal", width = 3 / 5) # or shorter orientation = 'h'
+plt.bar(pizzas, percentages, orientation = "horizontal", width = 3 / 5) # or in short orientation = 'h'
 plt.title("Most Favoured Pizzas in the World")
 plt.show()
 ```
@@ -63,10 +63,12 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 
 ![horizontal-bar](https://raw.githubusercontent.com/piccolomo/plotext/master/data/horizontal-bar.png)
 
+More documentation can be accessed with `doc.bar()`.
+
 To create a **simpler and sketchier version** of the same bar plot, use the function `simple_bar()` instead:
 
 - the advantage of this bar plot is that it produces a very predictable output in terms of bar width (a single character),
-- the disadvantages are that its only orientation is horizontal, it cannot be used inside a [matrix of subplots](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md) and any setting function which follows will not have any effect (like `xlabel()`, `plotsize()` and so on),
+- the disadvantages are that its only orientation is horizontal, it cannot be used inside a [matrix of subplots](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md#subplots) and any setting method which follows will not have any effect (like `xlabel()`, `plotsize()` and so on),
 
 Here is an example:
 
@@ -94,7 +96,7 @@ More documentation can be accessed with `doc.simple_bar()`.
 
 ## Multiple Bar Plot
 
-To plot multiple offsetted bars, where each group has the same labels, use the function `plt.multiple_bar()`, as in this example:
+To plot multiple offsetted bars, each group with the same label, use the function `plt.multiple_bar()`, as in this example:
 
 ```python
 import plotext as plt
@@ -143,7 +145,7 @@ Note that this kind of plot has the same disadvantages as `simple_bar()`, as dis
 
 ## Stacked Bar Plot
 
-To plot multiple bars on top of each other and with the same labels, use the function `plt.stacked_bar()` as in this example:
+To plot multiple bars on top of each other, each group with the same label, use the function `plt.stacked_bar()` as in this example:
 
 ```python
 import plotext as plt
