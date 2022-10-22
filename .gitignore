@@ -3,3 +3,5 @@ build/
 dist/
 plotext/__pycache__/
 *~
+plotext/#*
+#*
