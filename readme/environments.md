@@ -1,12 +1,13 @@
 # Environments
+
 - [Matplotlib](https://github.com/piccolomo/plotext/blob/master/readme/environments.md#matplotlib)
 - [Rich](https://github.com/piccolomo/plotext/blob/master/readme/environments.md#rich)
 - [Tkinter](https://github.com/piccolomo/plotext/blob/master/readme/environments.md#tkinter)
 
 [Main Guide](https://github.com/piccolomo/plotext#guide)
 
-
 ## Matplotlib
+
 To automatically transform a `matplotlib` plot into a `plotext` one use the function `from_matplotlib()`. Here is an example:
 
 ```python
@@ -37,13 +38,13 @@ plx.show()
 
 ![matplotlib](https://raw.githubusercontent.com/piccolomo/plotext/master/data/matplotlib.png)
 
-These feature is under development: please report any bug, with some possible idea on how to fix it.
+These feature is under development: please report any bug or development idea.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md)
 
-
 ## Rich
-The integration with the package `rich` has been discussed in [issue 26](https://github.com/piccolomo/plotext/issues/26) and [issue 27](https://github.com/piccolomo/plotext/issues/27). Thanks to the kind help of its creator, `@willmcgugan`, as well as the user `@whisller`, it seems that the following code could be a good working template:
+
+The integration with the package `rich` has been discussed in [issue 26](https://github.com/piccolomo/plotext/issues/26) and [issue 27](https://github.com/piccolomo/plotext/issues/27). Thanks to the kind help of its creator `@willmcgugan`, as well as the user `@whisller`, it seems that the following code could be a good working template:
 
 ```python
 from rich.layout import Layout
@@ -77,7 +78,7 @@ class plotextMixin(JupyterMixin):
         self.decoder = AnsiDecoder()
         self.phase = phase
         self.title = title
-        
+
     def __rich_console__(self, console, options):
         self.width = options.max_width or console.width
         self.height = options.height or console.height
@@ -121,13 +122,10 @@ with Live(layout, refresh_per_second=0.0001) as live:
 
 ![rich](https://raw.githubusercontent.com/piccolomo/plotext/master/data/rich.gif)
 
-
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md)
 
-
-
-
 ## Tkinter
+
 The integration with the package `tkinter` has been discussed in [Issue 33](https://github.com/piccolomo/plotext/issues/33). Thanks to the great inputs from user `@gregwa1953`, here is an initial take on it, where a test image is downloaded in the home folder, visualized and finally removed:
 
 ```python
@@ -188,7 +186,7 @@ class window():
           #self.root.geometry('%dx%d+0+0' % (300, 300))
           self.root.columnconfigure(0, weight = 1)
           self.root.rowconfigure(1, weight = 1)
-          
+
           self.upper_frame = frame(self.root, row = 0)
           self.lower_frame = frame(self.root, row = 1, stick = stick_all)
 
@@ -196,7 +194,7 @@ class window():
           self.scale = scale(self.upper_frame, col = 1)
           self.save_button = button(self.upper_frame, label = "Save", command = self.save_command, col = 2)
           self.close_button = button(self.upper_frame, label = "Close", command = self.close_command, col = 3)
-          
+
           self.clear_command()
           self.root.mainloop()
 
@@ -209,20 +207,20 @@ class window():
 
      def close_command(self):
           self.root.destroy()
-          
+
      def plot_command(self):
           self.plot_button.config(state = "disabled", relief = "sunken")
           self.scale.config(state = "disabled")
           self.clear_command()
           self.get_plot_size()
-          
+
           self.plotext_command()
           self.add_plot()
           self.add_colors()
-          
+
           self.plot_button.config(state = "normal", relief = "raised")
           self.scale.config(state = "normal")
-          
+
      def get_plot_size(self):
           self.root.update()
           size = self.lower_frame.winfo_width(), self.lower_frame.winfo_height()
@@ -234,7 +232,7 @@ class window():
           size = [size[i] / font_size[i] for i in range(2)]
           size = list(map(int, size))
           self.cols, self.rows = self.size = size
-          
+
      def plotext_command(self):
           plt.clf()
           plt.limitsize(False, False)
@@ -243,7 +241,7 @@ class window():
           plt.frame(False)
           plt.build()
           #plt.show()
-          
+
      def add_plot(self):
           # Add Colorless Plot 
           #self.rows, self.cols = plt.figure.monitor.matrix.size
@@ -253,7 +251,7 @@ class window():
           self.canvas = uncolorize(self.canvas)
           self.plot_text.insert("end", self.canvas)
           self.plot_text.update()
-          
+
      def add_colors(self): # Add Colors to Plot
           self.color = plt.figure.monitor.matrix.fullground[::-1]
           self.background = plt.figure.monitor.matrix.background[::-1]
@@ -273,10 +271,13 @@ if __name__ == '__main__':
      gui = window()
      plt.delete_file(image_path)
 ```
+
 which outputs:
 
 ![tkinter](https://raw.githubusercontent.com/piccolomo/plotext/master/data/tkinter.png)
-- Using the `scale` slider one can change the font size; lower font size makes the final plot bigger, which requires more computational time,
-- the `Save` button saves the plots as an `html` file in the user home folder.
+
+- Using the `scale` slider one can change the font size; lower font size makes the final plot bigger, which requires more computational time.
+
+- The `Save` button saves the plots as an `html` file in the user home folder.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md)
