@@ -107,7 +107,7 @@ python3 -c "import plotext as plt; l = 1000; frames = 200; plt.title('Streaming 
 
 ## Matrix Plot
 
-To plot a 2D pixelled representation of a matrix, use the function `matrix_plot()`. 
+To plot a 2D representation of a matrix, use the function `matrix_plot()`. 
 
 - The intensity of the pixel (how light it is) is proportional to the correspondent element in the matrix.
 

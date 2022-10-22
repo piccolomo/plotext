@@ -79,6 +79,6 @@ python3 -c "import plotext as plt; l, p = 300, 2; plt.plot(plt.sin(length = l, p
 
 ![ticks](https://raw.githubusercontent.com/piccolomo/plotext/master/data/ticks.png)
 
-More documentation is available in the correspondent docstrings. 
+More documentation is available in the correspondent doc-strings. 
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Settings](https://github.com/piccolomo/plotext/blob/master/readme/settings.md)

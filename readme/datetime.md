@@ -25,9 +25,9 @@
 
 - To turn a string into a `datetime` object use `string_to_datetime()`.
 
-- To turn a string to a numerical timestamp use `string_to_time()` and `strings_to_time()` for a list of strings.
+- To turn a string to a numerical time-stamp use `string_to_time()` and `strings_to_time()` for a list of strings.
 
-- The method `set_time0()` sets the origin of time to the string provided; this function is useful in `log` scale, in order to avoid *hitting* the 0 timestamp.
+- The method `set_time0()` sets the origin of time to the string provided; this function is useful in `log` scale, in order to avoid *hitting* the 0 time-stamp.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Datetime Menu](https://github.com/piccolomo/plotext/blob/master/readme/datetime.md#datetime-plots)
 

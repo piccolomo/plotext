@@ -116,12 +116,12 @@ These are the available **style codes** that could be provided to the `style` pa
 
 ## Themes
 
-To quickly chose a favoured color and style combination, for the entire figure or one of its subplots, use the `theme()` method. 
+To quickly chose a favorite color and style combination, for the entire figure or one of its subplots, use the `theme()` method. 
 The available themes could be displayed with the function `themes()`; here is its output: 
 ![themes](https://raw.githubusercontent.com/piccolomo/plotext/master/data/themes.png)
 
 - To remove all plot colors and styles from the current subplot, use the function `clear_color()`, in short `clc()`, which is equivalent to `theme('clear')`.
 
-- To add, tweak, rename any theme presented, please feel free to open an issue, dropping your favourite combination (canvas, axes, ticks color and style, and 3 signals in sequence).
+- To add, tweak, rename any theme presented, please feel free to open an issue, dropping your favorite combination (canvas, axes, ticks color and style, and 3 signals in sequence).
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Plot Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#plot-aspect)

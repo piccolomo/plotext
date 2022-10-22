@@ -94,7 +94,7 @@ From [Issue Reports](https://github.com/piccolomo/plotext/issues):
 - `@Neo-Oli` for requesting braille based markers in [Issue 89](https://github.com/piccolomo/plotext/issues/89)
 - `@pieterbergmans` for requesting reverse axes functionality in [Issue 86](https://github.com/piccolomo/plotext/issues/86)
 - `@MartinThoma` for inspiring the idea behind `event_plot()` in [Issue 83](https://github.com/piccolomo/plotext/issues/83)
-- `@wookayin` for requesting the backend function `from_matplotlib()` in [Issue 75](https://github.com/piccolomo/plotext/issues/75)
+- `@wookayin` for requesting the back-end function `from_matplotlib()` in [Issue 75](https://github.com/piccolomo/plotext/issues/75)
 - `@NLKNguyen` for ideas inspiring the `horizontal_line` and `vertical_line` functions: [Issue 65](https://github.com/piccolomo/plotext/issues/65)
 - `@jtplaarj` for the great ideas and codes regarding multiple and stacked bar plots: [Issue 48](https://github.com/piccolomo/plotext/issues/48)
 - `@asartori86` for the awesome command line tool: [Issue 47](https://github.com/piccolomo/plotext/issues/47)
@@ -102,7 +102,7 @@ From [Issue Reports](https://github.com/piccolomo/plotext/issues):
 - `@ethack` for  requesting log scale on bar plot: [Issue 37](https://github.com/piccolomo/plotext/issues/37)
 - `@gregwa1953` for  inspiring `limit_size()`: [Issue 33](https://github.com/piccolomo/plotext/issues/33)
 - `@rbanffy` for suggestion of using 3 x 2 unicode mosaic box characters: [Issue 29](https://github.com/piccolomo/plotext/issues/29).
-- `@henryiii` for unittest suggestion: [Issue 32](https://github.com/piccolomo/plotext/issues/32)
+- `@henryiii` for unit-test suggestion: [Issue 32](https://github.com/piccolomo/plotext/issues/32)
 - `@whisller` and `@willmcgugan` for integration with `Rich` package: [Issue 26](https://github.com/piccolomo/plotext/issues/26)
 - `@garid3000` for the idea of a function that returns the plot canvas: [Issue 20](https://github.com/piccolomo/plotext/issues/20)
 - `@robintw` and `@Sauci` for horizontal bar plot idea and code, respectively: [Issue 16](https://github.com/piccolomo/plotext/issues/16)
@@ -174,7 +174,7 @@ This version is only available on [GitHub](https://github.com/piccolomo/plotext/
 
 - added `play_gif()`, `play_video()`, `play_youtube()`, `download()`, `get_youtube()` functions, to play GIFs and videos 
 - rewritten command line tool
-- added the backend function `from_matplotlib()`, as requested in [Issue 75](https://github.com/piccolomo/plotext/issues/75)
+- added the back-end function `from_matplotlib()`, as requested in [Issue 75](https://github.com/piccolomo/plotext/issues/75)
 - added `candlestick()` plot function
 - new logic behind the creation of a matrix of subplots, with nested sub-matrices allowed and settings on top level peculating on lower levels
 - removed `span()` function
@@ -191,7 +191,7 @@ This version is only available on [GitHub](https://github.com/piccolomo/plotext/
 - introduced `event_plot()` as inspired by [Issue 83](https://github.com/piccolomo/plotext/issues/83)
 - added `text()` function to add string labels to the plot
 - added `keep_colors` parameter in `save_fig()` to keep ansi color codes in `txt` files (file could be read with `less -R file_path.txt`)
-- removed datetime class, all tools rewritten and moved to normal level
+- removed date-time class, all tools rewritten and moved to normal level
 - introduced `input_form` and `output_form` for date/time string objects
 - removed `plot_date()` and `scatter_date()` functions: date/time plots are now dealt freely by `plot()` and `scatter()`
 - most of the plotting functions accept now date/time strings as well as coordinates
@@ -233,11 +233,11 @@ This version is only available on [GitHub](https://github.com/piccolomo/plotext/
 - entire code re-written
 - faster plotting
 - 2 x 2 marker is now called `hd` (as for *high resolution*) instead of `small`
-- added higher resolution 3 x 2 unicode mosaics markers (not available in Windows), called `fhd` (as for *full high resolution*)
+- added higher resolution 3 x 2 Unicode mosaics markers (not available in Windows), called `fhd` (as for *full high resolution*)
 - added new color codes, which include 256 color codes and full RGB colors
 - added multiple and stacked bar charts
-- added datetime scatter and plot functions
-- added datetime class to better handle most datetime objects
+- added date-time scatter and plot functions
+- added date-time class to better handle most date-time objects
 - added `matrix_plot()` function
 - added `image_plot()` to plot images
 - plots now can also be saved in color using `.html` extension
@@ -291,7 +291,7 @@ This version is only available on [GitHub](https://github.com/piccolomo/plotext/
 - new `readme.md` description file, 
 - changed `fig_size()` to `figsize()`
 - changed `facecolor()` to `axes_color()`
-- slightly modified the behaviour under Windows  
+- slightly modified the behavior under Windows  
 - new markers that are Windows friendly (when the plot is saved, they occupy one character)
 - the plots are printed with a default color combination, instead of being colorless by default  
 - removed the `force_size` parameter  
@@ -340,7 +340,7 @@ This version is only available on [GitHub](https://github.com/piccolomo/plotext/
 - `plotext` now works also using Python IDLE3 but with no colors and no adaptive dimensions
 - new color codes with background codes added
 - added `force_size` parameter
-- adeed the function `savefig()`
+- added the function `savefig()`
 - added the function `get_version()`
 - added the function `run_test()`
 - no need for `numpy` or `time` packages
@@ -375,3 +375,5 @@ These count as well as source of inspiration:
 - Are there [credible witness testimonies](https://www.youtube.com/watch?v=AmNzkxVwAYg&list=PLnrEt2fIdZ0aBgPuVF0C_T559YR20eDTc) of UFO activity and deep state cover-up? 
 
 Your choice deciding the answer to such fundamental questions. I made mine a long time ago. My mind and heart is set free. 
+
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#notes)
