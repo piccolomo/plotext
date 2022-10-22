@@ -40,7 +40,7 @@ The installing instructions are [here](https://github.com/piccolomo/plotext/blob
 
 - [Settings](https://github.com/piccolomo/plotext/blob/master/readme/settings.md)
 - [Aspect](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md)
-- [Subplots](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md#subplots)-
+- [Subplots](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md#subplots)
 
 ##### Other  Resources
 
