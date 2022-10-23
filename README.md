@@ -18,7 +18,7 @@
 
 ![subplots](https://raw.githubusercontent.com/piccolomo/plotext/master/data/subplots.png)
 
-The installing instructions are [here](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#install), and the image code [here](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md#subplots).
+The **installing instructions** are [here](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#install) and the image code [here](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md#subplots).
 
 ---
 

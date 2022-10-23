@@ -45,7 +45,6 @@ From [Issue Reports](https://github.com/piccolomo/plotext/issues):
 - add custom lines (dotted, or any marker), solving [Issue 145](https://github.com/piccolomo/plotext/issues/145)
 - add heatmap plot, solving [Issue 143](https://github.com/piccolomo/plotext/issues/143)
 - remove side symbol on legend if only one data is plotted on other axes, solving [Issue 142](https://github.com/piccolomo/plotext/issues/142)
-- no decimals if all axes ticks are all integers, solving [Issue 136](https://github.com/piccolomo/plotext/issues/136)
 - add unit testing, as suggested in [Issue 130](https://github.com/piccolomo/plotext/issues/130)
 
 Any new relevant idea is welcomed under request, opening an [issue report](https://github.com/piccolomo/plotext/issues/new), here are some:
@@ -120,6 +119,7 @@ From [Issue Reports](https://github.com/piccolomo/plotext/issues):
 Available on [GitHub](https://github.com/piccolomo/plotext) only:
 
 - added `xside` and `yside` parameters to `candlestick()` function, solving another bug in [Issue 138](https://github.com/piccolomo/plotext/issues/138)
+- removed decimals points if axes ticks are all integers, solving [Issue 136](https://github.com/piccolomo/plotext/issues/136)
 - added `marker` parameter to the `from_matplotlib()` method, solving [Issue 134](https://github.com/piccolomo/plotext/issues/134)
 - made `from_matplotlib()` method to be compatible with `matplotlib 3.6`, solving [Issue 133](https://github.com/piccolomo/plotext/issues/133)
 - added date time support for `xlim()` and `ylim()` methods, solving [Issue 138](https://github.com/piccolomo/plotext/issues/138)
