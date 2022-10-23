@@ -5,7 +5,7 @@ from plotext._dict import *
 #########    Number Manipulation     ##########
 ###############################################
 
-def round(n, d = 0): # the standard round(0.5) = 0 instead of 1; this version rounds 0.5 to 1   
+def round(n, d = 0): # the standard round(0.5) = 0 instead of 1; this version rounds 0.5 to 1
     n *= 10 ** d
     f = math.floor(n)
     r = f if n - f < 0.5 else math.ceil(n)
@@ -36,7 +36,7 @@ def linspace(lower, upper, length = 10): # it returns a lists of numbers from lo
     return [lower + x * slope for x in range(length)]
 
 def sin(periods = 2, length = 200, amplitude = 1, phase = 0, decay = 0): # sinusoidal data with given parameters
-    f = 2 * math.pi * periods / (length - 1) 
+    f = 2 * math.pi * periods / (length - 1)
     phase =  math.pi * phase
     d = decay / length
     return [amplitude * math.sin(f * el + phase) * math.exp(- d * el) for el in range(length)]
@@ -51,16 +51,16 @@ def to_list(data, length): # eg: to_list(1, 3) = [1, 1 ,1]; to_list([1,2,3], 6) 
     data = data * math.ceil(length / len(data)) if len(data) > 0 else []
     return data[ : length]
 
-def difference(data1, data2) : # elements in data1 not in date2 
+def difference(data1, data2) : # elements in data1 not in date2
     return [el for el in data1 if el not in data2]
 
 ###############################################
 #########    List Transformation     ##########
 ###############################################
-    
+
 def log(data): # it apply log function to the data
     return [math.log10(el) for el in data] if isinstance(data, list) else math.log10(data)
- 
+
 def power10(data): # it apply log function to the data
     return [10 ** el for el in data]
 
@@ -110,7 +110,7 @@ def hstack(matrix, extra): # horizontal stack of two matrices
 
 def turn_gray(matrix): # it takes a standard matrix and turns it into an grayscale one
     M, m = max(join(matrix), default = 0), min(join(matrix), default = 0)
-    to_gray = lambda el: tuple([int(255 * (el - m) / (M - m))] * 3) if M != m else (127, 127, 127) 
+    to_gray = lambda el: tuple([int(255 * (el - m) / (M - m))] * 3) if M != m else (127, 127, 127)
     return [[to_gray(el) for el in l] for l in matrix]
 
 def brush(*lists): # remove duplicates from lists x, y, z ...
@@ -121,15 +121,15 @@ def brush(*lists): # remove duplicates from lists x, y, z ...
     #z = sorted(z)#, key = lambda x: x[0])
     lists = transpose(z, len(lists))
     return lists
- 
+
 ###############################################
 #########   String Manipulation     ###########
 ###############################################
 
-def only_spaces(string): # it returns True if string is made of only empty spaces or is None or '' 
+def only_spaces(string): # it returns True if string is made of only empty spaces or is None or ''
     return (type(string) == str) and (string == len(string) * space) #and len(string) != 0
 
-def format_time(time): # it properly formats the computational time 
+def format_time(time): # it properly formats the computational time
     t = time if time is not None else 0
     unit = 's' if t >= 1 else 'ms' if t >= 10 ** -3 else 'µs'
     p = 0 if unit == 's' else 3 if unit == 'ms' else 6
@@ -146,7 +146,7 @@ title_color = 'cyan+'
 def format_strings(string1, string2, color = positive_color): # returns string1 in bold and with color + string2 with a pre-formatted style
     return colorize(string1, color, "bold") + " " + colorize(string2, style = info_style)
 
-def correct_coord(string, label, coord): # In the attempt to insert a label in string at given coordinate, the coordinate is adjusted so not to hit the borders of the string 
+def correct_coord(string, label, coord): # In the attempt to insert a label in string at given coordinate, the coordinate is adjusted so not to hit the borders of the string
     l = len(label)
     b, e = max(coord - l + 1, 0), min(coord + l, len(string) - 1)
     data = [i for i in range(b, e) if string[i] is space]
@@ -174,7 +174,7 @@ def read_lines(text, delimiter = None, columns = None): # from a long text to we
         data.append(row)
     return data
 
-def pad_string(num, length): # pad a number with spaces before to reach length 
+def pad_string(num, length): # pad a number with spaces before to reach length
     num = str(num)
     l = len(num)
     return num + ' ' * (length - l)
@@ -182,7 +182,7 @@ def pad_string(num, length): # pad a number with spaces before to reach length
 def max_length(strings):
     strings = map(str, strings)
     return max(map(len, strings), default = 0)
-    
+
 ###############################################
 ##########   File Manipulation     ############
 ###############################################
@@ -201,7 +201,7 @@ def is_file(path, log = True): # returns True if path exists
 def script_folder(): # the folder of the script executed
     return parent_folder(inspect.getfile(sys._getframe(1)))
 
-def parent_folder(path, level = 1): # it return the parent folder of the path or file given; if level is higher then 1 the process is iterated 
+def parent_folder(path, level = 1): # it return the parent folder of the path or file given; if level is higher then 1 the process is iterated
     if level <= 0:
         return path
     elif level == 1:
@@ -209,7 +209,7 @@ def parent_folder(path, level = 1): # it return the parent folder of the path or
     else:
         return parent_folder(parent_folder(path, level - 1))
 
-def join_paths(*args): # it join a list of string in a proper file path; if the first argument is ~ it is turnded into the used home folder path 
+def join_paths(*args): # it join a list of string in a proper file path; if the first argument is ~ it is turnded into the used home folder path
     args = list(args)
     args[0] = _correct_path(args[0]) if args[0] == "~" else args[0]
     return os.path.abspath(os.path.join(*args))
@@ -229,7 +229,7 @@ def read_data(path, delimiter = None, columns = None, header = None): # it turns
     file.close()
     return read_lines(text, delimiter, columns)
 
-def write_data(data, path, delimiter = None, columns = None, log = True): # it turns a matrix into a text file 
+def write_data(data, path, delimiter = None, columns = None, log = True): # it turns a matrix into a text file
     delimiter = " " if delimiter is None else delimiter
     cols = len(data[0])
     cols = range(1, cols + 1) if columns is None else columns
@@ -276,7 +276,7 @@ platform = platform()
 
 # to enable ascii escape color sequences
 if platform == "windows":
-    import subprocess 
+    import subprocess
     subprocess.call('', shell = True)
 
 def terminal_size(): # it returns the terminal size as [width, height]
@@ -322,7 +322,7 @@ plot_marker = "hd" if platform == 'unix' else 'dot'
 hd_markers = {hd_codes[el] : el for el in hd_codes}
 fhd_markers = {fhd_codes[el] : el for el in fhd_codes}
 braille_markers = {braille_codes[el] : el for el in braille_codes}
-simple_bar_marker = '▇' 
+simple_bar_marker = '▇'
 
 @memorize
 def get_hd_marker(code):
@@ -335,7 +335,7 @@ def marker_factor(marker, hd, fhd, braille): # usefull to improve the resolution
 ###########    Color Utilities    ############
 ##############################################
 
-# A user could specify three types of colors 
+# A user could specify three types of colors
   # an integer for 256 color codes
   # a tuple    for RGB color codes
   # a string   for 16 color codes or styles
@@ -346,7 +346,7 @@ def marker_factor(marker, hd, fhd, braille): # usefull to improve the resolution
 
 #colors_no_plus = [el for el in colors if '+' not in el and el + '+' not in colors and el is not no_color] # basically just [black, white]
 
-def get_color_code(color): # the color number code from color string 
+def get_color_code(color): # the color number code from color string
     color = color.strip()
     return color_codes[color]
 
@@ -357,7 +357,7 @@ def get_color_name(code): # the color string from color number code
 def is_string_color(color):
     return isinstance(color, str) and color.strip() in colors
 
-def is_integer_color(color): 
+def is_integer_color(color):
     return isinstance(color, int) and 0 <= color <= 255
 
 def is_rgb_color(color):
@@ -450,7 +450,7 @@ def get_style_codes(style): # from many styles (separated by space) to as many n
     codes = [get_style_code(el) for el in style if el in styles]
     codes = no_duplicates(codes)
     return codes
-    
+
 def get_style_name(code): # from style number code to style name
     codes = list(style_codes.values())
     return styles[codes.index(code)] if code in codes else no_style
@@ -493,7 +493,7 @@ def set_sizes(sizes, size_max): # given certain widths (or heights) - some of th
         sizes[s] = available // to_set if sizes[s] is None else sizes[s]
     return sizes
 
-def fit_sizes(sizes, size_max): # honestly forgot the point of this function: yeeeeei :-) but it is useful - probably assumes all sizes not None (due to set_sizes) and reduces those that exceed size_max from last one to first 
+def fit_sizes(sizes, size_max): # honestly forgot the point of this function: yeeeeei :-) but it is useful - probably assumes all sizes not None (due to set_sizes) and reduces those that exceed size_max from last one to first
     bins = len(sizes)
     s = bins - 1
     #while (sum(sizes) != size_max if not_less else sum(sizes) > size_max) and s >= 0:
@@ -507,7 +507,7 @@ def fit_sizes(sizes, size_max): # honestly forgot the point of this function: ye
 #######     Build Class Utilities    #########
 ##############################################
 
-def get_first(data, test = True): # if test take the first element, otherwise the second 
+def get_first(data, test = True): # if test take the first element, otherwise the second
     return data[0] if test else data[1]
 
 def apply_scale(data, test = False): # apply log scale if test
@@ -526,7 +526,7 @@ def get_lim(data): # it returns the data minimum and maximum limits
     data = [el for el in data if numerical(el)]
     m = min(data, default = 0)
     M = max(data, default = 0)
-    m, M = (m, M) if m != M else (0.5 * m, 1.5 * m) if m == M != 0 else (-1, 1) 
+    m, M = (m, M) if m != M else (0.5 * m, 1.5 * m) if m == M != 0 else (-1, 1)
     return [m, M]
 
 def get_matrix_data(data, lim, bins): # from data to relative canvas coordinates
@@ -574,7 +574,7 @@ def get_fill_level(fill, lim, bins):
 
 def find_filling_values(x, y, y0):
     xn, yn, yf = [[]] * 3
-    l = len(x); 
+    l = len(x);
     while len(x) > 0:
         i = len(xn)
         xn.append(x[i])
@@ -603,7 +603,7 @@ def get_fill_boundaries(x, y):
 
 def fill_data(x, y, y0, *other): # it fills x, y with y data points reaching y0; and c are the list of markers and colors that needs to be elongated
     #y0 = get_fill_boundaries(x, y)
-    y0 = get_fill_boundaries(x, y) if isinstance(y0, str) else [y0] * len(x) 
+    y0 = get_fill_boundaries(x, y) if isinstance(y0, str) else [y0] * len(x)
     o = transpose(other, len(other))
     xf, yf, of = [[] for i in range(3)]
     xy = []
@@ -628,10 +628,10 @@ def get_labels(ticks): # it returns the approximated string version of the data 
     d = distinguishing_digit(ticks)
     formatting_string = "{:." + str(d + 1) + "f}"
     labels = [formatting_string.format(el) for el in ticks]
-    #labels = [str(ut.round(el, d + 1)) for el in ticks]
     pos = [el.index('.') + d + 2 for el in labels]
     labels = [labels[i][: pos[i]] for i in range(len(labels))]
-    labels = [add_extra_zeros(el, d + 1) if len(labels) > 1 else el for el in labels]
+    all_integers = all(map(lambda el: el == int(el), ticks))
+    labels = [add_extra_zeros(el, d) if len(labels) > 1 else el for el in labels] if not all_integers else [str(int(el)) for el in ticks]
     #sign = any([el < 0 for el in ticks])
     #labels = ['+' + labels[i] if ticks[i] > 0 and sign else labels[i] for i in range(len(labels))]
     return labels
@@ -648,7 +648,7 @@ def _distinguishing_digit(a, b): # it return the minimum amount of decimal digit
     d = 0 if d < 0 else math.ceil(d)
     d = d + 1 if round(a, d) == round(b, d) else d
     return d
-    
+
 def add_extra_zeros(label, d): # it adds 0s at the end of a label if necessary
     zeros = len(label) - 1 - label.index('.' if 'e' not in label else 'e')
     if zeros < d:
@@ -746,12 +746,12 @@ def bar_data(*args, width = None, mode = 'stacked'):
     width_term = terminal_width()
     width = width_term if width is None else min(width, width_term)
     width = max(width, lx + ly + 2 + 1)
-    
+
     my = max(join(y))
     dx = my / (width - lx - ly - 2)
     Yi = [[round(el / dx, 0) for el in y] for y in Y]
     Yi = transpose(Yi)
-    
+
     return x, y, Yi, width
 
 def correct_marker(marker = None):
@@ -763,7 +763,7 @@ def get_title(title, width):
         l = len(uncolorize(title))
         w1 = (width - 2 - l) // 2; w2 = width - l - 2 - w1
         l1 = '─' * w1 + space
-        l2 = space + '─' * w2 
+        l2 = space + '─' * w2
         out = colorize(l1 + title + l2, 'gray+', 'bold') + '\n'
     return out
 
