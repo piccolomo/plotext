@@ -50,4 +50,4 @@ The **installing instructions** are [here](https://github.com/piccolomo/plotext/
 
 ---
 
-Some interesting [life questions](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#life-questions).
+Some interesting [life questions](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#life-questions)
