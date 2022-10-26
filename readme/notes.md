@@ -44,7 +44,6 @@ From [Issue Reports](https://github.com/piccolomo/plotext/issues):
 - add OHLC date-time plots, solving [Issue 149](https://github.com/piccolomo/plotext/issues/148)
 - add custom lines (dotted, or any marker), solving [Issue 145](https://github.com/piccolomo/plotext/issues/145)
 - add heatmap plot, solving [Issue 143](https://github.com/piccolomo/plotext/issues/143)
-- remove side symbol on legend if only one data is plotted on other axes, solving [Issue 142](https://github.com/piccolomo/plotext/issues/142)
 - add unit testing, as suggested in [Issue 130](https://github.com/piccolomo/plotext/issues/130)
 
 Any new relevant idea is welcomed under request, opening an [issue report](https://github.com/piccolomo/plotext/issues/new), here are some:
@@ -75,6 +74,7 @@ Available on [GitHub](https://github.com/piccolomo/plotext) only:
 
 - resolved issue [Issue 151](https://github.com/piccolomo/plotext/issues/151) due to wrong inheritance of nested subplots from parent figure
 - resolved issue [Issue 150](https://github.com/piccolomo/plotext/issues/150) due to maximum number of subplots reached
+- solved issue [Issue 142](https://github.com/piccolomo/plotext/issues/142) by removing side symbol (like ⅃) in legend for single data set
 - added `xside` and `yside` parameters to `candlestick()` function, solving another bug in [Issue 138](https://github.com/piccolomo/plotext/issues/138)
 - removed decimals points if axes ticks are all integers, solving [Issue 136](https://github.com/piccolomo/plotext/issues/136)
 - added `marker` parameter to the `from_matplotlib()` method, solving [Issue 134](https://github.com/piccolomo/plotext/issues/134)
