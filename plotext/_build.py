@@ -247,7 +247,7 @@ class build_class():
 
         # Add Legend Side Symbols
         side = [ut.space + ut.side_symbols[(self.xside[s], self.yside[s])] for s in Signals if labelled(s)]
-        side_test = not (ut.no_duplicates(side) == [' L']); S = 2 if side_test else 0;
+        side_test = not (ut.no_duplicates(side) == [' L']) and not l == 1; S = 2 if side_test else 0;
         legend_test = width_canvas >= S + 3 + L and height_canvas >= len(labels)
         [self.matrix.add_horizontal_string(col_start, row_end - 1 - s, side[s], self.ticks_color, self.ticks_style) for s in range(l)] if legend_test and side_test else None
 
