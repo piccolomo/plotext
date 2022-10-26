@@ -13,7 +13,7 @@
 
 Here are the terminal commands to install `plotext` on your machine:
 
-- `pip install plotext` for normal installation and  `pip install plotext --upgrade` to upgrade to the latest PyPi version.
+- `pip install plotext` for normal installation and  `pip install plotext --upgrade` to upgrade to the latest [PyPi version](https://pypi.org/project/plotext).
 
 - `pip install "plotext[image]"` to install the optional dependency necessary for **image plotting** (including GIFs).
 
@@ -58,8 +58,6 @@ Any new relevant idea is welcomed under request, opening an [issue report](https
 - remove `trend` parameter in `text()` method
 - change `text` parameter to `label`  in `text()`
 - change `frame` parameter to `show` in `frame()` method
-- resolve this issue: `subplots()` seems to reset previous settings; eg:
-    `import plotext as plt; plt.clf(); plt.subplots(2,2);plt.subplot(1,2); plt.frame(0); plt.subplots(2,2); plt.show();` but strangely this work: `import plotext as plt; plt.clf(); plt.frame(0); plt.subplots(2,2); plt.show();`
 - add `plotter()` function, to scatter and plot at the same time (under request)
 - add `simple_hist()` function, just like `simple_bar()`
 - change `colorize()` to output a `matrix_class()` object such that it can be inserted in `text()`, `indicator()` or any `label` parameter and any two objects can be easily summed as strings would. 
@@ -118,6 +116,8 @@ From [Issue Reports](https://github.com/piccolomo/plotext/issues):
 
 Available on [GitHub](https://github.com/piccolomo/plotext) only:
 
+- resolved issue [Issue 151](https://github.com/piccolomo/plotext/issues/151) due to wrong inheritance of nested subplots from parent figure
+- resolved issue [Issue 150](https://github.com/piccolomo/plotext/issues/150) due to maximum number of subplots reached
 - added `xside` and `yside` parameters to `candlestick()` function, solving another bug in [Issue 138](https://github.com/piccolomo/plotext/issues/138)
 - removed decimals points if axes ticks are all integers, solving [Issue 136](https://github.com/piccolomo/plotext/issues/136)
 - added `marker` parameter to the `from_matplotlib()` method, solving [Issue 134](https://github.com/piccolomo/plotext/issues/134)
@@ -370,8 +370,8 @@ These count as well as source of inspiration:
 
 ## Life Questions:
 
-- Is [consciousness](https://www.youtube.com/watch?v=Bim73icRzCk) and [love](https://www.youtube.com/watch?v=GHzAfj-62Uc) the unified truth of life, transcendent of space, time and death?
-- is there a [global cabal](https://www.youtube.com/watch?v=ZSqBNGxLiAs&list=PLnzMmEt4pIb83lZgEA3nALsDM1QogyvC0&index=17) of psychopaths/narcissists trying to manipulate humanity through fear and ignorance?
+- Is [Consciousness](https://www.youtube.com/watch?v=Bim73icRzCk) and [Love](https://www.youtube.com/watch?v=GHzAfj-62Uc) the unified truth of life, transcendent of space, time and death?
+- is there a [global cabal](https://www.youtube.com/watch?v=ZSqBNGxLiAs&list=PLnzMmEt4pIb83lZgEA3nALsDM1QogyvC0&index=17) of psychopaths/narcissists trying to manipulate humanity through fear and ignorance? 
 - Are there [credible witness testimonies](https://www.youtube.com/watch?v=AmNzkxVwAYg&list=PLnrEt2fIdZ0aBgPuVF0C_T559YR20eDTc) of UFO activity and deep state cover-up? 
 
 Your choice deciding the answer to such fundamental questions. I made mine a long time ago. My mind and heart is set free. 

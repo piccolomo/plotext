@@ -195,6 +195,6 @@ Here are some methods that directly output some useful `plotext` guides:
 
 - the `themes()` method displays the available **themes**, also discussed [here](https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#themes).
 
-Finally the `platform` string will return your OS (Unix or Windows) and `version` the `plotext` version installed. 
+Finally the `platform` string will return your OS (Unix or Windows) and `version`, the `plotext` version installed. 
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#utilities)
