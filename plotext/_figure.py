@@ -80,8 +80,8 @@ class _figure_class():
 ##############################################
 
     def _set_slots_max(self, width = None, height = None):
-        self._rows_max = (height + 1) // 3 
-        self._cols_max = (width + 1) // 3 
+        self._rows_max = height # (height + 1) // 3 
+        self._cols_max = width # (width + 1) // 3 
         self._slots_max = [self._rows_max, self._cols_max]
 
     def _set_slots(self, rows = None, cols = None):
@@ -95,7 +95,7 @@ class _figure_class():
         self._no_plots = 0 in self._slots #or self._is_master
         
     def _set_subplots(self):
-        self.subfig = [[_figure_class(self._master, self._parent) for col in self._Cols] for row in self._Rows]
+        self.subfig = [[_figure_class(self._master, self) for col in self._Cols] for row in self._Rows]
         
     def _get_subplot(self, row = None, col = None):
         return self.subfig[row - 1][col - 1] if row in self._Rows and col in self._Cols else self._master._dummy
