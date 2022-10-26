@@ -14,158 +14,158 @@ from plotext import __version__
 import plotext._utility as _ut
 import plotext._doc as doc
 
-figure = _glob.figure # the main figure at top level (defined in _global.py because it is useful also there)
+_figure = _glob.figure # the main figure at top level (defined in _global.py because it is useful also there)
 
 ##############################################
 #########    Subplots Functions    ###########
 ##############################################
 
 def subplots(rows = None, cols = None):
-    sub = figure._active.subplots(rows, cols)
-    figure.show() if figure._interactive else None
+    sub = _figure._active.subplots(rows, cols)
+    _figure.show() if _figure._interactive else None
     return sub
 
 def subplot(row = None, col = None):
-    sub = figure.subplot(row, col)
-    figure.show() if figure._interactive else None
+    sub = _figure.subplot(row, col)
+    _figure.show() if _figure._interactive else None
     return sub
 
 def main():
-    return figure.main()
+    return _figure.main()
 
 def active():
-    return figure._active
+    return _figure._active
 
 ##############################################
 #######    Outside Set Functions    ##########
 ##############################################
 
 def interactive(interactive = None):
-    figure._set_interactive(interactive)
+    _figure._set_interactive(interactive)
 
 def plot_size(width = None, height = None):
-    figure._active.plot_size(width, height)
-    figure.show() if figure._interactive else None
+    _figure._active.plot_size(width, height)
+    _figure.show() if _figure._interactive else None
 plotsize = plot_size
 
 def limit_size(width = None, height = None):
-    #figure._master._set_size()
-    figure._master._limit_size(width, height)
+    #_figure._master._set_size()
+    _figure._master._limit_size(width, height)
 limitsize = limit_size
 
 def take_min():
-    figure._active.take_min()
+    _figure._active.take_min()
 takemin = take_min
 
 def title(label):
-    figure._active.title(label)
-    figure.show() if figure._interactive else None
+    _figure._active.title(label)
+    _figure.show() if _figure._interactive else None
 
 def xlabel(label = None, xside = None):
-    figure._active.xlabel(label = label, xside = xside)
-    figure.show() if figure._interactive else None
+    _figure._active.xlabel(label = label, xside = xside)
+    _figure.show() if _figure._interactive else None
 
 def ylabel(label = None, yside = None):
-    figure._active.ylabel(label = label, yside = yside)
-    figure.show() if figure._interactive else None
+    _figure._active.ylabel(label = label, yside = yside)
+    _figure.show() if _figure._interactive else None
 
 def xlim(left = None, right = None, xside = None):
-    figure._active.xlim(left = left, right = right, xside = xside)
-    figure.show() if figure._interactive else None
+    _figure._active.xlim(left = left, right = right, xside = xside)
+    _figure.show() if _figure._interactive else None
 
 def ylim(lower = None, upper = None, yside = None):
-    figure._active.ylim(lower = lower, upper = upper, yside = yside)
-    figure.show() if figure._interactive else None
+    _figure._active.ylim(lower = lower, upper = upper, yside = yside)
+    _figure.show() if _figure._interactive else None
 
 def xscale(scale = None, xside = None):
-    figure._active.xscale(scale = scale, xside = xside)
-    figure.show() if figure._interactive else None
+    _figure._active.xscale(scale = scale, xside = xside)
+    _figure.show() if _figure._interactive else None
 
 def yscale(scale = None, yside = None):
-    figure._active.yscale(scale = scale, yside = yside)
-    figure.show() if figure._interactive else None
+    _figure._active.yscale(scale = scale, yside = yside)
+    _figure.show() if _figure._interactive else None
 
 def xticks(ticks = None, labels = None, xside = None):
-    figure._active.xticks(ticks = ticks, labels = labels, xside = xside)
-    figure.show() if figure._interactive else None
+    _figure._active.xticks(ticks = ticks, labels = labels, xside = xside)
+    _figure.show() if _figure._interactive else None
 
 def yticks(ticks = None, labels = None, yside = None):
-    figure._active.yticks(ticks = ticks, labels = labels, yside = yside)
-    figure.show() if figure._interactive else None
+    _figure._active.yticks(ticks = ticks, labels = labels, yside = yside)
+    _figure.show() if _figure._interactive else None
 
 def xfrequency(frequency = None, xside = None):
-    figure._active.xfrequency(frequency = frequency, xside = xside)
-    figure.show() if figure._interactive else None
+    _figure._active.xfrequency(frequency = frequency, xside = xside)
+    _figure.show() if _figure._interactive else None
 
 def yfrequency(frequency = None, yside = None):
-    figure._active.yfrequency(frequency = frequency, yside = yside)
-    figure.show() if figure._interactive else None
+    _figure._active.yfrequency(frequency = frequency, yside = yside)
+    _figure.show() if _figure._interactive else None
 
 def xreverse(reverse = None, xside = None):
-    figure._active.xreverse(reverse = reverse, xside = xside)
-    figure.show() if figure._interactive else None
+    _figure._active.xreverse(reverse = reverse, xside = xside)
+    _figure.show() if _figure._interactive else None
 
 def yreverse(reverse = None, yside = None):
-    figure._active.yreverse(reverse = reverse, yside = yside)
-    figure.show() if figure._interactive else None
+    _figure._active.yreverse(reverse = reverse, yside = yside)
+    _figure.show() if _figure._interactive else None
 
 def xaxes(lower = None, upper = None):
-    figure._active.xaxes(lower = lower, upper = upper)
-    figure.show() if figure._interactive else None
+    _figure._active.xaxes(lower = lower, upper = upper)
+    _figure.show() if _figure._interactive else None
 
 def yaxes(left = None, right = None):
-    figure._active.yaxes(left = left, right = right)
-    figure.show() if figure._interactive else None
+    _figure._active.yaxes(left = left, right = right)
+    _figure.show() if _figure._interactive else None
 
 def frame(frame = None):
-    figure._active.frame(frame = frame)
-    figure.show() if figure._interactive else None
+    _figure._active.frame(frame = frame)
+    _figure.show() if _figure._interactive else None
 
 def grid(horizontal = None, vertical = None):
-    figure._active.grid(horizontal = horizontal, vertical = vertical)
-    figure.show() if figure._interactive else None
+    _figure._active.grid(horizontal = horizontal, vertical = vertical)
+    _figure.show() if _figure._interactive else None
 
 def canvas_color(color = None):
-    figure._active.canvas_color(color)
-    figure.show() if figure._interactive else None
+    _figure._active.canvas_color(color)
+    _figure.show() if _figure._interactive else None
 
 def axes_color(color = None):
-    figure._active.axes_color(color)
-    figure.show() if figure._interactive else None
+    _figure._active.axes_color(color)
+    _figure.show() if _figure._interactive else None
 
 def ticks_color(color = None):
-    figure._active.ticks_color(color)
-    figure.show() if figure._interactive else None
+    _figure._active.ticks_color(color)
+    _figure.show() if _figure._interactive else None
 
 def ticks_style(style = None):
-    figure._active.ticks_style(style)
-    figure.show() if figure._interactive else None
+    _figure._active.ticks_style(style)
+    _figure.show() if _figure._interactive else None
 
 def theme(theme = None):
-    figure._active.theme(theme)
-    figure.show() if figure._interactive else None
+    _figure._active.theme(theme)
+    _figure.show() if _figure._interactive else None
 
 ##############################################
 ###########    Clear Functions    ############
 ##############################################
 
 def clear_figure(): 
-    figure._active.clear_figure()
-    figure.show() if figure._interactive else None
+    _figure._active.clear_figure()
+    _figure.show() if _figure._interactive else None
 clf = clear_figure
 
 def clear_data(): 
-    figure._active.clear_data()
-    figure.show() if figure._interactive else None
+    _figure._active.clear_data()
+    _figure.show() if _figure._interactive else None
 cld = clear_data
 
 def clear_color(): 
-    figure._active.clear_color()
-    figure.show() if figure._interactive else None
+    _figure._active.clear_color()
+    _figure.show() if _figure._interactive else None
 clc = clear_color
 
 def clear_terminal(lines = None):
-    figure._active.clear_terminal(lines = lines)
+    _figure._active.clear_terminal(lines = lines)
 clt = clear_terminal
 
 ##############################################
@@ -173,114 +173,114 @@ clt = clear_terminal
 ##############################################
 
 def scatter(*args, xside = None, yside = None, marker = None, color = None, style = None, fillx = None, filly = None, label = None):
-    figure._active.scatter(*args, xside = xside, yside = yside, marker = marker, color = color, style = style, fillx = fillx, filly = filly, label = label)
-    figure.show() if figure._interactive else None
+    _figure._active.scatter(*args, xside = xside, yside = yside, marker = marker, color = color, style = style, fillx = fillx, filly = filly, label = label)
+    _figure.show() if _figure._interactive else None
 
 def plot(*args, xside = None, yside = None, marker = None, color = None, style = None, fillx = None, filly = None, label = None):
-    figure._active.plot(*args, xside = xside, yside = yside, marker = marker, color = color,  fillx = fillx, filly = filly, label = label)
-    figure.show() if figure._interactive else None
+    _figure._active.plot(*args, xside = xside, yside = yside, marker = marker, color = color,  fillx = fillx, filly = filly, label = label)
+    _figure.show() if _figure._interactive else None
 
 def candlestick(dates, data, xside = None, yside = None, orientation = None, colors = None, label = None):
-    figure._active.candlestick(dates, data, xside = xside, yside = yside, orientation = orientation, colors = colors, label = label)
-    figure.show() if figure._interactive else None
+    _figure._active.candlestick(dates, data, xside = xside, yside = yside, orientation = orientation, colors = colors, label = label)
+    _figure.show() if _figure._interactive else None
 
 def bar(*args, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None, reset_ticks = None):
-    figure._active.bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks)
-    figure.show() if figure._interactive else None
+    _figure._active.bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks)
+    _figure.show() if _figure._interactive else None
 
 def simple_bar(*args, width = None, marker = None, color = None, title = None):
     _glob.simple_bar(*args, width = width, marker = marker, color = color, title = title)
-    figure.show() if figure._interactive else None
+    _figure.show() if _figure._interactive else None
 
 def multiple_bar(*args, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None, reset_ticks = None):
-    figure._active.multiple_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks)
-    figure.show() if figure._interactive else None
+    _figure._active.multiple_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks)
+    _figure.show() if _figure._interactive else None
 
 def simple_multiple_bar(*args, width = None, marker = None, colors = None, title = None, labels = None):
     _glob.simple_multiple_bar(*args, width = width, marker = marker, colors = colors, title = title, labels = labels)
-    figure.show() if figure._interactive else None
+    _figure.show() if _figure._interactive else None
 
 def stacked_bar( *args, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None, reset_ticks = None):
-    figure._active.stacked_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks)
-    figure.show() if figure._interactive else None
+    _figure._active.stacked_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks)
+    _figure.show() if _figure._interactive else None
 
 def simple_stacked_bar(*args, width = None, marker = None, colors = None, title = None, labels = None):
     _glob.simple_stacked_bar(*args, width = width, marker = marker, colors = colors, title = title, labels = labels)
-    figure.show() if figure._interactive else None
+    _figure.show() if _figure._interactive else None
 
 def hist(data, bins = None, norm = None, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None):
-    figure._active.hist(data, bins = bins, norm = norm, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum)
-    figure.show() if figure._interactive else None
+    _figure._active.hist(data, bins = bins, norm = norm, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum)
+    _figure.show() if _figure._interactive else None
 
 ##############################################
 ###########    Plotting Tools    #############
 ##############################################
 
 def error(*args, xerr = None, yerr = None, xside = None, yside = None, color = None, label = None):
-    figure.error(*args, xerr = xerr, yerr = yerr, xside = xside, yside = yside, color = color, label = label)
-    figure.show() if figure._interactive else None
+    _figure.error(*args, xerr = xerr, yerr = yerr, xside = xside, yside = yside, color = color, label = label)
+    _figure.show() if _figure._interactive else None
 
 def event_plot(data, orientation = None, marker = None, color = None, side = None):
-    figure._active.event_plot(data, orientation = orientation, marker = marker, color = color, side = side)
-    figure.show() if figure._interactive else None
+    _figure._active.event_plot(data, orientation = orientation, marker = marker, color = color, side = side)
+    _figure.show() if _figure._interactive else None
 
 eventplot = event_plot
 
 def vertical_line(coordinate, color = None, xside = None):
-    figure._active.vertical_line(coordinate, color = color, xside = xside)
-    figure.show() if figure._interactive else None
+    _figure._active.vertical_line(coordinate, color = color, xside = xside)
+    _figure.show() if _figure._interactive else None
 vline = vertical_line
 
 def horizontal_line(coordinate, color = None, yside = None):
-    figure._active.horizontal_line(coordinate, color = color, yside = yside)
-    figure.show() if figure._interactive else None
+    _figure._active.horizontal_line(coordinate, color = color, yside = yside)
+    _figure.show() if _figure._interactive else None
 hline = horizontal_line
 
 def text(text, x, y, xside = None, yside = None, color = None, background = None, style = None, orientation = None, alignment = None):
-    figure._active.text(text, x, y, xside = xside, yside = yside, color = color, background = background, style = style, orientation = orientation, alignment = alignment)
-    figure.show() if figure._interactive else None
+    _figure._active.text(text, x, y, xside = xside, yside = yside, color = color, background = background, style = style, orientation = orientation, alignment = alignment)
+    _figure.show() if _figure._interactive else None
 
 def rectangle(x = None, y = None, xside = None, yside = None, lines = None, marker = None, color = None, fill = None, label = None):
-    figure._active.rectangle(x = x, y = y, xside = xside, yside = yside, lines = lines, marker = marker, color = color, fill = fill, label = label)
-    figure.show() if figure._interactive else None
+    _figure._active.rectangle(x = x, y = y, xside = xside, yside = yside, lines = lines, marker = marker, color = color, fill = fill, label = label)
+    _figure.show() if _figure._interactive else None
     
 def polygon(x = None, y = None, radius = None, sides = None, xside = None, yside = None, lines = None, marker = None, color = None, fill = None, label = None):
-    figure._active.polygon(x = x, y = y, radius = radius, sides = sides, xside = xside, yside = yside, lines = lines, marker = marker, color = color, fill = fill, label = label)
-    figure.show() if figure._interactive else None
+    _figure._active.polygon(x = x, y = y, radius = radius, sides = sides, xside = xside, yside = yside, lines = lines, marker = marker, color = color, fill = fill, label = label)
+    _figure.show() if _figure._interactive else None
 
 def confusion_matrix(actual, predicted, labels = None, color = None, style = None):
-    figure._active.confusion_matrix(actual, predicted, labels = labels, color = color, style = style)
-    figure.show() if figure._interactive else None
+    _figure._active.confusion_matrix(actual, predicted, labels = labels, color = color, style = style)
+    _figure.show() if _figure._interactive else None
 
 cmatrix = confusion_matrix
 
 def indicator(value, label = None, trend = None, color = None, style = None):
-    figure._active.indicator(value, label = label, trend = trend, color = color, style = style)
-    figure.show() if figure._interactive else None
+    _figure._active.indicator(value, label = label, trend = trend, color = color, style = style)
+    _figure.show() if _figure._interactive else None
 
 ##############################################
 ##############    2D Plots    ################
 ############################################## 
     
 def matrix_plot(matrix, marker = None, style = None, fast = False):
-    figure._active.matrix_plot(matrix, marker = marker, style = style, fast = fast)
-    figure.show() if figure._interactive else None
+    _figure._active.matrix_plot(matrix, marker = marker, style = style, fast = fast)
+    _figure.show() if _figure._interactive else None
 
 def image_plot(path, marker = None, style = None, grayscale = False, fast = False):
-    figure._active.image_plot(path, marker = marker, style = style, grayscale = grayscale, fast = fast)
-    figure.show() if figure._interactive else None
+    _figure._active.image_plot(path, marker = marker, style = style, grayscale = grayscale, fast = fast)
+    _figure.show() if _figure._interactive else None
     
 def play_gif(path):
     _glob.play_gif(path)
-    figure.show() if figure._interactive else None
+    _figure.show() if _figure._interactive else None
 
 def play_video(path, from_youtube = False):
     _glob.play_video(path, from_youtube)
-    figure.show() if figure._interactive else None
+    _figure.show() if _figure._interactive else None
 
 def play_youtube(url):
     _glob.play_youtube(url)
-    figure.show() if figure._interactive else None
+    _figure.show() if _figure._interactive else None
 
 def get_youtube(url, path = None, log = True):
     return _glob.get_youtube(url, path, log)
@@ -290,19 +290,19 @@ def get_youtube(url, path = None, log = True):
 ##############################################
 
 def show():
-    figure.show()
+    _figure.show()
 
 def build():
-    return figure.build()
+    return _figure.build()
 
 def sleep(time = 0):
     _sleep(time)
 
 def time(show = True):
-    return figure._get_time(show)
+    return _figure._get_time(show)
 
 def save_fig(path = None, append = False, keep_colors = False):
-    figure.save_fig(path, append, keep_colors)
+    _figure.save_fig(path, append, keep_colors)
 savefig = save_fig
 
 def from_matplotlib(fig, marker = None):
@@ -313,31 +313,31 @@ def from_matplotlib(fig, marker = None):
 ##############################################
 
 def date_form(input_form = None, output_form = None):
-    figure._active.date_form(input_form, output_form)
+    _figure._active.date_form(input_form, output_form)
     
 def set_time0(string, input_form = None):
-    return figure._active.set_time0(string, input_form = input_form)
+    return _figure._active.set_time0(string, input_form = input_form)
 
 def today_datetime():
-    return figure._active.today_datetime()
+    return _figure._active.today_datetime()
 
 def today_string(output_form = None):
-    return figure._active.today_string(output_form)
+    return _figure._active.today_string(output_form)
 
 def datetime_to_string(datetimes, output_form = None):
-    return figure._active.datetime_to_string(datetimes, output_form = output_form)
+    return _figure._active.datetime_to_string(datetimes, output_form = output_form)
 
 def datetimes_to_string(datetimes, output_form = None):
-    return figure._active.datetimes_to_string(datetimes, output_form = output_form)
+    return _figure._active.datetimes_to_string(datetimes, output_form = output_form)
 
 def string_to_datetime(string, input_form = None):
-    return figure._active.string_to_datetime(string, input_form = input_form)
+    return _figure._active.string_to_datetime(string, input_form = input_form)
 
 def string_to_time(string, input_form = None):##########ADD DOC############
-    return figure._active.string_to_time(string, input_form = input_form)
+    return _figure._active.string_to_time(string, input_form = input_form)
 
 def strings_to_time(string, input_form = None):##########ADD DOC############
-    return figure._active.strings_to_time(string, input_form = input_form)
+    return _figure._active.strings_to_time(string, input_form = input_form)
 
 ##############################################
 ##########     File Functions    ############

@@ -4,6 +4,8 @@
 
 - The `main()` method returns the main figure at the uppermost level, and sets the active figure to it (as by default); any further commands will refer to the entire figure and to any of its subplots, if present.
 
+- The `active()` method returns the active subplot.
+
 - The `plot_size()` method sets the plot size of the active subplot (in units of character size), as explained [here](https://github.com/piccolomo/plotext/blob/master/readme/settings.md#plot-size).
 
 - The final widths/heights of a matrix of subplots will be the same for each column/row. By default, the maximum is taken, use `take_min()` to take the minimum instead.
