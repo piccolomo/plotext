@@ -57,11 +57,12 @@ Any new relevant idea is welcomed under request, opening an [issue report](https
 - remove `trend` parameter in `text()` method
 - change `text` parameter to `label`  in `text()`
 - change `frame` parameter to `show` in `frame()` method
-- add `plotter()` function, to scatter and plot at the same time (under request)
+- add `plotter()` function, to scatter and plot at the same time
 - add `simple_hist()` function, just like `simple_bar()`
 - change `colorize()` to output a `matrix_class()` object such that it can be inserted in `text()`, `indicator()` or any `label` parameter and any two objects can be easily summed as strings would. 
 - allow simple plots and fast image rendering to fit in subplots 
 - add matrix plot side bar 
+- make simple bar plots handle negative values
 - allow user to decide plot legend position and frame
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#notes)
@@ -70,10 +71,13 @@ Any new relevant idea is welcomed under request, opening an [issue report](https
 
 #### In version 5.2
 
-Available on [GitHub](https://github.com/piccolomo/plotext) only:
+<!--- Available on [GitHub](https://github.com/piccolomo/plotext) only:--->
 
-- resolved issue [Issue 151](https://github.com/piccolomo/plotext/issues/151) due to wrong inheritance of nested subplots from parent figure
-- resolved issue [Issue 150](https://github.com/piccolomo/plotext/issues/150) due to maximum number of subplots reached
+In version 5.2.8:
+
+- solved issue [Issue 153](https://github.com/piccolomo/plotext/issues/153) allowing bar plots to handle 0 data sets
+- solved issue [Issue 151](https://github.com/piccolomo/plotext/issues/151) due to wrong inheritance of nested subplots from parent figure
+- solved issue [Issue 150](https://github.com/piccolomo/plotext/issues/150) due to maximum number of subplots reached
 - solved issue [Issue 142](https://github.com/piccolomo/plotext/issues/142) by removing side symbol (like ⅃) in legend for single data set
 - added `xside` and `yside` parameters to `candlestick()` function, solving another bug in [Issue 138](https://github.com/piccolomo/plotext/issues/138)
 - removed decimals points if axes ticks are all integers, solving [Issue 136](https://github.com/piccolomo/plotext/issues/136)
@@ -81,7 +85,8 @@ Available on [GitHub](https://github.com/piccolomo/plotext) only:
 - made `from_matplotlib()` method to be compatible with `matplotlib 3.6`, solving [Issue 133](https://github.com/piccolomo/plotext/issues/133)
 - added date time support for `xlim()` and `ylim()` methods, solving [Issue 138](https://github.com/piccolomo/plotext/issues/138)
 
-Published on [PyPi](https://pypi.org/project/plotext):
+<!--- Published on [PyPi](https://pypi.org/project/plotext): --->
+In previous versions:
 
 - fixed legend symbol for braille markers, merging [Pull Request 135](https://github.com/piccolomo/plotext/pull/135)
 - allowed compatibility with Python 3.7, solving [Issue 130](https://github.com/piccolomo/plotext/issues/130)

@@ -748,6 +748,7 @@ def bar_data(*args, width = None, mode = 'stacked'):
     width = max(width, lx + ly + 2 + 1)
 
     my = max(join(y))
+    my = 1 if my == 0 else my
     dx = my / (width - lx - ly - 2)
     Yi = [[round(el / dx, 0) for el in y] for y in Y]
     Yi = transpose(Yi)
