@@ -135,12 +135,12 @@ from plotext._utility import to_rgb, uncolorize
 import tkinter.font as tkfont
 
 image_path = 'cat.jpg'
-#font_name = "UbuntuMono"
-#font_name = "MonoSpace"
 
-font_name = "SourceCodePro"
-font_size = 13
-font_size_plot = 25
+#font_name = "SourceCodePro" # this results in wrong plot dimensioms
+#font_name = "MonoSpace"
+font_name = "UbuntuMono"
+font_size = 13 # font size of application labels
+font_size_plot = 25 # font size of plot
 
 font = font_name + " " + str(font_size)
 stick_horizontal = tk.W + tk.E
@@ -167,7 +167,7 @@ def text(parent, width, height, font = None):
 
 def scale(parent, row = 0 , col = 0):
      scale = tk.Scale(parent, from_= 2, to = 30, orient = tk.HORIZONTAL, font = font, length = 300)
-     scale.set(font_size)
+     scale.set(font_size_plot)
      scale.grid(row = row, column = col, padx = padx, pady = pady)
      return scale
 
@@ -224,11 +224,9 @@ class window():
      def get_plot_size(self):
           self.root.update()
           size = self.lower_frame.winfo_width(), self.lower_frame.winfo_height()
-
           font_size = self.scale.get()
           self.font_plot = tkfont.Font(family = font_name, size = font_size)
-          font_size = self.font_plot.measure('m'), self.font_plot.metrics('linespace')# in pixels
-
+          font_size = self.font_plot.measure('m'), self.font_plot.metrics('linespace') # in pixels
           size = [size[i] / font_size[i] for i in range(2)]
           size = list(map(int, size))
           self.cols, self.rows = self.size = size
@@ -247,14 +245,14 @@ class window():
           #self.rows, self.cols = plt.figure.monitor.matrix.size
           #plt.figure.monitor.matrix.update_size()
           self.plot_text = text(self.lower_frame, self.cols, self.rows, font = self.font_plot)         
-          self.canvas = plt.figure.monitor.matrix.canvas
+          self.canvas = plt._global.figure.monitor.matrix.canvas
           self.canvas = uncolorize(self.canvas)
           self.plot_text.insert("end", self.canvas)
           self.plot_text.update()
 
      def add_colors(self): # Add Colors to Plot
-          self.color = plt.figure.monitor.matrix.fullground[::-1]
-          self.background = plt.figure.monitor.matrix.background[::-1]
+          self.color = plt._global.figure.monitor.matrix.fullground[::-1]
+          self.background = plt._global.figure.monitor.matrix.background[::-1]
           tag = lambda r, c: str(r) + "*" + str(c)
           coord = lambda r, c: str(r + 1) + "." + str(c)
           for r in range(self.rows):
