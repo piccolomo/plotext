@@ -5,7 +5,6 @@
 - [Updates](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#updates)
 - [Credits](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#credits)
 - [Similar Projects](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#similar-projects)
-- [Life Questions](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#life-questions)
 
 [Main Guide](https://github.com/piccolomo/plotext#guide)
 
@@ -370,18 +369,5 @@ These count as well as source of inspiration:
 - [bashplotlib](https://github.com/glamp/bashplotlib)
 - [termplotlib](https://github.com/nschloe/termplotlib)
 - [termgraph](https://github.com/mkaz/termgraph)
-
-[Main Guide](https://github.com/piccolomo/plotext#guide), [Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#notes)
-
-## Life Questions
-
-- Is [Consciousness](https://www.youtube.com/watch?v=Bim73icRzCk) and [Love](https://www.youtube.com/watch?v=GHzAfj-62Uc) the unified truth of life, transcendent of space, time and death?
-- is there a [global cabal](https://www.youtube.com/watch?v=ZSqBNGxLiAs&list=PLnzMmEt4pIb83lZgEA3nALsDM1QogyvC0&index=17) of psychopaths/narcissists trying to manipulate humanity through fear and ignorance? If so, are they a manifestation of our collective shadow or ego? 
-- Is it possible then, that collective [shadow work](https://www.youtube.com/watch?v=YgvrUi8BIWw), or ego-transcendence, is the most important effort humanity as a whole needs to face in order to evolve spiritually?
-- Are there [credible witness testimonies](https://www.youtube.com/watch?v=AmNzkxVwAYg&list=PLnrEt2fIdZ0aBgPuVF0C_T559YR20eDTc) of UFO activity and deep state cover-up? If so, could the deep state and the military industrial complex have any interest in portraying them in the future as a treat to humanity to justify the militarization of space?
-
-Please notice: if any of the previous questions cause irritation or any ego reaction in you, could that suggest that shadow work and ego-transcendence is even more needed? 
-
-Your choice deciding the answer to such fundamental questions. I made mine a long time ago. My mind and heart is set free! Good luck in your journey towards real authenticity :-) ! 
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#notes)
