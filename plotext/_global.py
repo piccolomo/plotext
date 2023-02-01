@@ -14,8 +14,10 @@ figure = _figure_class() # the main figure at top level
 #######     Simple  Bar Functions    ########
 ##############################################
 
-def simple_bar(*args, width = None, marker = None, color = None, title = None):
+def simple_bar(*args, width = None, marker = None, color = None, title = None, bar_texts = None):
     x, y = ut.set_data(*args)
+    if bar_texts is not None:
+        y = bar_texts
     marker = ut.correct_marker(marker)
 
     color_ok = ut.is_color(color) or (isinstance(color, list) and len(color) == len(x))
@@ -23,10 +25,12 @@ def simple_bar(*args, width = None, marker = None, color = None, title = None):
 
     simple_stacked_bar(x, [y], width = width, marker = marker, colors = color, title = title)
 
-def simple_stacked_bar(*args, width = None, marker = None, colors = None, title = None, labels = None):
+def simple_stacked_bar(*args, width = None, marker = None, colors = None, title = None, labels = None, bar_texts = None):
     x, y, Y, width = ut.bar_data(*args, width = width)
+    if bar_texts is not None:
+        y = bar_texts
     marker = ut.correct_marker(marker)
-    
+
     bars = len(Y); stacked_bars = len(Y[0])
 
     colors_ok1 = isinstance(colors, list) and isinstance(colors[0], list) and ut.matrix_size(colors) == [bars, stacked_bars]
@@ -39,8 +43,10 @@ def simple_stacked_bar(*args, width = None, marker = None, colors = None, title 
     figure.monitor.matrix.canvas = title + '\n'.join(bars) + labels 
     figure.monitor.fast_plot = True
 
-def simple_multiple_bar(*args, width = None, marker = None, colors = None, title = None, labels = None):
+def simple_multiple_bar(*args, width = None, marker = None, colors = None, title = None, labels = None, bar_texts = None):
     x, y, Y, width = ut.bar_data(*args, width = width, mode='multiple')
+    if bar_texts is not None:
+        y = bar_texts
     bars = len(Y); multiple_bars = len(Y[0]); lx = len(x[0])
     marker = ut.correct_marker(marker)
 
