@@ -47,3 +47,8 @@ The **installing instructions** are [here](https://github.com/piccolomo/plotext/
 - [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md)
 - [Environments](https://github.com/piccolomo/plotext/blob/master/readme/environments.md)
 - [Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md)
+
+
+---
+
+Some [questions](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#life-questions) to consider
