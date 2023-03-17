@@ -354,8 +354,8 @@ def join_paths(*args):
 def save_text(text, path, log = True):
     return _ut.save_text(text, path, log = log)
 
-def read_data(path, delimiter = None, columns = None, skip_rows = 0):
-    return _ut.read_data(path, delimiter = delimiter, columns = columns, skip_rows = skip_rows)
+def read_data(path, delimiter = None, columns = None):
+    return _ut.read_data(path, delimiter = delimiter, columns = columns)
 
 def write_data(data, path, delimiter = None, columns = None, log = True):
     return _ut.write_data(data, path, delimiter = delimiter, columns = columns, log = log)

@@ -37,12 +37,6 @@ def build_parser():
                              metavar = "FILE",
                              help    = "file path of the data table; if not used it will read from stdin. Use 'test' to automatically download, in your user folder, some test data/image/gif or video, depending on the function used; the file will be removed after the plot",
                              ).complete = shtab.FILE
-    path_parser.add_argument("-r", "--skip-rows",
-                             action = "store",
-                             type = int,
-                             default = 0,
-                             metavar = "ROWS",
-                             help = "Skip ROWS rows of the data file.")
 
     common_parser = argparse.ArgumentParser(add_help = False)
 
@@ -243,10 +237,8 @@ def main(argv = None):
     args = parser.parse_args(argv)
 
     type = args.type
-    skip_rows = 0
     if type != "youtube":
         path = args.path
-        skip_rows = args.skip_rows
         clt = True if args.clear_terminal[-1] == 'True' else False
         sleep = args.sleep[0]
 
@@ -311,8 +303,6 @@ def main(argv = None):
                 x, Y = get_xY(data)
                 plot(x, Y)
 
-            for _ in range(skip_rows):
-                sys.stdin.readline()
             text = []
             i = 0
             for line in iter(sys.stdin.readline, ''):
@@ -326,7 +316,7 @@ def main(argv = None):
                 text = []
 
         else:
-            data = plt.read_data(path, delimiter = delimiter, skip_rows = skip_rows)
+            data = plt.read_data(path, delimiter = delimiter)
             data = plt.transpose(data)
             x, Y = get_xY(data)
             chunks = len(x) // lines + (1 if len(x) % lines else 0)

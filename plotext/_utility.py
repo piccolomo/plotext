@@ -220,12 +220,12 @@ def delete_file(path, log = True): # remove the file if it exists
         os.remove(path)
         print(format_strings("file removed:", path, negative_color)) if log else None
 
-def read_data(path, delimiter = None, columns = None, skip_rows=0): # it turns a text file into data lists
+def read_data(path, delimiter = None, columns = None, header = None): # it turns a text file into data lists
     path = correct_path(path)
+    header = True if header is None else header
     file = open(path, "r")
-    for _ in range(skip_rows):
-        next(file)
-    text = file.readlines()
+    begin = int(not header)
+    text = file.readlines()[begin:]
     file.close()
     return read_lines(text, delimiter, columns)
 
