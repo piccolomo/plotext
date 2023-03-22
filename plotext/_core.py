@@ -188,24 +188,24 @@ def bar(*args, xside = None, yside = None, marker = None, color = None, fill = N
     _figure._active.bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks)
     _figure.show() if _figure._interactive else None
 
-def simple_bar(*args, width = None, marker = None, color = None, title = None):
-    _glob.simple_bar(*args, width = width, marker = marker, color = color, title = title)
+def simple_bar(*args, width = None, marker = None, color = None, title = None, bar_texts = None):
+    _glob.simple_bar(*args, width = width, marker = marker, color = color, title = title, bar_texts = bar_texts)
     _figure.show() if _figure._interactive else None
 
-def multiple_bar(*args, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None, reset_ticks = None):
-    _figure._active.multiple_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks)
+def multiple_bar(*args, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None, reset_ticks = None, bar_texts = None):
+    _figure._active.multiple_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks, bar_texts = bar_texts)
     _figure.show() if _figure._interactive else None
 
-def simple_multiple_bar(*args, width = None, marker = None, colors = None, title = None, labels = None):
-    _glob.simple_multiple_bar(*args, width = width, marker = marker, colors = colors, title = title, labels = labels)
+def simple_multiple_bar(*args, width = None, marker = None, colors = None, title = None, labels = None, bar_texts = None):
+    _glob.simple_multiple_bar(*args, width = width, marker = marker, colors = colors, title = title, labels = labels, bar_texts = bar_texts)
     _figure.show() if _figure._interactive else None
 
 def stacked_bar( *args, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None, reset_ticks = None):
     _figure._active.stacked_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks)
     _figure.show() if _figure._interactive else None
 
-def simple_stacked_bar(*args, width = None, marker = None, colors = None, title = None, labels = None):
-    _glob.simple_stacked_bar(*args, width = width, marker = marker, colors = colors, title = title, labels = labels)
+def simple_stacked_bar(*args, width = None, marker = None, colors = None, title = None, labels = None, bar_texts = None):
+    _glob.simple_stacked_bar(*args, width = width, marker = marker, colors = colors, title = title, labels = labels, bar_texts = bar_texts)
     _figure.show() if _figure._interactive else None
 
 def hist(data, bins = None, norm = None, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None):

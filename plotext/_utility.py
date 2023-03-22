@@ -6,10 +6,14 @@ from plotext._dict import *
 ###############################################
 
 def round(n, d = 0): # the standard round(0.5) = 0 instead of 1; this version rounds 0.5 to 1
-    n *= 10 ** d
-    f = math.floor(n)
-    r = f if n - f < 0.5 else math.ceil(n)
-    return r * 10 ** (-d)
+    # If string labels are passed, assume they are already in the desired format
+    if isinstance(n, str):
+        return n
+    else:
+        n *= 10 ** d
+        f = math.floor(n)
+        r = f if n - f < 0.5 else math.ceil(n)
+        return r * 10 ** (-d)
 
 def mean(x, y, p = 1): # mean of x and y with optional power p; if p tends to 0 the minumum is returned; if p tends to infinity the max is returned; p = 1 is the standard mean
     return ((x ** p + y ** p) / 2) ** (1 / p)
