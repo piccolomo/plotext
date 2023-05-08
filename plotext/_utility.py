@@ -27,6 +27,14 @@ def try_float(data): # it turn a string into float if it can
     except:
         return data
 
+def quantile(data, q): # calculate the quantile of a given array
+    data = sorted(data)
+    index = q * (len(data) - 1)
+    if index.is_integer():
+        return data[int(index)]
+    else:
+        return (data[int(index)] + data[int(index) + 1]) / 2
+
 ###############################################
 ###########    List Creation     ##############
 ###############################################
@@ -776,6 +784,33 @@ def get_simple_labels(marker, labels, colors, width):
         out =  space.join([colorize(marker * 3, colors[i]) + space + colorize(labels[i], 'gray+', 'bold') for i in range(l)])
         out = '\n' + get_title(out, width)
     return out
+
+###############################################
+#############   Box Functions    ##############
+###############################################
+
+def box(x, y, width, minimum): # given the bars center coordinates and height, it returns the full bar coordinates
+    # if x == []:
+    #     return [], []
+    bins = len(x)
+    #bin_size_half = (max(x) - min(x)) / (bins - 1) * width / 2
+    bin_size_half = width / 2
+    # adjust the bar width according to the number of bins
+    if bins > 1:
+        bin_size_half *= (max(x) - min(x)) / (bins - 1)
+    c, q1, q2, q3, h, l = [], [], [], [], [], []
+    xbar, ybar, mybar = [], [], []
+
+    for i in range(bins):
+        c.append(x[i])
+        xbar.append([x[i] - bin_size_half, x[i] + bin_size_half])
+        q1.append(quantile(y[i], 0.25))
+        q2.append(quantile(y[i], 0.50))
+        q3.append(quantile(y[i], 0.75))
+        h.append(max(y[i]))
+        l.append(min(y[i]))
+
+    return q1, q2, q3, h, l, c, xbar
 
 ##############################################
 ##########    Image Utilities    #############
