@@ -1,4 +1,5 @@
 import sys, shutil, os, re, math, inspect
+import numpy as np
 from plotext._dict import *
 
 ###############################################
@@ -714,16 +715,17 @@ def hist_data(data, bins = 10, norm = False): # it returns data in histogram for
     #data = [round(el, 15) for el in data]
     # if data == []:
     #     return [], []
-    bins = 0 if len(data) == 0 else bins
-    m, M = min(data, default = 0), max(data, default = 0)
-    data = [(el - m) / (M - m) * bins if el != M else bins - 1 for el in data]
-    data = [int(el) for el in data]
-    histx = linspace(m, M, bins)
-    histy = [0] * bins
-    for el in data:
-        histy[el] += 1
-    if norm:
-        histy = [el / len(data) for el in histy]
+    # bins = 0 if len(data) == 0 else bins
+    # m, M = min(data, default = 0), max(data, default = 0)
+    # data = [(el - m) / (M - m) * bins if el != M else bins - 1 for el in data]
+    # data = [int(el) for el in data]
+    # histx = linspace(m, M, bins)
+    # histy = [0] * bins
+    # for el in data:
+    #   histy[el] += 1
+    # if norm:
+    #     histy = [el / len(data) for el in histy]
+    histy, histx = np.histogram(data, bins=bins, density=norm)
     return histx, histy
 
 def single_bar(x, y, ylabel, marker, colors):
