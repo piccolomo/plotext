@@ -21,7 +21,7 @@
 * If needed, most of the functions that follow allow to optionally set their input and output forms independently, with their correspondent parameters, overwriting the `date_form()` settings.
 - To get today in `datetime` or string form use `today_datetime()` and `today_string()` respectively.
 
-- To turn a `datetime` object into a string use `datetime_to_string()` or `datetimes_to_string()` for a list instead. 
+- To turn a `datetime` object into a string use `datetime_to_string()` or `datetimes_to_strings()` for a list instead. 
 
 - To turn a string into a `datetime` object use `string_to_datetime()`.
 
@@ -48,7 +48,7 @@ end = plt.today_datetime()
 data = yf.download('goog', start, end)
 
 prices = list(data["Close"])
-dates = plt.datetimes_to_string(data.index)
+dates = plt.datetimes_to_strings(data.index)
 
 plt.plot(dates, prices)
 
@@ -61,7 +61,7 @@ plt.show()
 or directly on terminal:
 
 ```console
-python3 -c "import yfinance as yf; import plotext as plt; plt.date_form('d/m/Y'); start = plt.string_to_datetime('11/04/2022'); end = plt.today_datetime(); data = yf.download('goog', start, end); prices = list(data['Close']); dates = plt.datetimes_to_string(data.index); plt.plot(dates, prices); plt.title('Google Stock Price'); plt.xlabel('Date'); plt.ylabel('Stock Price $'); plt.show()"
+python3 -c "import yfinance as yf; import plotext as plt; plt.date_form('d/m/Y'); start = plt.string_to_datetime('11/04/2022'); end = plt.today_datetime(); data = yf.download('goog', start, end); prices = list(data['Close']); dates = plt.datetimes_to_strings(data.index); plt.plot(dates, prices); plt.title('Google Stock Price'); plt.xlabel('Date'); plt.ylabel('Stock Price $'); plt.show()"
 ```
 
 ![datetime](https://raw.githubusercontent.com/piccolomo/plotext/master/data/datetime.png)
@@ -86,7 +86,7 @@ start = plt.string_to_datetime('11/04/2022')
 end = plt.today_datetime()
 data = yf.download('goog', start, end)
 
-dates = plt.datetimes_to_string(data.index)
+dates = plt.datetimes_to_strings(data.index)
 
 plt.candlestick(dates, data)
 
@@ -99,7 +99,7 @@ plt.show()
 or directly on terminal:
 
 ```console
-python3 -c "import yfinance as yf; import plotext as plt; plt.date_form('d/m/Y'); start = plt.string_to_datetime('11/04/2022'); end = plt.today_datetime(); data = yf.download('goog', start, end); dates = plt.datetimes_to_string(data.index); plt.candlestick(dates, data); plt.title('Google Stock Price Candlesticks'); plt.xlabel('Date'); plt.ylabel('Stock Price $'); plt.show()"
+python3 -c "import yfinance as yf; import plotext as plt; plt.date_form('d/m/Y'); start = plt.string_to_datetime('11/04/2022'); end = plt.today_datetime(); data = yf.download('goog', start, end); dates = plt.datetimes_to_strings(data.index); plt.candlestick(dates, data); plt.title('Google Stock Price Candlesticks'); plt.xlabel('Date'); plt.ylabel('Stock Price $'); plt.show()"
 ```
 
 ![datetime](https://raw.githubusercontent.com/piccolomo/plotext/master/data/candlestick.png)

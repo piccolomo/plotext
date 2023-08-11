@@ -5,7 +5,7 @@
 - [Updates](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#updates)
 - [Credits](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#credits)
 - [Similar Projects](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#similar-projects)
-- [Life Questions](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#life-questions)
+
 
 [Main Guide](https://github.com/piccolomo/plotext#guide)
 
@@ -41,6 +41,7 @@ Here are the terminal commands to install `plotext` on your machine:
 
 From [Issue Reports](https://github.com/piccolomo/plotext/issues): 
 
+- solve [Issue 155](https://github.com/piccolomo/plotext/issues/155) to make simple multiple and stacked plots handle single data sets
 - add OHLC date-time plots, solving [Issue 149](https://github.com/piccolomo/plotext/issues/148)
 - add custom lines (dotted, or any marker), solving [Issue 145](https://github.com/piccolomo/plotext/issues/145)
 - add heatmap plot, solving [Issue 143](https://github.com/piccolomo/plotext/issues/143)
@@ -48,7 +49,7 @@ From [Issue Reports](https://github.com/piccolomo/plotext/issues):
 
 Any new relevant idea is welcomed under request, opening an [issue report](https://github.com/piccolomo/plotext/issues/new), here are some:
 
-- add bar `alignment` parameter
+- add bar `alignment` and `style` parameter
 - add `clear_settings()` method to clear only the plot settings (labels, title and so on) and not the data and colors
 - add `matrix_plot()` side bar to connect intensity level with actual matrix value
 - high resolution markers available on Windows and other rarer terminals (under request and not sure how)
@@ -63,29 +64,49 @@ Any new relevant idea is welcomed under request, opening an [issue report](https
 - allow simple plots and fast image rendering to fit in subplots 
 - add matrix plot side bar 
 - make simple bar plots handle negative values
+- allow the `limit_size()` method to be used also after `plot_size()`
+- add method to optionally set the sizes of a matrix of subplots giving priority to the subplots closer to bottom right edge, instead of upper left ones (as by default).  
 - allow user to decide plot legend position and frame
+- extend command line tool so that `man plotext` and `whatis plotext` are allowed
+- add table feature, with nice formatting
+- convert the class `matrix_class()`, the engine running the plots, in C++ and connect it to the Python code (not sure how and would appreciate some help regarding this)
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#notes)
 
 ## Updates
 
+#### In version 5.3
+
+Available on [GitHub](https://github.com/piccolomo/plotext) only:
+
+- all docstrings updated
+- the colored doctrings of all methods can now be easily printed using a dedicated `.doc()` internal method; eg: `plotext.scatter.doc()` will print the colorized docstring of the `scatter()` function.
+- renamed `text` parameter to `label` in `text()` method 
+- renamed `label` parameter to `labels` in `multiple_bar()` and `stacked_bar()` functions 
+- renamed `fullground` parameter to `color` in `colorize()` method
+- renamed `datetimes_to_string()` method to `datetimes_to_strings()`
+- removed `trend` parameter from `indicator()` function
+- added `log` and `header` parameters to `read_data()` method
+- changed text default allignment to `'center'` in `text()` method
+
+
 #### In version 5.2
 
-<!--- Available on [GitHub](https://github.com/piccolomo/plotext) only:--->
 
-In version 5.2.8:
+In version 5.2.8 (published on [PyPi](https://pypi.org/project/plotext)):
 
-- solved issue [Issue 153](https://github.com/piccolomo/plotext/issues/153) allowing bar plots to handle 0 data sets
-- solved issue [Issue 151](https://github.com/piccolomo/plotext/issues/151) due to wrong inheritance of nested subplots from parent figure
-- solved issue [Issue 150](https://github.com/piccolomo/plotext/issues/150) due to maximum number of subplots reached
-- solved issue [Issue 142](https://github.com/piccolomo/plotext/issues/142) by removing side symbol (like ⅃) in legend for single data set
-- added `xside` and `yside` parameters to `candlestick()` function, solving another bug in [Issue 138](https://github.com/piccolomo/plotext/issues/138)
-- removed decimals points if axes ticks are all integers, solving [Issue 136](https://github.com/piccolomo/plotext/issues/136)
-- added `marker` parameter to the `from_matplotlib()` method, solving [Issue 134](https://github.com/piccolomo/plotext/issues/134)
-- made `from_matplotlib()` method to be compatible with `matplotlib 3.6`, solving [Issue 133](https://github.com/piccolomo/plotext/issues/133)
-- added date time support for `xlim()` and `ylim()` methods, solving [Issue 138](https://github.com/piccolomo/plotext/issues/138)
+- solved issue [Issue 153](https://github.com/piccolomo/plotext/issues/153) allowing bar plots to handle 0 data sets
+- added `xside` and `yside` parameters to `candlestick()` function, solving [Issue 152](https://github.com/piccolomo/plotext/issues/152)
+- solved issue [Issue 151](https://github.com/piccolomo/plotext/issues/151) due to wrong inheritance of nested subplots from parent figure
+- solved issue [Issue 150](https://github.com/piccolomo/plotext/issues/150) due to maximum number of subplots reached
+- solved issue [Issue 142](https://github.com/piccolomo/plotext/issues/142) by removing side symbol (like ⅃) in legend for single data set
+- added date time support for `xlim()` and `ylim()` methods, solving [Issue 138](https://github.com/piccolomo/plotext/issues/138)
+- removed decimals points if axes ticks are all integers, solving [Issue 136](https://github.com/piccolomo/plotext/issues/136)
+- added `marker` parameter to the `from_matplotlib()` method, solving [Issue 134](https://github.com/piccolomo/plotext/issues/134)
+- made `from_matplotlib()` method compatible with `matplotlib 3.6`, solving [Issue 133](https://github.com/piccolomo/plotext/issues/133)
 
 <!--- Published on [PyPi](https://pypi.org/project/plotext): --->
+
 In previous versions:
 
 - fixed legend symbol for braille markers, merging [Pull Request 135](https://github.com/piccolomo/plotext/pull/135)
@@ -326,7 +347,7 @@ From [Pull requests](https://github.com/piccolomo/plotext/pulls):
 From [Issue Reports](https://github.com/piccolomo/plotext/issues):
 
 - `@luator` for requesting `marker` parameter in the `from_matplotlib()` method in [Issue 134](https://github.com/piccolomo/plotext/issues/134)
-- `@darul75` for requesting multiple lines in [Issue 127](https://github.com/piccolomo/plotext/issues/127)
+- `@darul75` for requesting multiple lines in `text()` in [Issue 127](https://github.com/piccolomo/plotext/issues/127)
 - `@PhilipVinc` for `error()` plot idea, requested in [Issue 122](https://github.com/piccolomo/plotext/issues/122)
 - `@darul75` for requesting a simple KPI indicator  in [Issue 121](https://github.com/piccolomo/plotext/issues/121)
 - `@Freed-Wu` for requesting interactive mode in [Issue 115](https://github.com/piccolomo/plotext/issues/115)
@@ -353,7 +374,7 @@ From [Issue Reports](https://github.com/piccolomo/plotext/issues):
 - `@Zaneo` for multiple data set idea: [Issue 13](https://github.com/piccolomo/plotext/issues/13)
 - `@Zaneo` for double axes idea: [Issue 12](https://github.com/piccolomo/plotext/issues/12)
 - users `@geoffrey-eisenbarth` and  `@matthewhanson` for requesting datetime support: [Issue 7](https://github.com/piccolomo/plotext/issues/7)
-- `@kris927b` for requesting histogram plot: [Issue 6](https://github.com/piccolomo/plotext/issues/6)
+- `@kris927b` for requesting histogram - [Some Questions](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#some-questions)plot: [Issue 6](https://github.com/piccolomo/plotext/issues/6)
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#notes)
 
@@ -370,18 +391,5 @@ These count as well as source of inspiration:
 - [bashplotlib](https://github.com/glamp/bashplotlib)
 - [termplotlib](https://github.com/nschloe/termplotlib)
 - [termgraph](https://github.com/mkaz/termgraph)
-
-[Main Guide](https://github.com/piccolomo/plotext#guide), [Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#notes)
-
-## Life Questions
-
-- Is [Consciousness](https://www.youtube.com/watch?v=Bim73icRzCk) and [Love](https://www.youtube.com/watch?v=GHzAfj-62Uc) the unified truth of life, transcendent of space, time and death?
-- is there a [global cabal](https://www.youtube.com/watch?v=ZSqBNGxLiAs&list=PLnzMmEt4pIb83lZgEA3nALsDM1QogyvC0&index=17) of psychopaths/narcissists trying to manipulate humanity through fear and ignorance? If so, are they a manifestation of our collective shadow or ego? 
-- Is it possible then, that collective [shadow work](https://www.youtube.com/watch?v=YgvrUi8BIWw), or ego-transcendence, is the most important effort humanity as a whole needs to face in order to evolve spiritually?
-- Are there [credible witness testimonies](https://www.youtube.com/watch?v=AmNzkxVwAYg&list=PLnrEt2fIdZ0aBgPuVF0C_T559YR20eDTc) of UFO activity and deep state cover-up? If so, could the deep state and the military industrial complex have any interest in portraying them in the future as a treat to humanity to justify the militarization of space?
-
-Please notice: if any of the previous questions cause irritation or any ego reaction in you, could that suggest that shadow work and ego-transcendence is even more needed? 
-
-Your choice deciding the answer to such fundamental questions. I made mine a long time ago. My mind and heart is set free! Good luck in your journey towards real authenticity :-) ! 
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#notes)

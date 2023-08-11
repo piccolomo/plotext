@@ -97,8 +97,8 @@ def cumsum(data): # it returns the cumulative sums of a list; eg: cumsum([0,1,2,
 def matrix_size(matrix):  # cols, height
     return [len(matrix[0]), len(matrix)] if matrix != [] else [0, 0]
 
-def transpose(matrix, length = 1): # it needs no explanation
-    return [[]] * length if matrix == [] else list(map(list, zip(*matrix)))
+def transpose(data, length = 1): # it needs no explanation
+    return [[]] * length if data == [] else list(map(list, zip(*data)))
 
 def vstack(matrix, extra): # vertical stack of two matrices
     return extra + matrix # + extra
@@ -125,6 +125,8 @@ def brush(*lists): # remove duplicates from lists x, y, z ...
 ###############################################
 #########   String Manipulation     ###########
 ###############################################
+
+nl = "\n"
 
 def only_spaces(string): # it returns True if string is made of only empty spaces or is None or ''
     return (type(string) == str) and (string == len(string) * space) #and len(string) != 0
@@ -220,13 +222,13 @@ def delete_file(path, log = True): # remove the file if it exists
         os.remove(path)
         print(format_strings("file removed:", path, negative_color)) if log else None
 
-def read_data(path, delimiter = None, columns = None, header = None): # it turns a text file into data lists
+def read_data(path, delimiter = None, columns = None, first_row = None, log = True): # it turns a text file into data lists
     path = correct_path(path)
-    header = True if header is None else header
+    first_row = 0 if first_row is None else int(first_row)
     file = open(path, "r")
-    begin = int(not header)
-    text = file.readlines()[begin:]
+    text = file.readlines()[first_row:]
     file.close()
+    print(format_strings("data read from", path)) if log else None
     return read_lines(text, delimiter, columns)
 
 def write_data(data, path, delimiter = None, columns = None, log = True): # it turns a matrix into a text file
@@ -252,7 +254,6 @@ def download(url, path, log = True): # it download the url (image, video, gif et
     path = correct_path(path)
     urlretrieve(url, path)
     print(format_strings('url saved in', path)) if log else None
-    return path
 
 ###############################################
 #########    Platform Utilities    ############
@@ -369,9 +370,9 @@ def is_rgb_color(color):
 def is_color(color):
     return is_string_color(color) or is_integer_color(color) or is_rgb_color(color)
 
-def colorize(string, fullground = None, style = None, background = None, show = False): # it paints a text with given fullground and background color
+def colorize(string, color = None, style = None, background = None, show = False): # it paints a text with given fullground and background color
     string = apply_ansi(string, background, 0)
-    string = apply_ansi(string, fullground, 1)
+    string = apply_ansi(string, color, 1)
     string = apply_ansi(string, style, 2)
     if show:
         print(string)

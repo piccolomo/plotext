@@ -36,6 +36,7 @@ class default_monitor_class():
         self.text_init()
         self.draw_init()
         self.bar_init()
+        self.confusion_matrix_init()
 
     def color_init(self): # Default Values for Color Set with Outside Functions
         self.canvas_color = "white"
@@ -76,3 +77,7 @@ class default_monitor_class():
         self.bar_fill = True # bar plot filled or not
         self.bar_width = 4 / 5 # bar width
         self.hist_bins = 10
+
+    def confusion_matrix_init(self):
+        self.cmatrix_color = 'orange+'
+        self.cmatrix_style = 'bold'

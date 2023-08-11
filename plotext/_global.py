@@ -103,7 +103,6 @@ def get_youtube(url, path, log):
     path = ut.correct_path(path)
     best.download(filepath = path, quiet = not log)
     print(ut.format_strings('YouTube video downloaded as', path)) if log else None
-    return path
 
 def _play_video(path, from_youtube = False):
     import cv2
@@ -320,7 +319,7 @@ def test():
     subplot.canvas_color(66); subplot.axes_color(4); subplot.ticks_color(216); subplot.ticks_style('bold italic')
     y = ut.sin(periods = 1); l = len(y)
     subplot.scatter(y, label = "lower left")
-    x = [figure.today_datetime() + dt.timedelta(days = i) for i in range(l)]; x = figure.datetimes_to_string(x)
+    x = [figure.today_datetime() + dt.timedelta(days = i) for i in range(l)]; x = figure.datetimes_to_strings(x)
     subplot.plot(x, x, label = 'upper right - all dates', xside = 2, yside = 2)
     subplot.vline(l / 2, 'red')
     subplot.hline(0, 200)
@@ -336,13 +335,13 @@ def test():
     xb = ["Sausage", "Pepperoni", "Mushrooms", "Cheese", "Chicken", "Beef"]
     y1 = [36, 14, 11, 8, 7, 4]
     y2 = [20, 12, 35, 15, 4, 5]
-    subplot.stacked_bar(xb, [y1, y2], label = ["men", "women"])
+    subplot.stacked_bar(xb, [y1, y2], labels = ["men", "women"])
 
     subplot = figure.subplot(2, 1)
     subplot.theme('dreamland')
     ld = 7 * 10 ** 4
     data = [random.gauss(0, 1) for el in range(10 * ld)]
-    subplot.hist(data, 60, label="mean 0")
+    subplot.hist(data, bins = 60, label="mean 0")
     subplot.frame(1); #subplot.xaxes(1, 0); subplot.yaxes(1, 0)
     
     subplot = figure.subplot(2, 2)

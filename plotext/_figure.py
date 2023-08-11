@@ -2,7 +2,7 @@ from plotext._default import default_figure_class
 from plotext._monitor import monitor_class
 from plotext._matrix import join_matrices
 from plotext._date import date_class
-import plotext._doc as doc
+from plotext._doc_utils import add
 from time import time as _time
 import plotext._utility as ut
 from time import time
@@ -10,7 +10,7 @@ import os
 
 # A figure is a general container of either a plot (called monitor) or another figure, when subplots are nested
 # This creates a hierarchy of figures, where master is the main/initial global figure, and parent is the figure containing (or above) the one considered
-# The active figure is the one that can be accessed with further plotext commands - like plot(), limitsize() etc ..
+# The active figure is the one that can be accessed with further plotext commands - like plot(), limitsize() etc .. 
 # If a figure has no sub figures, then it is used for plotting, otherwise its sub figures are checked
 
 class _figure_class():
@@ -101,6 +101,8 @@ class _figure_class():
         return self.subfig[row - 1][col - 1] if row in self._Rows and col in self._Cols else self._master._dummy
 
     def subplot(self, row = None, col = None):
+        row = 1 if row is None else int(abs(row))
+        col = 1 if col is None else int(abs(col))
         active = self._get_subplot(row, col)
         self._active = active
         self._master._active = active
@@ -115,8 +117,8 @@ class _figure_class():
 #######    External Set Functions    #########
 ##############################################
 
-    def title(self, title = None):
-        self.monitor.set_title(title) if self._no_plots else [[self._get_subplot(row, col).title(title) for col in self._Cols] for row in self._Rows]
+    def title(self, label = None):
+        self.monitor.set_title(label) if self._no_plots else [[self._get_subplot(row, col).title(label) for col in self._Cols] for row in self._Rows]
 
     def xlabel(self, label = None, xside = None):
         self.monitor.set_xlabel(label = label, xside = xside) if self._no_plots else [[self._get_subplot(row, col).xlabel(label = label, xside = xside) for col in self._Cols] for row in self._Rows]
@@ -208,35 +210,35 @@ class _figure_class():
     def _draw(self, *args, **kwargs):
         self.monitor.draw(*args, **kwargs) if self._no_plots else [[self._get_subplot(row, col)._draw(*args, **kwargs) for col in self._Cols] for row in self._Rows]
 
-    def scatter(self, *args, xside = None, yside = None, marker = None, color = None, style = None, fillx = None, filly = None, label = None):
+    def scatter(self, *args, marker = None, color = None, style = None, fillx = None, filly = None, xside = None, yside = None, label = None):
         self._draw(*args, xside = xside, yside = yside, lines = False, marker = marker, color = color, style = style, fillx = fillx, filly = filly, label = label)
 
-    def plot(self, *args, xside = None, yside = None, marker = None, color = None, style = None, fillx = None, filly = None, label = None):
+    def plot(self, *args, marker = None, color = None, style = None, fillx = None, filly = None, xside = None, yside = None, label = None):
         self._draw(*args, xside = xside, yside = yside, lines = True, marker = marker, color = color,  fillx = fillx, filly = filly, label = label)
 
-    def candlestick(self, dates, data, xside = None, yside = None, orientation = None, colors = None, label = None):
-        self.monitor.draw_candlestick(dates, data, xside = xside, yside = yside, orientation = orientation, colors = colors, label = label) if self._no_plots else [[self._get_subplot(row, col).candlestick(dates, data, orientation = orientation, colors = colors, label = label) for col in self._Cols] for row in self._Rows]
-        
-    def bar(self, *args, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None, reset_ticks = None):
+    def bar(self, *args, marker = None, color = None, fill = None, width = None, orientation = None, minimum = None, reset_ticks = None, xside = None, yside = None, label = None):
         self.monitor.draw_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks) if self._no_plots else [[self._get_subplot(row, col).bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks) for col in self._Cols] for row in self._Rows]
 
-    def multiple_bar(self, *args, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None, reset_ticks = None):
-        self.monitor.draw_multiple_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks) if self._no_plots else [[self._get_subplot(row, col).multiple_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks) for col in self._Cols] for row in self._Rows]
+    def multiple_bar(self, *args, marker = None, color = None, fill = None, width = None, orientation = None, minimum = None, reset_ticks = None, xside = None, yside = None, labels = None):
+        self.monitor.draw_multiple_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, labels = labels, minimum = minimum, reset_ticks = reset_ticks) if self._no_plots else [[self._get_subplot(row, col).multiple_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks) for col in self._Cols] for row in self._Rows]
     
-    def stacked_bar(self, *args, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None, reset_ticks = None):
-        self.monitor.draw_stacked_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks) if self._no_plots else [[self._get_subplot(row, col).stacked_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks) for col in self._Cols] for row in self._Rows]
+    def stacked_bar(self, *args, marker = None, color = None, fill = None, width = None, orientation = None, minimum = None, reset_ticks = None, xside = None, yside = None, labels = None):
+        self.monitor.draw_stacked_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, labels = labels, minimum = minimum, reset_ticks = reset_ticks) if self._no_plots else [[self._get_subplot(row, col).stacked_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks) for col in self._Cols] for row in self._Rows]
 
-    def hist(self, data, bins = None, norm = None, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None):
+    def hist(self, data, bins = None, marker = None, color = None, fill = None, norm = None, width = None, orientation = None, minimum = None, xside = None, yside = None, label = None):
         self.monitor.draw_hist(data, bins = bins, norm = norm, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum) if self._no_plots else [[self._get_subplot(row, col).hist(data, bins = bins, norm = norm, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum) for col in self._Cols] for row in self._Rows]
 
+    def candlestick(self, dates, data, colors = None, orientation = None, xside = None, yside = None, label = None):
+        self.monitor.draw_candlestick(dates, data, xside = xside, yside = yside, orientation = orientation, colors = colors, label = label) if self._no_plots else [[self._get_subplot(row, col).candlestick(dates, data, orientation = orientation, colors = colors, label = label) for col in self._Cols] for row in self._Rows]
+        
 ##############################################
 ###########    Plotting Tools    #############
 ##############################################
 
-    def error(self, *args, xerr = None, yerr = None, xside = None, yside = None, color = None, label = None):
+    def error(self, *args, xerr = None, yerr = None, color = None, xside = None, yside = None, label = None):
         self.monitor.draw_error(*args, xerr = xerr, yerr = yerr, xside = xside, yside = yside, color = color, label = label) if self._no_plots else [[self._get_subplot(row, col).error(*args, xerr = xerr, yerr = yerr, xside = xside, yside = yside, color = color, label = label) for col in self._Cols] for row in self._Rows]
 
-    def event_plot(self, data, orientation = None, marker = None, color = None, side = None):
+    def event_plot(self, data, marker = None, color = None, orientation = None, side = None):
         self.monitor.draw_event_plot(data, orientation = orientation, marker = marker, color = color, side = side) if self._no_plots else [[self._get_subplot(row, col).event_plot(data, orientation = orientation, marker = marker, color = color, side = side) for col in self._Cols] for row in self._Rows]
     eventplot = event_plot
 
@@ -248,22 +250,22 @@ class _figure_class():
         self.monitor.draw_horizontal_line(coordinate, color = color, yside = yside) if self._no_plots else [[self._get_subplot(row, col).horizontal_line(coordinate, color = color, yside = yside) for col in self._Cols] for row in self._Rows]     
     hline = horizontal_line
 
-    def text(self, text, x, y, xside = None, yside = None, color = None, background = None, style = None, orientation = None, alignment = None):
-        self.monitor.draw_text(text, x, y, xside = xside, yside = yside, color = color, background = background, style = style, orientation = orientation, alignment = alignment) if self._no_plots else [[self._get_subplot(row, col).text(text, x, y, xside = xside, yside = yside, color = color, background = background, style = style, orientation = orientation, alignment = alignment) for col in self._Cols] for row in self._Rows]
+    def text(self, label, x, y, color = None, background = None, style = None, orientation = None, alignment = None, xside = None, yside = None):
+        self.monitor.draw_text(label, x, y, xside = xside, yside = yside, color = color, background = background, style = style, orientation = orientation, alignment = alignment) if self._no_plots else [[self._get_subplot(row, col).text(label, x, y, xside = xside, yside = yside, color = color, background = background, style = style, orientation = orientation, alignment = alignment) for col in self._Cols] for row in self._Rows]
 
-    def rectangle(self, x = None, y = None, xside = None, yside = None, lines = None, marker = None, color = None, fill = None, label = None):
+    def rectangle(self, x = None, y = None, marker = None, color = None, lines = None, fill = None, xside = None, yside = None, label = None):
         self.monitor.draw_rectangle(x = x, y = y, xside = xside, yside = yside, lines = lines, marker = marker, color = color, fill = fill, label = label) if self._no_plots else [[self._get_subplot(row, col).rectangle(x = x, y = y, xside = xside, yside = yside, lines = lines, marker = marker, color = color, fill = fill, label = label) for col in self._Cols] for row in self._Rows]
 
-    def polygon(self, x = None, y = None, radius = None, sides = None, xside = None, yside = None, lines = None, marker = None, color = None, fill = None, label = None):
+    def polygon(self, x = None, y = None,  radius = None, sides = None, marker = None, color = None, lines = None, fill = None, xside = None, yside = None, label = None):
         self.monitor.draw_polygon(x = x, y = y, radius = radius, sides = sides, xside = xside, yside = yside, lines = lines, marker = marker, color = color, fill = fill, label = label) if self._no_plots else [[self._get_subplot(row, col).polygon(x = x, y = y, radius = radius, sides = sides, xside = xside, yside = yside, lines = lines, marker = marker, color = color, fill = fill, label = label) for col in self._Cols] for row in self._Rows]
 
-    def confusion_matrix(self, actual, predicted, labels = None, color = None, style = None):
+    def confusion_matrix(self, actual, predicted, color = None, style = None, labels = None):
         self.monitor.draw_confusion_matrix(actual, predicted, labels = labels, color = color, style = style) if self._no_plots else [[self._get_subplot(row, col).confusion_matrix(actual, predicted, labels = labels, color = color, style = style) for col in self._Cols] for row in self._Rows]
 
     cmatrix = confusion_matrix
 
-    def indicator(self, value, label = None, trend = None, color = None, style = None):
-        self.monitor.draw_indicator(value, label = label, trend = trend, color = color, style = style) if self._no_plots else [[self._get_subplot(row, col).confusion_matrix(value, label = label, trend = trend, color = color, style = style) for col in self._Cols] for row in self._Rows]
+    def indicator(self, value, label = None, color = None, style = None):
+        self.monitor.draw_indicator(value, label = label, color = color, style = style) if self._no_plots else [[self._get_subplot(row, col).confusion_matrix(value, label = label, color = color, style = style) for col in self._Cols] for row in self._Rows]
 
 ##############################################
 ##############    2D Plots    ################
@@ -272,7 +274,7 @@ class _figure_class():
     def matrix_plot(self, matrix, marker = None, style = None, fast = False):
         self.monitor.draw_matrix(matrix, marker = marker, style = style, fast = fast) if self._no_plots else [[self._get_subplot(row, col).matrix_plot(matrix, marker = marker, style = style, fast = fast) for col in self._Cols] for row in self._Rows]
     
-    def image_plot(self, path, marker = None, style = None, grayscale = False, fast = False):
+    def image_plot(self, path, marker = None, style = None, fast = False, grayscale = False):
         self.monitor.draw_image(path, marker = marker, style = style, grayscale = grayscale, fast = fast) if self._no_plots else [[self._get_subplot(row, col).image_plot(path, marker = marker, style = style, grayscale = grayscale, fast = fast) for col in self._Cols] for row in self._Rows]
         
 ##############################################
@@ -286,7 +288,7 @@ class _figure_class():
         else:
             [[self._get_subplot(row, col).date_form(input_form, output_form) for col in self._Cols] for row in self._Rows]
         
-    def set_time0(self, string, form = None):
+    def set_time0(self, string, input_form = None):
         self.monitor.date.set_time0(string, form) if self._no_plots else [[self._get_subplot(row, col).set_time0(string, form) for col in self._Cols] for row in self._Rows]
 
     def today_datetime(self):
@@ -298,8 +300,8 @@ class _figure_class():
     def datetime_to_string(self, datetime, output_form = None):
         return self.monitor.date.datetime_to_string(datetime, output_form = output_form)
     
-    def datetimes_to_string(self, datetimes, output_form = None):
-        return self.monitor.date.datetimes_to_string(datetimes, output_form = output_form)
+    def datetimes_to_strings(self, datetimes, output_form = None):
+        return self.monitor.date.datetimes_to_strings(datetimes, output_form = output_form)
         
     def string_to_datetime(self, string, input_form = None):
         return self.monitor.date.string_to_datetime(string, input_form = input_form)
@@ -388,6 +390,7 @@ class _figure_class():
         self._set_size(width, height)
         self._set_master_size() if self._is_master else None
         self.monitor.size = self._size
+        return self._width, self._height
         
     plotsize = plot_size
 
@@ -408,71 +411,71 @@ class _figure_class():
 ##############################################
 ############     Docstrings    ###############
 ##############################################
+    add(subplots) 
+    add(subplots)
+    add(subplot)
+    add(main)
+    
+    add(plot_size)
+    add(take_min)
+    
+    add(title)
+    add(xlabel)
+    add(ylabel)
+    add(xlim)
+    add(ylim)
+    add(xscale)
+    add(yscale)
+    add(xticks)
+    add(yticks)
+    add(xfrequency)
+    add(yfrequency)
+    add(xreverse)
+    add(yreverse)
+    add(xaxes)
+    add(yaxes)
+    add(frame)
+    add(grid)
+    add(canvas_color)
+    add(axes_color)
+    add(ticks_color)
+    add(ticks_style)
+    add(theme)
+    
+    add(clear_figure)
+    add(clear_data)
+    add(clear_color)
+    add(clear_terminal)
+    
+    add(scatter)
+    add(plot)
+    add(bar)
+    add(multiple_bar)
+    add(stacked_bar)
+    add(hist)
+    add(candlestick)
 
-    subplots.__doc__ = doc._subplots
-    subplot.__doc__ = doc._subplot
-    main.__doc__ = doc._main
-    
-    plot_size.__doc__ = doc._plot_size
-    take_min.__doc__ = doc._take_min
-    
-    title.__doc__ = doc._title
-    xlabel.__doc__ = doc._xlabel
-    ylabel.__doc__ = doc._ylabel
-    xlim.__doc__ = doc._xlim
-    ylim.__doc__ = doc._ylim
-    xscale.__doc__ = doc._xscale
-    yscale.__doc__ = doc._yscale
-    xticks.__doc__ = doc._xticks
-    yticks.__doc__ = doc._yticks
-    xfrequency.__doc__ = doc._xfrequency
-    yfrequency.__doc__ = doc._yfrequency
-    xreverse.__doc__ = doc._xreverse
-    yreverse.__doc__ = doc._yreverse
-    xaxes.__doc__ = doc._xaxes
-    yaxes.__doc__ = doc._yaxes
-    frame.__doc__ = doc._frame
-    grid.__doc__ = doc._grid
-    canvas_color.__doc__ = doc._canvas_color
-    axes_color.__doc__ = doc._axes_color
-    ticks_color.__doc__ = doc._ticks_color
-    ticks_style.__doc__ = doc._ticks_style
-    theme.__doc__ = doc._theme
-    
-    clear_figure.__doc__ = doc._clear_figure
-    clear_data.__doc__ = doc._clear_data
-    clear_color.__doc__ = doc._clear_color
-    clear_terminal.__doc__ = doc._clear_terminal
-    
-    scatter.__doc__ = doc._scatter
-    plot.__doc__ = doc._plot
-    bar.__doc__ = doc._bar
-    multiple_bar.__doc__ = doc._multiple_bar
-    stacked_bar.__doc__ = doc._stacked_bar
-    hist.__doc__ = doc._hist
-    candlestick.__doc__ = doc._candlestick
+    add(error)
+    add(event_plot)
+    add(vertical_line)
+    add(horizontal_line)
+    add(text)
+    add(rectangle)
+    add(polygon)
+    add(confusion_matrix)
+    add(indicator)
 
-    error.__doc__ = doc._error
-    event_plot.__doc__ = doc._event_plot
-    vertical_line.__doc__ = doc._vertical_line
-    horizontal_line.__doc__ = doc._horizontal_line
-    text.__doc__ = doc._text
-    rectangle.__doc__ = doc.rectangle
-    polygon.__doc__ = doc.polygon
-    confusion_matrix.__doc__ = doc.confusion_matrix
-    indicator.__doc__ = doc.indicator
-
-    matrix_plot.__doc__ = doc._matrix_plot
-    image_plot.__doc__ = doc._image_plot
+    add(matrix_plot)
+    add(image_plot)
     
-    show.__doc__ = doc._show
-    build.__doc__ = doc._build
-    save_fig.__doc__ = doc._save_fig
+    add(show)
+    add(build)
+    add(save_fig)
     
-    date_form.__doc__ = doc._date_form
-    set_time0.__doc__ = doc._set_time0
-    today_datetime.__doc__ = doc._today_datetime
-    today_string.__doc__ = doc._today_string
-    datetime_to_string.__doc__ = doc._datetime_to_string
-    datetimes_to_string.__doc__ = doc._datetimes_to_string
-    string_to_datetime.__doc__ = doc._string_to_datetime
+    add(date_form)
+    add(set_time0)
+    add(today_datetime)
+    add(today_string)
+    add(datetime_to_string)
+    add(datetimes_to_strings)
+    add(string_to_datetime)
