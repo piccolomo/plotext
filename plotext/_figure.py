@@ -457,6 +457,7 @@ class _figure_class():
     add(stacked_bar)
     add(hist)
     add(candlestick)
+    add(box)
 
     add(error)
     add(event_plot)
