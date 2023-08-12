@@ -486,6 +486,7 @@ add(stacked_bar)
 add(simple_stacked_bar)
 add(simple_bar)
 add(hist)
+add(box)
 
 add(error)
 add(event_plot)
