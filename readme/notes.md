@@ -339,6 +339,8 @@ This version is only available on [GitHub](https://github.com/piccolomo/plotext/
 
 From [Pull requests](https://github.com/piccolomo/plotext/pulls):
 
+- `@cwaldbieser` for the `first_row` parameter idea in the `read_data()` methdod in [Pull Request 166](https://github.com/piccolomo/plotext/pull/166)
+- `@luator` for fixing legend symbol for braille markers in [Pull Request 135](https://github.com/piccolomo/plotext/pull/135)
 - `@luator` for fixing legend symbol for braille markers in [Pull Request 135](https://github.com/piccolomo/plotext/pull/135)
 - `@Freed-Wu` for introducing TAB completions to the command line tool in [Pull Request 118](https://github.com/piccolomo/plotext/pull/118) 
 - `@pankajp` for allowing `plotext` to be used with `python3` with `-m` flag in [Pull Request 107](https://github.com/piccolomo/plotext/pull/107)
