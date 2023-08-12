@@ -232,6 +232,25 @@ past("xside", "scatter")
 past("yside", "scatter")
 past("label", "scatter")
 
+"""
+box(self, *args, xside = None, yside = None, 
+    orientation = None, colors = None, label = None,
+    fill=None, width = None, minimum = None, 
+    offset = None, reset_ticks = None, hint = None):
+"""
+method("box")
+doc("It creates a box plot depend on data provieded")
+par("args", "grouped data or specific boundary values.")
+par("fill", "if True, the bars will be filled with the the given colored markers, otherwise only its borders would be printed.", t.bool, True)
+par("width", "the relative width of the bars, expressed as a float ranging from 0 to 1.", 'number', 4 / 5)
+par("minimum", "the minimum value of all the bars; this value could be easily tweaked, particularly when a logarithmic scale is chosen along the bars height.", 'number', 0)
+par("reset_ticks", "if True, the center coordinates at the base of each bar will be calculated (starting from 1) and printed automatically; otherwise the numerical ticks, along the base of the bars, will be calculated as for any other plot.", t.bool, True)
+par("offset", "offset position of the label.")
+past("orientation", "bar")
+past("xside", "scatter")
+past("yside", "scatter")
+past("label", "scatter")
+
 
 method("bar") 
 doc("It creates a bar plot using the x and y data provided.")
