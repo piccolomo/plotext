@@ -38,38 +38,70 @@ Here are the terminal commands to install `plotext` on your machine:
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#notes)
 
 ## Future Ideas
+Any new relevant idea is welcomed, opening an [issue report](https://github.com/piccolomo/plotext/issues/new), or any help with the following ideas with a new [pull requst](https://github.com/piccolomo/plotext/compare):
 
-From [Issue Reports](https://github.com/piccolomo/plotext/issues): 
 
-- solve [Issue 155](https://github.com/piccolomo/plotext/issues/155) to make simple multiple and stacked plots handle single data sets
-- add OHLC date-time plots, solving [Issue 149](https://github.com/piccolomo/plotext/issues/148)
-- add custom lines (dotted, or any marker), solving [Issue 145](https://github.com/piccolomo/plotext/issues/145)
-- add heatmap plot, solving [Issue 143](https://github.com/piccolomo/plotext/issues/143)
-- add unit testing, as suggested in [Issue 130](https://github.com/piccolomo/plotext/issues/130)
+### Bug Fixes
+- solve issue with `clear_color()` method not working properly, as presented in [Issue 156](https://github.com/piccolomo/plotext/issues/156)
+- solve simple stacked and multiple bar plot not working with single data set, as presented in issue [Issue 155](https://github.com/piccolomo/plotext/issues/155) about
+- solve chinese text bug, as presented in [Issue 158](https://github.com/piccolomo/plotext/issues/158)
+- `frame()` methods changes behaviors if called before `subplots()`; eg: `import plotext as plt; plt.clf(); plt.subplots(2,2);plt.subplot(1,2); plt.frame(0); plt.subplots(2,2); plt.show();` versus `import plotext as plt; plt.clf(); plt.frame(0); plt.subplots(2,2); plt.show();`
+- solve issue with `labels` parameter in `confusion_matrix()` (for non boolean data) which doesn't seem to work properly
+- solve weekends time gap issue in datetime plots, as presented in [Issue 148](https://github.com/piccolomo/plotext/issues/148)
 
-Any new relevant idea is welcomed under request, opening an [issue report](https://github.com/piccolomo/plotext/issues/new), here are some:
 
-- add bar `alignment` and `style` parameter
-- add `clear_settings()` method to clear only the plot settings (labels, title and so on) and not the data and colors
-- add `matrix_plot()` side bar to connect intensity level with actual matrix value
-- high resolution markers available on Windows and other rarer terminals (under request and not sure how)
-- correct doc strings
-- add direct parameters doc strings in the `doc` container
-- remove `trend` parameter in `text()` method
-- change `text` parameter to `label`  in `text()`
-- change `frame` parameter to `show` in `frame()` method
-- add `plotter()` function, to scatter and plot at the same time
-- add `simple_hist()` function, just like `simple_bar()`
-- change `colorize()` to output a `matrix_class()` object such that it can be inserted in `text()`, `indicator()` or any `label` parameter and any two objects can be easily summed as strings would. 
-- allow simple plots and fast image rendering to fit in subplots 
-- add matrix plot side bar 
-- make simple bar plots handle negative values
-- allow the `limit_size()` method to be used also after `plot_size()`
-- add method to optionally set the sizes of a matrix of subplots giving priority to the subplots closer to bottom right edge, instead of upper left ones (as by default).  
+### New Features
+- add custom lines, as requested in issue [Issue 145](https://github.com/piccolomo/plotext/issues/145)
+- support datetime integration, as requested in issue [Issue 154](https://github.com/piccolomo/plotext/issues/154)
+- add command line arguments to set plot limits, as requested in issue [Issue 173](https://github.com/piccolomo/plotext/issues/173)
+- allow plot and scatter to start from 0 and not 1 (optionally), as requested in issue [Issue 176](https://github.com/piccolomo/plotext/issues/176)
+- add heatmap plot, as requested in issue [Issue 143](https://github.com/piccolomo/plotext/issues/143)
+- add OHLC date time plot, as requested in issue [Issue 149](https://github.com/piccolomo/plotext/issues/149)
+- add network graphs, as requested in issue [Issue 160](https://github.com/piccolomo/plotext/issues/160)
+- add boxplot as requested in issue [Issue 169](https://github.com/piccolomo/plotext/issues/169) and proposed in issue [Pull Request 170](https://github.com/piccolomo/plotext/pull/170)
+- integrate `colorize()` in `text()` and `indicator()` or or any string `label` parameter, as requested in issue [Issue 144](https://github.com/piccolomo/plotext/issues/144); possible idea: `colorize()` to output a `matrix_class()` object
+- allow simple bar plots in matrix of subplots, as requested in issue [Issue 171](https://github.com/piccolomo/plotext/issues/171); this could be possibly extended to allow images also, rendered with fast parameter set to `True`
 - allow user to decide plot legend position and frame
-- extend command line tool so that `man plotext` and `whatis plotext` are allowed
-- add table feature, with nice formatting
+- allow clickable plots, as requested in issue [Issue 175](https://github.com/piccolomo/plotext/issues/175); this sounds hard!
+- add text table feature, with nice formatting (?)
+
+
+### New Functions
+- add `bold()` function
+- add `plotter()` function, to scatter and plot at the same time
+- add `clear_settings()` method to clear only the plot settings (labels, title and so on) and not the data, or colors
+- add `simple_hist()` function, analogous to `simple_bar()`
+
+
+### General Improvements
+- add all-caps style
+- add log parameter to `save_fig()` and similar
+- no float in axes labels if ticks are all integers
+- catch errors in video reproduction and get youtube
+- in read data, default folder should be script folder
+- allow simple bar plots to handle negative values
+- allow `limit_size()` to be used also after `plot_size()`
+- add bar `alignment` and `style` parameter
+- add matrix plot side bar, to connect intensity level with actual matrix value
+- high resolution markers available on Windows and other rarer terminals (under request and not sure how)
+- add method to optionally set the sizes of a matrix of subplots giving priority to the subplots closer to bottom right edge, instead of upper left ones (as by default)
 - convert the class `matrix_class()`, the engine running the plots, in C++ and connect it to the Python code (not sure how and would appreciate some help regarding this)
+
+
+### Internal Conventions
+- change candlestick data name conventions, as requested in [Issue 148](https://github.com/piccolomo/plotext/issues/148)
+- add parameter on bar plot methods for custom texts above bars, as proposed in [Pull Request 164](https://github.com/piccolomo/plotext/pull/164)
+- unify name for `color` and `colors` parameters in `candlestick()`, `multiple_bar()` etc ...
+- change `coordinate` parameter to `x` and `y` in `hline()` and `vline()`
+- change `trings_to_time()` to `strings_to_times()`
+- decide general convention for method aliases
+- change `frame` parameter to `show` in `frame()` method
+
+### Documentation and Testing
+- add docstring for `string_to_time()` and `strings_to_times()`
+- add unit testing, as suggested in [Issue 130](https://github.com/piccolomo/plotext/issues/130)
+- extend command line tool so that `man plotext` and `whatis plotext` are allowed
+
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#notes)
 
@@ -339,7 +371,7 @@ This version is only available on [GitHub](https://github.com/piccolomo/plotext/
 
 From [Pull requests](https://github.com/piccolomo/plotext/pulls):
 
-- `@cwaldbieser` for the `first_row` parameter idea in the `read_data()` methdod in [Pull Request 166](https://github.com/piccolomo/plotext/pull/166)
+- `@cwaldbieser` for the `first_row` parameter idea in the `read_data()` method in [Pull Request 166](https://github.com/piccolomo/plotext/pull/166)
 - `@luator` for fixing legend symbol for braille markers in [Pull Request 135](https://github.com/piccolomo/plotext/pull/135)
 - `@luator` for fixing legend symbol for braille markers in [Pull Request 135](https://github.com/piccolomo/plotext/pull/135)
 - `@Freed-Wu` for introducing TAB completions to the command line tool in [Pull Request 118](https://github.com/piccolomo/plotext/pull/118) 
