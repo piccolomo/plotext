@@ -206,7 +206,7 @@ echo -en "Box Plot"
 fork
 if test $out -eq 1
 then
-    python3 -c "import plotext as plt;labels = ['apple', 'orange', 'banana', 'pear'];weights = [[1,2,3,5,10,8],[4,9,6,12,20,13],[1,2,3,4,5,6],[3,9,12,16,9,8,3,7,2]];plt.box(labels, weights, width=0.3);plt.title('The Weight of the Fruits');plt.show();"
+    python3 -c "import plotext as plt; labels = ['apple', 'orange', 'banana', 'pear']; weights = [[1,2,3,5,10,8], [4,9,6,12,20,13], [1,2,3,4,5,6], [3,9,12,16,9,8,3,7,2]]; plt.box(labels, weights, width = 0.3); plt.title('The Weight of the Fruits'); plt.show();"
 fi
 
 echo -en "Error Plot"
