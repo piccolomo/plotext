@@ -497,6 +497,29 @@ class monitor_class(build_class):
                       minimum = None,
                       reset_ticks = False)
 
+    def draw_candlestick(self, dates, data, colors = None, orientation = None, xside = None, yside = None, label = None):
+        orientation = self.check_orientation(orientation, 1)
+        markers = ['sd', '│', '─'] #if markers is None else markers
+        colors = ['green', 'red'] if colors is None else colors
+        x = []; y = []; color = []
+        ln = len(dates)
+        data = {"Open": [], "Close": [], "High": [], "Low": []} if len(data) == 0 else data
+        Open = data["Open"]; Close = data["Close"]; High = data["High"]; Low = data["Low"]
+        for i in range(ln):
+            d = dates[i]
+            o, c, h, l = Open[i], Close[i], High[i], Low[i]
+            color = colors[0] if c > o else colors[1]
+            m, M = min(o, c), max(o, c)
+            lab = label if i == 0 else None
+            if orientation in ['v', 'vertical']:
+                self.draw([d, d], [M, h], xside = xside, yside = yside, color = color, marker = markers[1], lines = True)
+                self.draw([d, d], [l, m], xside = xside, yside = yside, color = color, marker = markers[1], lines = True)
+                self.draw([d, d], [m, M], xside = xside, yside = yside, color = color, marker = markers[0], lines = True, label = lab)
+            elif orientation in ['h', 'horizontal']:
+                self.draw([M, h], [d, d], xside = xside, yside = yside, color = color, marker = markers[2], lines = True)
+                self.draw([l, m], [d, d], xside = xside, yside = yside, color = color, marker = markers[2], lines = True)
+                self.draw([m, M], [d, d], xside = xside, yside = yside, color = color, marker = markers[0], lines = True, label = lab)
+
     def draw_box(self, *args, xside = None, yside = None, orientation = None, colors = None, label = None, fill = None, width = None, minimum = None, offset = None, reset_ticks = None, hint = None):
         x, y = ut.set_data(*args)
         fill = self.default.bar_fill if fill is None else fill
@@ -528,15 +551,14 @@ class monitor_class(build_class):
                 min_.append(d[4])
         else:
             q1, q2, q3, max_, min_, c, xbar = ut.box(x, y, width, minimum)
-            
         markers = ['sd', '│', '─'] #if markers is None else markers
+        
         for i in range(l):
             lab = label if i == 0 else None
             color = colors[0]
             mcolor = colors[1]
             d, l, h, m, E, M = c[i], min_[i], max_[i], q1[i], q2[i], q3[i]
             Ew = (M - m) / 30
-
             if orientation in ['v', 'vertical']:
                 self.draw([d, d], [M, h], xside = xside, yside = yside, color = color, marker = markers[1], lines = True)
                 self.draw([d, d], [l, m], xside = xside, yside = yside, color = color, marker = markers[1], lines = True)
@@ -555,29 +577,6 @@ class monitor_class(build_class):
                     lines = True, color = mcolor, fill = fill, marker = markers[1])
                 #self.draw([m, M], [d, d], xside = xside, yside = yside, color = color, marker = markers[0], lines = True, label = lab)
                 #self.draw([E, E], [d, d], xside = xside, yside = yside, color = 'red', marker = markers[0], lines = True)
-
-    def draw_candlestick(self, dates, data, colors = None, orientation = None, xside = None, yside = None, label = None):
-        orientation = self.check_orientation(orientation, 1)
-        markers = ['sd', '│', '─'] #if markers is None else markers
-        colors = ['green', 'red'] if colors is None else colors
-        x = []; y = []; color = []
-        ln = len(dates)
-        data = {"Open": [], "Close": [], "High": [], "Low": []} if len(data) == 0 else data
-        Open = data["Open"]; Close = data["Close"]; High = data["High"]; Low = data["Low"]
-        for i in range(ln):
-            d = dates[i]
-            o, c, h, l = Open[i], Close[i], High[i], Low[i]
-            color = colors[0] if c > o else colors[1]
-            m, M = min(o, c), max(o, c)
-            lab = label if i == 0 else None
-            if orientation in ['v', 'vertical']:
-                self.draw([d, d], [M, h], xside = xside, yside = yside, color = color, marker = markers[1], lines = True)
-                self.draw([d, d], [l, m], xside = xside, yside = yside, color = color, marker = markers[1], lines = True)
-                self.draw([d, d], [m, M], xside = xside, yside = yside, color = color, marker = markers[0], lines = True, label = lab)
-            elif orientation in ['h', 'horizontal']:
-                self.draw([M, h], [d, d], xside = xside, yside = yside, color = color, marker = markers[2], lines = True)
-                self.draw([l, m], [d, d], xside = xside, yside = yside, color = color, marker = markers[2], lines = True)
-                self.draw([m, M], [d, d], xside = xside, yside = yside, color = color, marker = markers[0], lines = True, label = lab)
         
 ##############################################
 ###########    Plotting Tools    #############
