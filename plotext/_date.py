@@ -27,7 +27,7 @@ class date_class():
         output_form = self.output_form if output_form is None else self.correct_form(output_form)
         return datetime.strftime(output_form)
     
-    def datetimes_to_string(self, datetimes, output_form = None): # from datetime form to string form
+    def datetimes_to_strings(self, datetimes, output_form = None): # from datetime form to string form
         return [self.datetime_to_string(el, output_form) for el in datetimes]
 
     def string_to_datetime(self, string, input_form = None): # from date and times in string form to standard datetime input_form

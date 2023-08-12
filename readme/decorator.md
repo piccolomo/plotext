@@ -73,7 +73,6 @@ To add a simple label + value indicator to, for example, a matrix of plots, use 
 
 - Note that both `label` and `value` could be numerical or in string form. 
 - The `color` and `style` of the plot could be changed using the correspondent parameters.
-- Depending on the sign of `trend` (an optional parameter) an optional arrow is included to show the trend of past values.
 
 Here is a basic example:
 

@@ -37,6 +37,12 @@ def build_parser():
                              metavar = "FILE",
                              help    = "file path of the data table; if not used it will read from stdin. Use 'test' to automatically download, in your user folder, some test data/image/gif or video, depending on the function used; the file will be removed after the plot",
                              ).complete = shtab.FILE
+    path_parser.add_argument("-r", "--first-row",
+                             action = "store",
+                             type = int,
+                             default = 0,
+                             metavar = "FIRST-ROW",
+                             help = "The first line to consider in the data file (counting from 0).")
 
     common_parser = argparse.ArgumentParser(add_help = False)
 
@@ -237,8 +243,10 @@ def main(argv = None):
     args = parser.parse_args(argv)
 
     type = args.type
+    first_row = 0
     if type != "youtube":
         path = args.path
+        first_row = args.first_row
         clt = True if args.clear_terminal[-1] == 'True' else False
         sleep = args.sleep[0]
 
@@ -303,6 +311,8 @@ def main(argv = None):
                 x, Y = get_xY(data)
                 plot(x, Y)
 
+            for _ in range(first_row):
+                sys.stdin.readline()
             text = []
             i = 0
             for line in iter(sys.stdin.readline, ''):
@@ -316,7 +326,7 @@ def main(argv = None):
                 text = []
 
         else:
-            data = plt.read_data(path, delimiter = delimiter)
+            data = plt.read_data(path, delimiter = delimiter, first_row = first_row)
             data = plt.transpose(data)
             x, Y = get_xY(data)
             chunks = len(x) // lines + (1 if len(x) % lines else 0)

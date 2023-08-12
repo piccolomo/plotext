@@ -12,9 +12,9 @@ By default the plot size adapts to the dimensions of the terminal. To change thi
 
 - `plot_size()` to set the **plot size** to the desired `width` and `height`, in units of character dimensions.
 
-- `limit_size()` to set, whatever or not, to **limit the plot size to the terminal dimensions**. It requires to Boolean (one for each dimension) and it is only available for the main figure and not for its subplots, if present, and should be used before `plot_size()`.
+- `limit_size()` to set, whatever or not, to **limit the plot size to the terminal dimensions**. It requires to Boolean (one for each dimension) and it is only available for the main figure and not for its subplots, if present, and should be used before `plot_size()`.  The plot size are limited by the terminal dimensions, by default.
 
-- In a matrix of subplot, the final widths / heights will be the same for each column / row and, by default, their *maximum* is taken. If `take_min()` is called, the *minimum* is considered instead. This method is available to all subplots levels. 
+- In a matrix of subplot, the final widths / heights will be the same for each column / row and, by default, their *maximum* is taken. If `take_min()` is called, the *minimum* is considered instead. This method is available to any subplot, including the main figure. 
 
 Here are some other useful functions:
 

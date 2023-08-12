@@ -4,7 +4,7 @@
 [![GitHubIssues](https://img.shields.io/badge/issue_tracking-github-blue.svg)](https://github.com/piccolomo/plotext/issues)
 [![GitTutorial](https://img.shields.io/badge/PR-Welcome-%23FF8300.svg?)](https://github.com/piccolomo/plotext/pulls)
 
-<p align="left">  <img src="https://raw.githubusercontent.com/piccolomo/plotext/master/data/logo.png" /></p>
+![logo](https://raw.githubusercontent.com/piccolomo/plotext/master/data/logo.png)
 
 `plotext` **plots directly on terminal**
 

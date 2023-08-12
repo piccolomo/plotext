@@ -20,7 +20,7 @@ Here are all the available clearing functions:
 
 - `clear_color()`, in short `clc()`, clears only the **color settings** relative to the active subplot, without clearing all other plot settings. The final rendering of this subplot will be colorless. This function is equivalent to `theme('clear')`.
 
-- `clear_terminal()`, in short `clt()`, clears the **terminal screen** and it is generally useful when plotting a continuous stream. If its `lines` parameter is set to an integer, only the specified number of lines will be cleared: note that, depending on shell used, few extra lines may be printed after the plot.
+- `clear_terminal()`, in short `clt()`, clears the **terminal screen** and it is generally useful when plotting a continuous stream. If its `lines` parameter is set to an integer, only the specified number of lines will be cleared: note that, depending on the shell used, few extra lines may be printed after the plot.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Utilities](https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#utilities)
 
@@ -28,7 +28,7 @@ Here are all the available clearing functions:
 
 These functions are useful to save or change how the final result is outputted.
 
-- `interactive(True)` allows to **plot dynamically** without needing to use the `show()` method. A new plot is shown when a change is made.
+- `interactive(True)` allows to **plot dynamically** without using the `show()` method. A new plot is shown automatically when a change is made.
 
 - `build()` is equivalent to `show()` except that the final **figure is returned as a string** and not printed.
 
@@ -152,7 +152,7 @@ Each coded example in this [guide](https://github.com/piccolomo/plotext#guide) i
 
 ## Colored Text
 
-To obtained colored strings use the `colorize()` method, which paints a string with the given `fullground` color, `style`  and `background` color.  If `show = True` the string is directly printed and not returned. Here are a few examples:
+To obtained colored strings use the `colorize()` method, which paints a string with the given `color`, `style`  and `background` color.  If `show = True` the string is directly printed and not returned. Here are a few examples:
 
 ```python
 import plotext as plt
@@ -179,11 +179,13 @@ plt.colorize("RGB color codes",             (16, 100, 200), "default",   (200, 1
 
 All main `plotext` methods have a doc-string that can be accessed in three ways. For example the doc-string of the `scatter()` function can be accessed:
 
-- using `print(scatter.__doc__)`,
+- as usual, using `print(scatter.__doc__)`, for its uncolorized version, 
 
-- more easily through the `doc` container with `doc.scatter()`,
+- more easily through the `doc` container, using `doc.scatter()`, for its colorized version,
 
-- with `doc.all()` which prints all `plotext` doc-strings.
+- similarly with its internal .doc() method with `scatter.doc()`, for its colorized version,
+
+- with `doc.all()` which prints all `plotext` colorized doc-strings.
 
 Here are some methods that directly output some useful `plotext` guides:
 

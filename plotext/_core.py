@@ -7,12 +7,15 @@
 ###########    Initialisation    #############
 ##############################################
 
-from plotext._figure import _figure_class
+import plotext._doc
+from plotext._doc_utils import documentation as doc
+from plotext._doc_utils import add
+
+from ._figure import _figure_class
 from time import sleep as _sleep
 import plotext._global as _glob
 from plotext import __version__
 import plotext._utility as _ut
-import plotext._doc as doc
 
 _figure = _glob.figure # the main figure at top level (defined in _global.py because it is useful also there)
 
@@ -44,8 +47,9 @@ def interactive(interactive = None):
     _figure._set_interactive(interactive)
 
 def plot_size(width = None, height = None):
-    _figure._active.plot_size(width, height)
+    size = _figure._active.plot_size(width, height)
     _figure.show() if _figure._interactive else None
+    return size
 plotsize = plot_size
 
 def limit_size(width = None, height = None):
@@ -172,55 +176,55 @@ clt = clear_terminal
 ######    Main Plotting Functions    #########
 ##############################################
 
-def scatter(*args, xside = None, yside = None, marker = None, color = None, style = None, fillx = None, filly = None, label = None):
+def scatter(*args, marker = None, color = None, style = None, fillx = None, filly = None, xside = None, yside = None, label = None):
     _figure._active.scatter(*args, xside = xside, yside = yside, marker = marker, color = color, style = style, fillx = fillx, filly = filly, label = label)
     _figure.show() if _figure._interactive else None
 
-def plot(*args, xside = None, yside = None, marker = None, color = None, style = None, fillx = None, filly = None, label = None):
+def plot(*args, marker = None, color = None, style = None, fillx = None, filly = None, xside = None, yside = None, label = None):
     _figure._active.plot(*args, xside = xside, yside = yside, marker = marker, color = color,  fillx = fillx, filly = filly, label = label)
     _figure.show() if _figure._interactive else None
 
-def candlestick(dates, data, xside = None, yside = None, orientation = None, colors = None, label = None):
-    _figure._active.candlestick(dates, data, xside = xside, yside = yside, orientation = orientation, colors = colors, label = label)
-    _figure.show() if _figure._interactive else None
-
-def bar(*args, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None, reset_ticks = None):
+def bar(*args, marker = None, color = None, fill = None, width = None, orientation = None, minimum = None, reset_ticks = None, xside = None, yside = None, label = None):
     _figure._active.bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks)
     _figure.show() if _figure._interactive else None
 
-def simple_bar(*args, width = None, marker = None, color = None, title = None):
+def simple_bar(*args, marker = None, color = None, title = None, width = None):
     _glob.simple_bar(*args, width = width, marker = marker, color = color, title = title)
     _figure.show() if _figure._interactive else None
 
-def multiple_bar(*args, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None, reset_ticks = None):
-    _figure._active.multiple_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks)
+def multiple_bar(*args, marker = None, color = None, fill = None, width = None, orientation = None, minimum = None, reset_ticks = None, xside = None, yside = None, labels = None):
+    _figure._active.multiple_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, labels = labels, minimum = minimum, reset_ticks = reset_ticks)
     _figure.show() if _figure._interactive else None
 
-def simple_multiple_bar(*args, width = None, marker = None, colors = None, title = None, labels = None):
+def simple_multiple_bar(*args, marker = None, colors = None, title = None, width = None, labels = None):
     _glob.simple_multiple_bar(*args, width = width, marker = marker, colors = colors, title = title, labels = labels)
     _figure.show() if _figure._interactive else None
 
-def stacked_bar( *args, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None, reset_ticks = None):
-    _figure._active.stacked_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks)
+def stacked_bar(*args, marker = None, color = None, fill = None, width = None, orientation = None, minimum = None, reset_ticks = None, xside = None, yside = None, labels = None):
+    _figure._active.stacked_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, labels = labels, minimum = minimum, reset_ticks = reset_ticks)
     _figure.show() if _figure._interactive else None
 
-def simple_stacked_bar(*args, width = None, marker = None, colors = None, title = None, labels = None):
+def simple_stacked_bar(*args, marker = None, colors = None, title = None, width = None, labels = None):
     _glob.simple_stacked_bar(*args, width = width, marker = marker, colors = colors, title = title, labels = labels)
     _figure.show() if _figure._interactive else None
 
-def hist(data, bins = None, norm = None, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None):
+def hist(data, bins = None, marker = None, color = None, fill = None, norm = None, width = None, orientation = None, minimum = None, xside = None, yside = None, label = None):
     _figure._active.hist(data, bins = bins, norm = norm, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum)
+    _figure.show() if _figure._interactive else None
+
+def candlestick(dates, data, colors = None, orientation = None, xside = None, yside = None, label = None):
+    _figure._active.candlestick(dates, data, xside = xside, yside = yside, orientation = orientation, colors = colors, label = label)
     _figure.show() if _figure._interactive else None
 
 ##############################################
 ###########    Plotting Tools    #############
 ##############################################
 
-def error(*args, xerr = None, yerr = None, xside = None, yside = None, color = None, label = None):
+def error(*args, xerr = None, yerr = None, color = None, xside = None, yside = None, label = None):
     _figure.error(*args, xerr = xerr, yerr = yerr, xside = xside, yside = yside, color = color, label = label)
     _figure.show() if _figure._interactive else None
 
-def event_plot(data, orientation = None, marker = None, color = None, side = None):
+def event_plot(data, marker = None, color = None, orientation = None, side = None):
     _figure._active.event_plot(data, orientation = orientation, marker = marker, color = color, side = side)
     _figure.show() if _figure._interactive else None
 
@@ -236,26 +240,26 @@ def horizontal_line(coordinate, color = None, yside = None):
     _figure.show() if _figure._interactive else None
 hline = horizontal_line
 
-def text(text, x, y, xside = None, yside = None, color = None, background = None, style = None, orientation = None, alignment = None):
-    _figure._active.text(text, x, y, xside = xside, yside = yside, color = color, background = background, style = style, orientation = orientation, alignment = alignment)
+def text(label, x, y, color = None, background = None, style = None, orientation = None, alignment = None, xside = None, yside = None):
+    _figure._active.text(label, x, y, xside = xside, yside = yside, color = color, background = background, style = style, orientation = orientation, alignment = alignment)
     _figure.show() if _figure._interactive else None
 
-def rectangle(x = None, y = None, xside = None, yside = None, lines = None, marker = None, color = None, fill = None, label = None):
+def rectangle(x = None, y = None, marker = None, color = None, lines = None, fill = None, xside = None, yside = None, label = None):
     _figure._active.rectangle(x = x, y = y, xside = xside, yside = yside, lines = lines, marker = marker, color = color, fill = fill, label = label)
     _figure.show() if _figure._interactive else None
     
-def polygon(x = None, y = None, radius = None, sides = None, xside = None, yside = None, lines = None, marker = None, color = None, fill = None, label = None):
+def polygon(x = None, y = None,  radius = None, sides = None, marker = None, color = None, lines = None, fill = None, xside = None, yside = None, label = None):
     _figure._active.polygon(x = x, y = y, radius = radius, sides = sides, xside = xside, yside = yside, lines = lines, marker = marker, color = color, fill = fill, label = label)
     _figure.show() if _figure._interactive else None
 
-def confusion_matrix(actual, predicted, labels = None, color = None, style = None):
+def confusion_matrix(actual, predicted, color = None, style = None, labels = None):
     _figure._active.confusion_matrix(actual, predicted, labels = labels, color = color, style = style)
     _figure.show() if _figure._interactive else None
 
 cmatrix = confusion_matrix
 
-def indicator(value, label = None, trend = None, color = None, style = None):
-    _figure._active.indicator(value, label = label, trend = trend, color = color, style = style)
+def indicator(value, label = None, color = None, style = None):
+    _figure._active.indicator(value, label = label, color = color, style = style)
     _figure.show() if _figure._interactive else None
 
 ##############################################
@@ -266,7 +270,7 @@ def matrix_plot(matrix, marker = None, style = None, fast = False):
     _figure._active.matrix_plot(matrix, marker = marker, style = style, fast = fast)
     _figure.show() if _figure._interactive else None
 
-def image_plot(path, marker = None, style = None, grayscale = False, fast = False):
+def image_plot(path, marker = None, style = None, fast = False, grayscale = False):
     _figure._active.image_plot(path, marker = marker, style = style, grayscale = grayscale, fast = fast)
     _figure.show() if _figure._interactive else None
     
@@ -283,7 +287,7 @@ def play_youtube(url):
     _figure.show() if _figure._interactive else None
 
 def get_youtube(url, path = None, log = True):
-    return _glob.get_youtube(url, path, log)
+    _glob.get_youtube(url, path, log)
 
 ##############################################
 ##########    Build Functions    #############
@@ -306,7 +310,7 @@ def save_fig(path = None, append = False, keep_colors = False):
 savefig = save_fig
 
 def from_matplotlib(fig, marker = None):
-    return _glob.from_matplotlib(fig, marker = marker)
+    _glob.from_matplotlib(fig, marker = marker)
 
 ##############################################
 ##########     Date Functions    #############
@@ -316,7 +320,7 @@ def date_form(input_form = None, output_form = None):
     _figure._active.date_form(input_form, output_form)
     
 def set_time0(string, input_form = None):
-    return _figure._active.set_time0(string, input_form = input_form)
+    _figure._active.set_time0(string, input_form = input_form)
 
 def today_datetime():
     return _figure._active.today_datetime()
@@ -324,11 +328,11 @@ def today_datetime():
 def today_string(output_form = None):
     return _figure._active.today_string(output_form)
 
-def datetime_to_string(datetimes, output_form = None):
-    return _figure._active.datetime_to_string(datetimes, output_form = output_form)
+def datetime_to_string(datetime, output_form = None):
+    return _figure._active.datetime_to_string(datetime, output_form = output_form)
 
-def datetimes_to_string(datetimes, output_form = None):
-    return _figure._active.datetimes_to_string(datetimes, output_form = output_form)
+def datetimes_to_strings(datetimes, output_form = None):
+    return _figure._active.datetimes_to_strings(datetimes, output_form = output_form)
 
 def string_to_datetime(string, input_form = None):
     return _figure._active.string_to_datetime(string, input_form = input_form)
@@ -352,19 +356,19 @@ def join_paths(*args):
     return _ut.join_paths(*args)
 
 def save_text(text, path, log = True):
-    return _ut.save_text(text, path, log = log)
+    _ut.save_text(text, path, log = log)
 
-def read_data(path, delimiter = None, columns = None):
-    return _ut.read_data(path, delimiter = delimiter, columns = columns)
+def read_data(path, delimiter = None, columns = None, first_row = None, log = True):
+    return _ut.read_data(path, delimiter = delimiter, columns = columns, first_row = first_row, log = log)
 
 def write_data(data, path, delimiter = None, columns = None, log = True):
-    return _ut.write_data(data, path, delimiter = delimiter, columns = columns, log = log)
+    _ut.write_data(data, path, delimiter = delimiter, columns = columns, log = log)
 
 def download(url, path, log = True):
-    return _ut.download(url, path, log)
+    _ut.download(url, path, log)
 
 def delete_file(path, log = True):
-    return _ut.delete_file(path, log = log)
+    _ut.delete_file(path, log = log)
 
 test_data_url     =  _glob.test_data_url
 test_bar_data_url =  _glob.test_bar_data_url
@@ -377,19 +381,25 @@ test_youtube_url  =  _glob.test_youtube_url
 ##########     Other Functions    ############
 ##############################################
 
-def colorize(string, fullground = None, style = None, background = None, show = False):
-    return _ut.colorize(string, fullground = fullground, style = style, background = background, show = show)
+def colorize(string, color = None, style = None, background = None, show = False):
+    return _ut.colorize(string, color = color, style = style, background = background, show = show)
 
 def uncolorize(string):
     return _ut.uncolorize(string)
 
-terminal_size = _ut.terminal_size
+def terminal_size():
+    return _ut.terminal_size()
+
 ts = terminal_size
 
-terminal_width = _ut.terminal_width
+def terminal_width():
+    return _ut.terminal_width()
+
 tw = terminal_width
 
-terminal_height = _ut.terminal_height
+def terminal_height():
+    return _ut.terminal_height()
+
 th = terminal_height
 
 def sin(periods = 2, length = 200, amplitude = 1, phase = 0, decay = 0):
@@ -419,109 +429,109 @@ platform = _ut.platform
 ############     Docstrings    ###############
 ##############################################        
 
-subplots.__doc__ = doc._subplots
-subplot.__doc__ = doc._subplot
-main.__doc__ = doc._main
-active.__doc__ = doc._active
+add(subplots)
+add(subplot)
+add(main)
+add(active)
 
-interactive.__doc__ = doc._interactive
-plot_size.__doc__ = doc._plot_size
-limit_size.__doc__ = doc._limit_size
-take_min.__doc__ = doc._take_min
+add(interactive)
+add(plot_size)
+add(limit_size)
+add(take_min)
 
-title.__doc__ = doc._title
-xlabel.__doc__ = doc._xlabel
-ylabel.__doc__ = doc._ylabel
-xlim.__doc__ = doc._xlim
-ylim.__doc__ = doc._ylim
-xscale.__doc__ = doc._xscale
-yscale.__doc__ = doc._yscale
-xticks.__doc__ = doc._xticks
-yticks.__doc__ = doc._yticks
-xfrequency.__doc__ = doc._xfrequency
-yfrequency.__doc__ = doc._yfrequency
-xreverse.__doc__ = doc._xreverse
-yreverse.__doc__ = doc._yreverse
-xaxes.__doc__ = doc._xaxes
-yaxes.__doc__ = doc._yaxes
-frame.__doc__ = doc._frame
-grid.__doc__ = doc._grid
-canvas_color.__doc__ = doc._canvas_color
-axes_color.__doc__ = doc._axes_color
-ticks_color.__doc__ = doc._ticks_color
-ticks_style.__doc__ = doc._ticks_style
-theme.__doc__ = doc._theme
+add(title)
+add(xlabel)
+add(ylabel)
+add(xlim)
+add(ylim)
+add(xscale)
+add(yscale)
+add(xticks)
+add(yticks)
+add(xfrequency)
+add(yfrequency)
+add(xreverse)
+add(yreverse)
+add(xaxes)
+add(yaxes)
+add(frame)
+add(grid)
+add(canvas_color)
+add(axes_color)
+add(ticks_color)
+add(ticks_style)
+add(theme)
 
-clear_figure.__doc__ = doc._clear_figure
-clear_data.__doc__ = doc._clear_data
-clear_color.__doc__ = doc._clear_color
-clear_terminal.__doc__ = doc._clear_terminal
+add(clear_figure)
+add(clear_data)
+add(clear_color)
+add(clear_terminal)
 
-scatter.__doc__ = doc._scatter
-plot.__doc__ = doc._plot
-candlestick.__doc__ = doc._candlestick
-bar.__doc__ = doc._bar
-simple_bar.__doc__ = doc._simple_bar
-multiple_bar.__doc__ = doc._multiple_bar
-simple_multiple_bar.__doc__ = doc._simple_multiple_bar
-stacked_bar.__doc__ = doc._stacked_bar
-simple_stacked_bar.__doc__ = doc._simple_stacked_bar
-simple_bar.__doc__ = doc._simple_bar
-hist.__doc__ = doc._hist
+add(scatter)
+add(plot)
+add(candlestick)
+add(bar)
+add(simple_bar)
+add(multiple_bar)
+add(simple_multiple_bar)
+add(stacked_bar)
+add(simple_stacked_bar)
+add(simple_bar)
+add(hist)
 
-error.__doc__ = doc._error
-event_plot.__doc__ = doc._event_plot
-vertical_line.__doc__ = doc._vertical_line
-horizontal_line.__doc__ = doc._horizontal_line
-text.__doc__ = doc._text
-rectangle.__doc__ = doc.rectangle
-polygon.__doc__ = doc.polygon
-confusion_matrix.__doc__ = doc.confusion_matrix
-indicator.__doc__ = doc.indicator
+add(error)
+add(event_plot)
+add(vertical_line)
+add(horizontal_line)
+add(text)
+add(rectangle)
+add(polygon)
+add(confusion_matrix)
+add(indicator)
 
-matrix_plot.__doc__ = doc._matrix_plot
-image_plot.__doc__ = doc._image_plot
+add(matrix_plot)
+add(image_plot)
 
-play_gif.__doc__ = doc._play_gif
-play_video.__doc__ = doc._play_video
-play_youtube.__doc__ = doc._play_youtube
-get_youtube.__doc__ = doc._get_youtube
+add(play_gif)
+add(play_video)
+add(play_youtube)
+add(get_youtube)
 
-show.__doc__ = doc._show
-build.__doc__ = doc._build
-sleep.__doc__ = doc._sleep
-time.__doc__ = doc._time
-save_fig.__doc__ = doc._save_fig
-from_matplotlib.__doc__ = doc._from_matplotlib
+add(show)
+add(build)
+add(sleep)
+add(time)
+add(save_fig)
+add(from_matplotlib)
 
-date_form.__doc__ = doc._date_form
-set_time0.__doc__ = doc._set_time0
-today_datetime.__doc__ = doc._today_datetime
-today_string.__doc__ = doc._today_string
-datetime_to_string.__doc__ = doc._datetime_to_string
-datetimes_to_string.__doc__ = doc._datetimes_to_string
-string_to_datetime.__doc__ = doc._string_to_datetime
+add(date_form)
+add(set_time0)
+add(today_datetime)
+add(today_string)
+add(datetime_to_string)
+add(datetimes_to_strings)
+add(string_to_datetime)
 
-script_folder.__doc__ = doc._script_folder
-parent_folder.__doc__ = doc._parent_folder
-join_paths.__doc__ = doc._join_paths
-save_text.__doc__ = doc._save_text
-read_data.__doc__ = doc._read_data
-write_data.__doc__ = doc._write_data
-download.__doc__ = doc._download
-delete_file.__doc__ = doc._delete_file
+add(script_folder)
+add(parent_folder)
+add(join_paths)
+add(save_text)
+add(read_data)
+add(write_data)
+add(download)
+add(delete_file)
 
-colorize.__doc__ = doc._colorize
-uncolorize.__doc__ = doc._uncolorize
-terminal_size.__doc__ = doc._terminal_size
-terminal_width.__doc__ = doc._terminal_width
-terminal_height.__doc__ = doc._terminal_height
-sin.__doc__ = doc._sin
-square.__doc__ = doc._square
-transpose.__doc__ = doc._transpose
+add(colorize)
+add(uncolorize)
+add(terminal_size)
+add(terminal_width)
+add(terminal_height)
+add(sin)
+add(square)
+add(transpose)
 
-colors.__doc__ = doc._colors
-styles.__doc__ = doc._styles
-markers.__doc__ = doc._markers
-themes.__doc__ = doc._themes
-test.__doc__ = doc.test
+add(colors)
+add(styles)
+add(markers)
+add(themes)
+add(test)

@@ -397,7 +397,7 @@ class monitor_class(build_class):
 ######    Other Plotting Functions    ########
 ##############################################
 
-    def draw_bar(self, *args, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None, offset = None, reset_ticks = None):
+    def draw_bar(self, *args, marker = None, color = None, fill = None, width = None, orientation = None, minimum = None, offset = None, reset_ticks = None, xside = None, yside = None, label = None):
         x, y = ut.set_data(*args)
         marker = self.default.bar_marker if marker is None else marker
         fill = self.default.bar_fill if fill is None else fill
@@ -437,37 +437,36 @@ class monitor_class(build_class):
                                 fill = fill,
                                 label = plot_label)
 
-    def draw_multiple_bar(self, *args, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None, reset_ticks = None):
-
+    def draw_multiple_bar(self, *args, marker = None, color = None, fill = None, width = None, orientation = None, minimum = None, offset = None, reset_ticks = None, xside = None, yside = None, labels = None):
         x, Y = ut.set_multiple_bar_data(*args)
         ly = len(Y)
         width = self.default.bar_width if width is None else width
         marker = [marker] * ly if marker is None or type(marker) != list else marker
         color = [color] * ly if color is None else color
-        label = [label] * ly if label is None else label
+        labels = [labels] * ly if labels is None else labels
         width = width / ly if ly != 0 else 0
         offset = ut.linspace(-1 / 2 + 1 / (2 * ly), 1 / 2 - 1 / (2 * ly), ly) if ly != 0 else []
         
         for i in range(ly):
             self.draw_bar(x, Y[i],
-                          xside = xside,
-                          yside = yside,
                           marker = marker[i],
                           color = color[i],
                           fill = fill,
                           width = width,
                           orientation = orientation,
-                          label = label[i],
                           minimum = minimum,
                           offset = offset[i],
+                          xside = xside,
+                          yside = yside,
+                          label = labels[i],
                           reset_ticks = reset_ticks)
 
-    def draw_stacked_bar(self, *args, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None, reset_ticks = None):
+    def draw_stacked_bar(self, *args, marker = None, color = None, fill = None, width = None, orientation = None, minimum = None, offset = None, reset_ticks = None, xside = None, yside = None, labels = None):
         x, Y = ut.set_multiple_bar_data(*args)
         ly = len(Y)
         marker = [marker] * ly if marker is None or type(marker) != list else marker
         color = [color] * ly if color is None else color
-        label = [label] * ly if label is None else label
+        labels = [label] * ly if labels is None else labels
         Y = ut.transpose([ut.cumsum(el) for el in ut.transpose(Y)])
         for i in range(ly - 1, -1, -1):
             self.draw_bar(x, Y[i],
@@ -478,11 +477,11 @@ class monitor_class(build_class):
                           fill = fill,
                           width = width,
                           orientation = orientation,
-                          label = label[i],
+                          label = labels[i],
                           minimum = minimum,
                           reset_ticks = reset_ticks)
 
-    def draw_hist(self, data, bins = None, norm = None, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None):
+    def draw_hist(self, data, bins = None, marker = None, color = None, fill = None, norm = None, width = None, orientation = None, minimum = None, xside = None, yside = None, label = None):
         bins = self.default.hist_bins if bins is None else bins
         norm = False if norm is None else norm
         x, y = ut.hist_data(data, bins, norm)
@@ -498,7 +497,7 @@ class monitor_class(build_class):
                       minimum = None,
                       reset_ticks = False)
 
-    def draw_candlestick(self, dates, data, xside = None, yside = None, orientation = None, colors = None, label = None):
+    def draw_candlestick(self, dates, data, colors = None, orientation = None, xside = None, yside = None, label = None):
         orientation = self.check_orientation(orientation, 1)
         markers = ['sd', '│', '─'] #if markers is None else markers
         colors = ['green', 'red'] if colors is None else colors
@@ -525,7 +524,7 @@ class monitor_class(build_class):
 ###########    Plotting Tools    #############
 ##############################################
         
-    def draw_error(self, *args, xerr = None, yerr = None, xside = None, yside = None, color = None, label = None):
+    def draw_error(self, *args, xerr = None, yerr = None, color = None, xside = None, yside = None, label = None):
         x, y = ut.set_data(*args)
         l = len(x)
         xerr = [0] * l if xerr is None else xerr
@@ -537,7 +536,7 @@ class monitor_class(build_class):
             self.draw([x[i] - xerr[i] / 2, x[i] + xerr[i] / 2], [y[i], y[i]], xside = xside, yside = yside, marker = "─", color = col, lines = True)
             self.draw([x[i]], [y[i]], xside = xside, yside = yside, marker = "┼", color = col, lines = True)
 
-    def draw_event_plot(self, data, orientation = None, marker = None, color = None, side = None):
+    def draw_event_plot(self, data, marker = None, color = None, orientation = None, side = None):
         x, y = data, [1.1] * len(data)
         orientation = self.check_orientation(orientation, 1)
         if orientation in ['v', 'vertical']:
@@ -582,7 +581,7 @@ class monitor_class(build_class):
         self.torien.append(orientation)
         self.talign.append(alignment)
 
-    def draw_rectangle(self, x = None, y = None, xside = None, yside = None, lines = None, marker = None, color = None, fill = None, label = None, reset_lim = False):
+    def draw_rectangle(self, x = None, y = None, marker = None, color = None, lines = None, fill = None, reset_lim = False, xside = None, yside = None, label = None):
         x = [0, 1] if x is None or len(x) < 2 else x  
         y = [0, 1] if y is None or len(y) < 2 else y  
         xpos = self.xside_to_pos(xside)
@@ -606,7 +605,7 @@ class monitor_class(build_class):
                   filly = False,
                   label = label)
 
-    def draw_polygon(self, x = None, y = None, radius = None, sides = None, xside = None, yside = None, lines = None, marker = None, color = None, fill = None, label = None, reset_lim = False):
+    def draw_polygon(self, x = None, y = None,  radius = None, sides = None, marker = None, color = None, lines = None, fill = None, reset_lim = False, xside = None, yside = None, label = None):
         x = 0 if x is None else x
         y = 0 if y is None else y
         radius = 1 if radius is None else abs(int(radius))
@@ -635,9 +634,9 @@ class monitor_class(build_class):
                   filly = False,
                   label = label)
         
-    def draw_confusion_matrix(self, actual, predicted, labels = None, color = None, style = None):
-        color = 'orange+' if color is None else self.check_color(color)
-        style = 'bold' if style is None else self.check_style(style)
+    def draw_confusion_matrix(self, actual, predicted, color = None, style = None, labels = None):
+        color = self.default.cmatrix_color if color is None else self.check_color(color)
+        style = self.default.cmatrix_style if style is None else self.check_style(style)
         
         L = len(actual)
         n_labels = sorted(ut.no_duplicates(actual))
@@ -668,9 +667,9 @@ class monitor_class(build_class):
         self.set_xlabel('Predicted')
         self.set_ylabel('Actual')
 
-    def draw_indicator(self, value, label = None, trend = None, color = None, style = None):
-        color = 'orange+' if color is None else self.check_color(color)
-        style = 'bold' if style is None else self.check_style(style)
+    def draw_indicator(self, value, label = None, color = None, style = None):
+        color = self.default.cmatrix_color if color is None else self.check_color(color)
+        style = self.default.cmatrix_style if style is None else self.check_style(style)
 
         self.set_title(label)
         self.set_ticks_color(color);
@@ -680,11 +679,7 @@ class monitor_class(build_class):
         self.set_xfrequency(0)
         self.set_yfrequency(0)
 
-        if trend is not None:
-            s_trend = '↑' if trend > 0 else '↓' if trend < 0 else '↔'
-            c_trend = 'green' if trend > 0 else 'red' if trend < 0 else 'orange'
-            self.draw_text(s_trend, 1, 0, color = c_trend, style = style, alignment = 'right')
-        self.draw_text(str(value), 0, 0, color = color, style = style, alignment = 'center' if trend is None else 'left')
+        self.draw_text(str(value), 0, 0, color = color, style = style, alignment = 'center')
 
 ##############################################
 ##############    2D Plots    ################
@@ -722,7 +717,7 @@ class monitor_class(build_class):
             self.matrix.canvas = '\n'.join([''.join(row) for row in matrix])
             self.fast_plot = True
 
-    def draw_image(self, path, marker = None, style = None, grayscale = False, fast = False):
+    def draw_image(self, path, marker = None, style = None, fast = False, grayscale = False):
         from PIL import Image        
         path = ut.correct_path(path)
         if not ut.is_file(path):
@@ -745,10 +740,10 @@ class monitor_class(build_class):
         default = self.default.alignment[0:-1]
         default_first_letter = [el[0] for el in default]
         alignment = default[default_first_letter.index(alignment)] if alignment in default_first_letter else alignment
-        alignment = default[0] if alignment not in default else alignment
+        alignment = default[1] if alignment not in default else alignment
         return alignment
 
-    def _draw_image(self, image, marker = None, style = None, grayscale = False, fast = False):
+    def _draw_image(self, image, marker = None, style = None, fast = False, grayscale = False):
         from PIL import ImageOps
         image = ImageOps.grayscale(image) if grayscale else image
         image = image.convert('RGB')
