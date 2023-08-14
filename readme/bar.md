@@ -4,6 +4,7 @@
 - [Horizontal Bar Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#horizontal-bar-plot)
 - [Multiple Bar Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#multiple-bar-plot)
 - [Stacked Bar Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#stacked-bar-plot)
+- [Box Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#box-plot)
 - [Histogram Plot](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#histogram-plot)
 
 [Main Guide](https://github.com/piccolomo/plotext#guide)
@@ -190,6 +191,58 @@ python3 -c "import plotext as plt; pizzas = ['Sausage', 'Pepperoni', 'Mushrooms'
 
 Note that this kind of plot has the same disadvantages as `simple_bar()`, as discussed [in this section](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#horizontal-bar-plot). More documentation can be accessed with `doc.simple_stacked_bar()`.
 
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
+
+## Box Plot
+Box plot is common and useful in statistics plot. 
+`plot.box` function supports two types of input data. The first form involves providing the raw data to calculate the distribution(`hint=False`, default). Alternatively, one can directly provide the pre-calculated metrics, namely the minimum, first quartile, median, third quartile, and maximum(`hint=True`).
+
+the first form:
+```python
+import plotext as plt
+
+labels = ["apple", "orange", "pear", "banana"]
+datas = [
+    [1,2,3,5,10,8],
+    [4,9,6,12,20,13],
+    [1,2,3,4,5,6],
+    [3,9,12,16,9,8,3,7,2]]
+
+plt.box(labels, datas, width=0.3)
+plt.title("The weight of the fruit")
+plt.show()
+```
+
+or directly on terminal:
+
+```shell
+python3 -c 'import plotext as plt;labels = ["apple", "orange", "pear", "banana"];datas = [[1,2,3,5,10,8],[4,9,6,12,20,13],[1,2,3,4,5,6],[3,9,12,16,9,8,3,7,2]];plt.box(labels, datas, width=0.3);plt.title("The weight of the fruit");plt.show()'
+```
+![box-plot-1](https://raw.githubusercontent.com/is/plotext/box/data/box-plot-1.png)
+
+the second form:
+```python
+import plotext as plt
+
+labels = ["apple", "orange", "pear", "banana"]
+datas = [
+    # max, q75, q50, q25, min
+    [10, 7, 5, 3, 1.5],
+    [19, 12.3, 9, 7, 4],
+    [15, 14, 11, 9, 8],
+    [13, 12, 11, 10, 6]]
+
+plt.box(labels, datas, width=0.3, hint='hint')
+plt.title("The weight of the fruit")
+plt.show()
+```
+
+or directly on terminal:
+
+```shell
+python3 -c 'import plotext as plt;labels = ["apple", "orange", "pear", "banana"];datas = [[10, 7, 5, 3, 1.5],[19, 12.3, 9, 7, 4],[15, 14, 11, 9, 8],[13, 12, 11, 10, 6]];plt.box(labels, datas, width=0.3, hint="hint");plt.title("The weight of the fruit");plt.show()'
+```
+![box-plot-2](https://raw.githubusercontent.com/is/plotext/box/data/box-plot-2.png)
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
 
 ## Histogram Plot
