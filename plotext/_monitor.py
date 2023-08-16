@@ -520,7 +520,7 @@ class monitor_class(build_class):
                 self.draw([l, m], [d, d], xside = xside, yside = yside, color = color, marker = markers[2], lines = True)
                 self.draw([m, M], [d, d], xside = xside, yside = yside, color = color, marker = markers[0], lines = True, label = lab)
 
-    def draw_box(self, *args, xside = None, yside = None, orientation = None, colors = None, label = None, fill = None, width = None, minimum = None, offset = None, reset_ticks = None, hint = None):
+    def draw_box(self, *args, xside = None, yside = None, orientation = None, colors = None, label = None, fill = None, width = None, minimum = None, offset = None, reset_ticks = None, quintuples = None):
         x, y = ut.set_data(*args)
         fill = self.default.bar_fill if fill is None else fill
         width = self.default.bar_width if width is None else width
@@ -530,7 +530,7 @@ class monitor_class(build_class):
         offset = 0 if offset is None else offset
         reset_ticks = True if reset_ticks is None else reset_ticks
         colors = ['green', 'red'] if colors is None else colors
-        hint = 'original' if hint is None else hint
+        quintuples = False if quintuples is None else quintuples
 
         x_string = any([type(el) == str for el in x]) # if x are strings
         l = len(x)
@@ -539,7 +539,7 @@ class monitor_class(build_class):
         x = xticks if x_string else x
         x = [el + offset for el in x]
         (self.set_xticks(xticks, xlabels, xside) if orientation[0] == 'v' else self.set_yticks(xticks, xlabels, yside)) if reset_ticks else None
-        if hint == 'hint':
+        if quintuples:
             # todo: check y is aligned.
             _, _, _, _, _, c, xbar = ut.box(x, y, width, minimum)
             q1, q2, q3, max_, min_ = [], [], [], [], []

@@ -231,8 +231,8 @@ class _figure_class():
     def candlestick(self, dates, data, colors = None, orientation = None, xside = None, yside = None, label = None):
         self.monitor.draw_candlestick(dates, data, xside = xside, yside = yside, orientation = orientation, colors = colors, label = label) if self._no_plots else [[self._get_subplot(row, col).candlestick(dates, data, orientation = orientation, colors = colors, label = label) for col in self._Cols] for row in self._Rows]
 
-    def box(self, *args, hint = None, colors = None,  fill = None, width = None, orientation = None, minimum = None, reset_ticks = None, xside = None, yside = None, label = None):
-        self.monitor.draw_box(*args, xside = xside, yside = yside, orientation = orientation, colors = colors, label = label, fill = fill, width = width, minimum = minimum, reset_ticks = reset_ticks, hint = hint) if self._no_plots else [[self._get_subplot(row, col).box(*args, orientation = orientation, colors = colors, label = label, fill = fill, width = width, minimum = minimum, reset_ticks = reset_ticks, hint = hint) for col in self._Cols] for row in self._Rows]
+    def box(self, *args, quintuples = None, colors = None,  fill = None, width = None, orientation = None, minimum = None, reset_ticks = None, xside = None, yside = None, label = None):
+        self.monitor.draw_box(*args, xside = xside, yside = yside, orientation = orientation, colors = colors, label = label, fill = fill, width = width, minimum = minimum, reset_ticks = reset_ticks, quintuples = quintuples) if self._no_plots else [[self._get_subplot(row, col).box(*args, orientation = orientation, colors = colors, label = label, fill = fill, width = width, minimum = minimum, reset_ticks = reset_ticks, quintuples = quintuples) for col in self._Cols] for row in self._Rows]
 
 ##############################################
 ###########    Plotting Tools    #############

@@ -220,8 +220,8 @@ def candlestick(dates, data, colors = None, orientation = None, xside = None, ys
     _figure._active.candlestick(dates, data, xside = xside, yside = yside, orientation = orientation, colors = colors, label = label)
     _figure.show() if _figure._interactive else None
 
-def box(*args, hint = None, colors = None,  fill = None, width = None, orientation = None, minimum = None, reset_ticks = None, xside = None, yside = None, label = None):
-    _figure._active.box(*args, xside = xside, yside = yside, orientation = orientation, colors = colors, label = label, fill=fill, width = width, minimum = minimum, reset_ticks = reset_ticks, hint = hint)
+def box(*args, quintuples = None, colors = None,  fill = None, width = None, orientation = None, minimum = None, reset_ticks = None, xside = None, yside = None, label = None):
+    _figure._active.box(*args, xside = xside, yside = yside, orientation = orientation, colors = colors, label = label, fill=fill, width = width, minimum = minimum, reset_ticks = reset_ticks, quintuples = quintuples)
     _figure.show() if _figure._interactive else None
 
 ##############################################

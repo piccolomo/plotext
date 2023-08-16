@@ -195,7 +195,7 @@ Note that this kind of plot has the same disadvantages as `simple_bar()`, as dis
 
 ## Box Plot
 Box plot is common and useful in statistics plot. 
-`plot.box` function supports two types of input data. The first form involves providing the raw data to calculate the distribution(`hint=False`, default). Alternatively, one can directly provide the pre-calculated metrics, namely the minimum, first quartile, median, third quartile, and maximum(`hint=True`).
+`plot.box` function supports two types of input data. The first form involves providing the raw data to calculate the distribution(`quintuples=False`, default). Alternatively, one can directly provide the pre-calculated metrics, namely the minimum, first quartile, median, third quartile, and maximum(`quintuples=True`).
 
 the first form:
 ```python
@@ -232,7 +232,7 @@ datas = [
     [15, 14, 11, 9, 8],
     [13, 12, 11, 10, 6]]
 
-plt.box(labels, datas, width=0.3, hint='hint')
+plt.box(labels, datas, width=0.3, quintuples=True)
 plt.title("The weight of the fruit")
 plt.show()
 ```
@@ -240,7 +240,7 @@ plt.show()
 or directly on terminal:
 
 ```shell
-python3 -c 'import plotext as plt;labels = ["apple", "orange", "pear", "banana"];datas = [[10, 7, 5, 3, 1.5],[19, 12.3, 9, 7, 4],[15, 14, 11, 9, 8],[13, 12, 11, 10, 6]];plt.box(labels, datas, width=0.3, hint="hint");plt.title("The weight of the fruit");plt.show()'
+python3 -c 'import plotext as plt;labels = ["apple", "orange", "pear", "banana"];datas = [[10, 7, 5, 3, 1.5],[19, 12.3, 9, 7, 4],[15, 14, 11, 9, 8],[13, 12, 11, 10, 6]];plt.box(labels, datas, width=0.3, quintuples=True);plt.title("The weight of the fruit");plt.show()'
 ```
 ![box-plot-2](https://raw.githubusercontent.com/is/plotext/box/data/box-plot-2.png)
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
