@@ -38,7 +38,9 @@ Here are the terminal commands to install `plotext` on your machine:
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#notes)
 
 ## Future Ideas
-Any new relevant idea is welcomed, opening an [issue report](https://github.com/piccolomo/plotext/issues/new), or any help with the following ideas with a new [pull requst](https://github.com/piccolomo/plotext/compare):
+Any new idea is welcomed opening an [issue report](https://github.com/piccolomo/plotext/issues/new) or a [pull requst](https://github.com/piccolomo/plotext/compare). 
+
+Here are some of the possible ways to improve `plotext` in the future (any help is welcomed):
 
 
 ### Bug Fixes
@@ -67,14 +69,14 @@ Any new relevant idea is welcomed, opening an [issue report](https://github.com/
 
 
 ### New Functions
-- add `bold()` function
+- add `bold()` function, to make a string bold
 - add `plotter()` function, to scatter and plot at the same time
 - add `clear_settings()` method to clear only the plot settings (labels, title and so on) and not the data, or colors
 - add `simple_hist()` function, analogous to `simple_bar()`
 
 
 ### General Improvements
-- add all-caps style
+- add uppercase, lowercase and title styles
 - add log parameter to `save_fig()` and similar
 - no float in axes labels if ticks are all integers
 - catch errors in video reproduction and get youtube
@@ -85,7 +87,7 @@ Any new relevant idea is welcomed, opening an [issue report](https://github.com/
 - add matrix plot side bar, to connect intensity level with actual matrix value
 - high resolution markers available on Windows and other rarer terminals (under request and not sure how)
 - add method to optionally set the sizes of a matrix of subplots giving priority to the subplots closer to bottom right edge, instead of upper left ones (as by default)
-- convert the class `matrix_class()`, the engine running the plots, in C++ and connect it to the Python code (not sure how and would appreciate some help regarding this)
+- convert the class `matrix_class()`, the engine running the plots, in C++ and connect it to the Python code (not sure how and would appreciate some help on this)
 
 
 ### Internal Conventions
@@ -93,9 +95,10 @@ Any new relevant idea is welcomed, opening an [issue report](https://github.com/
 - add parameter on bar plot methods for custom texts above bars, as proposed in [Pull Request 164](https://github.com/piccolomo/plotext/pull/164)
 - unify name for `color` and `colors` parameters in `candlestick()`, `multiple_bar()` etc ...
 - change `coordinate` parameter to `x` and `y` in `hline()` and `vline()`
-- change `trings_to_time()` to `strings_to_times()`
+- change `strings_to_time()` to `strings_to_times()`
 - decide general convention for method aliases
 - change `frame` parameter to `show` in `frame()` method
+- change count from 0 in command line tool `xcol` and `ycols` parameters, for uniformity
 
 ### Documentation and Testing
 - add docstring for `string_to_time()` and `strings_to_times()`
@@ -218,13 +221,12 @@ This version is only available on [GitHub](https://github.com/piccolomo/plotext/
 
 #### In version 4.3
 
-- accounted for exponential float notation as requested in [Pull 82](https://github.com/piccolomo/plotext/pull/82) by `@soraxas`
-- added functionality to properly read `numpy` data as requested in [Issue 84](https://github.com/piccolomo/plotext/issues/84) and [Issue 85](https://github.com/piccolomo/plotext/issues/85). 
+- accounted for exponential float notation as requested in [Pull 82](https://github.com/piccolomo/plotext/pull/82)
+- added functionality to properly read `numpy` data as requested in [Issue 84](https://github.com/piccolomo/plotext/issues/84) and [Issue 85](https://github.com/piccolomo/plotext/issues/85)
 
 #### In version 4.2
 
-- added `norm` parameter in `hist()` function as requested in [Issue 76](https://github.com/piccolomo/plotext/issues/76) and pulled in [Pull 79](https://github.com/piccolomo/plotext/pull/79) by `@ZaydH`
-
+- added `norm` parameter in `hist()` function as requested in [Issue 76](https://github.com/piccolomo/plotext/issues/76) and pulled in [Pull 79](https://github.com/piccolomo/plotext/pull/79)
 #### In version 4.1
 
 - added `horizontal_line` and `vertical_line` functions, as requested in [Issue 65](https://github.com/piccolomo/plotext/issues/65)
@@ -270,6 +272,7 @@ This version is only available on [GitHub](https://github.com/piccolomo/plotext/
 - `xfreq()` is now `xfrequency()`, `yfreq()` is `yfrequency()`
 - added doc class to easily access all functions doc-strings 
 - `get_canvas()` is now `build()`
+- [gregwa1953](https://github.com/gregwa1953) for  inspiring `limit_size()` in [Issue 33](https://github.com/piccolomo/plotext/issues/33)
 - `frame()` function reinstated
 
 #### In version 3.1
@@ -371,44 +374,44 @@ This version is only available on [GitHub](https://github.com/piccolomo/plotext/
 
 From [Pull requests](https://github.com/piccolomo/plotext/pulls):
 
-- `@cwaldbieser` for the `first_row` parameter idea in the `read_data()` method in [Pull Request 166](https://github.com/piccolomo/plotext/pull/166)
-- `@luator` for fixing legend symbol for braille markers in [Pull Request 135](https://github.com/piccolomo/plotext/pull/135)
-- `@luator` for fixing legend symbol for braille markers in [Pull Request 135](https://github.com/piccolomo/plotext/pull/135)
-- `@Freed-Wu` for introducing TAB completions to the command line tool in [Pull Request 118](https://github.com/piccolomo/plotext/pull/118) 
-- `@pankajp` for allowing `plotext` to be used with `python3` with `-m` flag in [Pull Request 107](https://github.com/piccolomo/plotext/pull/107)
-- `@soraxas` for functionality that accounts for exponential float notation: [Pull 82](https://github.com/piccolomo/plotext/pull/82)
+- [cwaldbieser](https://github.com/cwaldbieser) for the `first_row` parameter idea in the `read_data()` method in [Pull Request 166](https://github.com/piccolomo/plotext/pull/166)
+- [luator](https://github.com/luator) for fixing legend symbol for braille markers in [Pull Request 135](https://github.com/piccolomo/plotext/pull/135)
+- [luator](https://github.com/luator) for fixing legend symbol for braille markers in [Pull Request 135](https://github.com/piccolomo/plotext/pull/135)
+- [Freed-Wu](https://github.com/Freed-Wu) for introducing TAB completions to the command line tool in [Pull Request 118](https://github.com/piccolomo/plotext/pull/118) 
+- [pankajp](https://github.com/pankajp) for allowing `plotext` to be used with `python3` with `-m` flag in [Pull Request 107](https://github.com/piccolomo/plotext/pull/107)
+- [soraxas](https://github.com/soraxas) for functionality that accounts for exponential float notation in [Pull 82](https://github.com/piccolomo/plotext/pull/82)
 
 From [Issue Reports](https://github.com/piccolomo/plotext/issues):
 
-- `@luator` for requesting `marker` parameter in the `from_matplotlib()` method in [Issue 134](https://github.com/piccolomo/plotext/issues/134)
-- `@darul75` for requesting multiple lines in `text()` in [Issue 127](https://github.com/piccolomo/plotext/issues/127)
-- `@PhilipVinc` for `error()` plot idea, requested in [Issue 122](https://github.com/piccolomo/plotext/issues/122)
-- `@darul75` for requesting a simple KPI indicator  in [Issue 121](https://github.com/piccolomo/plotext/issues/121)
-- `@Freed-Wu` for requesting interactive mode in [Issue 115](https://github.com/piccolomo/plotext/issues/115)
-- `@Freed-Wu` for requesting a better way to deal with `Nan` and `None` values in [Issue 114](https://github.com/piccolomo/plotext/issues/114)
-- `@3h4` for requesting confusion matrix in [Issue 113](https://github.com/piccolomo/plotext/issues/113)
-- `@dns13` for requesting `append` option in save_fig() function in [Issue 109](https://github.com/piccolomo/plotext/issues/109)
-- `@vps-eric` for requesting square waves in [Issue 108](https://github.com/piccolomo/plotext/issues/108)
-- `@newbiemate` for requesting simple bar functionality in [Issue 98](https://github.com/piccolomo/plotext/issues/98)
-- `@Neo-Oli` for requesting braille based markers in [Issue 89](https://github.com/piccolomo/plotext/issues/89)
-- `@pieterbergmans` for requesting reverse axes functionality in [Issue 86](https://github.com/piccolomo/plotext/issues/86)
-- `@MartinThoma` for inspiring the idea behind `event_plot()` in [Issue 83](https://github.com/piccolomo/plotext/issues/83)
-- `@wookayin` for requesting the back-end function `from_matplotlib()` in [Issue 75](https://github.com/piccolomo/plotext/issues/75)
-- `@NLKNguyen` for ideas inspiring the `horizontal_line` and `vertical_line` functions: [Issue 65](https://github.com/piccolomo/plotext/issues/65)
-- `@jtplaarj` for the great ideas and codes regarding multiple and stacked bar plots: [Issue 48](https://github.com/piccolomo/plotext/issues/48)
-- `@asartori86` for the awesome command line tool: [Issue 47](https://github.com/piccolomo/plotext/issues/47)
-- `@ethack` for  solving single bar error: [Pull 43](https://github.com/piccolomo/plotext/issues/43)
-- `@ethack` for  requesting log scale on bar plot: [Issue 37](https://github.com/piccolomo/plotext/issues/37)
-- `@gregwa1953` for  inspiring `limit_size()`: [Issue 33](https://github.com/piccolomo/plotext/issues/33)
-- `@rbanffy` for suggestion of using 3 x 2 unicode mosaic box characters: [Issue 29](https://github.com/piccolomo/plotext/issues/29).
-- `@henryiii` for unit-test suggestion: [Issue 32](https://github.com/piccolomo/plotext/issues/32)
-- `@whisller` and `@willmcgugan` for integration with `Rich` package: [Issue 26](https://github.com/piccolomo/plotext/issues/26)
-- `@garid3000` for the idea of a function that returns the plot canvas: [Issue 20](https://github.com/piccolomo/plotext/issues/20)
-- `@robintw` and `@Sauci` for horizontal bar plot idea and code, respectively: [Issue 16](https://github.com/piccolomo/plotext/issues/16)
-- `@Zaneo` for multiple data set idea: [Issue 13](https://github.com/piccolomo/plotext/issues/13)
-- `@Zaneo` for double axes idea: [Issue 12](https://github.com/piccolomo/plotext/issues/12)
-- users `@geoffrey-eisenbarth` and  `@matthewhanson` for requesting datetime support: [Issue 7](https://github.com/piccolomo/plotext/issues/7)
-- `@kris927b` for requesting histogram - [Some Questions](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#some-questions)plot: [Issue 6](https://github.com/piccolomo/plotext/issues/6)
+- [luator](https://github.com/luator) for requesting `marker` parameter in the `from_matplotlib()` method in [Issue 134](https://github.com/piccolomo/plotext/issues/134)
+- [darul75](https://github.com/darul75) for requesting multiple lines in `text()` in [Issue 127](https://github.com/piccolomo/plotext/issues/127)
+- [PhilipVinc](https://github.com/PhilipVinc) for `error()` plot idea, requested in [Issue 122](https://github.com/piccolomo/plotext/issues/122)
+- [darul75](https://github.com/darul75) for requesting a simple KPI indicator  in [Issue 121](https://github.com/piccolomo/plotext/issues/121)
+- [Freed-Wu](https://github.com/Freed-Wu) for requesting interactive mode in [Issue 115](https://github.com/piccolomo/plotext/issues/115)
+- [Freed-Wu](https://github.com/Freed-Wu) for requesting a better way to deal with `Nan` and `None` values in [Issue 114](https://github.com/piccolomo/plotext/issues/114)
+- [3h4](https://github.com/3h4) for requesting confusion matrix in [Issue 113](https://github.com/piccolomo/plotext/issues/113)
+- [dns13](https://github.com/dns13) for requesting `append` option in save_fig() function in [Issue 109](https://github.com/piccolomo/plotext/issues/109)
+- [vps-eric](https://github.com/vps-eric) for requesting square waves in [Issue 108](https://github.com/piccolomo/plotext/issues/108)
+- [newbiemate](https://github.com/newbiemate) for requesting simple bar functionality in [Issue 98](https://github.com/piccolomo/plotext/issues/98)
+- [Neo-Oli](https://github.com/Neo-Oli) for requesting braille based markers in [Issue 89](https://github.com/piccolomo/plotext/issues/89)
+- [pieterbergmans](https://github.com/pieterbergmans) for requesting reverse axes functionality in [Issue 86](https://github.com/piccolomo/plotext/issues/86)
+- [MartinThoma](https://github.com/MartinThoma) for inspiring the idea behind `event_plot()` in [Issue 83](https://github.com/piccolomo/plotext/issues/83)
+- [wookayin](https://github.com/wookayin) for requesting the back-end function `from_matplotlib()` in [Issue 75](https://github.com/piccolomo/plotext/issues/75)
+- [NLKNguyen](https://github.com/NLKNguyen) for ideas inspiring the `horizontal_line` and `vertical_line` functions in [Issue 65](https://github.com/piccolomo/plotext/issues/65)
+- [jtplaarj](https://github.com/jtplaarj) for the great ideas and codes regarding multiple and stacked bar plots in [Issue 48](https://github.com/piccolomo/plotext/issues/48)
+- [asartori86](https://github.com/asartori86) for the awesome command line tool in [Issue 47](https://github.com/piccolomo/plotext/issues/47)
+- [ethack](https://github.com/ethack) for  solving single bar error in[Pull 43](https://github.com/piccolomo/plotext/issues/43)
+- [ethack](https://github.com/ethack) for  requesting log scale on bar plot in [Issue 37](https://github.com/piccolomo/plotext/issues/37)
+- [gregwa1953](https://github.com/gregwa1953) for  inspiring `limit_size()` in [Issue 33](https://github.com/piccolomo/plotext/issues/33)
+- [rbanffy](https://github.com/rbanffy) for suggestion of using 3 x 2 unicode mosaic box characters in [Issue 29](https://github.com/piccolomo/plotext/issues/29).
+- [henryiii](https://github.com/henryiii) for unit-test suggestion in [Issue 32](https://github.com/piccolomo/plotext/issues/32)
+- [whisller](https://github.com/whisller) and [](https://github.com/willmcgugan` for integration with `Rich` package in [Issue 26](https://github.com/piccolomo/plotext/issues/26)
+- [garid3000](https://github.com/garid3000) for the idea of a function that returns the plot canvas in [Issue 20](https://github.com/piccolomo/plotext/issues/20)
+- [robintw](https://github.com/robintw) and [](https://github.com/Sauci` for horizontal bar plot idea and code, respectively in [Issue 16](https://github.com/piccolomo/plotext/issues/16)
+- [Zaneo](https://github.com/Zaneo) for multiple data set idea in [Issue 13](https://github.com/piccolomo/plotext/issues/13)
+- [Zaneo](https://github.com/Zaneo) for double axes idea in [Issue 12](https://github.com/piccolomo/plotext/issues/12)
+- users [geoffrey-eisenbarth](https://github.com/geoffrey-eisenbarth) and  [matthewhanson](https://github.com/matthewhanson) for requesting datetime support in [Issue 7](https://github.com/piccolomo/plotext/issues/7)
+- [kris927b](https://github.com/kris927b) for requesting histogram plot in [Issue 6](https://github.com/piccolomo/plotext/issues/6)
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#notes)
 
