@@ -253,7 +253,7 @@ def write_data(data, path, delimiter = None, columns = None, log = True): # it t
 def save_text(text, path, append = False, log = True): # it saves some text to the path selected
     path = correct_path(path)
     mode = "a" if append else "w+"
-    with open(path , mode) as file:
+    with open(path , mode, encoding='utf-8') as file:
         file.write(text)
     print(format_strings("text saved in", path)) if log else None
 
