@@ -215,7 +215,7 @@ class _figure_class():
 
     def plot(self, *args, marker = None, color = None, style = None, fillx = None, filly = None, xside = None, yside = None, label = None):
         self._draw(*args, xside = xside, yside = yside, lines = True, marker = marker, color = color,  fillx = fillx, filly = filly, label = label)
-
+        
     def bar(self, *args, marker = None, color = None, fill = None, width = None, orientation = None, minimum = None, reset_ticks = None, xside = None, yside = None, label = None):
         self.monitor.draw_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks) if self._no_plots else [[self._get_subplot(row, col).bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks) for col in self._Cols] for row in self._Rows]
 
@@ -230,7 +230,10 @@ class _figure_class():
 
     def candlestick(self, dates, data, colors = None, orientation = None, xside = None, yside = None, label = None):
         self.monitor.draw_candlestick(dates, data, xside = xside, yside = yside, orientation = orientation, colors = colors, label = label) if self._no_plots else [[self._get_subplot(row, col).candlestick(dates, data, orientation = orientation, colors = colors, label = label) for col in self._Cols] for row in self._Rows]
-        
+
+    def box(self, *args, quintuples = None, colors = None,  fill = None, width = None, orientation = None, minimum = None, reset_ticks = None, xside = None, yside = None, label = None):
+        self.monitor.draw_box(*args, xside = xside, yside = yside, orientation = orientation, colors = colors, label = label, fill = fill, width = width, minimum = minimum, reset_ticks = reset_ticks, quintuples = quintuples) if self._no_plots else [[self._get_subplot(row, col).box(*args, orientation = orientation, colors = colors, label = label, fill = fill, width = width, minimum = minimum, reset_ticks = reset_ticks, quintuples = quintuples) for col in self._Cols] for row in self._Rows]
+
 ##############################################
 ###########    Plotting Tools    #############
 ##############################################
@@ -454,6 +457,7 @@ class _figure_class():
     add(stacked_bar)
     add(hist)
     add(candlestick)
+    add(box)
 
     add(error)
     add(event_plot)
