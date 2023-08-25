@@ -71,7 +71,7 @@ To create a **simpler and sketchier version** of the same bar plot, use the func
 - the advantage of this bar plot is that it produces a very predictable output in terms of bar width (a single character),
 - the disadvantages are that its only orientation is horizontal, it cannot be used inside a [matrix of subplots](https://github.com/piccolomo/plotext/blob/master/readme/subplots.md#subplots) and any setting method which follows will not have any effect (like `xlabel()`, `plotsize()` and so on),
 
-Here is an example:
+Here is an example:The default value for quintuples is False
 
 ```python
 import plotext as plt
@@ -243,6 +243,7 @@ or directly on terminal:
 python3 -c 'import plotext as plt;labels = ["apple", "orange", "pear", "banana"];datas = [[10, 7, 5, 3, 1.5],[19, 12.3, 9, 7, 4],[15, 14, 11, 9, 8],[13, 12, 11, 10, 6]];plt.box(labels, datas, width=0.3, quintuples=True);plt.title("The weight of the fruit");plt.show()'
 ```
 ![box-plot-2](https://raw.githubusercontent.com/is/plotext/box/data/box-plot-2.png)
+This feauture may require further development. 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
 
 ## Histogram Plot

@@ -324,9 +324,9 @@ past("label", "scatter")
 
 
 method("box")
-doc("It creates a box plot.")
+doc("It creates a box plot. Further development needed.")
 par("args", "The coordinates x and Y (or just Y), of the bars, where Y is a list of lists, one for each box element; string labels or dates are accepted (but only as x values).", t.multiple_xy)
-par("quintuples", "If quintuples=True, the input data is an array of quintuples, each representing the precomputed maximum, q75, q50, q25 and minimum values, otherwise it's the original data. The default value for quintuples is False.", t.bool, False)
+par("quintuples", "If True, the input data is an array of 5 elements, each representing the precomputed quantiles at levels 0, 25, 50, 75, 100 s, otherwise it's the original data.", t.bool, False)
 par("colors", "A list of two colors, one for the box body and the other for its inner lines", t.list_color(2), ['green', 'red'])
 past("fill", "bar")
 past("width", "bar")

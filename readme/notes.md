@@ -58,7 +58,6 @@ Any new relevant idea is welcomed, opening an [issue report](https://github.com/
 - add heatmap plot, as requested in issue [Issue 143](https://github.com/piccolomo/plotext/issues/143)
 - add OHLC date time plot, as requested in issue [Issue 149](https://github.com/piccolomo/plotext/issues/149)
 - add network graphs, as requested in issue [Issue 160](https://github.com/piccolomo/plotext/issues/160)
-- add boxplot as requested in issue [Issue 169](https://github.com/piccolomo/plotext/issues/169) and proposed in issue [Pull Request 170](https://github.com/piccolomo/plotext/pull/170)
 - integrate `colorize()` in `text()` and `indicator()` or or any string `label` parameter, as requested in issue [Issue 144](https://github.com/piccolomo/plotext/issues/144); possible idea: `colorize()` to output a `matrix_class()` object
 - allow simple bar plots in matrix of subplots, as requested in issue [Issue 171](https://github.com/piccolomo/plotext/issues/171); this could be possibly extended to allow images also, rendered with fast parameter set to `True`
 - allow user to decide plot legend position and frame
@@ -120,6 +119,7 @@ Available on [GitHub](https://github.com/piccolomo/plotext) only:
 - removed `trend` parameter from `indicator()` function
 - added `log` and `header` parameters to `read_data()` method
 - changed text default allignment to `'center'` in `text()` method
+- added boxplot as requested in [Issue 169](https://github.com/piccolomo/plotext/issues/169) and proposed in [Pull Request 170](https://github.com/piccolomo/plotext/pull/170)
 
 
 #### In version 5.2
