@@ -278,6 +278,10 @@ def matrix_plot(matrix, marker = None, style = None, fast = False):
     _figure._active.matrix_plot(matrix, marker = marker, style = style, fast = fast)
     _figure.show() if _figure._interactive else None
 
+def heatmap(dataframe, marker = None, style = None, fast = False):
+    _figure._active.heatmap(dataframe, marker = marker, style = style, fast = fast)
+    _figure.show() if _figure._interactive else None
+
 def image_plot(path, marker = None, style = None, fast = False, grayscale = False):
     _figure._active.image_plot(path, marker = marker, style = style, grayscale = grayscale, fast = fast)
     _figure.show() if _figure._interactive else None

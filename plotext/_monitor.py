@@ -775,6 +775,38 @@ class monitor_class(build_class):
             self.matrix.canvas = '\n'.join([''.join(row) for row in matrix])
             self.fast_plot = True
 
+    def draw_heatmap(self, dataframe, marker=None, style=None, fast=False):
+        marker = [marker] if type(marker) != list else marker
+        marker = [self.check_marker("sd") if el in ut.join([None, ut.hd_symbols]) else self.check_marker(el) for el in
+                  marker]
+        style = ut.no_color if style is None else self.check_style(style)
+        rows, cols = dataframe.shape
+        rows = 0 if cols == 0 else rows
+        dataframe = dataframe if rows * cols != 0 and ut.is_rgb_color(dataframe[0][0]) else ut.turn_gray(dataframe)
+        marker = ut.repeat(marker, cols)
+        if not fast:
+            for r in range(rows):
+                xyc = [(c, r, dataframe.iloc[rows - 1 - r, c]) for c in range(cols)]
+                x, y, color = ut.transpose(xyc, 3)
+                self.draw(x, y, marker=marker, color=color, style=style)
+            self.set_canvas_color("black")
+            self.set_xlabel('column')
+            self.set_ylabel('row')
+            xf, yf = min(self.xfrequency[0], cols), min(self.yfrequency[0], rows)
+            xt = ut.linspace(0, cols - 1, xf)
+            xl = ut.get_labels([el + 1 for el in xt])
+            yt = ut.linspace(0, rows - 1, yf)
+            yl = ut.get_labels([rows - el for el in yt])
+            self.set_xticks(xt, xl)
+            self.set_yticks(yt, yl)
+        else:  # if fast
+            for r in range(rows):
+                for c in range(cols):
+                    ansi = ut.colors_to_ansi(dataframe[r][c], style, "black")
+                    dataframe[r][c] = ansi + marker[c] + ut.ansi_end
+            self.dataframe.canvas = '\n'.join([''.join(row) for row in dataframe])
+            self.fast_plot = True
+
     def draw_image(self, path, marker = None, style = None, fast = False, grayscale = False):
         from PIL import Image        
         path = ut.correct_path(path)

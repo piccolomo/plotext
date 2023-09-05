@@ -276,7 +276,10 @@ class _figure_class():
 
     def matrix_plot(self, matrix, marker = None, style = None, fast = False):
         self.monitor.draw_matrix(matrix, marker = marker, style = style, fast = fast) if self._no_plots else [[self._get_subplot(row, col).matrix_plot(matrix, marker = marker, style = style, fast = fast) for col in self._Cols] for row in self._Rows]
-    
+
+    def heatmap(self, dataframe, marker=None, style=None, fast=False):
+        self.monitor.draw_heatmap(dataframe, marker=marker, style=style, fast=fast) if self._no_plots else [[self._get_subplot(row, col).heatmap(dataframe, marker=marker, style=style, fast=fast) for col in self._Cols] for row in self._Rows]
+
     def image_plot(self, path, marker = None, style = None, fast = False, grayscale = False):
         self.monitor.draw_image(path, marker = marker, style = style, grayscale = grayscale, fast = fast) if self._no_plots else [[self._get_subplot(row, col).image_plot(path, marker = marker, style = style, grayscale = grayscale, fast = fast) for col in self._Cols] for row in self._Rows]
         
