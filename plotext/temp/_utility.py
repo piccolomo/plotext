@@ -28,12 +28,18 @@ def try_float(data): # it turn a string into float if it can
         return data
 
 def quantile(data, q): # calculate the quantile of a given array
-    data = sorted(data)
-    index = q * (len(data) - 1)
-    if index.is_integer():
-        return data[int(index)]
+    data = sorted(data); l = len(data)
+    index = (l - 1) * q
+    lower_index = int(index)
+    upper_index = lower_index + 1
+
+    if lower_index == l - 1:
+        return data[lower_index]
     else:
-        return (data[int(index)] + data[int(index) + 1]) / 2
+        fraction = index - lower_index
+        lower_value = data[lower_index]
+        upper_value = data[upper_index]
+        return lower_value + fraction * (upper_value - lower_value)
 
 ###############################################
 ###########    List Creation     ##############
@@ -54,13 +60,6 @@ def square(periods = 2, length = 200, amplitude = 1):
     step = lambda t: amplitude if t % T <= T / 2 else - amplitude
     return [step(i) for i in range(length)]
 
-def to_list(data, length): # eg: to_list(1, 3) = [1, 1 ,1]; to_list([1,2,3], 6) = [1, 2, 3, 1, 2, 3]
-    data = data if isinstance(data, list) else [data] * length
-    data = data * math.ceil(length / len(data)) if len(data) > 0 else []
-    return data[ : length]
-
-def difference(data1, data2) : # elements in data1 not in date2
-    return [el for el in data1 if el not in data2]
 
 ###############################################
 #########    List Transformation     ##########
@@ -340,148 +339,18 @@ def get_hd_marker(code):
 def marker_factor(marker, hd, fhd, braille): # usefull to improve the resolution of the canvas for higher resolution markers
    return hd if marker == 'hd' else fhd if marker == 'fhd' else braille if marker == 'braille' else 1
 
-##############################################
-###########    Color Utilities    ############
-##############################################
 
-# A user could specify three types of colors
-  # an integer for 256 color codes
-  # a tuple    for RGB color codes
-  # a string   for 16 color codes or styles
-
-# Along side the user needs to specify whatever it is for background / fullground / style
-# which plotext calls 'character' = 0 / 1 / 2
-
-
-#colors_no_plus = [el for el in colors if '+' not in el and el + '+' not in colors and el is not no_color] # basically just [black, white]
-
-def get_color_code(color): # the color number code from color string
-    color = color.strip()
-    return color_codes[color]
-
-def get_color_name(code): # the color string from color number code
-    codes = list(color_codes.values())
-    return colors[codes.index(code)] if code in codes else no_color
-
-def is_string_color(color):
-    return isinstance(color, str) and color.strip() in colors
-
-def is_integer_color(color):
-    return isinstance(color, int) and 0 <= color <= 255
-
-def is_rgb_color(color):
-    is_rgb = isinstance(color, list) or isinstance(color, tuple)
-    is_rgb = is_rgb and len(color) == 3
-    is_rgb = is_rgb and all([is_integer_color(el) for el in color])
-    return is_rgb
-
-def is_color(color):
-    return is_string_color(color) or is_integer_color(color) or is_rgb_color(color)
-
-def colorize(string, color = None, style = None, background = None, show = False): # it paints a text with given fullground and background color
-    string = apply_ansi(string, background, 0)
-    string = apply_ansi(string, color, 1)
-    string = apply_ansi(string, style, 2)
-    if show:
-        print(string)
-    return string
-
-def uncolorize(string): # remove color codes from colored string
-    colored = lambda: ansi_begin in string
-    while colored():
-        b = string.index(ansi_begin)
-        e = string[b : ].index('m') + b + 1
-        string = string.replace(string[b : e], '')
-    return string
-
-def apply_ansi(string, color, character):
-    begin, end = ansi(color, character)
-    return begin + string + end
-
-#ansi_begin = '\033['
-ansi_begin = '\x1b['
-ansi_end = ansi_begin + '0m'
-
-@memorize
-def colors_to_ansi(fullground, style, background):
-    color = [background, fullground, style]
-    return ''.join([ansi(color[i], i)[0] for i in range(3)])
-
-@memorize
-def ansi(color, character):
-    if color == no_color:
-        return ['', '']
-    col, fg, tp = '', '', ''
-    if character == 2 and is_style(color):
-        col = get_style_codes(color)
-        col = ';'.join([str(el) for el in col])
-    elif character != 2:
-        fg = '38;' if character == 1 else '48;'
-        tp = '5;'
-        if is_string_color(color):
-            col = str(get_color_code(color))
-        elif is_integer_color(color):
-            col = str(color)
-        elif is_rgb_color(color):
-            col = ';'.join([str(el) for el in color])
-            tp = '2;'
-    is_color = col != ''
-    begin = ansi_begin + fg + tp + col + 'm' if is_color else ''
-    end = ansi_end if is_color else ''
-    return [begin, end]
-
-## This section is usefull to produce html colored version of the plot and to translate all color types (types 0 and 1) in rgb (type 2 in plotext) and avoid confusion. the match is almost exact and it depends on the terminal i suppose
-
-def to_rgb(color):
-    if is_string_color(color): # from 0 to 1
-        color = get_color_code(color)
-        #color = type0_to_type1_codes[code]
-    if is_integer_color(color): # from 0 or 1 to 2
-        return type1_to_type2_codes[color]
-    return color
-
-##############################################
-############     Style Codes    ##############
-##############################################
-
-no_style = 'default'
-
-styles = list(style_codes.keys()) + [no_style]
-
-info_style = 'dim'
-
-def get_style_code(style): # from single style to style number code
-    style = style.strip()
-    return style_codes[style]
-
-def get_style_codes(style): # from many styles (separated by space) to as many number codes
-    style = style.strip().split()
-    codes = [get_style_code(el) for el in style if el in styles]
-    codes = no_duplicates(codes)
-    return codes
-
-def get_style_name(code): # from style number code to style name
-    codes = list(style_codes.values())
-    return styles[codes.index(code)] if code in codes else no_style
-
-def clean_styles(style): # it returns a well written sequence of styles (separated by spaces) from a possible confused one
-    codes = get_style_codes(style)
-    return ' '.join([get_style_name(el) for el in codes])
-
-def is_style(style):
-    style = style.strip().split() if isinstance(style, str) else ['']
-    return any([el in styles for el in style])
 
 ##############################################
 ###########     Plot Utilities    ############
 ##############################################
 
 def set_data(x = None, y = None): # it return properly formatted x and y data lists
-   if x is None and y is None :
+   if x is None and y is None:
        x, y = [], []
    elif x is not None and y is None:
        y = x
-       x = list(range(1, len(y) + 1))
+       x = list(range(len(y)))
    lx, ly = len(x), len(y)
    if lx != ly:
        l = min(lx, ly)
@@ -695,21 +564,6 @@ def hd_group(x, y, xf, yf): # it returns the real coordinates of the HD markers 
 ###############################################
 #############   Bar Functions    ##############
 ###############################################
-
-def bars(x, y, width, minimum): # given the bars center coordinates and height, it returns the full bar coordinates
-   # if x == []:
-   #     return [], []
-   bins = len(x)
-   #bin_size_half = (max(x) - min(x)) / (bins - 1) * width / 2
-   bin_size_half = width / 2
-   # adjust the bar width according to the number of bins
-   if bins > 1:
-       bin_size_half *= (max(x) - min(x)) / (bins - 1)
-   xbar, ybar = [], []
-   for i in range(bins):
-       xbar.append([x[i] - bin_size_half, x[i] + bin_size_half])
-       ybar.append([minimum, y[i]])
-   return xbar, ybar
 
 def set_multiple_bar_data(*args):
     l = len(args)

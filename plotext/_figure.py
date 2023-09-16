@@ -1,485 +1,385 @@
-from plotext._default import default_figure_class
-from plotext._monitor import monitor_class
-from plotext._matrix import join_matrices
-from plotext._date import date_class
-from plotext._doc_utils import add
-from time import time as _time
-import plotext._utility as ut
-from time import time
-import os
+# A figure is a general container of either a plot (called monitor) or nested figures (also called subplots)
+# This creates a hierarchy of figures, where master is the main global figure, and parent is the figure containing (or above) the one considered
+# The active figure is the one (in the hierarchy) that can be addressed with further plotext commands
+# If a figure has no sub figures, then it is used for data plotting, otherwise its sub figures are checked for data plotting
 
-# A figure is a general container of either a plot (called monitor) or another figure, when subplots are nested
-# This creates a hierarchy of figures, where master is the main/initial global figure, and parent is the figure containing (or above) the one considered
-# The active figure is the one that can be accessed with further plotext commands - like plot(), limitsize() etc .. 
-# If a figure has no sub figures, then it is used for plotting, otherwise its sub figures are checked
+import shutil
+from plotext._default import default_figure, default_axis
+from plotext._axes import xaxis_class, yaxis_class
+from plotext._matrix import matrix_class, join_matrices
+from plotext._canvas import canvas_class
+# from plotext._signal import signals_class
 
 class _figure_class():
-    
-    def __init__(self, master = None, parent = None):
-        self._set_family(master, parent) # it sets master, parent and active figure
-        self.default = default_figure_class() # default values of figure class
-        self.date = date_class()
-
-        self._set_size(None, None) # no initial size for general figure
-        self.max_or_min = max # in a matrix of subplots the maximum height/width is considered (by default) for each row/column
+    def __init__(self, parent = None, width = None, height = None):
+        self.set_parent(parent)
         
-        self.monitor = monitor_class() if self._is_master else self._parent.monitor.copy() # each figure has a monitor for plotting; which by default is deep copied from its parent figure monitor, so that a figure with multiple sub plots can have easily the same plot and plot settings and preferences (without rewriting code)
-        self.monitor.set_date(self.date) # to make sure that the date settings of a figure are the same for its subplots
-
-        self._set_master() if self._is_master else None # it sets the master figure size and other utilities 
-
-        self._set_slots_max(*self._master._size) # sets the maximum number of sub figures in the current figure (from master figure size)
-        self.subplots(0, 0) # no sub figures added by default, so that the current figure is used for plotting
+        self.set_limit_size()
+        self.update_size_max()
+        self.set_size(width, height)
         
-    def _set_family(self, master = None, parent = None):
-        self._parent = self if parent is None else parent # the figure just above this one
-        self._master = self if master is None else master # the figure above all others
-        self._is_master = self is self._master
-        self._active = self if self._is_master else self._master._active # the active figure, such that further plotting or settings commands refer to it
+        self.update_slots_max()
+        self.set_slots(1, 1)
+        self.update_subplots()
+        self.take_max()
 
-    def _set_master(self):
-        self._limit_size(True, True)  # limit size (only available for master, as sub figures are by default limited by parent figure)
-        self._set_terminal_size(*ut.terminal_size()) # get and set terminal size
-        self._set_master_size()  # set master size to terminal
-        self._time = None # computational time of show() method, only available for global figure
-        self._dummy = _figure_class(self._master, self._master) # the master has a dumm container for subplots that do not actually exist (anymore due to change of size)
-        self._master.monitor.set_size(self._size)
-        self._dummy.monitor.set_size(self._size)
-        self._set_interactive() # if to make the final figure interactive: every command gets directly printed
+        self.create_axes()
+        self.canvas = canvas_class()
+        # axes, canvas
+
+##############################################
+#########    Family Functions    #############
+##############################################
+
+    def set_parent(self, parent = None):
+        self.parent = parent
+        self.is_master = parent is None
+        if self.is_master:
+            self.active = self
+
+    def set_position(self, row = None, col = None):
+        self.row = row
+        self.col = col
+        self.position = (row, col)
+
+    def get_position(self):
+        return 'main()' if self.is_master else self.get_parent().get_position() + '.subplot' + str(self.position)
+
+    def get_parent(self, level = 1):
+        return self if level == 0 or self.is_master else self.parent if level == 1 else self.get_parent(1).get_parent(level - 1)
+
+    def get_master(self):
+        return self.get_parent(-1)
+
+    def get_active(self):
+        return self.get_master().active
+
+    def set_active(self, figure = None):
+        master = self.get_master()
+        master.active = master.active if figure is None else figure 
 
 ##############################################
 ###########    Size Functions    #############
 ##############################################
 
-    def _set_interactive(self, interactive = None):
-        self._interactive = self.default.interactive if interactive is None else bool(interactive)
+    def set_limit_size(self, width = None, height = None):
+        self.limit_width = True if not self.is_master else default_figure.limit_width if width is None else bool(width)
+        self.limit_height = True if not self.is_master else default_figure.limit_height if height is None else bool(height)
+        self.limit_size = [self.limit_width, self.limit_height]
 
-    def _set_size(self, width = None, height = None):
-        self._width = None if width is None else int(width)
-        self._height = None if height is None else int(height)
-        self._size = [self._width, self._height]
+    def update_size_max(self):
+        width_parent, height_parent = terminal_size() if self.is_master else self.parent.size
+        self.width_max = width_parent if self.limit_width else None
+        self.height_max = height_parent if self.limit_height else None
+        self.size_max = [self.width_max, self.height_max]
 
-    def _limit_size(self, width = None, height = None):
-        self._limit_width = self.default.limit_width if width is None else bool(width)
-        self._limit_height = self.default.limit_height if height is None else bool(height)
-        self._limit = [self._limit_width, self._limit_height]
+    def set_size(self, width = None, height = None):
+        width_none = width is None; width_max_none = self.width_max is None
+        height_none = height is None; height_max_none = self.height_max is None
+        self.width = self.width_max if width_none or (not width_max_none and width > self.width_max) else int(width) if not width_none else None
+        self.height = self.height_max if height_none or (not height_max_none and height > self.height_max) else int(height) if not height_none else None
+        self.size = [self.width, self.height]
 
-    def _set_terminal_size(self, width = None, height = None):
-        self._width_term = self.default._width_term if width is None else width
-        extra_lines = 2 if ut.is_ipython() else 1
-        self._height_term = self.default._height_term if height is None else max(height - extra_lines, 0)
-        self._size_term = [self._width_term, self._height_term]
+    def get_size(self):
+        return ''.join([str(self.width).ljust(5), str(self.height).ljust(3)])
 
-    def _set_master_size(self):
-        width = self._width_term if self._width is None or (self._width > self._width_term and self._limit_width) else self._width
-        height = self._height_term if self._height is None or (self._height > self._height_term and self._limit_height) else self._height
-        self._set_size(width, height)
-        
 ##############################################
 #########    Subplots Functions    ###########
 ##############################################
 
-    def _set_slots_max(self, width = None, height = None):
-        self._rows_max = height # (height + 1) // 3 
-        self._cols_max = width # (width + 1) // 3 
-        self._slots_max = [self._rows_max, self._cols_max]
+    def update_slots_max(self):
+        self.rows_max = self.height // 3
+        self.cols_max = self.width // 3
+        self.slots_max = [self.rows_max, self.cols_max]
 
-    def _set_slots(self, rows = None, cols = None):
+    def set_slots(self, rows = None, cols = None):
         rows = 1 if rows is None else int(abs(rows))
         cols = 1 if cols is None else int(abs(cols))
-        self._rows = min(rows, self._rows_max)
-        self._cols = min(cols, self._cols_max)
-        self._Rows = list(range(1, self._rows + 1))
-        self._Cols = list(range(1, self._cols + 1))
-        self._slots = [self._rows, self._cols]
-        self._no_plots = 0 in self._slots #or self._is_master
-        
-    def _set_subplots(self):
-        self.subfig = [[_figure_class(self._master, self) for col in self._Cols] for row in self._Rows]
-        
-    def _get_subplot(self, row = None, col = None):
-        return self.subfig[row - 1][col - 1] if row in self._Rows and col in self._Cols else self._master._dummy
+        (rows, cols) = (0, 0) if rows * cols == 1 else (rows, cols)
+        self.rows = min(rows, self.rows_max)
+        self.cols = min(cols, self.cols_max)
+        self.Rows = list(range(1, self.rows + 1))
+        self.Cols = list(range(1, self.cols + 1))
+        self.slots = [self.rows, self.cols]
+        self.has_subplots = self.rows * self.cols != 0
 
+    def refresh_slots(self):
+        self.set_slots(self.rows, self.cols)
+
+    def update_subplots(self):
+        widths = get_sizes(self.width, self.cols)
+        heights = get_sizes(self.height, self.rows)
+        self.plot = [[_figure_class(self, widths[col - 1], heights[row - 1]) for col in self.Cols] for row in self.Rows]
+        [[self.plot[row - 1][col - 1].set_position(row, col) for col in self.Cols] for row in self.Rows]
+
+    def get_subplot(self, row = None, col = None):
+        valid = self.has_subplots and row in self.Rows and col in self.Cols
+        return self.plot[row - 1][col - 1] if valid else None
+
+    def select_subplots(self):
+        self.plot = [[self.plot[row - 1][col - 1] for col in self.Cols] for row in self.Rows]
+
+    def print_subplots(self):
+        #print('w    h') if self.is_master else None
+        print(self.get_size(), self.get_position())
+        [[f.print_subplots() for f in plots] for plots in self.plot] if self.has_subplots else None
+
+##############################################
+#####    Subplots / Size Functions    ########
+##############################################
+
+    def take_min(self): # in a matrix of subplots the minimum height/width will be considered for each row/column
+        self.max_or_min = lambda data: min(data, default = 0)
+
+    def take_max(self): # in a matrix of subplots the minimum height/width will be considered for each row/column
+        self.max_or_min = lambda data: max(data, default = 0)
+
+    def refresh_subplots_size_max(self):
+        [self.get_subplot(row, col).update_size_max() for col in self.Cols for row in self.Rows]
+
+    def harmonize_sizes(self):
+        widths = [self.max_or_min([self.get_subplot(row, col).width for row in self.Rows]) for col in self.Cols]
+        heights = [self.max_or_min([self.get_subplot(row, col).height for col in self.Cols]) for row in self.Rows]
+        widths = fit_sizes(widths, self.width)
+        heights = fit_sizes(heights, self.height)
+        [self.get_subplot(row, col).set_size(widths[col - 1], heights[row - 1]) for col in self.Cols for row in self.Rows]
+
+    def refresh_sizes(self):
+        self.update_slots_max()
+        self.refresh_slots()
+        self.select_subplots()
+        self.refresh_subplots_size_max()
+        self.harmonize_sizes()
+
+    def verify_sizes(self):
+        widths = [[self.get_subplot(row, col).width for row in self.Rows] for col in self.Cols]
+        heights = [[self.get_subplot(row, col).height for col in self.Cols] for row in self.Rows]
+        widths_constant = all(map(is_constant, widths)) 
+        heights_constant = all(map(is_constant, heights))
+        widths_less = sum([el[0] for el in widths]) == self.width
+        heights_less = sum([el[0] for el in heights]) == self.height
+        return not self.has_subplots or all([widths_constant, widths_less, heights_constant, heights_less])
+
+##############################################
+########    User Size Functions    ###########
+##############################################
+
+    def limit_size(self, width = None, height = None):
+        self.set_limit_size(width, height)
+        self.update_size_max()
+
+    def plot_size(self, width = None, height = None):
+        self.set_size(width, height)
+        self.parent.refresh_sizes() if self.parent is not None else None
+        self.refresh_sizes()
+
+##############################################
+######    User Subplots Functions    #########
+##############################################
+
+    def subplots(self, rows, cols):
+        self.set_slots(rows, cols)
+        self.update_subplots()
+        return self
+        
     def subplot(self, row = None, col = None):
         row = 1 if row is None else int(abs(row))
         col = 1 if col is None else int(abs(col))
-        active = self._get_subplot(row, col)
-        self._active = active
-        self._master._active = active
-        return self._master._active
-
-    def subplots(self, rows = None, cols = None):
-        self._set_slots(rows, cols)
-        self._set_subplots()
-        return self
+        row = min(row, self.rows_max)
+        col = min(col, self.cols_max)
+        plot = self.get_subplot(row, col)
+        self.set_active(plot)
+        return plot
 
 ##############################################
-#######    External Set Functions    #########
+############   Axes Functions    #############
 ##############################################
 
-    def title(self, label = None):
-        self.monitor.set_title(label) if self._no_plots else [[self._get_subplot(row, col).title(label) for col in self._Cols] for row in self._Rows]
+    def create_axes(self):
+        self.xaxis_lower = xaxis_class('lower')
+        self.xaxis_upper = xaxis_class('upper')
+        self.yaxis_left  = yaxis_class('left')
+        self.yaxis_right = yaxis_class('right')
+        self.r2 = [1, 2]
 
-    def xlabel(self, label = None, xside = None):
-        self.monitor.set_xlabel(label = label, xside = xside) if self._no_plots else [[self._get_subplot(row, col).xlabel(label = label, xside = xside) for col in self._Cols] for row in self._Rows]
-        
-    def ylabel(self, label = None, yside = None):
-        self.monitor.set_ylabel(label = label, yside = yside) if self._no_plots else [[self._get_subplot(row, col).ylabel(label = label, yside = yside) for col in self._Cols] for row in self._Rows]
+    def get_xaxis(self, xside = None):
+        xside = self.correct_xside(xside)
+        return self.xaxis_lower if xside == default_axis.xside else self.xaxis_upper
 
-    def xlim(self, left = None, right = None, xside = None):
-        self.monitor.set_xlim(left = left, right = right, xside = xside) if self._no_plots else [[self._get_subplot(row, col).xlim(left = left, right = right, xside = xside) for col in self._Cols] for row in self._Rows]
+    def get_yaxis(self, yside = None):
+        yside = self.correct_yside(yside)
+        return self.yaxis_left if yside == default_axis.yside else self.yaxis_right
 
-    def ylim(self, lower = None, upper = None, yside = None):
-        self.monitor.set_ylim(lower = lower, upper = upper, yside = yside) if self._no_plots else [[self._get_subplot(row, col).ylim(lower = lower, upper = upper, yside = yside) for col in self._Cols] for row in self._Rows]
-        
-    def xscale(self, scale = None, xside = None):
-        self.monitor.set_xscale(scale = scale, xside = xside) if self._no_plots else [[self._get_subplot(row, col).xscale(scale = scale, xside = xside) for col in self._Cols] for row in self._Rows]
-        
-    def yscale(self, scale = None, yside = None):
-        self.monitor.set_yscale(scale = scale, yside = yside) if self._no_plots else [[self._get_subplot(row, col).yscale(scale = scale, yside = yside) for col in self._Cols] for row in self._Rows]
-        
-    def xticks(self, ticks = None, labels = None, xside = None):
-        self.monitor.set_xticks(ticks = ticks, labels = labels, xside = xside) if self._no_plots else [[self._get_subplot(row, col).xticks(ticks = ticks, labels = labels, xside = xside) for col in self._Cols] for row in self._Rows]
-
-    def yticks(self, ticks = None, labels = None, yside = None):
-        self.monitor.set_yticks(ticks = ticks, labels = labels, yside = yside) if self._no_plots else [[self._get_subplot(row, col).yticks(ticks = ticks, labels = labels, yside = yside) for col in self._Cols] for row in self._Rows]
-
-    def xfrequency(self, frequency = None, xside = None):
-        self.monitor.set_xfrequency(frequency = frequency, xside = xside) if self._no_plots else [[self._get_subplot(row, col).xfrequency(frequency = frequency, xside = xside) for col in self._Cols] for row in self._Rows]
-
-    def yfrequency(self, frequency = None, yside = None):
-        self.monitor.set_yfrequency(frequency = frequency, yside = yside) if self._no_plots else [[self._get_subplot(row, col).yfrequency(frequency = frequency, yside = yside) for col in self._Cols] for row in self._Rows]
-
-    def xreverse(self, reverse = None, xside = None):
-        self.monitor.set_xreverse(reverse = reverse, xside = xside) if self._no_plots else [[self._get_subplot(row, col).xreverse(reverse = reverse, xside = xside) for col in self._Cols] for row in self._Rows]
-
-    def yreverse(self, reverse = None, yside = None):
-        self.monitor.set_yreverse(reverse = reverse, yside = yside) if self._no_plots else [[self._get_subplot(row, col).yreverse(reverse = reverse, yside = yside) for col in self._Cols] for row in self._Rows]
-
-    def xaxes(self, lower = None, upper = None):
-        self.monitor.set_xaxes(lower = lower, upper = upper) if self._no_plots else [[self._get_subplot(row, col).xaxes(lower = lower, upper = upper) for col in self._Cols] for row in self._Rows]
-
-    def yaxes(self, left = None, right = None):
-        self.monitor.set_yaxes(left = left, right = right) if self._no_plots else [[self._get_subplot(row, col).yaxes(left = left, right = right) for col in self._Cols] for row in self._Rows]
-
-    def frame(self, frame = None):
-        self.monitor.set_frame(frame = frame) if self._no_plots else [[self._get_subplot(row, col).frame(frame = frame) for col in self._Cols] for row in self._Rows]
-        
-    def grid(self, horizontal = None, vertical = None):
-        self.monitor.set_grid(horizontal = horizontal, vertical = vertical) if self._no_plots else [[self._get_subplot(row, col).grid(horizontal = horizontal, vertical = vertical) for col in self._Cols] for row in self._Rows]
-
-    def canvas_color(self, color = None):
-        self.monitor.set_canvas_color(color) if self._no_plots else [[self._get_subplot(row, col).canvas_color(color) for col in self._Cols] for row in self._Rows]
-
-    def axes_color(self, color = None):
-        self.monitor.set_axes_color(color) if self._no_plots else [[self._get_subplot(row, col).axes_color(color) for col in self._Cols] for row in self._Rows]
-
-    def ticks_color(self, color = None):
-        self.monitor.set_ticks_color(color) if self._no_plots else [[self._get_subplot(row, col).ticks_color(color) for col in self._Cols] for row in self._Rows]
-        
-    def ticks_style(self, style = None):
-        self.monitor.set_ticks_style(style) if self._no_plots else [[self._get_subplot(row, col).ticks_style(style) for col in self._Cols] for row in self._Rows]
-        
-    def theme(self, theme = None):
-        self.monitor.set_theme(theme) if self._no_plots else [[self._get_subplot(row, col).theme(theme) for col in self._Cols] for row in self._Rows]
-
-##############################################
-###########    Clear Functions    ############
-###########################x##################
-
-    def clear_figure(self):
-        self.__init__()# if self._no_plots else [[self._get_subplot(row, col).clear_figure() for col in self._Cols] for row in self._Rows]
-    clf = clear_figure
+    def correct_xside(self, xside = None):
+        return self.xaxis_lower.correct_side(xside)
     
-    def clear_data(self):
-        self.monitor.data_init() if self._no_plots else [[self._get_subplot(row, col).clear_data() for col in self._Cols] for row in self._Rows]
-    cld = clear_data
+    def correct_yside(self, yside = None):
+        return self.yaxis_left.correct_side(yside)
 
-    def clear_color(self):
-        self.monitor.clear_color() if self._no_plots else [[self._get_subplot(row, col).clear_color() for col in self._Cols] for row in self._Rows]
-    clc = clear_color
+    def set_xaxes(self, lower = None, upper = None):
+        self.get_xaxis(1).set_show_axis(lower)
+        self.get_xaxis(2).set_show_axis(upper)
 
-    def clear_terminal(self, lines = None):
-        ut.clear_terminal(lines = lines)
-    clt = clear_terminal
+    def set_yaxes(self, left = None, right = None):
+        self.get_yaxis(1).set_show(left)
+        self.get_yaxis(2).set_show(right)
+
+    def set_title(self, label = None):
+        self.get_xaxis(2).set_title(label)
+
+    def set_xlabel(self, label = None, xside = None):
+        self.get_xaxis(xside).set_label(label)
+        
+    def set_ylabel(self, label = None, yside = None):
+        self.get_yaxis(yside).set_label(label)
+
+    def set_xlim(self, left = None, right = None, xside = None):
+        self.get_xaxis(xside).set_lim(left, right)
+        
+    def set_ylim(self, lower = None, upper = None):
+        self.get_yaxis(yside).set_lim(lower, upper)
+
+    def set_xscale(self, scale = None, xside = None):
+        self.get_xaxis(xside).set_scale(scale)
+
+    def set_yscale(self, scale = None, yside = None):
+        self.get_yaxis(yside).set_scale(scale)
+
+    def set_xticks(self, ticks = None, labels = None, xside = None):
+        self.get_xaxis(xside).set_ticks(ticks, labels)
+
+    def set_yticks(self, ticks = None, labels = None, yside = None):
+        self.get_yaxis(yside).set_ticks(ticks, labels)
+
+    def set_xfrequency(self, frequency = None, xside = None):
+        self.get_xaxis(xside).set_frequency(frequency)
+
+    def set_yfrequency(self, frequency = None, yside = None):
+        self.get_yaxis(yside).set_frequency(frequency)
+
+    def set_xdirection(self, direction = None, xside = None):
+        self.get_xaxis(xside).set_direction(direction)
+
+    def set_ydirection(self, direction = None, yside = None):
+        self.get_yaxis(yside).set_direction(direction)
+
+    def set_xgrid(self, grid = None, xside = None):
+        self.get_xaxis(xside).set_grid(grid)
+
+    def set_ygrid(self, grid = None, yside = None):
+        self.get_yaxis(yside).set_grid(grid)
+        
+    def set_axis_color(self, color = None):
+        [self.get_xaxis(xside).set_axis_color(color) for xside in self.r2]
+        [self.get_yaxis(yside).set_axis_color(color) for yside in self.r2]
+
+    def set_ticks_color(self, color = None):
+        [self.get_xaxis(xside).set_ticks_color(color) for xside in self.r2]
+        [self.get_yaxis(yside).set_ticks_color(color) for yside in self.r2]
+
+    def set_ticks_style(self, color = None):
+        [self.get_xaxis(xside).set_ticks_style(color) for xside in self.r2]
+        [self.get_yaxis(yside).set_ticks_style(color) for yside in self.r2]
+
+    def set_canvas_color(self, color = None):
+        self.canvas.set_canvas_color(color)
+        
+##############################################
+##########    Matrix Functions    ############
+##############################################
+
+    def get_matrix_string(self):
+        return self.matrix.get_string()
+
+    def join_matrices(self):
+        matrices = [[self.get_subplot(row, col).matrix for col in self.Cols] for row in self.Rows]
+        self.matrix = join_matrices(matrices) if self.has_subplots else self.matrix
+        self.matrices = matrices
 
 ##############################################
 ###########    Plot Functions    #############
 ##############################################
 
-    def _draw(self, *args, **kwargs):
-        self.monitor.draw(*args, **kwargs) if self._no_plots else [[self._get_subplot(row, col)._draw(*args, **kwargs) for col in self._Cols] for row in self._Rows]
-
-    def scatter(self, *args, marker = None, color = None, style = None, fillx = None, filly = None, xside = None, yside = None, label = None):
-        self._draw(*args, xside = xside, yside = yside, lines = False, marker = marker, color = color, style = style, fillx = fillx, filly = filly, label = label)
-
-    def plot(self, *args, marker = None, color = None, style = None, fillx = None, filly = None, xside = None, yside = None, label = None):
-        self._draw(*args, xside = xside, yside = yside, lines = True, marker = marker, color = color,  fillx = fillx, filly = filly, label = label)
+    def update_canvas_size(self):
+        [self.get_xaxis(i).update_height() for i in self.r2]
+        heigth_xaxes = sum([self.get_xaxis(i).get_height() for i in self.r2])
+        self.height_canvas = self.height - heigth_xaxes
         
-    def bar(self, *args, marker = None, color = None, fill = None, width = None, orientation = None, minimum = None, reset_ticks = None, xside = None, yside = None, label = None):
-        self.monitor.draw_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks) if self._no_plots else [[self._get_subplot(row, col).bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks) for col in self._Cols] for row in self._Rows]
+        [self.get_yaxis(i).update_width() for i in self.r2]
+        width_yaxes = sum([self.get_yaxis(i).get_width() for i in self.r2])
+        self.width_canvas = self.width - width_yaxes
+        self.canvas.set_size(self.width_canvas, self.height_canvas)
 
-    def multiple_bar(self, *args, marker = None, color = None, fill = None, width = None, orientation = None, minimum = None, reset_ticks = None, xside = None, yside = None, labels = None):
-        self.monitor.draw_multiple_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, labels = labels, minimum = minimum, reset_ticks = reset_ticks) if self._no_plots else [[self._get_subplot(row, col).multiple_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks) for col in self._Cols] for row in self._Rows]
-    
-    def stacked_bar(self, *args, marker = None, color = None, fill = None, width = None, orientation = None, minimum = None, reset_ticks = None, xside = None, yside = None, labels = None):
-        self.monitor.draw_stacked_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, labels = labels, minimum = minimum, reset_ticks = reset_ticks) if self._no_plots else [[self._get_subplot(row, col).stacked_bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks) for col in self._Cols] for row in self._Rows]
-
-    def hist(self, data, bins = None, marker = None, color = None, fill = None, norm = None, width = None, orientation = None, minimum = None, xside = None, yside = None, label = None):
-        self.monitor.draw_hist(data, bins = bins, norm = norm, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum) if self._no_plots else [[self._get_subplot(row, col).hist(data, bins = bins, norm = norm, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum) for col in self._Cols] for row in self._Rows]
-
-    def candlestick(self, dates, data, colors = None, orientation = None, xside = None, yside = None, label = None):
-        self.monitor.draw_candlestick(dates, data, xside = xside, yside = yside, orientation = orientation, colors = colors, label = label) if self._no_plots else [[self._get_subplot(row, col).candlestick(dates, data, orientation = orientation, colors = colors, label = label) for col in self._Cols] for row in self._Rows]
-
-    def box(self, *args, quintuples = None, colors = None,  fill = None, width = None, orientation = None, minimum = None, reset_ticks = None, xside = None, yside = None, label = None):
-        self.monitor.draw_box(*args, xside = xside, yside = yside, orientation = orientation, colors = colors, label = label, fill = fill, width = width, minimum = minimum, reset_ticks = reset_ticks, quintuples = quintuples) if self._no_plots else [[self._get_subplot(row, col).box(*args, orientation = orientation, colors = colors, label = label, fill = fill, width = width, minimum = minimum, reset_ticks = reset_ticks, quintuples = quintuples) for col in self._Cols] for row in self._Rows]
-
-##############################################
-###########    Plotting Tools    #############
-##############################################
-
-    def error(self, *args, xerr = None, yerr = None, color = None, xside = None, yside = None, label = None):
-        self.monitor.draw_error(*args, xerr = xerr, yerr = yerr, xside = xside, yside = yside, color = color, label = label) if self._no_plots else [[self._get_subplot(row, col).error(*args, xerr = xerr, yerr = yerr, xside = xside, yside = yside, color = color, label = label) for col in self._Cols] for row in self._Rows]
-
-    def event_plot(self, data, marker = None, color = None, orientation = None, side = None):
-        self.monitor.draw_event_plot(data, orientation = orientation, marker = marker, color = color, side = side) if self._no_plots else [[self._get_subplot(row, col).event_plot(data, orientation = orientation, marker = marker, color = color, side = side) for col in self._Cols] for row in self._Rows]
-    eventplot = event_plot
-
-    def vertical_line(self, coordinate, color = None, xside = None):
-        self.monitor.draw_vertical_line(coordinate, color = color, xside = xside) if self._no_plots else [[self._get_subplot(row, col).vertical_line(coordinate, color = color, xside = xside) for col in self._Cols] for row in self._Rows]
-    vline = vertical_line
+    def set_axes_sizes(self):
+        [self.get_xaxis(i).set_width(self.width) for i in self.r2]
+        [self.get_xaxis(i).set_width_canvas(self.width_canvas) for i in self.r2]
+        [self.get_yaxis(i).set_height(self.height_canvas) for i in self.r2]
+         
+    def build_matrix(self):
+        [self.get_xaxis(i).build_matrix() for i in self.r2]
+        [self.get_yaxis(i).build_matrix() for i in self.r2]
+        self.canvas.build_matrix()
+        middle = self.yaxis_left.matrix.horizontal_stack(self.canvas.matrix)
+        middle = middle.horizontal_stack(self.yaxis_right.matrix)
+        matrix = self.xaxis_upper.matrix.vertical_stack(middle)
+        self.matrix = matrix.vertical_stack(self.xaxis_lower.matrix)
         
-    def horizontal_line(self, coordinate, color = None, yside = None):
-        self.monitor.draw_horizontal_line(coordinate, color = color, yside = yside) if self._no_plots else [[self._get_subplot(row, col).horizontal_line(coordinate, color = color, yside = yside) for col in self._Cols] for row in self._Rows]     
-    hline = horizontal_line
+         
+    def build(self):
+        self.update_canvas_size()
+        self.set_axes_sizes()
+        self.build_matrix()
+         
+        [[plot.build() for plot in row_plots] for row_plots in self.plot]
+        self.join_matrices()
+        
+    def show(self):
+        self.build()
+        print(self.get_matrix_string())
 
-    def text(self, label, x, y, color = None, background = None, style = None, orientation = None, alignment = None, xside = None, yside = None):
-        self.monitor.draw_text(label, x, y, xside = xside, yside = yside, color = color, background = background, style = style, orientation = orientation, alignment = alignment) if self._no_plots else [[self._get_subplot(row, col).text(label, x, y, xside = xside, yside = yside, color = color, background = background, style = style, orientation = orientation, alignment = alignment) for col in self._Cols] for row in self._Rows]
 
-    def rectangle(self, x = None, y = None, marker = None, color = None, lines = None, fill = None, xside = None, yside = None, label = None):
-        self.monitor.draw_rectangle(x = x, y = y, xside = xside, yside = yside, lines = lines, marker = marker, color = color, fill = fill, label = label) if self._no_plots else [[self._get_subplot(row, col).rectangle(x = x, y = y, xside = xside, yside = yside, lines = lines, marker = marker, color = color, fill = fill, label = label) for col in self._Cols] for row in self._Rows]
+    # def reset_subplots_sizes(self):
+    #     [self.get_subplot(row, col).reset_size() for col in self.Cols for row in self.Rows]
 
-    def polygon(self, x = None, y = None,  radius = None, sides = None, marker = None, color = None, lines = None, fill = None, xside = None, yside = None, label = None):
-        self.monitor.draw_polygon(x = x, y = y, radius = radius, sides = sides, xside = xside, yside = yside, lines = lines, marker = marker, color = color, fill = fill, label = label) if self._no_plots else [[self._get_subplot(row, col).polygon(x = x, y = y, radius = radius, sides = sides, xside = xside, yside = yside, lines = lines, marker = marker, color = color, fill = fill, label = label) for col in self._Cols] for row in self._Rows]
-
-    def confusion_matrix(self, actual, predicted, color = None, style = None, labels = None):
-        self.monitor.draw_confusion_matrix(actual, predicted, labels = labels, color = color, style = style) if self._no_plots else [[self._get_subplot(row, col).confusion_matrix(actual, predicted, labels = labels, color = color, style = style) for col in self._Cols] for row in self._Rows]
-
-    cmatrix = confusion_matrix
-
-    def indicator(self, value, label = None, color = None, style = None):
-        self.monitor.draw_indicator(value, label = label, color = color, style = style) if self._no_plots else [[self._get_subplot(row, col).confusion_matrix(value, label = label, color = color, style = style) for col in self._Cols] for row in self._Rows]
-
-##############################################
-##############    2D Plots    ################
-############################################## 
-
-    def matrix_plot(self, matrix, marker = None, style = None, fast = False):
-        self.monitor.draw_matrix(matrix, marker = marker, style = style, fast = fast) if self._no_plots else [[self._get_subplot(row, col).matrix_plot(matrix, marker = marker, style = style, fast = fast) for col in self._Cols] for row in self._Rows]
+    # def draw(self):
+    #     [[f.draw() for f in plots] for plots in self.plot] if self.plot is not None else None
+    #     self._draw() if self.plot is None else None
     
-    def image_plot(self, path, marker = None, style = None, fast = False, grayscale = False):
-        self.monitor.draw_image(path, marker = marker, style = style, grayscale = grayscale, fast = fast) if self._no_plots else [[self._get_subplot(row, col).image_plot(path, marker = marker, style = style, grayscale = grayscale, fast = fast) for col in self._Cols] for row in self._Rows]
+
+
+#     def _draw(self, *args, **kwargs):
+#         self.monitor.draw(*args, **kwargs) if self._no_sub_figures else [[self.get_sub_figure(row, col)._draw(*args, **kwargs) for col in self._Cols] for row in self._Rows]
+
+#     def scatter(self, *args, **kwargs):
+#        self._draw(*args, **kwargs, lines = False)
+
+#     def plot(self, *args, **kwargs):
+#         self._draw(*args, **kwargs, lines = True)
         
 ##############################################
-###########    Date Functions    #############
+##############    Utilities    ###############
 ##############################################
 
-    def date_form(self, input_form = None, output_form = None):
-        self._master._dummy.date.date_form(input_form, output_form)
-        if self._no_plots:
-            self.monitor.date.date_form(input_form, output_form)
-        else:
-            [[self._get_subplot(row, col).date_form(input_form, output_form) for col in self._Cols] for row in self._Rows]
-        
-    def set_time0(self, string, input_form = None):
-        self.monitor.date.set_time0(string, form) if self._no_plots else [[self._get_subplot(row, col).set_time0(string, form) for col in self._Cols] for row in self._Rows]
+def fit_sizes(sizes, size_max): # given certain widths (or heights) it sets them so to equate max value
+    bins = len(sizes)
+    current_bin = bins - 1
+    while sum(sizes) != size_max and current_bin >= 0:
+        other_sizes = sum([sizes[b] for b in range(bins) if b != current_bin])
+        sizes[current_bin] = max(size_max - other_sizes, 0)
+        current_bin -= 1
+    return sizes
 
-    def today_datetime(self):
-        return self.monitor.date.today_datetime()
-    
-    def today_string(self, output_form = None):
-        return self.monitor.date.today_string(output_form)
-    
-    def datetime_to_string(self, datetime, output_form = None):
-        return self.monitor.date.datetime_to_string(datetime, output_form = output_form)
-    
-    def datetimes_to_strings(self, datetimes, output_form = None):
-        return self.monitor.date.datetimes_to_strings(datetimes, output_form = output_form)
-        
-    def string_to_datetime(self, string, input_form = None):
-        return self.monitor.date.string_to_datetime(string, input_form = input_form)
-    
-    def string_to_time(self, string, input_form = None):
-        return self.monitor.date.string_to_time(string, input_form = input_form)
-    
-    def strings_to_time(self, string, input_form = None):
-        return self.monitor.date.strings_to_time(string, input_form = input_form)
+def get_sizes(size_max, bins):
+    return fit_sizes([size_max // bins if bins != 0 else size_max] * bins, size_max)
 
-##############################################
-###########    Build Functions    ############
-##############################################
+def terminal_size(): # it returns the terminal size as [width, height]
+    try:
+        width, height = shutil.get_terminal_size()
+        return width, height - 2
+    except OSError:
+        return [None, None]
 
-    def show(self): # it build and shows the overall figure
-        t = time()
-        self.build() 
-        ut.write(self.monitor.matrix.canvas) # it prints the final canvas
-        self._time = time() - t # computational time of build + print (it does not include any pre-processing time, which is gets more important for bar and image plots)
-        self.main() if not self._master._interactive else None# it returns control to main figure on top level
+def is_constant(data):
+    return all([el == data[0] for el in data])
 
-    def build(self): # it build the current figure without showing it
-        self._set_sizes()
-        self._build_matrix()
-        self.monitor.matrix.set_canvas() if not self.monitor.fast_plot else None
-        return self.monitor.matrix.get_canvas() 
 
-    def _build_matrix(self):
-        if self._no_plots:
-            self.monitor.build_plot() if not self.monitor.fast_plot else None
-        else:
-            [[self._get_subplot(row, col)._build_matrix() for col in self._Cols] for row in self._Rows]
-            matrices = [[self._get_subplot(row, col).monitor.matrix for col in self._Cols] for row in self._Rows]
-            self.monitor.matrix = join_matrices(matrices)
-
-##############################################
-#########    Set Size Utilities    ###########
-##############################################
-
-    def _set_sizes(self): # it properly sets coherent sub figure dimensions
-        self._set_slots_max(*self._size) 
-        self._set_slots(*self._slots)
-        widths = self._get_widths()
-        widths = ut.set_sizes(widths, self._width) # it sets the free subplots widths in accord with the parent figure width
-        widths = ut.fit_sizes(widths, self._width) # it fits the subplots widths to the parent figure width 
-        heights = self._get_heights()
-        heights = ut.set_sizes(heights, self._height) # it sets the free subplots height in accord with the parent figure height 
-        heights = ut.fit_sizes(heights, self._height) # it fits the subplots heights to the parent figure height
-        width = sum(widths) if len(widths) > 1 else self._width
-        height = sum(heights) if len(widths) > 1 else self._height
-
-        self.monitor.set_size(self._size)
-        # self._set_size(width, height)
-        [[self._set_subplot_size(row, col, widths[col - 1], heights[row - 1]) for col in self._Cols] for row in self._Rows] if (not self._no_plots) else None # to make sure that all sub figures have internal dimensions set as well 
-
-    def _get_widths(self): # the subplots max/min widths for each column
-        widths = [[self._get_subplot(row, col)._width for row in self._Rows] for col in self._Cols]
-        widths = [self.max_or_min([sub for sub in el if sub is not None], default = None) for el in widths]
-        return widths
-
-    def _get_heights(self): # the subplots max/min heights for each row
-        heights = [[self._get_subplot(row, col)._height for col in self._Cols] for row in self._Rows]
-        heights = [self.max_or_min([sub for sub in el if sub is not None], default = None) for el in heights]
-        return heights
-
-    def _set_subplot_size(self, row = None, col = None, width = None, height = None):
-        self._get_subplot(row, col)._set_size(width, height)
-        self._get_subplot(row, col)._set_sizes() 
-
-##############################################
-######    Externally Called Utility    #######
-##############################################
-
-    def _get_time(self, show = True): # it returns the computational time of latest show or build function
-        time = ut.format_time(self._time)
-        print(ut.format_strings("plotext time:", time, ut.title_color)) if show else None
-        return self._time
-
-    def main(self): # returns the master figure and sets the active figure to the master
-        self._master._active = self._master
-        return self._master
-
-    def plot_size(self, width = None, height = None):
-        width = self._width if width is None else width
-        height = self._height if height is None else height
-        self._set_size(width, height)
-        self._set_master_size() if self._is_master else None
-        self.monitor.size = self._size
-        return self._width, self._height
-        
-    plotsize = plot_size
-
-    def take_min(self): # in a matrix of subplots the maximum height/width will be considered for each row/column
-        self.max_or_min = min
-
-    def save_fig(self, path = None, append = False, keep_colors = False): # it saves the plot as text or html, keep_colors = True preserves ansi colors for texts
-        path = 'plotext.txt' if path is None or not ut.correct_path(path) else path
-        _, extension = os.path.splitext(path)
-        canvas = self.monitor.matrix.get_canvas()
-        if extension == ".html":
-            canvas = self.monitor.matrix.to_html()
-        elif not keep_colors:
-            canvas = ut.uncolorize(canvas)
-        ut.save_text(canvas, path, append)
-    savefig = save_fig
-    
-##############################################
-############     Docstrings    ###############
-##############################################
-    add(subplots) 
-    add(subplots)
-    add(subplot)
-    add(main)
-    
-    add(plot_size)
-    add(take_min)
-    
-    add(title)
-    add(xlabel)
-    add(ylabel)
-    add(xlim)
-    add(ylim)
-    add(xscale)
-    add(yscale)
-    add(xticks)
-    add(yticks)
-    add(xfrequency)
-    add(yfrequency)
-    add(xreverse)
-    add(yreverse)
-    add(xaxes)
-    add(yaxes)
-    add(frame)
-    add(grid)
-    add(canvas_color)
-    add(axes_color)
-    add(ticks_color)
-    add(ticks_style)
-    add(theme)
-    
-    add(clear_figure)
-    add(clear_data)
-    add(clear_color)
-    add(clear_terminal)
-    
-    add(scatter)
-    add(plot)
-    add(bar)
-    add(multiple_bar)
-    add(stacked_bar)
-    add(hist)
-    add(candlestick)
-    add(box)
-
-    add(error)
-    add(event_plot)
-    add(vertical_line)
-    add(horizontal_line)
-    add(text)
-    add(rectangle)
-    add(polygon)
-    add(confusion_matrix)
-    add(indicator)
-
-    add(matrix_plot)
-    add(image_plot)
-    
-    add(show)
-    add(build)
-    add(save_fig)
-    
-    add(date_form)
-    add(set_time0)
-    add(today_datetime)
-    add(today_string)
-    add(datetime_to_string)
-    add(datetimes_to_strings)
-    add(string_to_datetime)

@@ -1,5 +1,6 @@
 from datetime import datetime as dt
 from datetime import timezone as tz # usefull for dates before 1970 in windows
+from copy import copy
 
 class date_class():
     
@@ -49,12 +50,68 @@ class date_class():
         except:
             raise ValueError('Date Form should be: ' + input_form)
 
-    def strings_to_time(self, strings, input_form = None):
+    def strings_to_times(self, strings, input_form = None):
         return [self.string_to_time(el, input_form) for el in strings]
 
     def time_to_string(self, time, output_form = None):
         return self.datetime_to_string(dt.fromtimestamp(time + self.time0), output_form)
     
-    def times_to_string(self, times, input_form = None):
+    def times_to_strings(self, times, input_form = None):
         return [self.time_to_string(el, input_form) for el in times]
+
+    def copy(self):
+        return copy(self)
+
+# from plotext._utility import get_labels
+
+# class data_converter_class():
+#     def __init__(self, date):
+#         self.date = date
+#         self.kind = None
+
+#     def to_numbers(self, data):
+#         return [self.to_number(el) for el in data]
+
+#     def to_number(self, element):
+#         if self.kind is None:
+#             self.kind = 'string' if isinstance(element, str) else 'numerical'
+#             return self.to_number(element)
+            
+#         elif self.kind == 'string':
+#             return self.date.string_to_time(element)
+#         else:
+#             return float(element)
+
+#     def to_labels(self, data):
+#         if self.kind == 'numerical':
+#             return get_labels(data)
+        
+#         elif self.kind == 'string':
+#             return self.date.times_to_strings(data)
+
+
+
+
+# class bar_data_class():
+#     def __init__(self, data, converter):
+#         self.converter = converter.copy()
+#         self.converter.kind = None
+#         self.data = data
+#         try:
+#             self.numbers = self.converter.to_numbers(data)
+#             self.labels = data
+#             #converter.kind = 'string' 
+#         except ValueError:
+#             self.numbers = range(1, len(data) + 1)
+#             self.labels = [str(el) for el in data]
+
+#     def add(self, offset):
+#         self.numbers = [el + offset for el in self.numbers]
+
+#     def __iter__(self):
+#         for item in self.numbers:
+#             yield item
+
+#     def __getitem__(self, i):
+#         return self.data[i]
 

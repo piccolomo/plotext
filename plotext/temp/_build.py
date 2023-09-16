@@ -31,15 +31,23 @@ class build_class():
         self.hcolors = [self.hcolors[i] if yside[i] else [] for i in r2]
         self.vcolors = [self.vcolors[i] if xside[i] else [] for i in r2]
 
+        # Turn dates, if present, to numbers
+        xconverter = [self.get_xconverter(self.xside[s]) for s in Signals]
+        yconverter = [self.get_yconverter(self.yside[s]) for s in Signals]
+
+        self.x = [xconverter[s].to_numbers(self.x[s]) for s in Signals]
+        self.y = [yconverter[s].to_numbers(self.y[s]) for s in Signals]
+
         # Apply Scale (linear or log) to the data
         xscale = [ut.get_first(self.xscale, self.xside[s] is self.default.xside[0]) for s in Signals] # the x scale for each signal 
         yscale = [ut.get_first(self.yscale, self.yside[s] is self.default.yside[0]) for s in Signals] # the y scale for each signal 
         self.x = [ut.apply_scale(self.x[s], xscale[s] is self.default.xscale[1]) for s in Signals] # apply optional log scale
         self.y = [ut.apply_scale(self.y[s], yscale[s] is self.default.yscale[1]) for s in Signals]
 
+        
         # Apply Scale (linear or log) to the Axes Ticks
-        self.xticks = [ut.apply_scale(self.xticks[i], self.xscale[i] is self.default.xscale[1]) if self.xticks[i] is not None else None for i in r2] # apply optional log scale
-        self.yticks = [ut.apply_scale(self.yticks[i], self.yscale[i] is self.default.yscale[1]) if self.yticks[i] is not None else None  for i in r2] # apply optional log scale
+        self.xticks = [ut.apply_scale(self.xticks[i], self.xscale[i] is self.default.xscale[1]) if self.xticks[i] is not None else None for i in r2] # apply optional log scale 
+        self.yticks = [ut.apply_scale(self.yticks[i], self.yscale[i] is self.default.yscale[1]) if self.yticks[i] is not None else None  for i in r2] # apply optional log scale 
         
         # Apply Scale (linear or log) to the user defined Lines
         self.hcoord = [ut.apply_scale(self.hcoord[i], self.yscale[i] is self.default.yscale[1]) for i in r2] # apply optional log scale
@@ -56,6 +64,7 @@ class build_class():
         # Get X Axes Limits
         x = [ut.join([self.x[s] for s in Signals if self.xside[s] is side]) for side in self.default.xside] # total x data for each axis
         x = [x[i] + self.vcoord[i] + tx[i] for i in r2] # add v lines and text coords to calculate xlim
+        
         xlim = [ut.get_lim(el) if len(el) > 0 else [None, None] for el in x]
         self.xlim = [ut.replace_none(self.xlim[i], xlim[i]) for i in r2]
         self.xlim = [self.xlim[i][:: self.xdirection[i]] for i in r2] # optionally reverse axes
@@ -73,8 +82,8 @@ class build_class():
         yticks_to_set = [self.yticks[i] is None and yside[i] and len(y[i]) > 0 for i in r2]
         yticks = [ut.linspace(*self.ylim[i], self.yfrequency[i]) if yticks_to_set[i] else self.yticks[i] for i in r2] # the actual Y ticks
         yticks_rescaled = [ut.reverse_scale(yticks[i], self.yscale[i] is self.default.yscale[1]) for i in r2]
-        
-        ylabels = [self.date.times_to_string(yticks_rescaled[i]) if self.y_date[i] else ut.get_labels(yticks_rescaled[i]) if yticks_to_set[i] else self.ylabels[i] for i in r2]
+
+        ylabels = [self.yconverter[i].to_labels(yticks_rescaled[i]) if yticks_to_set[i] else self.ylabels[i] for i in r2]
         ylabels = [ut.add_extra_spaces(ylabels[i], self.default.yside[i]) if ylabels[i] is not None else None for i in r2]
         width_ylabels = [ut.max_length(el) if el is not None else 0 for el in ylabels]
 
@@ -82,8 +91,10 @@ class build_class():
         xticks_to_set = [self.xticks[i] is None and xside[i] and len(x[i]) > 0 for i in r2]
         xticks = [ut.linspace(*self.xlim[i], self.xfrequency[i]) if xticks_to_set[i] else self.xticks[i] for i in r2] # the actual X ticks
         xticks_rescaled = [ut.reverse_scale(xticks[i], self.xscale[i] is self.default.xscale[1]) for i in r2]
-        xlabels = [self.date.times_to_string(xticks_rescaled[i]) if self.x_date[i] else ut.get_labels(xticks_rescaled[i]) if xticks_to_set[i] else self.xlabels[i] for i in r2]
+        print(xticks_rescaled, self.xconverter[0].kind)
+        xlabels = [self.xconverter[i].to_labels(xticks_rescaled[i]) if xticks_to_set[i] else self.xlabels[i] for i in r2]
         xlabels = [ut.add_extra_spaces(xlabels[i], self.default.xside[i]) if xticks_to_set[i] else self.xlabels[i] for i in r2]
+        print(xlabels)
         height_xlabels = [len(el) > 0 if el is not None else 0 for el in xlabels]
 
         # Canvas Dimensions (the area of data points)

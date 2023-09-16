@@ -1,0 +1,2 @@
+class signal_class():
+    
