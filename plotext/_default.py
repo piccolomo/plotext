@@ -3,21 +3,30 @@ from plotext._marker import default_marker
 from plotext._color import default_color, default_color_sequence, no_color
 from plotext._style import default_style
 
+class default_terminal():
+    def __init__(self):
+        self.set_size()
+        self.set_infinite_size()
+
+    def set_size(self, width = None, height = None):
+        self.width = 211 * 2 // 3 if width is None else int(width)
+        self.height = 53 * 2 // 3 if height is None else int(height)
+        self.size = [self.width, self.height]
+
+    def set_infinite_size(self, width = None, height = None):
+        m = 5
+        self.infinite_width = m * self.width if width is None else int(width)
+        self.infinite_height = m * self.height if height is None else int(height)
+        self.infinite_size = [self.infinite_width, self.infinite_height]
+
 class default_figure():
     def __init__(self):
         self.set_limitsize()
-        self.set_size_term()
-        self.interactive = False
 
     def set_limitsize(self, limit_width = None, limit_height = None):
         self.limit_width = True if limit_width is None else bool(limit_width)
         self.limit_height = True if limit_height is None else bool(limit_height)
         self.limit_size = [self.limit_width, self.limit_height]
-
-    def set_size_term(self, width = None, height = None):
-        self.width_term = 211 * 2 // 3 if width is None else int(width)
-        self.height_term = 53 * 2 // 3 if height is None else int(height)
-        self.size_term = [self.width_term, self.height_term]
 
 class default_signal():
     def __init__(self):
@@ -54,6 +63,7 @@ class default_axis():
         self.show = True
 
 
+default_terminal = default_terminal()
 default_figure = default_figure()
 default_signal = default_signal()
 default_axis = default_axis()
