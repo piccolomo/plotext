@@ -6,12 +6,13 @@ from copy import deepcopy
 
 class axis_class():
     def __init__(self):
-        self.set_show()
+        self.set_show_axis()
         self.set_axis_color()
         self.set_size()
+        self.backup()
 
-    def set_show(self, show = None):
-        self.show = default_axis.show if show is None else bool(show)
+    def set_show_axis(self, show = None):
+        self.show_axis = default_axis.show if show is None else bool(show)
 
     def set_axis_color(self, color = None):
         color = color if is_color(color) else None
@@ -20,13 +21,25 @@ class axis_class():
     def set_size(self, width = None, height = None):
         self.width = width
         self.height = height
-        self.size = [width, height]
+        self.size = [self.width, self.height]
+
+    def set_width(self, width = None):
+        self.set_size(width, self.height)
+        
+    def set_height(self, height = None):
+        self.set_size(self.width, height)
         
     def update_size(self):
         self.set_size(self.width, self.height)
 
-    def copy(self): # to deep copy 
+    def copy(self): # to deep copy
         return deepcopy(self)
+
+    def backup(self):
+        self.show_axis_backup = self.show_axis
+
+    def restore(self):
+        self.show_axis = self.show_axis_backup
 
 
 class xaxis_class(axis_class):
@@ -52,28 +65,28 @@ class xaxis_class(axis_class):
         self.update_size()
 
     def update_height(self):
-        self.height = int(self.show)
-        self.update_size()
-
+        self.set_height(int(self.show_axis))
 
 # Build Functions
     
     def update_borders(self):
-        self.left_border = border.upper_left if self.side == default_axis.xside else border.lower_left
-        self.right_border = border.upper_right if self.side == default_axis.xside else border.lower_right
+        self.border_left = border.upper_left if self.side == default_axis.xside else border.lower_left
+        self.border_right = border.upper_right if self.side == default_axis.xside else border.lower_right
     
     def get_axis_string(self):
         axis  = space * (self.width_left - 1) 
-        axis += self.left_border * int(self.width_left > 0)
+        axis += self.border_left * int(self.width_left > 0)
         axis += line.h * self.width_canvas
-        axis += self.right_border * int(self.width_right > 0)
+        axis += self.border_right * int(self.width_right > 0)
         axis += space * (self.width_right - 1) 
         return axis
     
     def update_matrix(self):
         self.matrix = matrix_class(self.width, self.height)
-        self.matrix.insert_row(self.get_axis_string(), 0) if self.show else None
+        self.matrix.insert_row(self.get_axis_string(), 0) if self.show_axis else None
 
+    def clear(self):
+        self.__init__(self.side)
 
 class yaxis_class(axis_class):
     def __init__(self, side = None):
@@ -91,8 +104,7 @@ class yaxis_class(axis_class):
         self.height = int(height) if height is not None else None
 
     def update_width(self):
-        self.width = int(self.show)
-        self.update_size()
+        self.set_width(int(self.show_axis))
 
     def get_axis_string(self):
         axis = line.v * self.height
@@ -100,7 +112,10 @@ class yaxis_class(axis_class):
     
     def update_matrix(self):
         self.matrix = matrix_class(self.width, self.height)
-        self.matrix.insert_col(self.get_axis_string(), 0) if self.show else None
+        self.matrix.insert_col(self.get_axis_string(), 0) if self.show_axis else None
+
+    def clear(self):
+        self.__init__(self.side)
 
 space = ' '
 def only_spaces(string): # it returns True if string is made of only empty spaces or is None or ''

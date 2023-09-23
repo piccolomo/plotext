@@ -22,6 +22,7 @@ class default_terminal():
 class default_figure():
     def __init__(self):
         self.set_limitsize()
+        self.size_direction = 1
 
     def set_limitsize(self, limit_width = None, limit_height = None):
         self.limit_width = True if limit_width is None else bool(limit_width)

@@ -1,7 +1,7 @@
 from plotext._default import default_terminal
 import shutil
 
-class _terminal_class():
+class terminal_class():
     def __init__(self):
         self.default = default_terminal
         self.update_size()
@@ -14,3 +14,4 @@ class _terminal_class():
             self.width, self.height = self.default.size
         self.size = [self.width, self.height]
 
+terminal = terminal_class()

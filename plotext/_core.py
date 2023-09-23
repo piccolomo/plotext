@@ -3,10 +3,10 @@
 
 # # This file contains all the main plotext functions available externally to the user
 
-from ._terminal import _terminal_class
+from ._terminal import terminal
 from ._figure import _figure_class
+from ._log import log
 
-terminal = _terminal_class()
 master = _figure_class(terminal)
 
 ##############################################
@@ -17,9 +17,18 @@ def limit_size(width = None, height = None):
     return main().limit_size(width, height)
 limitsize = limit_size
 
-def plot_size(width = None, height = None):
-    return main().plot_size(width, height)
+def plot_size(width = None, height = None, direction = None):
+    return main().plot_size(width, height, direction)
 plotsize = plot_size
+
+def take_minimum_size():
+    main().take_minimum_size()
+take_min = take_minimum_size
+
+def take_maximum_size():
+    main().take_maximum_size()
+take_max = take_maximum_size
+
 
 ##############################################
 #########    Subplots Functions    ###########
@@ -60,12 +69,21 @@ def canvas_color(self, color = None):
 ##############################################
 # clear size, subplots, settings (labels, axes, ticks), color, signals, canvas
 
+def clear_subplots():
+    return main().clear_subplots()
+
+def reset_sizes():
+    return main().reset_sizes()
+
+def clear_settings():
+    return main().clear_settings()
+cls = clear_settings
 
 def clear_figure():
     return main().clear_figure()
 clf = clear_figure
         
-##############################################
+##############################################x
 ######    Main Plotting Functions    #########
 ##############################################
 
@@ -79,3 +97,4 @@ def scatter(*args, marker = None, color = None, style = None, fillx = None, fill
 
 def show():
     main().show()
+

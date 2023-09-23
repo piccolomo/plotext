@@ -16,3 +16,6 @@ class canvas_class():
 
     def update_matrix(self):
         self.matrix = matrix_class(self.width, self.height)
+
+    def clear(self):
+        self.__init__()
