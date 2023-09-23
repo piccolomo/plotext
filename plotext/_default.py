@@ -1,7 +1,8 @@
 from plotext._global import platform
 from plotext._marker import default_marker
-from plotext._color import default_color, default_color_sequence, no_color
+from plotext._color import default_color, default_color_sequence
 from plotext._style import default_style
+
 
 class default_terminal():
     def __init__(self):
@@ -19,6 +20,7 @@ class default_terminal():
         self.infinite_height = m * self.height if height is None else int(height)
         self.infinite_size = [self.infinite_width, self.infinite_height]
 
+        
 class default_figure():
     def __init__(self):
         self.set_limitsize()
@@ -29,11 +31,11 @@ class default_figure():
         self.limit_height = True if limit_height is None else bool(limit_height)
         self.limit_size = [self.limit_width, self.limit_height]
 
+        
 class default_signal():
     def __init__(self):
         self.marker = default_marker
         self.color = default_color
-        self.color_sequence = default_color_sequence
         self.style = default_style
         self.fills = [False, True, 'internal']
         self.fill = self.fills[0] # same for x and y
@@ -43,6 +45,7 @@ class default_signal():
         self.yside = self.ysides[0]
         self.lines = False
 
+        
 class default_axis():
     def __init__(self):
         self.axes = ['x', 'y']
@@ -55,7 +58,7 @@ class default_axis():
         
         self.axis_color = "white"
         self.ticks_color = "black"
-        self.ticks_style = no_color
+        self.ticks_style = "default"
 
         self.direction = 1 
         self.scales = ['linear', 'log']

@@ -46,14 +46,8 @@ class xaxis_class(axis_class):
     def __init__(self, side = None):
         super().__init__()
         self.axis = 'x'
-        self.side = self.correct_side(side)
+        self.side = correct_xside(side)
         self.update_borders()
-
-    def correct_side(self, side = None): 
-        sides = default_axis.xsides
-        is_integer = isinstance(side, int) and 1 <= side <= 2
-        not_correct = side is None or (isinstance(side, str) and side.strip() not in sides)
-        return sides[side - 1] if is_integer else sides[0] if not_correct else side.strip()
 
 # Size  Functions
 
@@ -91,14 +85,8 @@ class xaxis_class(axis_class):
 class yaxis_class(axis_class):
     def __init__(self, side = None):
         self.axis = 'y'
-        self.side = self.correct_side(side)
+        self.side = correct_yside(side)
         super().__init__()
-
-    def correct_side(self, side = None): 
-        sides = default_axis.ysides
-        is_integer = isinstance(side, int) and 1 <= side <= 2
-        not_correct = side is None or (isinstance(side, str) and side.strip() not in sides)
-        return sides[side - 1] if is_integer else sides[0] if not_correct else side.strip()
 
     def set_height(self, height = None):
         self.height = int(height) if height is not None else None
@@ -124,5 +112,16 @@ def only_spaces(string): # it returns True if string is made of only empty space
 def insert(data, index, element):
     data[index] = element
 
+def correct_side(axis = None, side = None): 
+    sides = default_axis.xsides if axis == 'x' else default_axis.ysides
+    is_integer = isinstance(side, int) and 1 <= side <= 2
+    not_correct = side is None or (isinstance(side, str) and side.strip() not in sides)
+    return sides[side - 1] if is_integer else sides[0] if not_correct else side.strip()
+
+def correct_xside(side = None):
+    return correct_side('x', side)
+
+def correct_yside(side = None):
+    return correct_side('y', side)
 
 

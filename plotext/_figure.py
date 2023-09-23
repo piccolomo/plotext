@@ -1,12 +1,11 @@
-import shutil
 from plotext._terminal import terminal_class
 from plotext._default import default_figure, default_axis
-from plotext._axes import xaxis_class, yaxis_class
+from plotext._axes import xaxis_class, yaxis_class, correct_xside, correct_yside
 from plotext._matrix import matrix_class, join_matrices
 from plotext._canvas import canvas_class
 from plotext._color import no_color
 from plotext._log import log
-# from plotext._signal import signals_class
+from plotext._signal import signals_class
 
 class _figure_class():
     def __init__(self, parent = None, width = None, height = None):
@@ -23,6 +22,7 @@ class _figure_class():
 
         self.create_axes()
         self.canvas = canvas_class()
+        self.signals = signals_class()
 
 ##############################################
 #########    Family Functions    #############
@@ -162,18 +162,12 @@ class _figure_class():
         self.r2 = [1, 2]
 
     def get_xaxis(self, xside = None):
-        xside = self.correct_xside(xside)
+        xside = correct_xside(xside)
         return self.xaxis_lower if xside == default_axis.xside else self.xaxis_upper
 
     def get_yaxis(self, yside = None):
-        yside = self.correct_yside(yside)
+        yside = correct_yside(yside)
         return self.yaxis_left if yside == default_axis.yside else self.yaxis_right
-
-    def correct_xside(self, xside = None):
-        return self.xaxis_lower.correct_side(xside)
-    
-    def correct_yside(self, yside = None):
-        return self.yaxis_left.correct_side(yside)
 
     def backup_axes(self):
         self.xaxis_lower.backup()
@@ -288,6 +282,23 @@ class _figure_class():
 ###########    Draw Functions    #############
 ##############################################
 
+    def draw(self, *args, xside = None, yside = None, lines = None, fillx = None, filly = None, marker = None, color = None, style = None, label = None): # from draw() comes directly the functions scatter() and plot()
+        self.signals.add_normal_signal(*args, xside = xside, yside = yside, lines = lines, fillx = fillx, filly = filly, marker = marker, color = color, style = style, label = label)
+        # xside = kwargs.get("xside")
+        # yside = kwargs.get("yside")
+        
+        # lines = kwargs.get("lines")
+        # fillx = kwargs.get("fillx")
+        # filly = kwargs.get("filly")
+        # marker = kwargs.get("marker")
+        # color = kwargs.get("color")
+        # style = kwargs.get("style")
+        # label = kwargs.get("label")
+
+##############################################
+###########    Build Functions    ############
+##############################################
+
     def show(self):
         self.build()
         print(self.matrix.get_string())
@@ -302,7 +313,6 @@ class _figure_class():
         self.update_parts_matrices()
         self.join_parts_matrices()
         self.restore_axes()
-
 
     def build_subplots(self):
         [self.get_subplot(*pos).build() for pos in self.Positions]
