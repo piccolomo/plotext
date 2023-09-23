@@ -29,6 +29,10 @@ def take_maximum_size():
     main().take_maximum_size()
 take_max = take_maximum_size
 
+def prompt_size(height = None):
+    terminal.set_prompt_height(height)
+    terminal.update_size()
+    #master.plot_size(*master.size, master._size_direction)
 
 ##############################################
 #########    Subplots Functions    ###########

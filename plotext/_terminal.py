@@ -3,10 +3,10 @@ import shutil
 
 class terminal_class():
     def __init__(self):
-        self.set_prompt_size()
+        self.set_prompt_height()
         self.update_size()
 
-    def set_prompt_size(self, height = None):
+    def set_prompt_height(self, height = None):
         self.prompt_height = default_terminal.prompt_height if height is None else int(height)
 
     def update_size(self): # it returns the terminal size as [width, height]
