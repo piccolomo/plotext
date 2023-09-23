@@ -7,18 +7,12 @@ from plotext._style import default_style
 class default_terminal():
     def __init__(self):
         self.set_size()
-        self.set_infinite_size()
+        self.prompt_height = 3
 
     def set_size(self, width = None, height = None):
         self.width = 211 * 2 // 3 if width is None else int(width)
         self.height = 53 * 2 // 3 if height is None else int(height)
         self.size = [self.width, self.height]
-
-    def set_infinite_size(self, width = None, height = None):
-        m = 5
-        self.infinite_width = m * self.width if width is None else int(width)
-        self.infinite_height = m * self.height if height is None else int(height)
-        self.infinite_size = [self.infinite_width, self.infinite_height]
 
         
 class default_figure():

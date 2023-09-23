@@ -12,7 +12,6 @@ class _figure_class():
         self.set_parent(parent)
 
         self.set_limit_size()
-        self.update_size_max()
         self.set_size(width, height)
         
         self.update_subplots_max()
@@ -62,17 +61,11 @@ class _figure_class():
         self.limit_height = True if not self.is_master else default_figure.limit_height if height is None else bool(height)
         self._limit_size = [self.limit_width, self.limit_height]
 
-    def update_size_max(self):
-        width_parent, height_parent = self.parent.size
-        self.width_max = width_parent if self.limit_width else None
-        self.height_max = height_parent if self.limit_height else None
-        self.size_max = [self.width_max, self.height_max]
-
     def set_size(self, width = None, height = None):
-        width_none = width is None; width_max_none = self.width_max is None
-        height_none = height is None; height_max_none = self.height_max is None
-        self.width = self.width_max if width_none or (not width_max_none and width > self.width_max) else int(width) if not width_none else None
-        self.height = self.height_max if height_none or (not height_max_none and height > self.height_max) else int(height) if not height_none else None
+        width_max, height_max = self.parent.size
+        width_none, height_none = width is None, height is None
+        self.width = width_max if width is None or (width >  width_max and self.limit_width) else int(width)
+        self.height = height_max if height is None or (height >  height_max and  self.limit_height) else int(height)
         self.size = [self.width, self.height]
 
     def update_size(self):
@@ -90,7 +83,6 @@ class _figure_class():
         self.update_subplots_max()
         self.update_subplots_grid()
         self.select_subplots()
-        self.update_subplots_sizes_max()
         self.update_subplots_sizes()
 
     def update_subplots_max(self):
@@ -117,9 +109,6 @@ class _figure_class():
     def select_subplots(self):
         figure = [[self.figure[row - 1][col - 1] for col in self.Cols] for row in self.Rows]
 
-    def update_subplots_sizes_max(self):
-        [self.get_subplot(*pos).update_size_max() for pos in self.Positions]
-        
     def update_subplots_sizes(self):
         widths = [self.max_or_min([self.get_subplot(row, col).width for row in self.Rows]) for col in self.Cols]
         heights = [self.max_or_min([self.get_subplot(row, col).height for col in self.Cols]) for row in self.Rows]
@@ -187,7 +176,6 @@ class _figure_class():
 
     def limit_size(self, width = None, height = None):
         self.set_limit_size(width, height)
-        self.update_size_max()
         self.update_size()
         return self
         
@@ -252,6 +240,11 @@ class _figure_class():
         [self.get_subplot(row, col).set_size(widths[col - 1], heights[row - 1]) for col in self.Cols for row in self.Rows]
         [self.get_subplot(*pos).reset_sizes() for pos in self.Positions]
 
+    def clear_sizes(self):
+        self.set_limit_size()
+        self.set_size()
+        self.reset_sizes()
+
     def clear_axes(self):
         self.xaxis_lower.clear() 
         self.xaxis_upper.clear() 
@@ -271,6 +264,7 @@ class _figure_class():
         pass
 
     def clear_figure(self):
+        self.clear_sizes()
         self.clear_subplots()
         self.clear_settings()
         self.clear_color()

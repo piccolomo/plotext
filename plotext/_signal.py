@@ -85,7 +85,6 @@ class signals_class():
         for i in range(self.length):
             out += str(self.list[i]) + ('\n' * (i != self.length - 1))
         return out
-
     
 ##############################################
 #############     Utilities    ###############
