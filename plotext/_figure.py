@@ -17,6 +17,7 @@ class _figure_class():
         self.update_subplots_max()
         self.set_subplots(1, 1)
         self.take_maximum_size()
+        self.set_size_direction()
 
         self.create_axes()
         self.canvas = canvas_class()
@@ -73,6 +74,9 @@ class _figure_class():
     def get_size_string(self):
         return "{:<5}{} ".format(self.width, self.height)
 
+    def set_size_direction(self, direction = None):
+        self._size_direction = default_figure.size_direction if direction is None else 1 if int(direction) > 0 else -1
+
 ##############################################
 #########    Subplots Functions    ###########
 ##############################################
@@ -107,11 +111,11 @@ class _figure_class():
         self.figure = [[_figure_class(self, widths[col - 1], heights[row - 1]) for col in self.Cols] for row in self.Rows]
         [self.get_subplot(row, col).set_position(row, col) for col in self.Cols for row in self.Rows]
 
-    def harmonize_subplots(self, fixed_row, fixed_col):
+    def harmonize_subplots(self):
         widths = [self.max_or_min([self.get_subplot(row, col).width for row in self.Rows]) for col in self.Cols]
         heights = [self.max_or_min([self.get_subplot(row, col).height for col in self.Cols]) for row in self.Rows]
-        widths = fit_sizes(widths, self.width, fixed_col - 1)
-        heights = fit_sizes(heights, self.height, fixed_row - 1) 
+        widths = fit_sizes(widths, self.width, self._size_direction)
+        heights = fit_sizes(heights, self.height, self._size_direction) 
         [self.get_subplot(row, col).set_size(widths[col - 1], heights[row - 1]) for col in self.Cols for row in self.Rows]
 
     def get_subplot(self, row = None, col = None):
@@ -172,7 +176,8 @@ class _figure_class():
         
     def plot_size(self, width = None, height = None, direction = None):
         self.set_size(width, height)
-        self.parent.harmonize_subplots(*self.position) if not self.is_master else None
+        self.set_size_direction(direction)
+        self.parent.harmonize_subplots() if not self.is_master else None
         self.refresh_subplots()
         return self
     plotsize = plot_size
@@ -409,43 +414,18 @@ class _figure_class():
 ##############################################
 from math import ceil, floor
 
-# def set_first(sizes, value):
-#     return [sizes[i] if i != 0 else max(0, value) for i in range(len(sizes))]
-
-# def reduce_sizes(sizes, size_max): # sum(sizes) > size_max
-#     return sizes
-
-# def fit_sizes(sizes, size_max, direction = 1):
-#     sizes = sizes[::-direction]
-#     sizes = [el if el != 0 else 3 for el in sizes]
-#     sizes = set_first(sizes, size_max - sum(sizes[1:]))
-#     if sum(sizes) != size_max and len(sizes) != 0:
-#         sizes = sizes[:1] + fit_sizes(sizes[1:], size_max, -1)
-#     return sizes[::-direction]
-
-def fit_sizes(sizes, size_max, position):
-    change = size_max - sum(sizes) #- sizes[position]
-    l = len(sizes)
-    f = change / (l - 1)
-    sizes = [sizes[i] + (f if i != position else 0) for i in range(l)]
-    sizes = [max(0, el) for el in sizes]
-    sizes = round_sizes(sizes, size_max, position)
-    return sizes
-
-def round_sizes(sizes, size_max, position):
-    l = len(sizes)
-    new = [floor(sizes[i]) if i != position else sizes[i] for i in range(l)]
-    for i in range(l):
-        if i != position:
-            new[i] = ceil(sizes[i])
-            if sum(new) > size_max:
-                new[i] = floor(sizes[i])
-    return new
+def fit_sizes(sizes, size_max, direction = 1): # given certain widths (or heights) it sets them so to equate max value
+    sizes = sizes[::direction]
+    bins = len(sizes)
+    current_bin = bins - 1
+    while sum(sizes) != size_max and current_bin >= 0:
+        other_sizes = sum([sizes[b] for b in range(bins) if b != current_bin])
+        sizes[current_bin] = max(size_max - other_sizes, 0)
+        current_bin -= 1
+    return sizes[::direction]
 
 def get_sizes(size_max, bins):
-    el = floor(size_max / max(1, bins))
-    sizes = [el] * bins
-    return fit_sizes(sizes, size_max, 0)
+    return fit_sizes([size_max // bins if bins != 0 else size_max] * bins, size_max)
 
 def is_constant(data):
     return all([el == data[0] for el in data])
