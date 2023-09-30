@@ -15,9 +15,8 @@ class _figure_class():
         self.set_size(width, height)
         
         self.update_subplots_max()
-        self.subplots(1, 1)
+        self.set_subplots(1, 1)
         self.take_maximum_size()
-        self.set_size_direction()
 
         self.create_axes()
         self.canvas = canvas_class()
@@ -64,68 +63,56 @@ class _figure_class():
     def set_size(self, width = None, height = None):
         width_max, height_max = self.parent.size
         width_none, height_none = width is None, height is None
-        self.width = width_max if width is None or (width >  width_max and self.limit_width) else int(width)
-        self.height = height_max if height is None or (height >  height_max and  self.limit_height) else int(height)
+        self.width = width_max if width_none or (width >  width_max and self.limit_width) else int(width)
+        self.height = height_max if height_none or (height >  height_max and  self.limit_height) else int(height)
         self.size = [self.width, self.height]
 
     def update_size(self):
         self.set_size(*self.size)
 
-    def set_size_direction(self, direction = None):
-        self._size_direction = default_figure.size_direction if direction is None else 1 if int(direction) > 0 else -1
-
+    def get_size_string(self):
+        return "{:<5}{} ".format(self.width, self.height)
 
 ##############################################
 #########    Subplots Functions    ###########
 ##############################################
 
-    def refresh_subplots(self):
-        self.update_subplots_max()
-        self.update_subplots_grid()
-        self.select_subplots()
-        self.update_subplots_sizes()
-
     def update_subplots_max(self):
         self.rows_max = self.height // 3
         self.cols_max = self.width // 3
-        self.figures_max = [self.cols_max, self.rows_max]
+        self.slots_max = [self.cols_max, self.rows_max]
 
-    def update_subplots_grid(self):
-        self.set_subplots_grid(self.rows, self.cols)
-
+    def set_subplots(self, rows = None, cols = None):
+        self.set_subplots_grid(rows, cols)
+        self.create_subplots()
+        
     def set_subplots_grid(self, rows = None, cols = None):
         rows = 1 if rows is None else int(abs(rows))
         cols = 1 if cols is None else int(abs(cols))
         (rows, cols) = (0, 0) if rows * cols == 1 else (rows, cols)
         self.rows = min(rows, self.rows_max)
         self.cols = min(cols, self.cols_max)
-        self.figures = [self.cols, self.rows]
+        self.slots = [self.cols, self.rows]
         self.Rows = list(range(1, self.rows + 1))
         self.Cols = list(range(1, self.cols + 1))
         self.Positions = [(row, col) for row in self.Rows for col in self.Cols]
         self.subplots_absent = self.rows * self.cols == 0 
         self.subplots_present = not self.subplots_absent
 
-    def select_subplots(self):
-        figure = [[self.figure[row - 1][col - 1] for col in self.Cols] for row in self.Rows]
-
-    def update_subplots_sizes(self):
-        widths = [self.max_or_min([self.get_subplot(row, col).width for row in self.Rows]) for col in self.Cols]
-        heights = [self.max_or_min([self.get_subplot(row, col).height for col in self.Cols]) for row in self.Rows]
-        widths = fit_sizes(widths, self.width, self._size_direction)
-        heights = fit_sizes(heights, self.height, self._size_direction)
-        [self.get_subplot(row, col).set_size(widths[col - 1], heights[row - 1]) for col in self.Cols for row in self.Rows]
+    def update_subplots_grid(self):
+        self.set_subplots_grid(self.rows, self.cols)
 
     def create_subplots(self):
-        widths, heights = self.get_default_widths(), self.get_default_heights()
+        widths, heights = get_sizes(self.width, self.cols), get_sizes(self.height, self.rows)
         self.figure = [[_figure_class(self, widths[col - 1], heights[row - 1]) for col in self.Cols] for row in self.Rows]
-        [self.figure[row - 1][col - 1].set_position(row, col) for col in self.Cols for row in self.Rows]
+        [self.get_subplot(row, col).set_position(row, col) for col in self.Cols for row in self.Rows]
 
-    def get_default_widths(self):
-        return get_sizes(self.width, self.cols)
-        
-    def get_default_heights(self):
-        return get_sizes(self.height, self.rows)
+    def harmonize_subplots(self, fixed_row, fixed_col):
+        widths = [self.max_or_min([self.get_subplot(row, col).width for row in self.Rows]) for col in self.Cols]
+        heights = [self.max_or_min([self.get_subplot(row, col).height for col in self.Cols]) for row in self.Rows]
+        widths = fit_sizes(widths, self.width, fixed_col - 1)
+        heights = fit_sizes(heights, self.height, fixed_row - 1) 
+        [self.get_subplot(row, col).set_size(widths[col - 1], heights[row - 1]) for col in self.Cols for row in self.Rows]
 
     def get_subplot(self, row = None, col = None):
         valid = self.subplots_present and row in self.Rows and col in self.Cols
@@ -136,8 +123,12 @@ class _figure_class():
         print(self.get_size_string(), self.get_position())
         [self.get_subplot(*pos).print_subplots() for pos in self.Positions]
 
-    def get_size_string(self):
-        return "{:<5}{} ".format(self.width, self.height)
+    def refresh_subplots(self):
+        self.update_subplots_max()
+        self.update_subplots_grid()
+        self.clear_sizes()
+        [self.get_subplot(*pos).refresh_subplots() for pos in self.Positions]
+        #self.harmonize_subplots()
 
 ##############################################
 ############   Axes Functions    #############
@@ -181,8 +172,7 @@ class _figure_class():
         
     def plot_size(self, width = None, height = None, direction = None):
         self.set_size(width, height)
-        self.set_size_direction(direction)
-        self.parent.refresh_subplots() if not self.is_master else None
+        self.parent.harmonize_subplots(*self.position) if not self.is_master else None
         self.refresh_subplots()
         return self
     plotsize = plot_size
@@ -194,8 +184,7 @@ class _figure_class():
         self.max_or_min = lambda data: max(data, default = 0)
 
     def subplots(self, rows = None, cols = None):
-        self.set_subplots_grid(rows, cols)
-        self.create_subplots()
+        self.set_subplots(rows, cols)
         return self
 
     def subplot(self, row = None, col = None):
@@ -232,24 +221,18 @@ class _figure_class():
 ###########    Clear Functions    ############
 ##############################################
 
+    def clear_sizes(self):
+        widths, heights = get_sizes(self.width, self.cols), get_sizes(self.height, self.rows)
+        [self.get_subplot(row, col).set_size(widths[col - 1], heights[row - 1]) for col in self.Cols for row in self.Rows]
+
     def clear_subplots(self):
         self.subplots(0, 0)
-
-    def reset_sizes(self):
-        widths, heights = self.get_default_widths(), self.get_default_heights()
-        [self.get_subplot(row, col).set_size(widths[col - 1], heights[row - 1]) for col in self.Cols for row in self.Rows]
-        [self.get_subplot(*pos).reset_sizes() for pos in self.Positions]
-
-    def clear_sizes(self):
-        self.set_limit_size()
-        self.set_size()
-        self.reset_sizes()
 
     def clear_axes(self):
         self.xaxis_lower.clear() 
         self.xaxis_upper.clear() 
         self.yaxis_left.clear() 
-        self.yaxis_right.clear() # if self.subplots_absent else None
+        self.yaxis_right.clear() 
         [self.get_subplot(*pos).clear_axes() for pos in self.Positions]
 
     def clear_canvas(self):
@@ -264,7 +247,6 @@ class _figure_class():
         pass
 
     def clear_figure(self):
-        self.clear_sizes()
         self.clear_subplots()
         self.clear_settings()
         self.clear_color()
@@ -276,8 +258,8 @@ class _figure_class():
 ###########    Draw Functions    #############
 ##############################################
 
-    def draw(self, *args, xside = None, yside = None, lines = None, fillx = None, filly = None, marker = None, color = None, style = None, label = None): # from draw() comes directly the functions scatter() and plot()
-        self.signals.add_normal_signal(*args, xside = xside, yside = yside, lines = lines, fillx = fillx, filly = filly, marker = marker, color = color, style = style, label = label)
+    def draw(self, *args, **kwargs): # from draw() comes directly the functions scatter() and plot()
+        self.signals.add_normal_signal(*args, **kwargs)
         # xside = kwargs.get("xside")
         # yside = kwargs.get("yside")
         
@@ -425,19 +407,45 @@ class _figure_class():
 ##############################################
 ##############    Utilities    ###############
 ##############################################
+from math import ceil, floor
 
-def fit_sizes(sizes, size_max, direction = 1): # given certain widths (or heights) it sets them so to equate max value
-    sizes = sizes[::direction]
-    bins = len(sizes)
-    current_bin = bins - 1
-    while sum(sizes) != size_max and current_bin >= 0:
-        other_sizes = sum([sizes[b] for b in range(bins) if b != current_bin])
-        sizes[current_bin] = max(size_max - other_sizes, 0)
-        current_bin -= 1
-    return sizes[::direction]
+# def set_first(sizes, value):
+#     return [sizes[i] if i != 0 else max(0, value) for i in range(len(sizes))]
+
+# def reduce_sizes(sizes, size_max): # sum(sizes) > size_max
+#     return sizes
+
+# def fit_sizes(sizes, size_max, direction = 1):
+#     sizes = sizes[::-direction]
+#     sizes = [el if el != 0 else 3 for el in sizes]
+#     sizes = set_first(sizes, size_max - sum(sizes[1:]))
+#     if sum(sizes) != size_max and len(sizes) != 0:
+#         sizes = sizes[:1] + fit_sizes(sizes[1:], size_max, -1)
+#     return sizes[::-direction]
+
+def fit_sizes(sizes, size_max, position):
+    change = size_max - sum(sizes) #- sizes[position]
+    l = len(sizes)
+    f = change / (l - 1)
+    sizes = [sizes[i] + (f if i != position else 0) for i in range(l)]
+    sizes = [max(0, el) for el in sizes]
+    sizes = round_sizes(sizes, size_max, position)
+    return sizes
+
+def round_sizes(sizes, size_max, position):
+    l = len(sizes)
+    new = [floor(sizes[i]) if i != position else sizes[i] for i in range(l)]
+    for i in range(l):
+        if i != position:
+            new[i] = ceil(sizes[i])
+            if sum(new) > size_max:
+                new[i] = floor(sizes[i])
+    return new
 
 def get_sizes(size_max, bins):
-    return fit_sizes([size_max // bins if bins != 0 else size_max] * bins, size_max)
+    el = floor(size_max / max(1, bins))
+    sizes = [el] * bins
+    return fit_sizes(sizes, size_max, 0)
 
 def is_constant(data):
     return all([el == data[0] for el in data])

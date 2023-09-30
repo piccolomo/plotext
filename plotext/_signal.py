@@ -51,6 +51,9 @@ class normal_signal_class():
     def __str__(self):
         out = 'length ' + str(self.length)
         return out
+
+    def print(self):
+        print(self)
         
 
 
@@ -64,10 +67,11 @@ class signals_class():
     def update_length(self):
         self.length = len(self.list)
 
-    def add_normal_signal(self, *args, xside = None, yside = None, lines = None, fillx = None, filly = None, marker = None, color = None, style = None, label = None):
+    def add_normal_signal(self, *args, **kwargs):
+        color = kwargs.get("color")
         color = color if isinstance(color, list) else self.check_color()
         signal = normal_signal_class()
-        signal.set(*args, xside = xside, yside = yside, lines = lines, fillx = fillx, filly = filly, marker = marker, color = color, style = style, label = label)
+        signal.set(*args, **kwargs)
         self.list.append(signal)
         self.update_length()
 
@@ -80,15 +84,12 @@ class signals_class():
         color = difference(self.color_sequence, self.past_colors)
         return color[0] if len(color) > 0 else self.color_sequence[0]
 
-    def __str__(self):
-        out = ''
-        for i in range(self.length):
-            out += str(self.list[i]) + ('\n' * (i != self.length - 1))
-        return out
+    def print(self):
+        [print(el) for el in self.list]
     
 ##############################################
 #############     Utilities    ###############
-##############################################       
+##############################################
 
 def set_data(x = None, y = None): # it return properly formatted x and y data lists
    if x is None and y is None:
