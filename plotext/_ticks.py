@@ -1,59 +1,10 @@
-class ticks_class():
-    def __init__(self):
-        self.set_scale()
-        
-        self.set_ticks()
-        self.set_direction()
-        
-        self.set_grid()
-        
-        self.set_ticks_color()
-        self.set_ticks_style()
+from plotext._default import dp, correct_horizontal_alignment
 
-# External Set Functions
+def linspace(lower, upper, length = 10): # it returns a lists of numbers from lower to upper with given length
+    slope = (upper - lower) / (length - 1) if length > 1 else 0
+    return [lower + x * slope for x in range(length)]
 
-    def set_lim(self, minimum = None, maximum = None):
-        minimum = None if minimum is None else float(minimum)
-        maximum = None if maximum is None else float(maximum)
-        xlim = [minimum, maximum]
-        xlim = xlim if None in xlim else [min(xlim), max(xlim)]
-        self.lim = xlim
-
-    def set_scale(self, scale = None):
-        default_case = (scale is None or scale not in default_axis.scales)
-        scale = default_axis.scale if default_case else scale
-        self.scale = scale
-
-    def set_ticks(self, ticks = None, labels = None):
-        ticks = [] if ticks is None else list(ticks)
-        labels = get_labels(ticks) if labels is None else list(map(str, labels))
-        ticks, labels = brush(ticks, labels)
-        self.ticks = ticks
-        self.labels = labels
-        self.labels_width = 0 if len(labels) == 0 else len(labels[0])
-        self.set_frequency(len(ticks))
-
-    def set_frequency(self, frequency = None):
-        self.frequency = self.default_frequency if frequency is None else int(frequency)
-        self.show_ticks = self.frequency != 0
-
-    def set_direction(self, reverse = None):
-        self.direction = default_axis.direction if reverse is None else 2 * int(not reverse) - 1
-
-    def set_grid(self, grid = None):
-        self.grid = default_axis.grid if grid is None else bool(horizontal)
-
-    def set_ticks_color(self, color = None):
-        color = color if is_color(color) else None
-        self.ticks_color = default_axis.ticks_color if color is None else color
-
-    def set_ticks_style(self, style = None):
-        style = style if is_style(style) else None
-        self.ticks_style = default_axis.ticks_style if style is None else clean_styles(style)
-
-#class xticks_class():
-
-from math import log10, ceil
+from math import log10, ceil, floor
 
 def get_labels(ticks): # it returns the approximated string version of the data ticks
     d = get_distinguishing_digit(ticks)
@@ -84,12 +35,42 @@ def add_extra_zeros(label, ndigits): # it adds 0s at the end of a label if neces
 
 def brush(*lists): # remove duplicates from lists x, y, z ...
     l = min(map(len, lists)) 
-    lists = [el[:l] for el in lists] 
+    lists = [el[:l] for el in lists]
     z = transpose(lists, len(lists))
     z = no_duplicates(z)
     #z = sorted(z) #, key = lambda x: x[0])
     lists = transpose(z, len(lists))
     return lists
+
+space = ' '
+
+# def correct_position(string, label, position): # In the attempt to insert a label in string at given coordinate, the coordinate is adjusted so not to hit the borders of the string
+#     l = len(label)
+#     b, e = max(position - l + 1, 0), min(position + l, len(string) - 1)
+#     data = [i for i in range(b, e) if string[i] is space]
+#     b, e = min(data, default = position - l + 1), max(data, default = position + l)
+#     b, e = e - l + 1, b + l
+#     return (b + e - l) // 2
+
+def insert_label(string, label = '', position = 0, alignment = None):
+    l = len(label)
+    displacements = [0, - l // 2 + 1, - l + 1]
+    alignment = correct_horizontal_alignment(alignment)
+    displacement = displacements[dp.horizontal_alignments.index(alignment)]
+    position = floor(position) + displacement
+    #position = correct_position(string, label, position)
+    ls = len(string)
+    just_do_it = position in range(ls) and position + l - 1 in range(ls)
+    string = string[:position] + label + string[position + l:] if just_do_it else string
+    return string
+
+def insert_labels(string, labels, positions):
+    l = len(labels); r = range(l)
+    for i in r:
+        string = insert_label(string, labels[i], positions[i])
+    return string
+
+from plotext._default import default_placement as dp
 
 def transpose(data, length = 1): # it needs no explanation
     return list(map(list, zip(*data))) if len(data) != 0 else [[]] * length
@@ -99,7 +80,6 @@ def no_duplicates(data): # removes duplicates from a list
     [new.append(item) for item in data if item not in new]
     return new
 
-
 # def add_extra_spaces(labels, side): # it adds empty spaces before or after the labels if necessary
 #     length = 0 if labels == [] else max_length(labels)
 #     if side == "left":
@@ -107,3 +87,24 @@ def no_duplicates(data): # removes duplicates from a list
 #     if side == "right":
 #         labels = [el + space * (length - len(el)) for el in labels]
 #     return labels
+
+
+# class ticks_class():
+#     def __init__(self):
+#         self.set_scale()
+        
+#         self.set_ticks()
+#         self.set_direction()
+        
+#         self.set_grid()
+        
+#         self.set_ticks_color()
+#         self.set_ticks_style()
+
+# # External Set Functions
+
+
+
+#class xticks_class():
+
+

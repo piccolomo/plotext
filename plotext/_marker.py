@@ -36,7 +36,12 @@ class line:
    h = horizontal = '─'
    v = vertical =  '│'
 
-tick = {'cross': '┼', 'right': '├' , 'left':' ┤', 'upper': '┴', 'lower': '┬'}
+class tick:
+   cross = '┼'
+   right = '├'
+   left  = '┤'
+   upper = '┴'
+   lower = '┬'
 
 marker_codes = {'sd'         :'█',
                 'dot'        :'•',

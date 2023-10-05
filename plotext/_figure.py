@@ -212,6 +212,14 @@ class _figure_class():
         self.get_yaxis(2).set_show_axis(right)
         [self.get_subplot(*pos).yaxes(left, right) for pos in self.Positions]
         return self
+
+    def xlim(self, left = None, right = None, xside = None):
+        self.get_xaxis(xside).set_lim(left, right)
+        [self.get_subplot(*pos).xlim(left, right, xside) for pos in self.Positions]
+        
+    def ylim(self, lower = None, upper = None, yside = None):
+        self.get_xaxis(yside).set_lim(lower, upper)
+        [self.get_subplot(*pos).ylim(lower, upper, yside) for pos in self.Positions]
  
     def axis_color(self, color = None):
         [self.get_xaxis(xside).set_axis_color(color) for xside in self.r2]
@@ -251,13 +259,13 @@ class _figure_class():
     def clear_color(self):
         pass
 
-    def clear_figure(self):
+    def clear(self):
         self.clear_subplots()
         self.clear_settings()
         self.clear_color()
         return self
 
-    clf = clear_figure
+    clf = clear
         
 ##############################################
 ###########    Draw Functions    #############
@@ -309,12 +317,18 @@ class _figure_class():
         self.xaxis_lower.set_show_axis(False) if self.height < 1 else None
         self.xaxis_upper.set_show_axis(False) if self.height < 2 else None
 
+        # show x ticks
+        self.xaxis_lower.set_lim(*self.signals.xlim(self.xaxis_lower.side))
+        self.xaxis_upper.set_lim(*self.signals.xlim(self.xaxis_upper.side))
+        
+        self.xaxis_lower.set_show_ticks(False) if self.height < 3 else None
+        self.xaxis_upper.set_show_ticks(False) if self.height < 4 else None
+
+        # update x axis height
         self.xaxis_lower.update_height()
         self.xaxis_upper.update_height()
 
-        # show x ticks
-
-        # show x labels
+        # show x text labels
 
         # height canvas
         height_canvas = self.height - self.xaxis_lower.height - self.xaxis_upper.height
@@ -334,7 +348,6 @@ class _figure_class():
         self.yaxis_left.update_width()
         self.yaxis_right.update_width()
         
-
         # show y ticks
 
         # left, canvas, right widths
@@ -345,6 +358,15 @@ class _figure_class():
         # x axis widths
         self.xaxis_upper.set_widths(width_left, width_canvas, width_right)
         self.xaxis_lower.set_widths(width_left, width_canvas, width_right)
+
+        # create x ticks
+        self.xaxis_lower.create_ticks()
+        self.xaxis_upper.create_ticks()
+
+        self.xaxis_lower.update_relative_ticks()
+        self.xaxis_lower.update_relative_ticks()
+
+
         
         # canvas_size
         self.canvas.set_size(width_canvas, height_canvas)

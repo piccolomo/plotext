@@ -14,19 +14,19 @@ master = _figure_class(terminal)
 ##############################################
 
 def limit_size(width = None, height = None):
-    return main().limit_size(width, height)
+    return master.limit_size(width, height)
 limitsize = limit_size
 
 def plot_size(width = None, height = None, direction = None):
-    return main().plot_size(width, height, direction)
+    return master.plot_size(width, height, direction)
 plotsize = plot_size
 
 def take_minimum_size():
-    main().take_minimum_size()
+    master.take_minimum_size()
 take_min = take_minimum_size
 
 def take_maximum_size():
-    main().take_maximum_size()
+    master.take_maximum_size()
 take_max = take_maximum_size
 
 def prompt_size(height = None):
@@ -42,31 +42,37 @@ def main():
     return master
 
 def active():
-    return main()._active
+    return master._active
 
 def subplots(rows = None, cols = None):
-    return main().subplots(rows, cols)
+    return master.subplots(rows, cols)
     #_figure.show() if _figure._interactive else None
     #return sub
 
 def subplot(row = None, col = None):
-    return main().subplot(row, col)
+    return master.subplot(row, col)
 
 ##############################################
 #########    Settings Functions    ###########
 ##############################################
 
 def xaxes(lower = None, upper = None):
-    return main().xaxes(lower, upper)
+    return master.xaxes(lower, upper)
 
 def yaxes(left = None, right = None):
-    return main().yaxes(left, right)
+    return master.yaxes(left, right)
+
+def xlim(left = None, right = None, xside = None):
+    return master.xlim(left, right, xside)
+
+def ylim(lower = None, upper = None, yside = None):
+    return master.ylim(lower, upper, yside)
 
 def axis_color(self, color = None):
-    return main().axis_color(color)
+    return master.axis_color(color)
 
 def canvas_color(self, color = None):
-    return main().canvas_color(color)
+    return master.canvas_color(color)
 
 ##############################################
 ###########    Clear Functions    ############
@@ -74,20 +80,20 @@ def canvas_color(self, color = None):
 # clear size, subplots, settings (labels, axes, ticks), color, signals, canvas
 
 def clear_subplots():
-    return main().clear_subplots()
+    return master.clear_subplots()
 
 def reset_sizes():
-    return main().reset_sizes()
+    return master.reset_sizes()
 
 def clear_settings():
-    return main().clear_settings()
+    return master.clear_settings()
 cls = clear_settings
 
 def clear_figure():
-    return main().clear_figure()
+    return master.clear()
 clf = clear_figure
         
-##############################################x
+##############################################
 ######    Main Plotting Functions    #########
 ##############################################
 
@@ -100,5 +106,5 @@ def scatter(*args, marker = None, color = None, style = None, fillx = None, fill
 ##############################################
 
 def show():
-    main().show()
+    master.show()
 

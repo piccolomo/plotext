@@ -54,7 +54,24 @@ class normal_signal_class():
 
     def print(self):
         print(self)
+
+    def xmin(self):
+        return min(self.x, default = None)
+    
+    def xmax(self):
+        return max(self.x, default = None)
+
+    def xlim(self):
+        return (self.xmin(), self.xmax())
+    
+    def ymin(self):
+        return min(self.y, default = None)
+    
+    def ymax(self):
+        return max(self.y, default = None)
         
+    def ylim(self):
+        return (self.ymin(), self.ymax())
 
 
 class signals_class():
@@ -86,6 +103,28 @@ class signals_class():
 
     def print(self):
         [print(el) for el in self.list]
+
+    def xmin(self, xside = None):
+        xside = correct_xside(xside)
+        return min([s.xmin() for s in self.list if s.xside == xside], default = None)
+    
+    def xmax(self, xside = None):
+        xside = correct_xside(xside)
+        return max([s.xmax() for s in self.list if s.xside == xside], default = None)
+
+    def xlim(self, xside = None):
+        return (self.xmin(xside), self.xmax(xside))
+    
+    def ymin(self, yside = None):
+        yside = correct_yside(yside)
+        return min([s.ymin() for s in self.list if s.yside == yside], default = None)
+    
+    def ymax(self, yside = None):
+        yside = correct_yside(yside)
+        return max([s.ymax() for s in self.list if s.yside == yside], default = None)
+
+    def ylim(self, yside = None):
+        return (self.ymin(yside), self.ymax(yside))
     
 ##############################################
 #############     Utilities    ###############

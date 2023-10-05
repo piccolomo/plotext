@@ -19,3 +19,12 @@ class canvas_class():
 
     def clear(self):
         self.__init__()
+
+
+def round8(data):
+    return [round(el, 8) for el in data]
+
+def digitize(data, lim, bins):
+    change = lambda el: 0.5 + (bins - 1) * (el - lim[0]) / (lim[1] - lim[0])
+    return [change(el) for el in round8(data)]
+
