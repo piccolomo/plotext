@@ -412,20 +412,20 @@ class _figure_class():
 ##############################################
 ##############    Utilities    ###############
 ##############################################
-from math import ceil, floor
 
-def fit_sizes(sizes, size_max, direction = 1): # given certain widths (or heights) it sets them so to equate max value
+def fit_sizes(sizes, size_max, direction = 1):
     sizes = sizes[::direction]
-    bins = len(sizes)
-    current_bin = bins - 1
-    while sum(sizes) != size_max and current_bin >= 0:
-        other_sizes = sum([sizes[b] for b in range(bins) if b != current_bin])
-        sizes[current_bin] = max(size_max - other_sizes, 0)
-        current_bin -= 1
+    l = len(sizes)
+    for i in range(l):
+        m = size_max - sum(sizes[:i])
+        sizes[i] = min(sizes[i], m) if i != l - 1 else m
+    print(sum(sizes))
     return sizes[::direction]
 
+from math import floor
+
 def get_sizes(size_max, bins):
-    return fit_sizes([size_max // bins if bins != 0 else size_max] * bins, size_max)
+    return fit_sizes([floor(size_max / max(1, bins))] * bins, size_max, -1)
 
 def is_constant(data):
     return all([el == data[0] for el in data])
