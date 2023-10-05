@@ -1,4 +1,6 @@
 from plotext._default import dp, correct_horizontal_alignment
+from plotext._default import default_xfrequency, default_yfrequency
+
 
 def linspace(lower, upper, length = 10): # it returns a lists of numbers from lower to upper with given length
     slope = (upper - lower) / (length - 1) if length > 1 else 0
@@ -107,4 +109,118 @@ def no_duplicates(data): # removes duplicates from a list
 
 #class xticks_class():
 
+# class axis_class():
+#     def __init__(self):
+#         self.set_show_axis()
+#         self.set_axis_color()
+#         self.set_size()
+#         self.backup()
 
+#         self.create_lim()
+#         self.create_ticks()
+#         self.set_scale()
+#         self.set_grid()
+#         self.set_ticks_color()
+#         self.set_ticks_style()
+
+#     def set_show_axis(self, show = None):
+#         self.show_axis = default_axis.show_axis if show is None else bool(show)
+
+#     def set_axis_color(self, color = None):
+#         color = color if is_color(color) else None
+#         self.axis_color = default_axis.axis_color if color is None else color
+
+#     def set_size(self, width = None, height = None):
+#         self.width = width
+#         self.height = height
+#         self.size = [self.width, self.height]
+
+#     def set_width(self, width = None):
+#         self.set_size(width, self.height)
+        
+#     def set_height(self, height = None):
+#         self.set_size(self.width, height)
+        
+#     def update_size(self):
+#         self.set_size(self.width, self.height)
+
+#     def copy(self): # to deep copy
+#         return deepcopy(self)
+
+#     def backup(self):
+#         self.show_axis_backup = self.show_axis
+
+#     def restore(self):
+#         self.show_axis = self.show_axis_backup
+
+#     # Ticks Function
+
+#     def set_show_ticks(self, show = None):
+#         self.show_ticks = default_axis.show_ticks if show is None else bool(show)
+
+#     def update_show_ticks(self):
+#         self.show_ticks = not (None in self.lim or self.frequency == 0)
+
+#     def set_scale(self, scale = None):
+#         default_case = (scale is None or scale not in default_axis.scales)
+#         scale = default_axis.scale if default_case else scale
+#         self.scale = scale
+
+#     def create_lim(self):
+#         self.min = None; self.max = None
+#         self.update_lim()
+#         self.update_show_ticks()
+
+#     def set_lim(self, minimum = None, maximum = None):
+#         self.min = self.min if self.min is not None else minimum
+#         self.max = self.max if self.max is not None else maximum
+#         self.update_lim()
+#         self.update_show_ticks()
+
+#     def update_lim(self):
+#         self.lim = (self.min, self.max)
+
+#     def create_ticks(self):
+#         ticks = linspace(*self.lim, self.frequency) if None not in self.lim else []
+#         self.set_ticks(ticks)
+
+#     def set_ticks(self, ticks = None, labels = None):
+#         ticks = [] if ticks is None else list(ticks)
+#         labels = get_labels(ticks) if labels is None else list(map(str, labels))
+#         ticks, labels = brush(ticks, labels)
+#         self.ticks = ticks
+#         self.labels = labels
+#         self.labels_width = 0 if len(labels) == 0 else len(labels[0])
+#         self.set_frequency(len(ticks))
+
+#     def set_default_frequency(self, frequency = None):
+#         self.default_frequency = frequency
+        
+#     def set_frequency(self, frequency = None):
+#         self.frequency = self.default_frequency if frequency is None else int(frequency)
+#         self.update_show_ticks()
+
+#     def set_direction(self, reverse = None):
+#         self.direction = default_axis.direction if reverse is None else 2 * int(not reverse) - 1
+
+#     def set_grid(self, grid = None):
+#         self.grid = default_axis.grid if grid is None else bool(horizontal)
+
+#     def set_ticks_color(self, color = None):
+#         color = color if is_color(color) else None
+#         self.ticks_color = default_axis.ticks_color if color is None else color
+
+#     def set_ticks_style(self, style = None):
+#         style = style if is_style(style) else None
+#         self.ticks_style = default_axis.ticks_style if style is None else clean_styles(style)
+
+    # def update_relative_ticks(self):
+    #     self.rticks = digitize(self.ticks, self.lim, self.width_canvas)
+
+    # def get_ticks_string(self):
+    #     axis = space * self.width
+    #     rticks = [el + self.width_left for el in self.rticks]
+    #     axis = insert_labels(axis, self.labels, rticks)
+    #     return axis
+    # def clear(self):
+    #     self.__init__(self.side)

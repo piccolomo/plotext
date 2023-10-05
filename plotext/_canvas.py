@@ -14,7 +14,7 @@ class canvas_class():
         self.width = int(width) if width is not None else width
         self.height = int(height) if height is not None else height
 
-    def update_matrix(self):
+    def build(self):
         self.matrix = matrix_class(self.width, self.height)
 
     def clear(self):

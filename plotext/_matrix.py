@@ -32,19 +32,19 @@ class matrix_class():
         new.update_size()
         return new  
         
-    def set_marker(self, col, row, marker):
+    def set_marker(self, row, col, marker):
         self.marker[row][col] = marker
 
-    def insert_element(self, col, row, marker):
-        self.set_marker(col, row, marker)
+    def insert_element(self, row, col, marker):
+        self.set_marker(row, col, marker)
 
-    def insert_row(self, markers, row):
-        cols = len(markers); Cols = range(cols)
-        [self.insert_element(col, row, markers[col]) for col in Cols]
+    def insert_horizontal_string(self, row, col, string):
+        Cols = range(len(string))
+        [self.insert_element(row, col + c, string[c]) for c in Cols]
 
-    def insert_col(self, markers, col):
-        rows = len(markers); Rows = range(rows)
-        [self.insert_element(col, row, markers[row]) for row in Rows]
+    def insert_vertical_string(self, row, col, string):
+        Rows = range(len(string))
+        [self.insert_element(row + r, col, string[r]) for r in Rows]
 
         
     def get_string(self):
