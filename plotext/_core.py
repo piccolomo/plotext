@@ -56,6 +56,15 @@ def subplot(row = None, col = None):
 #########    Settings Functions    ###########
 ##############################################
 
+def title(label = None):
+    return master.title(label)
+
+def xlabel(label = None, xside = None):
+    return master.xlabel(label, xside)
+
+def ylabel(label = None, yside = None):
+    return master.ylabel(label, yside)
+
 def xaxes(lower = None, upper = None):
     return master.xaxes(lower, upper)
 

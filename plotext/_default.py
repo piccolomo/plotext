@@ -7,7 +7,7 @@ from plotext._style import default_style
 class default_terminal():
     def __init__(self):
         self.set_size()
-        self.prompt_height = 3
+        self.prompt_height = 2
 
     def set_size(self, width = None, height = None):
         self.width = 211 * 2 // 3 if width is None else int(width)
@@ -91,6 +91,12 @@ def correct_side(axis = None, side = None):
     is_integer = isinstance(side, int) and 1 <= side <= 2
     not_correct = side is None or (isinstance(side, str) and side.strip() not in sides)
     return sides[side - 1] if is_integer else sides[0] if not_correct else side.strip()
+
+def correct_xside(side = None):
+    return correct_side('x', side)
+
+def correct_yside(side = None):
+    return correct_side('y', side)
 
 def correct_orientation(orientation = None):
     orientation = dp.orientation if orientation is None else orientation

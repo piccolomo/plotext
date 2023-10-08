@@ -1,10 +1,11 @@
-from plotext._default import default_axis, correct_side
+from plotext._default import default_axis, correct_xside,  correct_yside
 from plotext._color import is_color
 from plotext._style import is_style
 from plotext._matrix import matrix_class
 from plotext._marker import space, border, line, tick
 from plotext._canvas import digitize
 from copy import deepcopy as copy
+
 
 class axis_class():
     def set_axis_color(self, color = None):
@@ -56,12 +57,22 @@ class xaxis_class(axis_class):
 
     def build(self):
         self.matrix = matrix_class(self.width, self.height)
-        if self.height == 0:
-            return
-        axis = line.h * self.width_canvas
-        self.matrix.insert_horizontal_string(0, self.width_left, axis)
-        self.matrix.insert_element(0, self.width_left - 1, self.border_left) if self.width_left > 0 else None
-        self.matrix.insert_element(0, self.width_left + self.width_canvas, self.border_right) if self.width_right > 0 else None
+        self.insert_left()
+        self.insert_center()
+        self.insert_right()
+
+    def insert_left(self):
+        just_do_it = self.height == 1 and self.width_left > 0
+        self.matrix.insert_element(0, self.width_left - 1, self.border_left) if just_do_it else None
+        
+    def insert_center(self):
+        just_do_it = self.height == 1 
+        self.matrix.insert_horizontal_string(0, self.width_left, line.h * self.width_canvas) if just_do_it else None
+        
+    def insert_right(self):
+        just_do_it = self.height == 1 and self.width_right > 0
+        self.matrix.insert_element(0, self.width_left + self.width_canvas, self.border_right) if just_do_it else None
+
 
 
 
@@ -90,32 +101,4 @@ class yaxis_class(axis_class):
             return
         axis = line.v * self.height
         self.matrix.insert_vertical_string(0, 0, axis)
-
-space = ' '
-
-def only_spaces(string): # it returns True if string is made of only empty spaces or is None or ''
-    return (type(string) == str) and (string == len(string) * space) # and len(string) != 0
-
-# def insert(data, index, element):
-#     data[index] = element
-
-
-
-def correct_xside(side = None):
-    return correct_side('x', side)
-
-def correct_yside(side = None):
-    return correct_side('y', side)
-
-
-
-
-# def add_horizontal_string(self, col, row, string, fullground = None, style = None, background = None, alignment = "left", check_space = False, check_canvas = False):
-#         l = len(string); L = range(l)
-#         col = col if alignment == "left" else col - l // 2 if alignment == "center" else col - l + 1 if alignment == "right" else ut.correct_coord(self.get_marker_row(row), string, col) # if dynamic
-#         b, e = max(col - 1, 0), min(col + l + 1, self.cols)
-#         test_space = all([self.get_marker(c, row) == ut.space for c in range(b, e)]) and col >= 0 and col + l <= self.cols if check_space else True
-#         [self.insert_element(col + i, row, string[i], fullground, style, background, check_canvas) for i in L] if test_space else None
-#         return test_space
-
 

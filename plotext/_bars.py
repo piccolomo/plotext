@@ -6,7 +6,6 @@ class bar_lower_class():
         self.set_left()
         self.set_center()
         self.set_right()
-        self.set_title()
 
         self.set_width()
         self.set_height(1)
@@ -28,30 +27,49 @@ class bar_lower_class():
 
     def get_height(self):
         return int(self.height and [self.left, self.center, self.right] != [None] * 3)
-
+    
     def build(self):
         self.matrix = matrix_class(self.width, self.get_height())
-        if self.height == 0:
-            return
-        self.matrix.insert_horizontal_string(0, 0, self.left, 'left', overwrite = False) if self.left is not None else None
-        self.matrix.insert_horizontal_string(0, self.width // 2, self.center, 'center', overwrite = False) if self.center is not None else None
-        self.matrix.insert_horizontal_string(0, self.width, self.rigth, 'right', overwrite = False) if self.right is not None else None
+        self.insert_left()
+        self.insert_center()
+        self.insert_right()
 
+    def insert_left(self):
+        just_do_it = self.height == 1 and self.left is not None and len(self.left) <= self.width
+        self.matrix.insert_horizontal_string(0, 0, self.left, 'left', overwrite = False) if just_do_it else None
+        
+    def insert_center(self):
+        just_do_it = self.height == 1 and self.center is not None and len(self.center) <= self.width
+        self.matrix.insert_horizontal_string(0, self.width // 2, self.center, 'center', overwrite = False) if just_do_it else None
+
+    def insert_right(self):
+        just_do_it = self.height == 1 and self.right is not None and len(self.right) <= self.width
+        self.matrix.insert_horizontal_string(0, self.width, self.right, 'right', overwrite = False) if just_do_it else None
+        
     def clear(self):
         self.__init__()
+        
 
-
-class bar_upper_class(bar_upper_class):
+class bar_upper_class(bar_lower_class):
     def __init__(self):
         super().__init__()
-        self.set_title()
         self.set_label()
+        self.set_title()
 
     def set_title(self, label = None):
         self.title = None if label is None else correct_label(label)
 
     def set_label(self, label = None):
         self.label = None if label is None else correct_label(label)
+
+    def update_labels(self):
+        self.set_center(self.label)
+        self.set_center(self.title) if self.label is None else self.set_left(self.title)
+
+    def build(self):
+        self.update_labels()
+        super().build()
+    
 
 
     

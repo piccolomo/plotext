@@ -222,5 +222,4 @@ def no_duplicates(data): # removes duplicates from a list
     #     rticks = [el + self.width_left for el in self.rticks]
     #     axis = insert_labels(axis, self.labels, rticks)
     #     return axis
-    # def clear(self):
-    #     self.__init__(self.side)
+

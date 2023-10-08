@@ -1,4 +1,5 @@
 from plotext._marker import border, line, space
+from plotext._string import get_displacement, only_spaces
 
 class matrix_class():
     def __init__(self, width = None, height = None):
@@ -30,7 +31,10 @@ class matrix_class():
         new = matrix_class()
         new.marker = horizontal_stack(self.marker, matrix.marker)
         new.update_size()
-        return new  
+        return new
+
+    def get_marker(self, row, col):
+        return self.marker[row][col]
         
     def set_marker(self, row, col, marker):
         self.marker[row][col] = marker
@@ -38,13 +42,37 @@ class matrix_class():
     def insert_element(self, row, col, marker):
         self.set_marker(row, col, marker)
 
-    def insert_horizontal_string(self, row, col, string):
-        Cols = range(len(string))
-        [self.insert_element(row, col + c, string[c]) for c in Cols]
 
-    def insert_vertical_string(self, row, col, string):
-        Rows = range(len(string))
-        [self.insert_element(row + r, col, string[r]) for r in Rows]
+    def insert_horizontal_string(self, row, col, string, alignment = 'left', overwrite = True):
+        length = len(string)
+        Cols = range(length)
+        col = col + get_displacement(string, alignment)
+        overwrite = overwrite or self.check_horizontal_string(row, col, length)
+        [self.insert_element(row, col + c, string[c]) for c in Cols] if overwrite else None
+
+    def insert_vertical_string(self, row, col, string, overwrite = True):
+        length = len(string)
+        Rows = range(length)
+        #overwrite = overwrite or self.check_vertical_string(row, col, length)
+        [self.insert_element(row + r, col, string[r]) for r in Rows] if overwrite else None
+
+    def get_horizontal_string(self, row, col, length):
+        cols = range(max(0, col), min(col + length, self.width))
+        string = [self.get_marker(row, c) for c in cols]
+        return ''.join(string)
+        
+    def get_vertical_string(self, row, col, length):
+        rows = range(max(0, row), min(row + length, self.height))
+        string = [self.get_marker(r, col) for r in rows]
+        return ''.join(string)
+
+    def check_horizontal_string(self, row, col, length):
+        string = self.get_horizontal_string(row, col - 1, length + 2)
+        return only_spaces(string)
+                
+    def check_vertical_string(self, row, col, length):
+        string = self.get_vertical_string(row - 1, col, length + 2)
+        return only_spaces(string)
 
         
     def get_string(self):
