@@ -1,5 +1,3 @@
-from plotext._default import default_placement, correct_horizontal_alignment
-
 space = ' '
 
 def only_spaces(string): # it returns True if string is made of only empty spaces or is None or ''
@@ -8,9 +6,15 @@ def only_spaces(string): # it returns True if string is made of only empty space
 def correct_label(label = None): 
     return None if only_spaces(label) else str(label).strip()
 
-def get_displacement(string, alignment = None):
-    l = len(string)
-    alignment = correct_horizontal_alignment(alignment)
-    index = default_placement.horizontal_alignments.index(alignment)
-    displacements = [0, - l // 2 + 1, - l]
-    return displacements[index]
+def correct_position(position, alignment, label_length, string_length):
+    l, ls = label_length, string_length
+    center =  l // 2 # position of center in string counting from 0
+    displacement = [0, - center, - l, - center][alignment + 1]
+    position += displacement
+    position = 0 if - (l - 1) <= position < 0 and alignment == 2 else ls - l if 0 < ls - position <= (l - 1) and alignment == 2 else position
+    return position
+
+# ls - l < position < ls
+
+
+ 

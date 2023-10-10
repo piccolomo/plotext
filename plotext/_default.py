@@ -1,4 +1,4 @@
-from plotext._global import platform
+from plotext._system import platform
 from plotext._marker import default_marker
 from plotext._color import default_color, default_color_sequence
 from plotext._style import default_style
@@ -43,14 +43,17 @@ class default_placement():
     def __init__(self):
         self.orientations = ['horizontal', 'vertical']
         self.orientations_short = ['h', 'v']
+        self.orientations_int = [0, 1]
         self.orientation = self.orientations[0]
         
-        self.horizontal_alignments = ['left', 'center', 'right']
-        self.horizontal_alignments_short = ['l', 'c', 'r']
+        self.horizontal_alignments = ['left', 'center', 'right', 'dynamic']
+        self.horizontal_alignments_short = ['l', 'c', 'r', 'd']
+        self.horizontal_alignments_int = [-1, 0, 1, 2]
         self.horizontal_alignment = self.horizontal_alignments[1]
         
-        self.vertical_alignments = ['lower', 'center', 'upper']
-        self.vertical_alignments_short = ['l', 'c', 'u']
+        self.vertical_alignments = ['lower', 'center', 'upper', 'dynamic']
+        self.vertical_alignments_short = ['l', 'c', 'u', 'd']
+        self.vertical_alignments_int = [-1, 0, 1, 2]
         self.vertical_alignment = self.vertical_alignments[1]
 
         
@@ -64,16 +67,22 @@ class default_axis():
         self.xside = self.xsides[0]
         self.yside = self.ysides[0]
         
-        self.axis_color = "white"
-        self.ticks_color = "black"
-        self.ticks_style = "default"
+        self.color = "white"
+        self.style = "default"
 
-        self.direction = 1 
+        self.grid = False
+
+
+class default_ticks():
+    def __init__(self):
+        self.color = 'white'
+        self.style = 'default'
+        
         self.scales = ['linear', 'log']
         self.scale = 'linear'
-        self.grid = False
-        self.show_axis = True
-        self.show_ticks = True
+
+        self.direction = 1 
+
 
 
 default_terminal = default_terminal()
@@ -81,6 +90,7 @@ default_figure = default_figure()
 default_signal = default_signal()
 default_placement = dp = default_placement()
 default_axis = default_axis()
+default_ticks = default_ticks()
 default_xfrequency = 5
 default_yfrequency = 7
 default_canvas_color = "white"
@@ -106,11 +116,26 @@ def correct_orientation(orientation = None):
 def correct_horizontal_alignment(alignment = None):
     alignment = dp.horizontal_alignment if alignment is None else alignment
     alignment = dp.horizontal_alignments[dp.horizontal_alignments_short.index(alignment)] if alignment in dp.horizontal_alignments_short else alignment
+    alignment = dp.horizontal_alignments[dp.horizontal_alignments_int.index(alignment)] if alignment in dp.horizontal_alignments_int else alignment
     return dp.horizontal_alignment if alignment not in dp.horizontal_alignments else alignment
+
+def get_integer_horizontal_alignment(alignment = None):
+    alignment = correct_horizontal_alignment(alignment)
+    return dp.horizontal_alignments_int[dp.horizontal_alignments.index(alignment)]
 
 def correct_vertical_alignment(alignment = None):
     alignment = dp.vertical_alignment if alignment is None else alignment
     alignment = dp.vertical_alignments[dp.vertical_alignments_short.index(alignment)] if alignment in dp.vertical_alignments_short else alignment
+    alignment = dp.vertical_alignments[dp.vertical_alignments_int.index(alignment)] if alignment in dp.vertical_alignments_int else alignment
     return dp.vertical_alignment if alignment not in dp.vertical_alignments else alignment
+
+def get_integer_vertical_alignment(alignment = None):
+    alignment = correct_vertical_alignment(alignment)
+    return dp.vertical_alignments_int[dp.vertical_alignments.index(alignment)]
+
+
+        
+
+
 
 

@@ -1,4 +1,4 @@
-from plotext._global import platform, memorize
+from plotext._system import platform, memorize
 
 ##############################################
 #########    Marker Utilities      ###########

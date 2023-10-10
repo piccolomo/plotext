@@ -1,16 +1,16 @@
-from plotext._default import default_axis, correct_xside,  correct_yside
+from plotext._default import default_axis, correct_xside, correct_yside
 from plotext._color import is_color
 from plotext._style import is_style
 from plotext._matrix import matrix_class
 from plotext._marker import space, border, line, tick
 from plotext._canvas import digitize
-from copy import deepcopy as copy
+from plotext._system import copy
 
 
 class axis_class():
     def set_axis_color(self, color = None):
         color = color if is_color(color) else None
-        self.axis_color = default_axis.axis_color if color is None else color
+        self.axis_color = default_axis.color if color is None else color
 
     def clear(self):
         self.__init__(self.side)
@@ -66,7 +66,7 @@ class xaxis_class(axis_class):
         self.matrix.insert_element(0, self.width_left - 1, self.border_left) if just_do_it else None
         
     def insert_center(self):
-        just_do_it = self.height == 1 
+        just_do_it = self.height == 1
         self.matrix.insert_horizontal_string(0, self.width_left, line.h * self.width_canvas) if just_do_it else None
         
     def insert_right(self):

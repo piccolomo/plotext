@@ -1,15 +1,19 @@
 from plotext._string import correct_label
 from plotext._matrix import matrix_class
+from plotext._system import copy
+
 
 class bar_lower_class():
     def __init__(self):
+        self.clear_labels()
+        self.set_width()
+
+    def clear_labels(self):
         self.set_left()
         self.set_center()
         self.set_right()
-
-        self.set_width()
-        self.set_height(1)
-
+        self.update_height()
+        
     def set_left(self, label = None):
         self.left = None if label is None else correct_label(label)
 
@@ -22,14 +26,12 @@ class bar_lower_class():
     def set_width(self, width = None):
         self.width = int(width) if width is not None else None
 
-    def set_height(self, height = None):
-        self.height = int(bool(height)) if height is not None else None
-
-    def get_height(self):
-        return int(self.height and [self.left, self.center, self.right] != [None] * 3)
+    def update_height(self):
+        self.height = int([self.left, self.center, self.right] != [None] * 3)
     
     def build(self):
-        self.matrix = matrix_class(self.width, self.get_height())
+        self.update_height()
+        self.matrix = matrix_class(self.width, self.height)
         self.insert_left()
         self.insert_center()
         self.insert_right()
@@ -45,9 +47,24 @@ class bar_lower_class():
     def insert_right(self):
         just_do_it = self.height == 1 and self.right is not None and len(self.right) <= self.width
         self.matrix.insert_horizontal_string(0, self.width, self.right, 'right', overwrite = False) if just_do_it else None
-        
+
     def clear(self):
         self.__init__()
+
+    def copy(self):
+        return copy(self)
+
+    def backup(self):
+        self.left_backup = self.left
+        self.center_backup = self.center
+        self.right_backup = self.right
+        self.width_backup = self.width
+
+    def restore(self):
+        self.left = self.left_backup
+        self.center = self.center_backup
+        self.right = self.right_backup
+        self.width = self.width_backup
         
 
 class bar_upper_class(bar_lower_class):
@@ -69,6 +86,20 @@ class bar_upper_class(bar_lower_class):
     def build(self):
         self.update_labels()
         super().build()
+
+    def copy(self):
+        return copy(self)
+
+    def backup(self):
+        super().backup()
+        self.title_backup = self.title
+        self.label_backup = self.label
+        
+    def restore(self):
+        super().restore()
+        self.title = self.title_backup 
+        self.label = self.label_backup 
+
     
 
 

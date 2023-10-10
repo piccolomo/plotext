@@ -1,5 +1,5 @@
 from plotext._default import default_signal, default_color_sequence
-from plotext._global import platform
+from plotext._system import platform
 from plotext._marker import check_marker
 from plotext._color import check_color
 from plotext._style import check_style

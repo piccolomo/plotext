@@ -1,12 +1,14 @@
 from plotext._terminal import terminal_class
-from plotext._default import default_figure, default_axis
-from plotext._axes import xaxis_class, yaxis_class, correct_xside, correct_yside
+from plotext._default import default_figure, default_axis, correct_xside, correct_yside
 from plotext._bars import bar_lower_class, bar_upper_class
+from plotext._axes import xaxis_class, yaxis_class
+from plotext._ticks import xticks_class, yticks_class
 from plotext._matrix import matrix_class, join_matrices
 from plotext._canvas import canvas_class
 from plotext._color import no_color
 from plotext._log import log
 from plotext._signal import signals_class
+
 
 class _figure_class():
     def __init__(self, parent = None, width = None, height = None):
@@ -22,6 +24,7 @@ class _figure_class():
 
         self.create_bars()
         self.create_axes()
+        self.create_ticks()
         self.canvas = canvas_class()
         self.signals = signals_class()
 
@@ -137,12 +140,20 @@ class _figure_class():
         #self.harmonize_subplots()
 
 ##############################################
-#########   Labels Bars Functions    ########
+#########   Labels Bars Functions    #########
 ##############################################
 
     def create_bars(self):
-        self.bar_upper = bar_upper_class()
-        self.bar_lower = bar_lower_class()
+        self.bar_upper = bar_upper_class() if self.is_master else self.parent.bar_upper.copy()
+        self.bar_lower = bar_lower_class() if self.is_master else self.parent.bar_lower.copy()
+
+    def backup_bars(self):
+        self.bar_lower.backup()
+        self.bar_upper.backup()
+        
+    def restore_bars(self):
+        self.bar_lower.backup()
+        self.bar_upper.backup()
 
     def title(self, label = None):
         self.bar_upper.set_title(label)
@@ -192,6 +203,43 @@ class _figure_class():
         self.yaxis_left.restore()
         self.yaxis_right.restore()
 
+#############################################
+###########   Ticks Functions    ############
+#############################################
+
+    def create_ticks(self):
+        self.xticks_lower = xticks_class('lower') if self.is_master else self.parent.xticks_lower.copy()
+        self.xticks_upper = xticks_class('upper') if self.is_master else self.parent.xticks_upper.copy()
+        self.yticks_left  = yticks_class('left') if self.is_master else self.parent.yticks_left.copy()
+        self.yticks_right = yticks_class('right') if self.is_master else self.parent.yticks_right.copy()
+
+    def get_xticks(self, xside = None):
+        xside = correct_xside(xside)
+        return self.xticks_lower if xside == default_axis.xside else self.xticks_upper
+
+    def get_yticks(self, yside = None):
+        yside = correct_yside(yside)
+        return self.yticks_left if yside == default_axis.yside else self.yticks_right
+
+    def xfrequency(self, frequency = None, xside = None):
+        self.get_xticks(xside).set_frequency(frequency)
+        
+    def xticks(self, ticks = None, labels = None, xside = None):
+        self.get_xticks(xside).set_ticks(ticks, labels)
+
+    def backup_ticks(self):
+        self.xticks_lower.backup()
+        self.xticks_upper.backup()
+        self.yticks_left.backup()
+        self.yticks_right.backup()
+
+    def restore_ticks(self):
+        self.xticks_lower.restore()
+        self.xticks_upper.restore()
+        self.yticks_left.restore()
+        self.yticks_right.restore()
+
+
 ##############################################
 ###########    User Functions    #############
 ##############################################
@@ -209,10 +257,10 @@ class _figure_class():
         return self
     plotsize = plot_size
 
-    def take_minimum_size(self): # in a matrix of subplots the minimum height/width will be considered for each row/column
+    def take_minimum_size(self):
         self.max_or_min = lambda data: min(data, default = 0)
 
-    def take_maximum_size(self): # in a matrix of subplots the minimum height/width will be considered for each row/column
+    def take_maximum_size(self):
         self.max_or_min = lambda data: max(data, default = 0)
 
     def subplots(self, rows = None, cols = None):
@@ -241,12 +289,12 @@ class _figure_class():
         return self
 
     def xlim(self, left = None, right = None, xside = None):
-        self.get_xaxis(xside).set_lim(left, right)
+        self.get_xticks(xside).set_lim(left, right)
         [self.get_subplot(*pos).xlim(left, right, xside) for pos in self.Positions]
         return self
         
     def ylim(self, lower = None, upper = None, yside = None):
-        self.get_xaxis(yside).set_lim(lower, upper)
+        self.get_yticks(yside).set_lim(lower, upper)
         [self.get_subplot(*pos).ylim(lower, upper, yside) for pos in self.Positions]
         return self
  
@@ -281,6 +329,13 @@ class _figure_class():
         self.yaxis_right.clear() 
         [self.get_subplot(*pos).clear_axes() for pos in self.Positions]
 
+    def clear_ticks(self):
+        self.xticks_lower.clear() 
+        self.xticks_upper.clear() 
+        self.yticks_left.clear() 
+        self.yticks_right.clear() 
+        [self.get_subplot(*pos).clear_ticks() for pos in self.Positions]
+
     def clear_canvas(self):
         self.canvas.clear()
         [self.get_subplot(*pos).clear_canvas() for pos in self.Positions]
@@ -289,6 +344,7 @@ class _figure_class():
         self.plot_size()
         self.clear_labels()
         self.clear_axes()
+        self.clear_ticks()
         self.clear_canvas()
 
     def clear_color(self):
@@ -332,10 +388,16 @@ class _figure_class():
         self.build_subplots() if self.subplots_present else None
 
     def build_plot(self):
+        self.backup_bars()
+        self.backup_ticks()
         self.backup_axes()
+        
         self.set_parts()
         self.update_parts_matrices()
         self.join_parts_matrices()
+        
+        self.restore_bars()
+        self.restore_ticks()
         self.restore_axes()
 
     def build_subplots(self):
@@ -347,50 +409,76 @@ class _figure_class():
 ##############################################
 
     def set_parts(self):
-        # Backup axes sizes
+        
+        ##### Resolve Components Heights #####
+        
+        # show or not the labels bars
+        self.bar_lower.clear_labels() if self.height < 1 else None
+        self.bar_upper.clear_labels() if self.height < 2 else None
 
-        # show labels bars
-        self.bar_lower.set_width(self.width)
-        self.bar_upper.set_width(self.width)
-        self.bar_lower.set_height(0) if self.height < 1 else None
-        self.bar_upper.set_height(0) if self.height < 2 else None
+        # show or not the x ticks
+        self.xticks_lower.set_ticks([]) if self.height < 3 else None
+        self.xticks_upper.set_ticks([]) if self.height < 4 else None
 
-        # show x axis
-        self.xaxis_lower.set_height(0) if self.height < 3 else None
-        self.xaxis_upper.set_height(0) if self.height < 4 else None
-
-        # show x ticks
-
-        # update x axis height
-
-        # show x text labels
+        # show or not the x axes
+        self.xaxis_lower.set_height(0) if self.height < 5 else None
+        self.xaxis_upper.set_height(0) if self.height < 6 else None
 
         # height canvas
         height_canvas = self.height
-        height_canvas -= (self.bar_lower.get_height() + self.bar_lower.get_height())
+        height_canvas -= (self.bar_upper.height + self.bar_lower.height)
+        height_canvas -= (self.xticks_lower.height + self.xticks_upper.height)
         height_canvas -= (self.xaxis_lower.height + self.xaxis_upper.height)
 
-        # set y axis height
+        # set y axes height
         self.yaxis_left.set_height(height_canvas)
         self.yaxis_right.set_height(height_canvas)
 
         # set y ticks height
+        self.yticks_left.set_height(height_canvas)
+        self.yticks_right.set_height(height_canvas)
 
-        # yticks
+        ##### Build Y Ticks #####
+        
+        # set y ticks
+        self.yticks_left.set_lim(*self.signals.ylim('left'))
+        self.yticks_right.set_lim(*self.signals.ylim('right'))
+        
+        self.yticks_left.update_ticks(); self.yticks_left.update_width()
+        self.yticks_right.update_ticks(); self.yticks_right.update_width()
+        
+        ##### Resolve Components Widths #####
 
-        # show y ticks
+        # set the labels bars width
+        self.bar_lower.set_width(self.width)
+        self.bar_upper.set_width(self.width)
+        
+        # show or not the y axes
         self.yaxis_left.set_width(0) if self.width < 1 else None
         self.yaxis_right.set_width(0) if self.width < 2 else None
 
-        # left, canvas, right widths
-        width_left = self.yaxis_left.width
-        width_right = self.yaxis_right.width
+        # widths canvas
+        width_left = self.yticks_left.width + self.yaxis_left.width
+        width_right = self.yaxis_right.width + self.yticks_right.width
         width_canvas = self.width - width_left - width_right
-
-        # x axis widths
+        
+        # set x axes widths
         self.xaxis_upper.set_widths(width_left, width_canvas, width_right)
         self.xaxis_lower.set_widths(width_left, width_canvas, width_right)
 
+        # set x ticks widths
+        self.xticks_lower.set_widths(width_left, width_canvas, width_right)
+        self.xticks_upper.set_widths(width_left, width_canvas, width_right)
+        
+        ##### Build X Ticks #####
+
+        # set x ticks
+        self.xticks_upper.set_lim(*self.signals.xlim('upper'))
+        self.xticks_lower.set_lim(*self.signals.xlim('lower'))
+
+        # set labels bars width
+        # set x axes width
+        # show or not y ticks  
         # create x ticks
         
         # canvas_size
@@ -403,6 +491,8 @@ class _figure_class():
         # x labels matrix
         self.bar_lower.build()
         self.bar_upper.build()
+        self.xticks_lower.build()
+        self.xticks_upper.build()
         self.xaxis_lower.build()
         self.xaxis_upper.build()
 
@@ -413,6 +503,8 @@ class _figure_class():
         # y ticks matrix
         
         # y axis matrix
+        self.yticks_left.build()
+        self.yticks_right.build()
         self.yaxis_left.build()
         self.yaxis_right.build()
 
@@ -420,10 +512,14 @@ class _figure_class():
         self.canvas.build()
 
     def join_parts_matrices(self):
-        upper = self.bar_upper.matrix.vertical_stack(self.xaxis_upper.matrix)
-        middle = self.yaxis_left.matrix.horizontal_stack(self.canvas.matrix)
+        upper = self.bar_upper.matrix.vertical_stack(self.xticks_upper.matrix)
+        upper = upper.vertical_stack(self.xaxis_upper.matrix)
+        middle = self.yticks_left.matrix.horizontal_stack(self.yaxis_left.matrix)
+        middle = middle.horizontal_stack(self.canvas.matrix)
         middle = middle.horizontal_stack(self.yaxis_right.matrix)
-        lower = self.xaxis_lower.matrix.vertical_stack(self.bar_lower.matrix)
+        middle = middle.horizontal_stack(self.yticks_right.matrix)
+        lower = self.xaxis_lower.matrix.vertical_stack(self.xticks_lower.matrix)
+        lower = lower.vertical_stack(self.bar_lower.matrix)
         self.matrix = upper.vertical_stack(middle).vertical_stack(lower)
         
     def join_subplots_matrices(self):

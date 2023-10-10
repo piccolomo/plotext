@@ -1,5 +1,6 @@
 from plotext._marker import border, line, space
-from plotext._string import get_displacement, only_spaces
+from plotext._string import only_spaces, correct_position
+from plotext._default import get_integer_horizontal_alignment, get_integer_vertical_alignment
 
 class matrix_class():
     def __init__(self, width = None, height = None):
@@ -45,21 +46,37 @@ class matrix_class():
 
     def insert_horizontal_string(self, row, col, string, alignment = 'left', overwrite = True):
         length = len(string)
+        index = get_integer_horizontal_alignment(alignment)
+        col = correct_position(col, index, length, self.width)
         Cols = range(length)
-        col = col + get_displacement(string, alignment)
         overwrite = overwrite or self.check_horizontal_string(row, col, length)
         [self.insert_element(row, col + c, string[c]) for c in Cols] if overwrite else None
 
-    def insert_vertical_string(self, row, col, string, overwrite = True):
+    def insert_vertical_string(self, row, col, string, alignment = 'top', overwrite = True):
         length = len(string)
+        index = get_integer_horizontal_alignment(alignment)
+        row = correct_position(row, index, length, self.height)
         Rows = range(length)
-        #overwrite = overwrite or self.check_vertical_string(row, col, length)
+        overwrite = overwrite or self.check_vertical_string(row, col, length)
         [self.insert_element(row + r, col, string[r]) for r in Rows] if overwrite else None
+
+    def correct_horizontal_position(self, string, position, alignment = 'left'):
+        ls = len(string)
+        
+        
 
     def get_horizontal_string(self, row, col, length):
         cols = range(max(0, col), min(col + length, self.width))
         string = [self.get_marker(row, c) for c in cols]
         return ''.join(string)
+
+    # def correct_coord(string, label, coord): # In the attempt to insert a label in string at given coordinate, the coordinate is adjusted so not to hit the borders of the string
+    # l = len(label)
+    # b, e = max(coord - l + 1, 0), min(coord + l, len(string) - 1)
+    # data = [i for i in range(b, e) if string[i] is space]
+    # b, e = min(data, default = coord - l + 1), max(data, default = coord + l)
+    # b, e = e - l + 1, b + l
+    # return (b + e - l) // 2
         
     def get_vertical_string(self, row, col, length):
         rows = range(max(0, row), min(row + length, self.height))
@@ -82,6 +99,9 @@ class matrix_class():
 
     def print(self):
         print(self.get_string())
+
+    def clear(self):
+        self.__init__(self.width, self.height)
 
         
 

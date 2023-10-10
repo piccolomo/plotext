@@ -1,4 +1,6 @@
 import sys
+from copy import deepcopy as copy
+
 
 platform = 'windows' if sys.platform in {'win32', 'cygwin'} else 'unix' # the platform (unix or windows) you are using plotext in
 

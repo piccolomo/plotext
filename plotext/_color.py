@@ -1,4 +1,4 @@
-from plotext._global import memorize
+from plotext._system import memorize
 
 ##############################################
 ###########    Color Utilities    ############
