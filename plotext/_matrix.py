@@ -1,4 +1,4 @@
-from plotext._marker import border, line, space
+from plotext._marker import space, tick, sum_markers
 from plotext._string import only_spaces, correct_position
 from plotext._default import get_integer_horizontal_alignment, get_integer_vertical_alignment
 
@@ -40,25 +40,30 @@ class matrix_class():
     def set_marker(self, row, col, marker):
         self.marker[row][col] = marker
 
-    def insert_element(self, row, col, marker):
-        self.set_marker(row, col, marker)
+    def insert_marker(self, row, col, marker, mode = 'overwrite'):
+        self.set_marker(row, col, marker) if mode == 'overwrite' else self.set_marker(row, col, sum_markers(self.get_marker(row, col), marker))
+            
+    def insert_element(self, row, col, marker, mode = 'overwrite'):
+        self.insert_marker(row, col, marker, mode)
 
 
     def insert_horizontal_string(self, row, col, string, alignment = 'left', overwrite = True):
         length = len(string)
         index = get_integer_horizontal_alignment(alignment)
-        col = correct_position(col, index, length, self.width)
+        col_new = correct_position(col, index, length, self.width)
         Cols = range(length)
-        overwrite = overwrite or self.check_horizontal_string(row, col, length)
-        [self.insert_element(row, col + c, string[c]) for c in Cols] if overwrite else None
+        just_do_it = overwrite or self.check_horizontal_string(row, col_new, length)
+        [self.insert_element(row, col_new + c, string[c]) for c in Cols] if just_do_it else None
+        return col if just_do_it else None
 
     def insert_vertical_string(self, row, col, string, alignment = 'top', overwrite = True):
         length = len(string)
         index = get_integer_horizontal_alignment(alignment)
-        row = correct_position(row, index, length, self.height)
+        row_new = correct_position(row, index, length, self.height)
         Rows = range(length)
-        overwrite = overwrite or self.check_vertical_string(row, col, length)
-        [self.insert_element(row + r, col, string[r]) for r in Rows] if overwrite else None
+        just_do_it = overwrite or self.check_vertical_string(row_new, col, length)
+        [self.insert_element(row_new + r, col, string[r]) for r in Rows] if just_do_it else None
+        return row if just_do_it else None
 
     def correct_horizontal_position(self, string, position, alignment = 'left'):
         ls = len(string)

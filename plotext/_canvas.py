@@ -1,6 +1,8 @@
 from plotext._default import default_canvas_color
 from plotext._color import is_color
 from plotext._matrix import matrix_class
+from math import floor
+
 
 class canvas_class():
     def __init__(self):
@@ -24,7 +26,9 @@ class canvas_class():
 def round8(data):
     return [round(el, 8) for el in data]
 
-def digitize(data, lim, bins):
+def digitize(data, lim, bins, round = True):
     change = lambda el: 0.5 + (bins - 1) * (el - lim[0]) / (lim[1] - lim[0])
-    return [change(el) for el in round8(data)]
+    data = [change(el) for el in round8(data)]
+    data = list(map(floor, data)) if round else data
+    return data
 

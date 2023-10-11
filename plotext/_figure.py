@@ -393,8 +393,8 @@ class _figure_class():
         self.backup_axes()
         
         self.set_parts()
-        self.update_parts_matrices()
-        self.join_parts_matrices()
+        self.build_parts()
+        self.join_parts()
         
         self.restore_bars()
         self.restore_ticks()
@@ -402,7 +402,7 @@ class _figure_class():
 
     def build_subplots(self):
         [self.get_subplot(*pos).build() for pos in self.Positions]
-        self.join_subplots_matrices()
+        self.join_subplots()
         
 ##############################################
 ##########    Build Utilities    #############
@@ -438,21 +438,22 @@ class _figure_class():
         self.yticks_left.set_height(height_canvas)
         self.yticks_right.set_height(height_canvas)
 
-        ##### Build Y Ticks #####
         
-        # set y ticks
+        ###### Build y ticks ###### (to get its widths)
+        
         self.yticks_left.set_lim(*self.signals.ylim('left'))
+        self.yticks_left.build()
+
         self.yticks_right.set_lim(*self.signals.ylim('right'))
-        
-        self.yticks_left.update_ticks(); self.yticks_left.update_width()
-        self.yticks_right.update_ticks(); self.yticks_right.update_width()
+        self.yticks_right.build()
+
         
         ##### Resolve Components Widths #####
-
+        
         # set the labels bars width
         self.bar_lower.set_width(self.width)
         self.bar_upper.set_width(self.width)
-        
+
         # show or not the y axes
         self.yaxis_left.set_width(0) if self.width < 1 else None
         self.yaxis_right.set_width(0) if self.width < 2 else None
@@ -470,48 +471,63 @@ class _figure_class():
         self.xticks_lower.set_widths(width_left, width_canvas, width_right)
         self.xticks_upper.set_widths(width_left, width_canvas, width_right)
         
-        ##### Build X Ticks #####
-
-        # set x ticks
-        self.xticks_upper.set_lim(*self.signals.xlim('upper'))
+        ##### X Axes Ticks #####
+        
+        # set lower x ticks
         self.xticks_lower.set_lim(*self.signals.xlim('lower'))
+        self.xticks_lower.build()
+        self.xaxis_lower.set_ticks_outer(self.xticks_lower.ticks_outer)
 
+        # set upper x ticks
+        self.xticks_upper.set_lim(*self.signals.xlim('upper'))
+        self.xticks_upper.build()
+        self.xaxis_upper.set_ticks_outer(self.xticks_upper.ticks_outer)
+
+        # set y axes ticks
+        self.yaxis_left.set_ticks_outer(self.yticks_left.ticks_outer)
+        self.yaxis_right.set_ticks_outer(self.yticks_right.ticks_outer)
+
+
+
+        ##### Canvas #####
+        self.canvas.set_size(width_canvas, height_canvas)
+
+        
+    def build_parts(self):
+        # build bars
+        self.bar_lower.build()
+        self.bar_upper.build()
+
+        # build x ticks
+        self.xticks_lower.build()
+        self.xticks_upper.build()
+
+        # build x axes
+        self.xaxis_lower.build()
+        self.xaxis_upper.build()
+
+        self.yticks_left.build()
+        self.yticks_right.build()
+        self.yaxis_left.build()
+        self.yaxis_right.build()
+        
         # set labels bars width
         # set x axes width
         # show or not y ticks  
         # create x ticks
         
-        # canvas_size
-        self.canvas.set_size(width_canvas, height_canvas)
+        self.canvas.build()
+
+        # set outer ticks
+        #self.xaxis_lower.insert_outer_ticks(self.xticks_lower.rticks)
+
+        # Extend Ticks to Axes
+        
 
         # restore axes
         
 
-    def update_parts_matrices(self):
-        # x labels matrix
-        self.bar_lower.build()
-        self.bar_upper.build()
-        self.xticks_lower.build()
-        self.xticks_upper.build()
-        self.xaxis_lower.build()
-        self.xaxis_upper.build()
-
-        # x ticks matrix
-
-        # x axis matrix
-        
-        # y ticks matrix
-        
-        # y axis matrix
-        self.yticks_left.build()
-        self.yticks_right.build()
-        self.yaxis_left.build()
-        self.yaxis_right.build()
-
-        # canvas matrix
-        self.canvas.build()
-
-    def join_parts_matrices(self):
+    def join_parts(self):
         upper = self.bar_upper.matrix.vertical_stack(self.xticks_upper.matrix)
         upper = upper.vertical_stack(self.xaxis_upper.matrix)
         middle = self.yticks_left.matrix.horizontal_stack(self.yaxis_left.matrix)
@@ -522,7 +538,7 @@ class _figure_class():
         lower = lower.vertical_stack(self.bar_lower.matrix)
         self.matrix = upper.vertical_stack(middle).vertical_stack(lower)
         
-    def join_subplots_matrices(self):
+    def join_subplots(self):
         matrices = [[self.get_subplot(row, col).matrix for col in self.Cols] for row in self.Rows]
         self.matrix = join_matrices(matrices) if self.subplots_present else self.matrix
 

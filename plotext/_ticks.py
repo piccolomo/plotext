@@ -19,8 +19,6 @@ class ticks_class():
         minimum = minimum if self.minimum is None else self.minimum
         maximum = maximum if self.maximum is None else self.maximum
         self.lim = [minimum, maximum]
-        #self.set_frequency(0) if None in self.lim else None
-        #self.set_ticks([]) if None in self.lim else None
 
     def set_default_frequency(self, frequency = None):
         self.default_frequency = frequency
@@ -84,17 +82,14 @@ class xticks_class(ticks_class):
         self.update_ticks()
         self.update_height()
         self.matrix = matrix_class(self.width, self.height)
-        self.update_relative_ticks()
         self.insert_ticks()
 
-    def update_relative_ticks(self):
-        self.rticks = digitize(self.ticks, self.lim, self.width_canvas) if None not in self.lim else []
-
     def insert_ticks(self):
-        just_do_it = self.height == 1
-        r = range(len(self.rticks))
-        rticks = [floor(el + self.width_left) for el in self.rticks]
-        [self.matrix.insert_horizontal_string(0, rticks[i], self.labels[i], 'dynamic', False) for i in r if self.rticks[i] < self.width_canvas] if just_do_it else None
+        rticks = digitize(self.ticks, self.lim, self.width_canvas) if None not in self.lim and self.height != 0 else []
+        rticks = [el + self.width_left for el in rticks]
+        r = range(len(rticks))
+        rticks = [self.matrix.insert_horizontal_string(0, rticks[i], self.labels[i], 'dynamic', False) for i in r if rticks[i] < self.width_left + self.width_canvas]
+        self.ticks_outer = [el for el in rticks if el is not None]
 
 
 class yticks_class(ticks_class):
@@ -114,20 +109,17 @@ class yticks_class(ticks_class):
         self.width = max(map(len, self.labels), default = 0) if self.labels is not None else 0
 
     def build(self):
-        #self.update_ticks()
+        self.update_ticks()
         self.update_width()
         self.matrix = matrix_class(self.width, self.height)
-        self.update_relative_ticks()
         self.insert_ticks()
 
-    def update_relative_ticks(self):
-        self.rticks = digitize(self.ticks, self.lim, self.height) if None not in self.lim else []
-
     def insert_ticks(self):
-        just_do_it = self.width > 0
-        r = range(len(self.rticks))
-        rticks = [floor(self.height - el) for el in self.rticks]
-        [self.matrix.insert_horizontal_string(rticks[i], 0, self.labels[i]) for i in r if self.rticks[i] < self.height] if just_do_it else None
+        rticks = digitize(self.ticks, self.lim, self.height) if None not in self.lim and self.width > 0 else []
+        rticks = [self.height - 1 - el for el in rticks]
+        r = range(len(rticks))
+        ritcks = [self.matrix.insert_horizontal_string(rticks[i], 0, self.labels[i]) for i in r if rticks[i] < self.height]
+        self.ticks_outer = [el for el in rticks if el is not None]
         
         
 
