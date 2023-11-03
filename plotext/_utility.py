@@ -737,9 +737,10 @@ def hist_data(data, bins = 10, norm = False): # it returns data in histogram for
 
 def single_bar(x, y, ylabel, marker, colors):
     l = len(y)
+    lc = len(colors)
     xs = colorize(str(x), 'gray+', 'bold')
     bar = [marker * el for el in y]
-    bar = [apply_ansi(bar[i], colors[i], 1) for i in range(l)]
+    bar = [apply_ansi(bar[i], colors[i % lc], 1) for i in range(l)]
     ylabel = colorize(f'{ylabel:.2f}', 'gray+', 'bold')
     bar = xs + space + ''.join(bar) + space + ylabel
     return bar
@@ -781,7 +782,8 @@ def get_simple_labels(marker, labels, colors, width):
     out = '\n'
     if labels != None:
         l = len(labels)
-        out =  space.join([colorize(marker * 3, colors[i]) + space + colorize(labels[i], 'gray+', 'bold') for i in range(l)])
+        lc = len(colors)
+        out =  space.join([colorize(marker * 3, colors[i % lc]) + space + colorize(labels[i], 'gray+', 'bold') for i in range(l)])
         out = '\n' + get_title(out, width)
     return out
 
