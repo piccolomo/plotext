@@ -1,4 +1,4 @@
-# this file containts all docstrings
+# this file contains all docstrings
 
 from ._doc_utils import method, doc, par, past, out, t
 
@@ -409,7 +409,7 @@ par("x", "the two x coordinates of the rectangle.", t.list_str(2))
 par("y", "the two y coordinates of the rectangle.", t.list_str(2))
 par("marker", "the marker used to identify the shape plotted, which could be a single character or the available marker codes, accessible with the markers() method,", t.marker, 'hd')
 par("color", "the color code of shape plotted, accessible with the colors() method", t.color, 'blue+')
-par("lines", "If True, the shape borders will be shown, otherwise just its vertexes.", t.bool, True)
+par("lines", "If True, the shape borders will be shown, otherwise just its vertices.", t.bool, True)
 par("fill" , "if True, the body of the shape will be filled with colored markers.", t.bool, True)
 past("xside", "scatter")
 past("yside", "scatter")
@@ -420,7 +420,7 @@ method("polygon")
 doc("It creates a polygon centered at the given coordinates.")
 par("x", "the polygon center x coordinate.")
 par("y", "the polygon center y coordinate.")
-par("radius", "the distance of the polygon vertexes to the center; for a circle, it corresponds to its actual radius, hence the name.", 'number', 1)
+par("radius", "the distance of the polygon vertices to the center; for a circle, it corresponds to its actual radius, hence the name.", 'number', 1)
 par("sides", "the number of sides of the polygon. To simulate a circle, input a high number (> 50).", t.int, 3)
 past("marker", "rectangle")
 past("color", "rectangle")

@@ -101,8 +101,8 @@ To add shapes to a plot use the `rectangle()` or `polygon()` functions.
 
 - The dimensions and position of each shape could be changed using its `x` and `y` parameters (for both rectangles and polygons), `sides` and `radius` (for polygons only).
 - A circle could be simulated by a polygon with high `sides`.
-- The `radius` parameter is the distance of the polygon vertexes to its center: for a simulated circle this corresponds to its actual radius, hence the name.
-- The aspect of the shapes could be changed with the `lines` and `fill` parameters, to plot lines between the vertexes (as by default) and fill the shape with colored markers (`False` by default),
+- The `radius` parameter is the distance of the polygon vertices to its center: for a simulated circle this corresponds to its actual radius, hence the name.
+- The aspect of the shapes could be changed with the `lines` and `fill` parameters, to plot lines between the vertices (as by default) and fill the shape with colored markers (`False` by default),
 
 Here is an example:
 

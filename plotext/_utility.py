@@ -11,7 +11,7 @@ def round(n, d = 0): # the standard round(0.5) = 0 instead of 1; this version ro
     r = f if n - f < 0.5 else math.ceil(n)
     return r * 10 ** (-d)
 
-def mean(x, y, p = 1): # mean of x and y with optional power p; if p tends to 0 the minumum is returned; if p tends to infinity the max is returned; p = 1 is the standard mean
+def mean(x, y, p = 1): # mean of x and y with optional power p; if p tends to 0 the minimum is returned; if p tends to infinity the max is returned; p = 1 is the standard mean
     return ((x ** p + y ** p) / 2) ** (1 / p)
 
 def replace(data, data2, element = None): # replace element in data with correspondent in data2 when element is found
@@ -337,7 +337,7 @@ simple_bar_marker = '▇'
 def get_hd_marker(code):
    return hd_codes[code] if len(code) == 4 else fhd_codes[code] if len(code) == 6 else braille_codes[code]
 
-def marker_factor(marker, hd, fhd, braille): # usefull to improve the resolution of the canvas for higher resolution markers
+def marker_factor(marker, hd, fhd, braille): # useful to improve the resolution of the canvas for higher resolution markers
    return hd if marker == 'hd' else fhd if marker == 'fhd' else braille if marker == 'braille' else 1
 
 ##############################################
@@ -430,7 +430,7 @@ def ansi(color, character):
     end = ansi_end if is_color else ''
     return [begin, end]
 
-## This section is usefull to produce html colored version of the plot and to translate all color types (types 0 and 1) in rgb (type 2 in plotext) and avoid confusion. the match is almost exact and it depends on the terminal i suppose
+## This section is useful to produce html colored version of the plot and to translate all color types (types 0 and 1) in rgb (type 2 in plotext) and avoid confusion. the match is almost exact and it depends on the terminal i suppose
 
 def to_rgb(color):
     if is_string_color(color): # from 0 to 1
@@ -816,7 +816,7 @@ def box(x, y, width, minimum): # given the bars center coordinates and height, i
 ##########    Image Utilities    #############
 ##############################################
 
-def update_size(size_old, size_new): # it resize an image to the desired size, mantaining or not its size ratio and adding or not a pixel averaging factor with resample = True
+def update_size(size_old, size_new): # it resize an image to the desired size, maintaining or not its size ratio and adding or not a pixel averaging factor with resample = True
     size_old = [size_old[0], size_old[1] / 2]
     ratio_old = size_old[1] / size_old[0]
     size_new = replace(size_new, size_old)

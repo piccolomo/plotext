@@ -1,5 +1,5 @@
 #!/bin/bash
-#choise of yes or no
+#choice of yes or no
 fork(){
 while true;
 do

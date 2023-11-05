@@ -1,5 +1,5 @@
 from datetime import datetime as dt
-from datetime import timezone as tz # usefull for dates before 1970 in windows
+from datetime import timezone as tz # useful for dates before 1970 in windows
 
 class date_class():
     
@@ -14,7 +14,7 @@ class date_class():
         self.input_form = self.correct_form(input_form)
         self.output_form = self.correct_form(output_form)
         
-    def set_time0(self, string, input_form = None): # the origin of time, usefull for log scale not to hit the 0 timestamp
+    def set_time0(self, string, input_form = None): # the origin of time, useful for log scale not to hit the 0 timestamp
         self.time0 = self.string_to_time(string, input_form, 0)
 
     def today_datetime(self): # today in datetime form

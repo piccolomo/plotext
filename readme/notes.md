@@ -38,7 +38,7 @@ Here are the terminal commands to install `plotext` on your machine:
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Notes](https://github.com/piccolomo/plotext/blob/master/readme/notes.md#notes)
 
 ## Future Ideas
-Any new idea is welcomed opening an [issue report](https://github.com/piccolomo/plotext/issues/new) or a [pull requst](https://github.com/piccolomo/plotext/compare). 
+Any new idea is welcomed opening an [issue report](https://github.com/piccolomo/plotext/issues/new) or a [pull request](https://github.com/piccolomo/plotext/compare). 
 
 Here are some of the possible ways to improve `plotext` in the future (any help is welcomed):
 
@@ -121,7 +121,7 @@ Available on [GitHub](https://github.com/piccolomo/plotext) only:
 - renamed `datetimes_to_string()` method to `datetimes_to_strings()`
 - removed `trend` parameter from `indicator()` function
 - added `log` and `header` parameters to `read_data()` method
-- changed text default allignment to `'center'` in `text()` method
+- changed text default alignment to `'center'` in `text()` method
 - added boxplot as requested in [Issue 169](https://github.com/piccolomo/plotext/issues/169) and proposed in [Pull Request 170](https://github.com/piccolomo/plotext/pull/170)
 
 

@@ -202,13 +202,13 @@ the first form:
 import plotext as plt
 
 labels = ["apple", "orange", "pear", "banana"]
-datas = [
+data = [
     [1,2,3,5,10,8],
     [4,9,6,12,20,13],
     [1,2,3,4,5,6],
     [3,9,12,16,9,8,3,7,2]]
 
-plt.box(labels, datas, width=0.3)
+plt.box(labels, data, width=0.3)
 plt.title("The weight of the fruit")
 plt.show()
 ```
@@ -216,7 +216,7 @@ plt.show()
 or directly on terminal:
 
 ```shell
-python3 -c 'import plotext as plt;labels = ["apple", "orange", "pear", "banana"];datas = [[1,2,3,5,10,8],[4,9,6,12,20,13],[1,2,3,4,5,6],[3,9,12,16,9,8,3,7,2]];plt.box(labels, datas, width=0.3);plt.title("The weight of the fruit");plt.show()'
+python3 -c 'import plotext as plt;labels = ["apple", "orange", "pear", "banana"];data = [[1,2,3,5,10,8],[4,9,6,12,20,13],[1,2,3,4,5,6],[3,9,12,16,9,8,3,7,2]];plt.box(labels, data, width=0.3);plt.title("The weight of the fruit");plt.show()'
 ```
 ![box-plot-1](https://raw.githubusercontent.com/is/plotext/box/data/box-plot-1.png)
 
@@ -225,14 +225,14 @@ the second form:
 import plotext as plt
 
 labels = ["apple", "orange", "pear", "banana"]
-datas = [
+data = [
     # max, q75, q50, q25, min
     [10, 7, 5, 3, 1.5],
     [19, 12.3, 9, 7, 4],
     [15, 14, 11, 9, 8],
     [13, 12, 11, 10, 6]]
 
-plt.box(labels, datas, width=0.3, quintuples=True)
+plt.box(labels, data, width=0.3, quintuples=True)
 plt.title("The weight of the fruit")
 plt.show()
 ```
@@ -240,10 +240,10 @@ plt.show()
 or directly on terminal:
 
 ```shell
-python3 -c 'import plotext as plt;labels = ["apple", "orange", "pear", "banana"];datas = [[10, 7, 5, 3, 1.5],[19, 12.3, 9, 7, 4],[15, 14, 11, 9, 8],[13, 12, 11, 10, 6]];plt.box(labels, datas, width=0.3, quintuples=True);plt.title("The weight of the fruit");plt.show()'
+python3 -c 'import plotext as plt;labels = ["apple", "orange", "pear", "banana"];data = [[10, 7, 5, 3, 1.5],[19, 12.3, 9, 7, 4],[15, 14, 11, 9, 8],[13, 12, 11, 10, 6]];plt.box(labels, data, width=0.3, quintuples=True);plt.title("The weight of the fruit");plt.show()'
 ```
 ![box-plot-2](https://raw.githubusercontent.com/is/plotext/box/data/box-plot-2.png)
-This feauture may require further development. 
+This feature may require further development. 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Bar Plots](https://github.com/piccolomo/plotext/blob/master/readme/bar.md#bar-plots)
 
 ## Histogram Plot
