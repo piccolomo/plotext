@@ -5,6 +5,7 @@
 - [Streaming Data](https://github.com/piccolomo/plotext/blob/master/readme/special.md#streaming-data)
 - [Confusion Matrix](https://github.com/piccolomo/plotext/blob/master/readme/special.md#confusion-matrix)
 - [Matrix Plot](https://github.com/piccolomo/plotext/blob/master/readme/special.md#matrix-plot)
+- [Heatmap](https://github.com/piccolomo/plotext/blob/master/readme/special.md#heatmap-plot)
 
 [Main Guide](https://github.com/piccolomo/plotext#guide)
 
@@ -169,3 +170,40 @@ python3 -c "import plotext as plt; from random import randrange; l = 300; actual
 More documentation can be accessed with `doc.confusion_matrix()`.
 
 [Main Guide](https://github.com/piccolomo/plotext#guide), [Special Plots](https://github.com/piccolomo/plotext/blob/master/readme/special.md)
+
+## Heatmap Plot
+
+A heatmap is a graphical representation of data where values within a dataframe are represented as colors. It is a useful tool for visualizing and analyzing data, particularly when you want to show patterns or relationships in a large dataset. 
+
+Color Mapping: In a heatmap, each cell in a matrix is assigned a color based on its value. Typically, a color gradient is used. The color intensity represents the magnitude of the values.
+
+To plot the [Heatmap](https://en.wikipedia.org/wiki/Heat_map) use the `heatmap()` function.
+
+Here is a coded example:
+
+```python
+import plotext as plt
+import numpy as np
+import pandas as pd
+np.random.seed(0)
+students = ['Student 1', 'Student 2', 'Student 3', 'Student 4', 'Student 5', 'Student 6', 'Student 7', 'Student 8', 'Student 9', 'Student 10']
+subjects = ['Math', 'Science', 'History', 'English', 'Art', 'Physics', 'Chemistry', 'Biology']
+data = {'Student 1': [94, 97, 50, 53, 53, 89, 59, 69], 'Student 2': [71, 86, 73, 56, 74, 74, 62, 51], 'Student 3': [88, 89, 73, 96, 74, 67, 87, 75], 'Student 4': [63, 58, 59, 70, 66, 55, 65, 97], 'Student 5': [50,68, 85, 74, 99, 79, 69, 69], 'Student 6': [64, 89, 82, 51, 59, 82, 81, 60], 'Student 7': [73, 85, 61, 78, 84, 50, 50, 86], 'Student 8': [55, 88, 90, 67, 65, 54, 91, 92], 'Student 9': [81, 51, 51, 89, 91, 85, 88, 61], 'Student 10': [96, 68, 77, 50, 64, 85, 62, 92]}
+dataframe = pd.DataFrame(data, index=subjects)
+
+plt.heatmap(dataframe)
+plt.show()    
+```
+
+or directly on terminal:
+
+```console
+python -c "import plotext as plt; import numpy as np; import pandas as pd; np.random.seed(0); students = ['Student 1', 'Student 2', 'Student 3', 'Student 4', 'Student 5', 'Student 6', 'Student 7', 'Student 8', 'Student 9', 'Student 10']; subjects = ['Math', 'Science', 'History', 'English', 'Art', 'Physics', 'Chemistry', 'Biology']; data = {'Student 1': [94, 97, 50, 53, 53, 89, 59, 69], 'Student 2': [71, 86, 73, 56, 74, 74, 62, 51], 'Student 3': [88, 89, 73, 96, 74, 67, 87, 75], 'Student 4': [63, 58, 59, 70, 66, 55, 65, 97], 'Student 5': [50,68, 85, 74, 99, 79, 69, 69], 'Student 6': [64, 89, 82, 51, 59, 82, 81, 60], 'Student 7': [73, 85, 61, 78, 84, 50, 50, 86], 'Student 8': [55, 88, 90, 67, 65, 54, 91, 92], 'Student 9': [81, 51, 51, 89, 91, 85, 88, 61], 'Student 10': [96, 68, 77, 50, 64, 85, 62, 92]}; dataframe = pd.DataFrame(data, index=subjects); plt.heatmap(dataframe); plt.show();"
+```
+
+![cmatrix](https://raw.githubusercontent.com/piccolomo/plotext/master/data/heatmap.png)
+
+More documentation can be accessed with `doc.heatmap()`.
+
+[Main Guide](https://github.com/piccolomo/plotext#guide), [Special Plots](https://github.com/piccolomo/plotext/blob/master/readme/special.md)
+

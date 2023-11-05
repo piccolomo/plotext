@@ -720,7 +720,7 @@ class monitor_class(build_class):
         self.set_xticks(n_labels, labels)
         self.set_yticks(n_labels, labels)
         self.set_ticks_color(color); self.set_ticks_style(style);
-        self.set_axes_color('default'); self.set_canvas_color('default'); 
+        self.set_axes_color('default'); self.set_canvas_color('default');
         self.set_title('Confusion Matrix')
         self.set_xlabel('Predicted')
         self.set_ylabel('Actual')
@@ -774,6 +774,41 @@ class monitor_class(build_class):
                     matrix[r][c] = ansi + marker[c] + ut.ansi_end
             self.matrix.canvas = '\n'.join([''.join(row) for row in matrix])
             self.fast_plot = True
+
+    def draw_heatmap(self, dataframe, color = None, style=None):
+        color = self.default.cmatrix_color if color is None else self.check_color(color)
+        style = self.default.cmatrix_style if style is None else self.check_style(style)
+
+        xlabels = dataframe.columns.tolist()
+        ylabels = dataframe.index.tolist()
+
+        cmatrix = dataframe.values.tolist()
+        cm = ut.join(cmatrix)
+        m, M, t = min(cm), max(cm), sum(cm)
+
+        lm = 253
+        lM = 80
+        to_255 = lambda l: round(lm + (lM - lm) * (l - m) / (M - m))  # l=m -> lm; l=M->lM
+        to_color = lambda l: tuple([to_255(l)] * 3)
+
+        for r in range(len(dataframe.index.tolist())):
+            for c in range(len(dataframe.columns.tolist())):
+                count = cmatrix[r][c]
+                col = to_color(count)
+                self.draw_rectangle([c - 0.5, c + 0.5], [r - 0.5, r + 0.5], marker= 'sd', color=col, fill=True)
+
+        y_labels = list(set(range(len(dataframe.columns))))
+        x_labels = list(set(range(len(dataframe.columns))))
+
+        self.set_yreverse(True)
+        self.set_xticks(x_labels, xlabels)
+        self.set_yticks(y_labels, ylabels)
+        self.set_ticks_color(color);
+        self.set_ticks_style(style);
+        self.set_axes_color('default');
+        self.set_canvas_color('default');
+        self.set_title('Heatmap')
+        print(dataframe)
 
     def draw_image(self, path, marker = None, style = None, fast = False, grayscale = False):
         from PIL import Image        
