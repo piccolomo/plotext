@@ -1,0 +1,2 @@
+include plotext/_kernel.so
+include plotext/_kernel.dll

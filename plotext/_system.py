@@ -1,10 +1,13 @@
-import sys
 from copy import deepcopy as copy
+import sys
 
 
-platform = 'windows' if sys.platform in {'win32', 'cygwin'} else 'unix' # the platform (unix or windows) you are using plotext in
+# the platform (unix or windows) you are using plotext in
+platform = 'windows' if sys.platform in {'win32', 'cygwin'} else 'unix' 
 
-class memorize: # it memorise the arguments of a function, when used as its decorator, to reduce computational time
+
+# it memorise the arguments of a function, when used as its decorator, to reduce computational time
+class memorize:
     def __init__(self, function):
         self.f = function
         self.memo = {}

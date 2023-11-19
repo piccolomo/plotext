@@ -1,7 +1,6 @@
 from plotext._system import platform
-from plotext._marker import default_marker
-from plotext._color import default_color, default_color_sequence
-from plotext._style import default_style
+#from plotext._marker import default_marker
+#from plotext._style import no_style
 
 
 class default_terminal():
@@ -19,6 +18,7 @@ class default_figure():
     def __init__(self):
         self.set_limitsize()
         self.size_direction = 1
+        self.color_sequence = ["blue+", "green+", "red+", "cyan+"]
 
     def set_limitsize(self, limit_width = None, limit_height = None):
         self.limit_width = True if limit_width is None else bool(limit_width)
@@ -28,9 +28,9 @@ class default_figure():
         
 class default_signal():
     def __init__(self):
-        self.marker = default_marker
-        self.color = default_color
-        self.style = default_style
+        self.marker = 'x'
+        self.color = 'blue+'
+        self.style = None
         self.fills = [False, True, 'internal']
         self.fill = self.fills[0] # same for x and y
         self.xsides = ["lower", "upper"] # the two possibilities, the first is default

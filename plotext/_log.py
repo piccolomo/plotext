@@ -1,4 +1,6 @@
-from plotext._color import colorize, no_color
+from plotext._colorize import colorize
+
+warning_color = 'orange+'
 
 class log_class():
     def __init__(self):
@@ -16,11 +18,7 @@ class log_class():
         self.show = False
 
     def warning(self, text):
-        if not self.show:
-            return 
-        #message = colorize('Warning:', self.color_warning, "bold")
-        #message += colorize(text, no_color, self.style_warning)
-        print('Warning:', text) 
+        print(colorize('Warning', warning_color) + ':', text) if self.show else None
         
 log = log_class()
         
