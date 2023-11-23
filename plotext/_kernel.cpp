@@ -57,6 +57,8 @@ public:
 
   bool operator==(const Color& c) const {
     return level == c.level and type == c.type and ((type == none) or (type == integer and r == c.r) or (type == rgb and r == c.r and g == c.g and b == c.b));}
+
+  void clear(){type = none; r = g = b = 0;}
 };
 
   
@@ -92,6 +94,9 @@ public:
       wcout << L")" << endl;}}
 
   bool operator==(const Style& st) const {return equal(code, end(code), st.code);}
+  
+  void clear(){for (int i = 0; i < 8; ++i){set(i, false);}}
+
 };
 
 
@@ -127,6 +132,11 @@ public:
   
   bool operator==(const Pixel& p) const {return ((fg == p.fg) and (bg == p.bg) and (st == p.st));}
   bool operator!=(const Pixel& p) const {return not (*this == p);}
+
+  void clear(){m = L' '; fg.clear(); bg.clear(); st.clear();};
+
+  bool check(){return get_marker() == L' ';}
+
 };
 
 
@@ -161,10 +171,10 @@ public:
   void set_novels(int i, int l){set_novel(i); if(l > 0){set_novel(i + l - 0);};}
   void init_novel(){set_novels(0, length());}
 
-  bool check(int i, int l){bool res = 1;
-    for(int j = 0; j < l; j++){res = res and (get_marker(i + j) == L' ');}
+  bool check(int i, int length){bool res = true;
+    for (int l = 0; l < length; l++){res = res and pixel.at(i + l).check();}
     return res;}
-
+  
   int length() const {return pixel.size();}
   Pixel & get(int i){return pixel[i];}
 
@@ -181,6 +191,8 @@ public:
   return out;}
 
   void show(){wcout << get_string(); if(length() > 0){wcout << "\n";}}
+
+  void clear(){for (int i = 0; i < length(); i++){pixel.at(i).clear();}}
 };
 
 
@@ -217,12 +229,15 @@ public:
 	int col_new = col + direction * delta;
         int col_real = col_new - left;
 	if (col_real < col - length or col_real > col){continue;}
-	bool all_spaces = check(col_real, row, length);
+	bool all_spaces = line.at(row).check(col_real - 1, length + 2);
 	if (all_spaces){insert_h(col_real, row, s, p); return true;}
 	else{continue;}}}
     return false;}
 
-  bool check(int col, int row, int l){return line.at(row).check(col, l);}
+  bool check(int col, int row, int cols, int rows){bool res = true;
+    for (int r = 0; r < rows; r++){res = res and line.at(row + r).check(col, cols);}
+    return res;}
+
 
   wstring get_string(bool colorless = false){
     wstring out = L"";
@@ -237,6 +252,14 @@ public:
     else {return line.at(0).length();}}
   
   void show(){wcout << get_string(); if(rows() > 0){wcout << "\n";}}
+
+  Matrix part(int start, int end){
+    int rows = end - start;
+    Matrix m(cols(), rows);
+    for (int row = 0; row < rows; row++) {m.line.at(row) = line.at(row + start);}
+    return m;}
+
+  void clear(){for (int row = 0; row < rows(); row ++){line.at(row).clear();}}
 };
 
 
@@ -257,7 +280,6 @@ public:
   bool operator==(Marker M) const {return marker == M.marker;}
   bool operator==(wchar_t m) const {return marker == m;}
   bool operator==(vector<bool> c) const {return code == c;}
-
 };
 
 
@@ -350,7 +372,7 @@ extern "C" {
 
   void matrix_insert_m(Matrix * m, int col, int row, Matrix * nm){m->insert_m(col, row, *nm);}
 
-  bool matrix_check(Matrix * m, int col, int row, int l){return m->check(col, row, l);}
+  bool matrix_check(Matrix * m, int col, int row, int cols, int rows){return m->check(col, row, cols, rows);}
 
   // Matrix * matrix_hstack(Matrix * m1, Matrix * m2){Matrix * m = new Matrix(m1->hstack(*m2)); return m;}
 
@@ -369,7 +391,13 @@ extern "C" {
   int matrix_rows(Matrix * m){return m->rows();}
   int matrix_cols(Matrix * m){return m->cols();}
 
+  Matrix * matrix_part(Matrix * m, int start, int end) {return new Matrix(m->part(start, end)); }
 
+  void matrix_clear(Matrix * m){m -> clear();}
+
+  void matrix_fill(Matrix * m, Pixel * p) {m->fill(*p);}
+
+  
   Markers * markers_create(){return new Markers();}
   
   void markers_add(Markers * M, bool * c, int c_size, wchar_t m){
@@ -385,97 +413,7 @@ extern "C" {
     
   void markers_destroy(Markers * M){delete M;}
 
-
+  
 };
-
-
-  // // auto start = chrono::high_resolution_clock::now();
-  // // for(int i = 0; i < l; i++){
-  // //   s.show();
-  // // }
-  // // auto end = chrono::high_resolution_clock::now();
-  // // chrono::duration<double> duration = end - start;
-  // // cout << "Execution time: " << (pow(10, 6)) * duration.count() / (l) << " us" << endl;
-
-
-  //Color copy(){Color nc; nc.type = type; nc.i = i; nc.r = r; nc.g = g; nc.b = b; return nc;}
-
-  //Style copy(){Style ns; for(int i = 0; i < 8; i++){ns.code[i] = code[i];}; return ns;}
-  //bool check_color_code(int code){return (0 <= code && code <= 255);}
-
-  // void set_fullground(const Fullground & c){fg.set(c);}
-  // void set_background(const Background & color){bg.set(color);}
-  //void set_style(const Style & s){st.set(s);}
-  //Pixel copy(){Pixel np; np.m = m; np.fg = fg.copy(); np.st = st.copy(); return np;}
-  // string get_colored_marker(int i){return get(i).get_colored_marker();};
-
-  //String copy(){String ns(length); ns.insert(0, *this); return ns;}
-
-  // void insert_xtick(int col, int row, string label){
-  //   int l = label.length();
-  //   set(row, col, 'T');
-  //   int col_center = col - l / 2;
-  //   insert_h(row + 1, col_center, label);}
-
-  // String get(int row){return line[row];}
-
-  // void set(int row, const String & s = String()){line[row] = s;}
-  // void set(int col, int row, const Pixel & p = Pixel()){line[row].set(col, p);}
-
-    //Matrix copy() {Matrix nm(rows, cols); nm.insert_m(*this); return nm;}
-// vector<string> split(const string& str, char delimiter) {
-//     vector<string> result;
-//     istringstream stream(str);
-//     string token;
-//     while(getline(stream, token, delimiter)){result.push_back(token);}
-//     return result;};
-
-// int strings_max_length(const vector<string>& vec) {
-//     int length = 0;
-//     for (const string& str : vec) {
-//         int length_temp = str.length();
-//         if (length_temp > length) {
-// 	  length = length_temp;}}
-// 	return length;};
-
-// Matrix string_to_matrix(string s, const Pixel & p = Pixel()){
-//   vector<string> sv = split(s, '\n');
-//   int height = sv.size();
-//   int width = strings_max_length(sv);
-//   Matrix m(width, height);
-//   for(int i = 0; i < sv.size(); i++){
-//     m.insert_h(0, i, sv[i], p);
-//   }
-//   return m;}
-
-// Matrix * matrix_from_string2(const char * s, Pixel * p){
-//   Matrix * mp = new Matrix(string_to_matrix(s, *p));
-//   return mp;}
-//setlocale(LC_ALL, "");
-
-  // Matrix vstack(const Matrix & m){
-  //   int nr = rows() + m.rows();
-  //   Matrix n(cols(), nr);
-  //   n.insert_m(0, 0, *this);
-  //   n.insert_m(0, rows(), m);
-  //   return n;}
-
-  // Matrix hstack(const Matrix & m){
-  //   int nc = cols() + m.cols();
-  //   Matrix n(nc, rows());
-  //   n.insert_m(0,    0, *this);
-  //   n.insert_m(cols(), 0, m);
-  //   return n;}
-
-//#include <stdio.h>
-//#include <chrono>
-//#include <cmath>
-//#include <array>
-//#include <cstdio>
-//#include <cstring>
-//#include <string>
-//#include <sstream>
-//#include <codecvt>
-//#include <locale>
 
 

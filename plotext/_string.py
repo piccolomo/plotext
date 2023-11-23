@@ -1,7 +1,11 @@
-from plotext._markers import tick, space
+from plotext._markers import tick
+import sys
 
 space = ' '
 nl = '\n'
+
+def write(string):
+    sys.stdout.write(string)
 
 def get_frame(width, height):
     Width = range(width); Height = range(height)

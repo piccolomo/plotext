@@ -74,7 +74,9 @@ color_codes = {"black":   0,    "white": 15,
                "magenta": 5, "magenta+": 13,
                "cyan":    6,    "cyan+": 14}
 
+
 style_codes = ["bold", "dim", "italic", "underline", "double-underline", "strike", "inverted", "flash"]
+
 
 def color_to_integer(color):
     color = color.strip()

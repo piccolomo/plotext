@@ -31,7 +31,7 @@ take_max = take_maximum_size
 
 def prompt_size(height = None):
     _terminal.set_prompt_height(height)
-    _master.update_terminal_size()
+    _master._update_terminal_size()
 
 ##############################################
 #########    Subplots Functions    ###########
@@ -49,6 +49,24 @@ def subplots(rows = None, cols = None):
 def subplot(row = None, col = None):
     return _master.subplot(row, col)
 
+##############################################
+#########    Settings Functions    ###########
+##############################################
+
+def ticks_color(color = None):
+    return _master.ticks_color(color)
+
+def axes_color(color = None):
+    return _master.axes_color(color)
+
+def title(label = None):
+    return _master.title(label)
+
+def xlabel(label = None, xside = None):
+    return _master.xlabel(label, xside)
+
+def ylabel(label = None, yside = None):
+    return _master.ylabel(label, yside)
 
 ##############################################
 ######    Main Plotting Functions    #########
@@ -74,13 +92,32 @@ def clear_sizes():
 def clear_subplots():
     _master.clear_subplots()
 
+def clear_settings():
+    _master.clear_settings()
+
 def clear_figure():
     _master.clear_figure()
 clf = clear_figure
-    
+
+def clear_terminal(lines = None):
+    _terminal.clear(lines)
+clt = clear_terminal
+
 ##############################################
 #########    Utility Functions    ############
 ##############################################
 
 def log(show = True):
     _log.on() if show else _log.off()
+
+def terminal_size():
+    return _terminal.get_size()
+ts = terminal_size
+
+def terminal_width():
+    return terminal_size()[0]
+tw = terminal_width
+
+def terminal_height():
+    return terminal_size()[1]
+th = terminal_height

@@ -6,7 +6,7 @@ from plotext._system import platform
 class default_terminal():
     def __init__(self):
         self.set_size()
-        self.prompt_height = 2
+        self.prompt_height = 4
 
     def set_size(self, width = None, height = None):
         self.width = 211 * 2 // 3 if width is None else int(width)
@@ -18,13 +18,18 @@ class default_figure():
     def __init__(self):
         self.set_limitsize()
         self.size_direction = 1
-        self.color_sequence = ["blue+", "green+", "red+", "cyan+"]
 
     def set_limitsize(self, limit_width = None, limit_height = None):
         self.limit_width = True if limit_width is None else bool(limit_width)
         self.limit_height = True if limit_height is None else bool(limit_height)
         self.limit_size = [self.limit_width, self.limit_height]
 
+
+class default_settings():
+    ticks_color = "black"
+    axes_color = "white"
+        
+# self.color_sequence = ["blue+", "green+", "red+", "cyan+"]
         
 class default_signal():
     def __init__(self):
@@ -39,6 +44,7 @@ class default_signal():
         self.yside = self.ysides[0]
         self.lines = False
 
+        
 class default_placement():
     def __init__(self):
         self.orientations = ['horizontal', 'vertical']
@@ -46,14 +52,14 @@ class default_placement():
         self.orientations_int = [0, 1]
         self.orientation = self.orientations[0]
         
-        self.horizontal_alignments = ['left', 'center', 'right', 'dynamic']
-        self.horizontal_alignments_short = ['l', 'c', 'r', 'd']
-        self.horizontal_alignments_int = [-1, 0, 1, 2]
+        self.horizontal_alignments = ['left', 'center', 'right']
+        self.horizontal_alignments_short = ['l', 'c', 'r']
+        self.horizontal_alignments_int = [-1, 0, 1]
         self.horizontal_alignment = self.horizontal_alignments[1]
         
-        self.vertical_alignments = ['lower', 'center', 'upper', 'dynamic']
-        self.vertical_alignments_short = ['l', 'c', 'u', 'd']
-        self.vertical_alignments_int = [-1, 0, 1, 2]
+        self.vertical_alignments = ['lower', 'center', 'upper']
+        self.vertical_alignments_short = ['l', 'c', 'u']
+        self.vertical_alignments_int = [-1, 0, 1]
         self.vertical_alignment = self.vertical_alignments[1]
 
         
@@ -119,9 +125,9 @@ def correct_horizontal_alignment(alignment = None):
     alignment = dp.horizontal_alignments[dp.horizontal_alignments_int.index(alignment)] if alignment in dp.horizontal_alignments_int else alignment
     return dp.horizontal_alignment if alignment not in dp.horizontal_alignments else alignment
 
-def get_integer_horizontal_alignment(alignment = None):
+def get_horizontal_alignment_index(alignment = None):
     alignment = correct_horizontal_alignment(alignment)
-    return dp.horizontal_alignments_int[dp.horizontal_alignments.index(alignment)]
+    return dp.horizontal_alignments.index(alignment)
 
 def correct_vertical_alignment(alignment = None):
     alignment = dp.vertical_alignment if alignment is None else alignment
@@ -129,9 +135,9 @@ def correct_vertical_alignment(alignment = None):
     alignment = dp.vertical_alignments[dp.vertical_alignments_int.index(alignment)] if alignment in dp.vertical_alignments_int else alignment
     return dp.vertical_alignment if alignment not in dp.vertical_alignments else alignment
 
-def get_integer_vertical_alignment(alignment = None):
+def get_vertical_alignment_index(alignment = None):
     alignment = correct_vertical_alignment(alignment)
-    return dp.vertical_alignments_int[dp.vertical_alignments.index(alignment)]
+    return dp.vertical_alignments.index(alignment)
 
 
         

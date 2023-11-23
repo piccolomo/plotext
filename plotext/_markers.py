@@ -1,6 +1,7 @@
 from plotext._system import platform, memorize
+from plotext._markers_hd import hd, fhd, braille
 
-space = ' '
+
 default_marker = "hd" if platform == 'unix' else 'dot'
 
 class tick_class:

@@ -74,7 +74,7 @@ matrix_insert_m.argtypes = [c.c_void_p, c.c_int, c.c_int, c.c_void_p]
 matrix_insert_m.restype = c.c_void_p
 
 matrix_check = kernel.matrix_check
-matrix_check.argtypes = [c.c_void_p, c.c_int, c.c_int, c.c_int]
+matrix_check.argtypes = [c.c_void_p, c.c_int, c.c_int, c.c_int, c.c_int]
 matrix_check.restype = c.c_bool
 
 matrix_get_string = kernel.matrix_get_string
@@ -101,7 +101,17 @@ matrix_cols = kernel.matrix_cols
 matrix_cols.argtypes = [c.c_void_p]
 matrix_cols.restype = c.c_int
 
+matrix_part = kernel.matrix_part
+matrix_part.argtypes = [c.c_void_p, c.c_int, c.c_int]
+matrix_part.restype = c.c_void_p
 
+matrix_clear = kernel.matrix_clear
+matrix_clear.argtypes = [c.c_void_p]
+matrix_clear.restype = c.c_void_p
+
+matrix_fill = kernel.matrix_fill
+matrix_fill.argtypes = [c.c_void_p, c.c_void_p]
+matrix_fill.restype = c.c_void_p
 
 markers_create = kernel.markers_create
 markers_create.argtypes = []

@@ -18,7 +18,7 @@ class log_class():
         self.show = False
 
     def warning(self, text):
-        print(colorize('Warning', warning_color) + ':', text) if self.show else None
+        print(colorize('Warning', warning_color) + (' :' + text)) if self.show else None
         
 log = log_class()
         
