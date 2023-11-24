@@ -5,10 +5,7 @@ from plotext._list import fit_sizes, get_sizes
 from plotext._log import log
 from plotext._terminal import terminal
 from plotext._settings import settings_class
-
-# temp
-from plotext._colorize import colorize
-from plotext._string import get_frame
+from plotext._signal import signals_class
 
 
 class _figure_class():
@@ -24,8 +21,11 @@ class _figure_class():
         self.take_maximum_size()
         self._set_size_direction()
 
+        self.interactive()
+
         self._create_matrix()
         self._create_settings()
+        self._signals = signals_class()
         
 ##############################################
 #########    Family Functions    #############
@@ -211,19 +211,60 @@ class _figure_class():
         return self
     
     def title(self, label = None):
-        self._settings.title(label)
+        self._settings.set_title(label)
         [self._get_subplot(*pos).title(label) for pos in self._Positions]
         return self 
 
     def xlabel(self, label = None, yside = None):
-        self._settings.xlabel(label, yside)
+        self._settings.set_xlabel(label, yside)
         [self._get_subplot(*pos).ylabel(label, yside) for pos in self._Positions]
         return self 
 
     def ylabel(self, label = None, yside = None):
-        self._settings.ylabel(label, yside)
+        self._settings.set_ylabel(label, yside)
         [self._get_subplot(*pos).ylabel(label, yside) for pos in self._Positions]
-        return self 
+        return self
+
+    def interactive(self, interactive = None):
+        self._get_master()._interactive = default_figure.interactive if interactive is None else bool(interactive)
+        return self
+
+    def xaxes(self, lower = None, upper = None):
+        self._settings.set_xaxes(lower, upper)
+        return self
+    
+    def yaxes(self, left = None, rigth = None):
+        self._settings.set_yaxes(left, right)
+        return self
+
+    def frame(self, frame = None):
+        self._settings.set_frame(frame)
+        return self
+
+    def xfrequency(self, frequency = None, xside = None):
+        self._settings.set_xfrequency(frequency, xside)
+        return self
+
+    def yfrequency(self, frequency = None, yside = None):
+        self._settings.set_yfrequency(frequency, yside)
+        return self
+
+    def xlim(self, left = None, right = None, xside = None):
+        self._settings.set_xlim(left, right, xside)
+        return self
+    
+    def ylim(self, lower = None, upper = None, yside = None):
+        self._settings.set_ylim(lower, upper, yside)
+        return self
+
+    def xticks(self, ticks = None, labels = None, xside = None):
+        self._settings.set_xticks(ticks, labels, xside)
+        return self
+    
+    def yticks(self, ticks = None, labels = None, yside = None):
+        self._settings.set_yticks(ticks, labels, yside)
+        return self
+
 
 ##############################################
 ###########    Clear Functions    ############
@@ -258,7 +299,10 @@ class _figure_class():
 ##############################################
 
     def _draw(self, *args, **kwargs):
-        self.signals.add_normal_signal(*args, **kwargs)
+        self._signals.add(*args, **kwargs)
+
+    def scatter(self, *args):
+        self._draw(*args)
 
 ##############################################
 ###########    Build Functions    ############
@@ -282,9 +326,12 @@ class _figure_class():
         self._matrix = join_matrices(matrices) if self._subplots_present else self._matrix
         
     def _build_plot(self):
-        # Tools
+        
+        # Initialization
         self._refresh_matrix()
         self._settings.update()
+        
+        # Tools
         width_half = self.width // 2
         width_canvas = self.width
         height_canvas = self.height
@@ -296,6 +343,7 @@ class _figure_class():
         height_test = height_canvas > 0
         left_test = left is not None and height_test
         center_test = center is not None and height_test
+
         self._matrix.insert_m(0, 0, left, "left", check_space = True) if left_test  else None
         self._matrix.insert_m(width_half, 0, center, "center", check_space = True) if center_test else None
         
@@ -317,7 +365,9 @@ class _figure_class():
         self._matrix.insert_m(self.width - 1, self.height - 1, right, "right", check_space = True) if right_test else None
 
         bar_lower_height = int(left_test or center_test or right_test)
-        height_canvas -= bar_lower_height 
+        height_canvas -= bar_lower_height
 
+        # Get Final Height Canvas
+        height_canvas -= sum(self._settings.xaxes)
 
 

@@ -27,3 +27,18 @@ def fit_sizes(sizes, size_max, direction = 1):
 
 def get_sizes(size_max, bins):
     return fit_sizes([floor(size_max / max(1, bins))] * bins, size_max, -1)
+
+# Signal Utilities
+
+def set_data(x = None, y = None): # it return properly formatted x and y data lists
+   if x is None and y is None:
+       x, y = [], []
+   elif x is not None and y is None:
+       y = x
+       x = list(range(len(y)))
+   lx, ly = len(x), len(y)
+   if lx != ly:
+       l = min(lx, ly)
+       x = x[ : l]
+       y = y[ : l]
+   return [list(x), list(y)]

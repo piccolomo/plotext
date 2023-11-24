@@ -18,6 +18,7 @@ class default_figure():
     def __init__(self):
         self.set_limitsize()
         self.size_direction = 1
+        self.interactive = False
 
     def set_limitsize(self, limit_width = None, limit_height = None):
         self.limit_width = True if limit_width is None else bool(limit_width)
@@ -28,7 +29,22 @@ class default_figure():
 class default_settings():
     ticks_color = "black"
     axes_color = "white"
+    xaxes = [True, True]
+    yaxes = [True, True]
+    xfrequency = 5
+    yfrequency = 7
+
+    axes = ['x', 'y']
+    xsides = ["lower", "upper"] 
+    ysides = ["left", "right"]
         
+    xside = xsides[0]
+    yside = ysides[0]
+
+    scales = ['linear', 'log']
+    scale = 'linear'
+
+    
 # self.color_sequence = ["blue+", "green+", "red+", "cyan+"]
         
 class default_signal():
@@ -62,48 +78,17 @@ class default_placement():
         self.vertical_alignments_int = [-1, 0, 1]
         self.vertical_alignment = self.vertical_alignments[1]
 
+
         
-class default_axis():
-    def __init__(self):
-        self.axes = ['x', 'y']
-        self.xsides = ["lower", "upper"] 
-        self.ysides = ["left", "right"]
-        
-        self.axis = self.axes[0]
-        self.xside = self.xsides[0]
-        self.yside = self.ysides[0]
-        
-        self.color = "white"
-        self.style = "default"
-
-        self.grid = False
-
-
-class default_ticks():
-    def __init__(self):
-        self.color = 'white'
-        self.style = 'default'
-        
-        self.scales = ['linear', 'log']
-        self.scale = 'linear'
-
-        self.direction = 1 
-
-
-
 default_terminal = default_terminal()
 default_figure = default_figure()
 default_signal = default_signal()
 default_placement = dp = default_placement()
-default_axis = default_axis()
-default_ticks = default_ticks()
-default_xfrequency = 5
-default_yfrequency = 7
 default_canvas_color = "white"
 
 
 def correct_side(axis = None, side = None): 
-    sides = default_axis.xsides if axis == 'x' else default_axis.ysides
+    sides = default_settings.xsides if axis == 'x' else default_settings.ysides
     is_integer = isinstance(side, int) and 1 <= side <= 2
     not_correct = side is None or (isinstance(side, str) and side.strip() not in sides)
     return sides[side - 1] if is_integer else sides[0] if not_correct else side.strip()
@@ -113,6 +98,15 @@ def correct_xside(side = None):
 
 def correct_yside(side = None):
     return correct_side('y', side)
+
+def xside_to_index(xside = None):
+    xside = correct_xside(xside)
+    return default_settings.xsides.index(xside)
+
+def yside_to_index(yside = None):
+    yside = correct_yside(yside)
+    return default_settings.ysides.index(yside)
+
 
 def correct_orientation(orientation = None):
     orientation = dp.orientation if orientation is None else orientation

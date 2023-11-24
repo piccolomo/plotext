@@ -68,16 +68,48 @@ def xlabel(label = None, xside = None):
 def ylabel(label = None, yside = None):
     return _master.ylabel(label, yside)
 
+def xaxes(lower = None, upper = None):
+    return _master.xaxes(lower, upper)
+
+def yaxes(left = None, rigth = None):
+    return _master.yaxes(left, right)
+
+def frame(frame = None):
+    return _master.frame(frame)
+
+def xfrequency(frequency = None, xside = None):
+    return _master.xfrequency(frequency, xside)
+
+def yfrequency(frequency = None, yside = None):
+    return _master.yfrequency(frequency, yside)
+
+def xlim(left = None, right = None, xside = None):
+    return _master.xlim(left, right, xside)
+
+def ylim(lower = None, upper = None, yside = None):
+    return _master.ylim(lower, upper, yside)
+
+def xticks(ticks = None, labels = None, xside = None):
+    return _master.xticks(ticks, labels, xside)
+
+def yticks(ticks = None, labels = None, yside = None):
+    return _master.yticks(ticks, labels, yside)
+
 ##############################################
 ######    Main Plotting Functions    #########
 ##############################################
 
-# def scatter(*args, marker = None, color = None, style = None, fillx = None, filly = None, xside = None, yside = None, label = None):
-#     active().scatter(*args, xside = xside, yside = yside, marker = marker, color = color, style = style, fillx = fillx, filly = filly, label = label)
+def scatter(*args):
+    _master.scatter(*args)
+    show() if _master._interactive else None
+
 
 ##############################################
 ##########    Build Functions    #############
 ##############################################
+
+def interactive(interactive = None):
+    return _master.interactive(interactive)
 
 def show():
     _master._show()
