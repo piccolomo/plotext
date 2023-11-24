@@ -15,6 +15,7 @@ wstring ansi_start = L"\x1b[";
 wstring ansi_end = ansi_start + L"0m";
 wstring ansi_full = ansi_start + L"38;";
 wstring ansi_back = ansi_start + L"48;";
+wstring new_line = L"\n";
 //"bold": 1, "dim": 2, "italic": 3, "underline": 4, "double-underline": 21, "strike": 9, "inverted": 7, "flash": 5
 
 
@@ -27,14 +28,17 @@ public:
   unsigned char b = 0;
   
   Color(){};
+  
   Color(ColorLevel l, ColorType t = none, int rs = 0, int gs = 0, int bs = 0){set_level(l); set_type(t); set_rgb(r, g, b);}
+  
   Color(const Color & c): level(c.level), type(c.type), r(c.r), g(c.g), b(c.g) {}
-  //~Color() {}
 
   void set_level(ColorLevel l){level = l;}
+  
   void set_type(ColorType t){type = t;}
+  
   void set_rgb(int rs = 0, int gs = 0, int bs = 0){r = rs; g = gs; b = bs;}
-  //void set(const Color & c){level = c.level; type = c.type; r = c.r; g = c.g; b = c.b;}
+  
   void reset(){level = fullground; type = none; r = 0; g = 0; b = 0;}
 
   wstring get_ansi(){
@@ -43,17 +47,20 @@ public:
     else {return get_ansi_level() + get_rgb_code();}}
 
   wstring get_ansi_level(){if (level == fullground){return ansi_full;} else {return ansi_back;}}
+  
   wstring get_integer_code(){return L"5;" + to_wstring(r) + L"m";}
+  
   wstring get_rgb_code(){return L"2;" + to_wstring(r) + L";" + to_wstring(g) + L";" + to_wstring(b) + L"m";}
 
   wstring get_type(){if (type == none){return L"type: none";} else if (type == integer) {return L"type: integer";} else {return L"type: rgb";}}
+  
   wstring get_level(){if (level == fullground){return L"level: fullground";} else {return L"level: background";}}
+  
   wstring get_rgb(){return L"rgb(" + to_wstring(r) + L", " + to_wstring(g) + L", "+ to_wstring(b) + L")";}
   
   void show_ansi(){wcout << get_ansi();}
 
   void log(){wcout << get_level() << L", " << get_type() << L", " << get_rgb() << endl;}
-
 
   bool operator==(const Color& c) const {
     return level == c.level and type == c.type and ((type == none) or (type == integer and r == c.r) or (type == rgb and r == c.r and g == c.g and b == c.b));}
@@ -70,6 +77,7 @@ public:
   bool code[8] = {false, false, false, false, false, false, false, false};
 
   Style(){}
+  
   Style(const Style & s) {for (int i = 0; i < 8; ++i) {code[i] = s.code[i];}}
 
   void set(int i, bool b = true){code[i] = b;}
@@ -96,7 +104,6 @@ public:
   bool operator==(const Style& st) const {return equal(code, end(code), st.code);}
   
   void clear(){for (int i = 0; i < 8; ++i){set(i, false);}}
-
 };
 
 
@@ -110,33 +117,43 @@ public:
   bool novel = false; 
 
   Pixel() {set_levels();}
+  
   Pixel(wchar_t M, const Color & Fg = Color(), const Color & Bg = Color(), const Style & St = Style()) : m(M), fg(Fg), bg(Bg), st(St){}
+  
   Pixel(const Pixel & p) : m(p.m), fg(p.fg), bg(p.bg), st(p.st) {}
 
   void set_marker(wchar_t ms){m = ms;}
+  
   void set_fullground(ColorType t, int r = 0, int g = 0, int b = 0){fg.set_type(t); fg.set_rgb(r, g, b);}
+  
   void set_background(ColorType t, int r = 0, int g = 0, int b = 0){bg.set_type(t); bg.set_rgb(r, g, b);}
+  
   void set_levels(){fg.set_level(fullground); bg.set_level(background);}
+  
   void set_style(int i, bool b = true){st.set(i, b);}
+  
   void set_novel(bool n){novel = n;}
 
+  bool check(){return get_marker() == L' ';}
+  
   wstring get_ansi(){return ansi_end + fg.get_ansi() + bg.get_ansi() + st.get_ansi();}
+  
   wchar_t get_marker(){return m;}
+  
   wstring get_colored_marker(){return get_ansi() + get_marker() + ansi_end;}
   
-  void show(){wcout << get_colored_marker() << endl;}
+  void show(){wcout << get_colored_marker();}
+  
   void log(){log_marker(); fg.log(); bg.log(); st.log(); log_novel(); }
   
   void log_marker(){wcout << "marker: " << m << endl;}
+  
   void log_novel(){wcout << "novel " << novel << endl;}
   
   bool operator==(const Pixel& p) const {return ((fg == p.fg) and (bg == p.bg) and (st == p.st));}
   bool operator!=(const Pixel& p) const {return not (*this == p);}
 
   void clear(){m = L' '; fg.clear(); bg.clear(); st.clear();};
-
-  bool check(){return get_marker() == L' ';}
-
 };
 
 
@@ -146,8 +163,11 @@ public:
   vector<Pixel> pixel;
 
   String(int l = 0) {pixel.resize(l); init_novel();}
+  
   String(wstring s, const Pixel & p = Pixel()) : String(s.length()) {insert(0, s, p);}
+  
   String(const String & s) : pixel(s.pixel) {}
+  
   ~String() {pixel.clear();}
 
   void fill(const Pixel & p = Pixel()){for(int i = 0; i < length(); i++){pixel.at(i) = p;} init_novel();}
@@ -168,7 +188,9 @@ public:
   void set_novel(int i){
     if (length() > 0 and i == 0){pixel[i].set_novel(true);}
     else if (i < length()) {pixel[i].set_novel(get(i) != get(i - 1));}}
+  
   void set_novels(int i, int l){set_novel(i); if(l > 0){set_novel(i + l - 0);};}
+  
   void init_novel(){set_novels(0, length());}
 
   bool check(int i, int length){bool res = true;
@@ -176,10 +198,13 @@ public:
     return res;}
   
   int length() const {return pixel.size();}
+  
   Pixel & get(int i){return pixel[i];}
 
   bool get_novel(int i){return get(i).novel;}
+  
   wchar_t get_marker(int i){return get(i).get_marker();};
+  
   wstring get_ansi(int i){return get(i).get_ansi();}
 
   wstring get_string(bool colorless = false){
@@ -190,7 +215,7 @@ public:
     if(not colorless and length() > 0){out += ansi_end;}
   return out;}
 
-  void show(){wcout << get_string(); if(length() > 0){wcout << "\n";}}
+  void show(){wcout << get_string() << new_line;}
 
   void clear(){for (int i = 0; i < length(); i++){pixel.at(i).clear();}}
 };
@@ -206,6 +231,7 @@ public:
   Matrix(int cols, int rows, const Pixel & p = Pixel()) {for (int i = 0; i < rows; i++){line.push_back(String(cols));} fill(p);}
 
   Matrix(const Matrix & m) : line(m.line) {}
+  
   ~Matrix(){line.clear();}
 
   void fill(const Pixel & p = Pixel()){for (int row = 0; row < rows(); row++){line.at(row).fill(p);}}
@@ -238,20 +264,19 @@ public:
     for (int r = 0; r < rows; r++){res = res and line.at(row + r).check(col, cols);}
     return res;}
 
-
   wstring get_string(bool colorless = false){
     wstring out = L"";
     for (int row = 0; row < rows(); row++){
       out += line.at(row).get_string(colorless);
-      if(row < rows() - 1){out += L"\n";}}
+      if(row < rows() - 1){out += new_line;}}
     return out;}
 
   int rows() const {return line.size();}
-  int cols() const {
-    if (rows() == 0){return 0;}
+  
+  int cols() const {if (rows() == 0){return 0;}
     else {return line.at(0).length();}}
   
-  void show(){wcout << get_string(); if(rows() > 0){wcout << "\n";}}
+  void show(){wcout << get_string() << new_line;}
 
   Matrix part(int start, int end){
     int rows = end - start;
@@ -269,6 +294,7 @@ public:
   vector<bool> code;
 
   Marker() {marker = L'X'; code = {0};};
+  
   Marker(vector<bool> c, wchar_t m) : marker(m), code(c) {}
 
   void log(){
@@ -294,7 +320,6 @@ class Markers{
 public:
   vector<Marker> markers;
 
-  //Markers() {markers.resize(0);}
   ~Markers() {markers.clear();}
 
   void add(vector<bool> c, wchar_t m){
@@ -352,10 +377,7 @@ extern "C" {
   
   void pixel_destroy(Pixel * p){delete p;}
 
-  String * string_create(int l){return new String(l);}
   
-  void string_destroy(String * s){delete s;}
-
   Matrix * matrix_create(int cols, int rows, Pixel * p){return new Matrix(cols, rows, *p);}
 
   void matrix_insert_h(Matrix * m, int col, int row, wchar_t * s, Pixel * p){
@@ -374,10 +396,6 @@ extern "C" {
 
   bool matrix_check(Matrix * m, int col, int row, int cols, int rows){return m->check(col, row, cols, rows);}
 
-  // Matrix * matrix_hstack(Matrix * m1, Matrix * m2){Matrix * m = new Matrix(m1->hstack(*m2)); return m;}
-
-  // Matrix *  matrix_vstack(Matrix * m1, Matrix * m2){Matrix * m = new Matrix(m1->vstack(*m2)); return m;}
-
   wchar_t * matrix_get_string(Matrix * m, bool colorless){
     wstring s = m->get_string(colorless);
     return wcsdup(s.c_str());}
@@ -385,10 +403,13 @@ extern "C" {
   void string_free_memory(wchar_t * s){free(s);}
   
   void matrix_show(Matrix * m){m->show();}
+  
   void matrix_destroy(Matrix * m){delete m;}
+  
   Matrix * matrix_copy(Matrix * m){Matrix * nm = new Matrix(*m); return nm;}
 
   int matrix_rows(Matrix * m){return m->rows();}
+  
   int matrix_cols(Matrix * m){return m->cols();}
 
   Matrix * matrix_part(Matrix * m, int start, int end) {return new Matrix(m->part(start, end)); }
@@ -412,8 +433,7 @@ extern "C" {
   void markers_log(Markers * M){M->log();}
     
   void markers_destroy(Markers * M){delete M;}
-
-  
 };
 
 
+// std::wcout.imbue(std::locale(""))

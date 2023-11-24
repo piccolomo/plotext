@@ -1,5 +1,4 @@
 from plotext._matrix import * 
-from plotext._system import memorize
 from plotext._string import space, nl
 
 class colorize(matrix_class):

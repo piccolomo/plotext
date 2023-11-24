@@ -1,9 +1,3 @@
-from plotext._system import platform, memorize
-from plotext._markers_hd import hd, fhd, braille
-
-
-default_marker = "hd" if platform == 'unix' else 'dot'
-
 class tick_class:
    def __init__(self):
       self.h = self.horizontal = '─'

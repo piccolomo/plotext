@@ -1,5 +1,5 @@
 from plotext._default import default_terminal
-from plotext._string import write
+from plotext._system import write
 import shutil
 
 class terminal_class():

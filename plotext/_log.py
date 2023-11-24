@@ -21,4 +21,3 @@ class log_class():
         print(colorize('Warning', warning_color) + (' :' + text)) if self.show else None
         
 log = log_class()
-        

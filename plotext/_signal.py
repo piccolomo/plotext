@@ -16,13 +16,7 @@ class signal_class():
     def update_length(self):
         self.length = len(self.x)
 
-    def __repr__(self):
-        out = 'length ' + str(self.length)
-        return out
-
-    def print(self):
-        print(self)
-
+        
     def xmin(self):
         return min(self.x, default = None)
     
@@ -41,14 +35,19 @@ class signal_class():
     def ylim(self):
         return (self.ymin(), self.ymax())
 
+    
+    def __repr__(self):
+        out = 'length ' + str(self.length)
+        return out
+
+    def print(self):
+        print(self)
+
 
 class signals_class():
     def __init__(self):
         self.list = []
         self.update_length()
-
-    def update_length(self):
-        self.length = len(self.list)
 
     def add(self, *args, **kwargs):
         signal = signal_class()
@@ -56,9 +55,9 @@ class signals_class():
         self.list.append(signal)
         self.update_length()
 
-    def __repr__(self):
-        out = '\n'.join([repr(el) for el in self.list])
-        return out
+    def update_length(self):
+        self.length = len(self.list)
+
 
     def xmin(self, xside = None):
         xside = correct_xside(xside)
@@ -81,3 +80,8 @@ class signals_class():
 
     def ylim(self, yside = None):
         return (self.ymin(yside), self.ymax(yside))
+
+    
+    def __repr__(self):
+        out = '\n'.join([repr(el) for el in self.list])
+        return out

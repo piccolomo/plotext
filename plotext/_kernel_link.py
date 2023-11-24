@@ -7,6 +7,7 @@ matrix_file_name = '_kernel.dll' if platform == 'windows' else '_kernel.so'
 matrix_file = os.path.join(folder, matrix_file_name)
 kernel = c.CDLL(matrix_file)
 
+
 pixel_create = kernel.pixel_create
 pixel_create.argtypes = []
 pixel_create.restype = c.c_void_p
@@ -38,15 +39,6 @@ pixel_show.restype = c.c_void_p
 pixel_destroy = kernel.pixel_destroy
 pixel_destroy.argtypes = [c.c_void_p]
 pixel_destroy.restype = c.c_void_p
-
-
-string_create = kernel.string_create
-string_create.argtypes = [c.c_int]
-string_create.restype = c.c_void_p
-
-string_destroy = kernel.string_destroy
-string_destroy.argtypes = [c.c_void_p]
-string_destroy.restype = c.c_void_p
 
 
 matrix_create = kernel.matrix_create

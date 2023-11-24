@@ -1,7 +1,7 @@
 from plotext._default import default_figure
-from plotext._matrix import matrix_class, join_matrices, pixel_class
+from plotext._matrix import matrix_class, pixel_class
 from plotext._terminal import terminal_class
-from plotext._list import fit_sizes, get_sizes
+from plotext._list import fit_sizes, get_sizes, join_matrices
 from plotext._log import log
 from plotext._terminal import terminal
 from plotext._settings import settings_class
@@ -39,6 +39,12 @@ class _figure_class():
     def get_parent(self, level = 1):
         return self if level == 0 or self._is_master else self._parent if level == 1 else self.get_parent(1).get_parent(level - 1)
 
+    def _set_active(self, figure = None):
+        self._get_master().active = figure 
+
+    def _get_active(self):
+        return self.get_master().active
+    
     def _get_master(self):
         return self.get_parent(-1)
 
@@ -49,12 +55,6 @@ class _figure_class():
 
     def _get_position(self):
         return 'main()' if self._is_master else self.get_parent().get_position() + '.subplot' + str(self.position)
-
-    def _set_active(self, figure = None):
-        self._get_master().active = figure 
-
-    def _get_active(self):
-        return self.get_master().active
 
 ##############################################
 ###########    Size Functions    #############
@@ -87,6 +87,11 @@ class _figure_class():
 
     def _set_size_direction(self, direction = None):
         self._size_direction = default_figure.size_direction if direction is None else 1 if int(direction) > 0 else -1
+
+    def _clear_sizes(self):
+        widths, heights = get_sizes(self.width, self._cols), get_sizes(self.height, self._rows)
+        [self._get_subplot(row, col)._set_size(widths[col - 1], heights[row - 1]) for col in self._Cols for row in self._Rows]
+
 
 ##############################################
 #########    Subplots Functions    ###########
@@ -145,17 +150,9 @@ class _figure_class():
         [self._get_subplot(*pos)._refresh_subplots() for pos in self._Positions]
         #self.harmonize_subplots()
 
-    def _refresh_matrix(self):
-        if self._matrix.size() == self.size:
-            self._matrix.clear()
-        else:
-            self._matrix = matrix_class(*self.size)
-        p = pixel_class().set_background_color(self._settings.axes_color)
-        self._matrix.fill(p)
-        
 
 ##############################################
-#########    Create Functions    #############
+#######    Components Functions    ###########
 ##############################################
 
     def _create_matrix(self):
@@ -163,6 +160,15 @@ class _figure_class():
 
     def _create_settings(self):
         self._settings = settings_class() if self._is_master else self._parent._settings
+        
+    def _clear_matrix(self):
+        self._matrix.clear()
+
+    def _refresh_matrix(self):
+        size_unchanged = self._matrix.size() == self.size
+        self._matrix = self._matrix.clear() if size_unchanged else matrix_class(*self.size)
+        p = pixel_class().set_background_color(self._settings.axes_color)
+        self._matrix.fill(p)
 
 ##############################################
 ###########    User Functions    #############
@@ -186,6 +192,7 @@ class _figure_class():
 
     def take_maximum_size(self):
         self._max_or_min = lambda data: max(data, default = 0)
+        
 
     def subplots(self, rows = None, cols = None):
         self._set_subplots(rows, cols)
@@ -199,6 +206,7 @@ class _figure_class():
         plot = self._get_subplot(row, col)
         self._set_active(plot)
         return plot
+    
 
     def ticks_color(self, color = None):
         self._settings.set_ticks_color(color)
@@ -209,6 +217,7 @@ class _figure_class():
         self._settings.set_axes_color(color)
         [self._get_subplot(*pos).axes_color(label) for pos in self._Positions]
         return self
+    
     
     def title(self, label = None):
         self._settings.set_title(label)
@@ -225,9 +234,6 @@ class _figure_class():
         [self._get_subplot(*pos).ylabel(label, yside) for pos in self._Positions]
         return self
 
-    def interactive(self, interactive = None):
-        self._get_master()._interactive = default_figure.interactive if interactive is None else bool(interactive)
-        return self
 
     def xaxes(self, lower = None, upper = None):
         self._settings.set_xaxes(lower, upper)
@@ -240,14 +246,7 @@ class _figure_class():
     def frame(self, frame = None):
         self._settings.set_frame(frame)
         return self
-
-    def xfrequency(self, frequency = None, xside = None):
-        self._settings.set_xfrequency(frequency, xside)
-        return self
-
-    def yfrequency(self, frequency = None, yside = None):
-        self._settings.set_yfrequency(frequency, yside)
-        return self
+    
 
     def xlim(self, left = None, right = None, xside = None):
         self._settings.set_xlim(left, right, xside)
@@ -255,6 +254,14 @@ class _figure_class():
     
     def ylim(self, lower = None, upper = None, yside = None):
         self._settings.set_ylim(lower, upper, yside)
+        return self
+
+    def xfrequency(self, frequency = None, xside = None):
+        self._settings.set_xfrequency(frequency, xside)
+        return self
+
+    def yfrequency(self, frequency = None, yside = None):
+        self._settings.set_yfrequency(frequency, yside)
         return self
 
     def xticks(self, ticks = None, labels = None, xside = None):
@@ -265,22 +272,20 @@ class _figure_class():
         self._settings.set_yticks(ticks, labels, yside)
         return self
 
+    
+    def interactive(self, interactive = None):
+        self._get_master()._interactive = default_figure.interactive if interactive is None else bool(interactive)
+        return self
 
+    
 ##############################################
 ###########    Clear Functions    ############
 ##############################################
-
-    def _clear_matrix(self):
-        self._matrix.clear()
 
     def clear_size(self):
         self._set_size()
         self._clear_sizes()
         
-    def _clear_sizes(self):
-        widths, heights = get_sizes(self.width, self._cols), get_sizes(self.height, self._rows)
-        [self._get_subplot(row, col)._set_size(widths[col - 1], heights[row - 1]) for col in self._Cols for row in self._Rows]
-
     def clear_subplots(self):
         self.subplots(0, 0)
 
@@ -311,7 +316,7 @@ class _figure_class():
     def _show(self):
         self._update_terminal_size()
         self._build()
-        print(self._matrix.get_string())
+        self._matrix.print()
 
     def _build(self):
         self._build_plot() if self._subplots_absent else None
@@ -326,7 +331,6 @@ class _figure_class():
         self._matrix = join_matrices(matrices) if self._subplots_present else self._matrix
         
     def _build_plot(self):
-        
         # Initialization
         self._refresh_matrix()
         self._settings.update()

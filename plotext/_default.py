@@ -1,29 +1,22 @@
 from plotext._system import platform
-#from plotext._marker import default_marker
-#from plotext._style import no_style
+
+warning_color = 'orange+'
+default_marker = "hd" if platform == 'unix' else 'dot'
+
+
 
 
 class default_terminal():
-    def __init__(self):
-        self.set_size()
-        self.prompt_height = 4
-
-    def set_size(self, width = None, height = None):
-        self.width = 211 * 2 // 3 if width is None else int(width)
-        self.height = 53 * 2 // 3 if height is None else int(height)
-        self.size = [self.width, self.height]
+    width = 211 * 2 // 3
+    height = 53 * 2 // 3
+    prompt_height = 4
 
         
 class default_figure():
-    def __init__(self):
-        self.set_limitsize()
-        self.size_direction = 1
-        self.interactive = False
-
-    def set_limitsize(self, limit_width = None, limit_height = None):
-        self.limit_width = True if limit_width is None else bool(limit_width)
-        self.limit_height = True if limit_height is None else bool(limit_height)
-        self.limit_size = [self.limit_width, self.limit_height]
+    limit_width = True
+    limit_height = True
+    size_direction = 1
+    interactive = False
 
 
 class default_settings():
@@ -42,42 +35,37 @@ class default_settings():
     yside = ysides[0]
 
     scales = ['linear', 'log']
-    scale = 'linear'
+    scale = scales[0]
 
-    
-# self.color_sequence = ["blue+", "green+", "red+", "cyan+"]
         
 class default_signal():
-    def __init__(self):
-        self.marker = 'x'
-        self.color = 'blue+'
-        self.style = None
-        self.fills = [False, True, 'internal']
-        self.fill = self.fills[0] # same for x and y
-        self.xsides = ["lower", "upper"] # the two possibilities, the first is default
-        self.ysides = ["left", "right"] # the two possibilities, the first is default
-        self.xside = self.xsides[0]
-        self.yside = self.ysides[0]
-        self.lines = False
+    marker = 'x'
+    color = 'blue+'
+    style = None
+    fills = [False, True, 'internal']
+    fill = fills[0] # same for x and y
+    xsides = ["lower", "upper"] # the two possibilities, the first is default
+    ysides = ["left", "right"] # the two possibilities, the first is default
+    xside = xsides[0]
+    yside = ysides[0]
+    lines = False
 
         
 class default_placement():
-    def __init__(self):
-        self.orientations = ['horizontal', 'vertical']
-        self.orientations_short = ['h', 'v']
-        self.orientations_int = [0, 1]
-        self.orientation = self.orientations[0]
+    orientations = ['horizontal', 'vertical']
+    orientations_short = ['h', 'v']
+    orientations_int = [0, 1]
+    orientation = orientations[0]
         
-        self.horizontal_alignments = ['left', 'center', 'right']
-        self.horizontal_alignments_short = ['l', 'c', 'r']
-        self.horizontal_alignments_int = [-1, 0, 1]
-        self.horizontal_alignment = self.horizontal_alignments[1]
+    horizontal_alignments = ['left', 'center', 'right']
+    horizontal_alignments_short = ['l', 'c', 'r']
+    horizontal_alignments_int = [-1, 0, 1]
+    horizontal_alignment = horizontal_alignments[1]
         
-        self.vertical_alignments = ['lower', 'center', 'upper']
-        self.vertical_alignments_short = ['l', 'c', 'u']
-        self.vertical_alignments_int = [-1, 0, 1]
-        self.vertical_alignment = self.vertical_alignments[1]
-
+    vertical_alignments = ['lower', 'center', 'upper']
+    vertical_alignments_short = ['l', 'c', 'u']
+    vertical_alignments_int = [-1, 0, 1]
+    vertical_alignment = vertical_alignments[1]
 
         
 default_terminal = default_terminal()
@@ -123,19 +111,15 @@ def get_horizontal_alignment_index(alignment = None):
     alignment = correct_horizontal_alignment(alignment)
     return dp.horizontal_alignments.index(alignment)
 
-def correct_vertical_alignment(alignment = None):
-    alignment = dp.vertical_alignment if alignment is None else alignment
-    alignment = dp.vertical_alignments[dp.vertical_alignments_short.index(alignment)] if alignment in dp.vertical_alignments_short else alignment
-    alignment = dp.vertical_alignments[dp.vertical_alignments_int.index(alignment)] if alignment in dp.vertical_alignments_int else alignment
-    return dp.vertical_alignment if alignment not in dp.vertical_alignments else alignment
+# def correct_vertical_alignment(alignment = None):
+#     alignment = dp.vertical_alignment if alignment is None else alignment
+#     alignment = dp.vertical_alignments[dp.vertical_alignments_short.index(alignment)] if alignment in dp.vertical_alignments_short else alignment
+#     alignment = dp.vertical_alignments[dp.vertical_alignments_int.index(alignment)] if alignment in dp.vertical_alignments_int else alignment
+#     return dp.vertical_alignment if alignment not in dp.vertical_alignments else alignment
 
-def get_vertical_alignment_index(alignment = None):
-    alignment = correct_vertical_alignment(alignment)
-    return dp.vertical_alignments.index(alignment)
+# def get_vertical_alignment_index(alignment = None):
+#     alignment = correct_vertical_alignment(alignment)
+#     return dp.vertical_alignments.index(alignment)
 
-
-        
-
-
-
-
+    
+# self.color_sequence = ["blue+", "green+", "red+", "cyan+"]

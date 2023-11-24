@@ -1,4 +1,5 @@
 from plotext._kernel_link import *
+from plotext._color import *
 
 
 class pixel_class():
@@ -65,22 +66,5 @@ class pixel_class():
         pixel_destroy(self.pointer)
 
 
-color_codes = {"black":   0,    "white": 15,
-               "gray":    8,    "gray+": 7,
-               "red":     1,     "red+": 9,
-               "green":   2,   "green+": 10,
-               "orange":  3,  "orange+": 11,
-               "blue":    4,    "blue+": 12,
-               "magenta": 5, "magenta+": 13,
-               "cyan":    6,    "cyan+": 14}
-
-
-style_codes = ["bold", "dim", "italic", "underline", "double-underline", "strike", "inverted", "flash"]
-
-
-def color_to_integer(color):
-    color = color.strip()
-    valid = color in color_codes
-    return color_codes[color] if valid else None
 
 

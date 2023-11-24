@@ -1,8 +1,3 @@
-# # /usr/bin/env python3
-# # -*- coding: utf-8 -*-
-
-# # This file contains all the main plotext functions available externally to the user
-
 from ._terminal import terminal as _terminal
 from ._figure import _figure_class
 from ._log import log as _log
@@ -68,6 +63,7 @@ def xlabel(label = None, xside = None):
 def ylabel(label = None, yside = None):
     return _master.ylabel(label, yside)
 
+
 def xaxes(lower = None, upper = None):
     return _master.xaxes(lower, upper)
 
@@ -77,17 +73,18 @@ def yaxes(left = None, rigth = None):
 def frame(frame = None):
     return _master.frame(frame)
 
-def xfrequency(frequency = None, xside = None):
-    return _master.xfrequency(frequency, xside)
-
-def yfrequency(frequency = None, yside = None):
-    return _master.yfrequency(frequency, yside)
 
 def xlim(left = None, right = None, xside = None):
     return _master.xlim(left, right, xside)
 
 def ylim(lower = None, upper = None, yside = None):
     return _master.ylim(lower, upper, yside)
+
+def xfrequency(frequency = None, xside = None):
+    return _master.xfrequency(frequency, xside)
+
+def yfrequency(frequency = None, yside = None):
+    return _master.yfrequency(frequency, yside)
 
 def xticks(ticks = None, labels = None, xside = None):
     return _master.xticks(ticks, labels, xside)
@@ -103,7 +100,6 @@ def scatter(*args):
     _master.scatter(*args)
     show() if _master._interactive else None
 
-
 ##############################################
 ##########    Build Functions    #############
 ##############################################
@@ -118,8 +114,8 @@ def show():
 ##########    Clear Functions    #############
 ##############################################
 
-def clear_sizes():
-    _master.clear_sizes()
+def clear_size():
+    _master.clear_size()
 
 def clear_subplots():
     _master.clear_subplots()

@@ -6,22 +6,43 @@ class settings_class():
     def __init__(self):
         self.bar_upper = bar_upper_class()
         self.bar_lower = bar_lower_class()
+        
         self.set_ticks_color()
         self.set_axes_color()
-        self.init_xaxes()
-        self.init_yaxes()
-        self.init_xfrequency()
-        self.init_yfrequency()
+        self.init_axes()
+        self.init_frequency()
         self.init_lim()
         self.init_ticks()
+       
+    def init_axes(self):
+        self.xaxes = default_settings.xaxes
+        self.yaxes = default_settings.yaxes
 
-        
+    def init_lim(self):
+        self.xlim = [[None, None], [None, None]]
+        self.ylim = [[None, None], [None, None]]
+    
+    def init_frequency(self):
+        self.xfrequency = [default_settings.xfrequency] * 2
+        self.yfrequency = [default_settings.yfrequency] * 2
+
+    def init_ticks(self):
+        self.xticks = [None, None]
+        self.yticks = [None, None]
+        self.xlabels = [None, None]
+        self.ylabels = [None, None]
+
+
     def set_ticks_color(self, color = None):
         self.ticks_color = color if color is not None else default_settings.ticks_color
         
     def set_axes_color(self, color = None):
         self.axes_color = color if color is not None else default_settings.axes_color
 
+        
+    def set_title(self, label):
+        label = self.correct_label(label)
+        self.bar_upper.set_title(label)
         
     def set_ylabel(self, label, yside):
         label = self.correct_label(label)
@@ -33,16 +54,6 @@ class settings_class():
         xside = correct_xside(xside)
         self.bar_lower.set_center(label) if xside == 'lower' else self.bar_upper.set_label(label)
 
-    def set_title(self, label):
-        label = self.correct_label(label)
-        self.bar_upper.set_title(label)
-        
-    def init_xaxes(self):
-        self.xaxes = default_settings.xaxes
-
-    def init_yaxes(self):
-        self.yaxes = default_settings.yaxes
-    
     def set_xaxes(self, lower, upper):
         self.xaxes[0] = self.xaxes[0] if lower is None else bool(lower)
         self.xaxes[1] = self.xaxes[1] if upper is None else bool(upper)
@@ -56,11 +67,14 @@ class settings_class():
         self.set_yaxes(frame, frame)
 
         
-    def init_xfrequency(self):
-        self.xfrequency = [default_settings.xfrequency] * 2
+    def set_xlim(self, left, right , xside):
+        index = xside_to_index(xside)
+        self.xlim[index] = [left, right]
+
+    def set_ylim(self, lower, upper, yside):
+        index = yside_to_index(yside)
+        self.ylim[index] = [lower, upper]
         
-    def init_yfrequency(self):
-        self.yfrequency = [default_settings.yfrequency] * 2
 
     def set_xfrequency(self, frequency, xside):
         index = xside_to_index(xside)
@@ -69,24 +83,7 @@ class settings_class():
     def set_yfrequency(self, frequency, yside):
         index = yside_to_index(yside)
         self.yfrequency[index] = self.yfrequency[index] if frequency is None else int(frequency)
-
-    def init_lim(self):
-        self.xlim = [[None, None], [None, None]]
-        self.ylim = [[None, None], [None, None]]
-
-    def set_xlim(self, left, right , xside):
-        index = xside_to_index(xside)
-        self.xlim[index] = [left, right]
-
-    def set_ylim(self, lower, upper, yside):
-        index = yside_to_index(yside)
-        self.ylim[index] = [lower, upper]
-
-    def init_ticks(self):
-        self.xticks = [None, None]
-        self.yticks = [None, None]
-        self.xlabels = [None, None]
-        self.ylabels = [None, None]
+        
 
     def set_xticks(self, ticks, labels, xside):
         index = xside_to_index(xside)
@@ -104,7 +101,7 @@ class settings_class():
 
         
     def correct_label(self, label):
-        return colorize(label, self.ticks_color, self.axes_color).part(0, 1) if isinstance(label, str) else label
+        return colorize(label, self.ticks_color, self.axes_color).part(0, 1) if isinstance(label, str) else label.part(0, 1)
     
     def update(self):
         self.bar_upper.update()
@@ -144,5 +141,4 @@ class bar_upper_class(bar_lower_class):
     def update(self):
         label_on = self.label is not None
         self.set_center(self.label)
-        self.set_left(self.title) if label_on else self.set_center(self.title) 
-
+        self.set_left(self.title) if label_on else self.set_center(self.title)
