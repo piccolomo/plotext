@@ -12,4 +12,5 @@ def color_to_integer(color):
     valid = color in color_codes
     return color_codes[color] if valid else None
 
-style_codes = ["bold", "dim", "italic", "underline", "double-underline", "strike", "inverted", "flash"]
+# self.color_sequence = ["blue+", "green+", "red+", "cyan+"]
+

@@ -1,6 +1,5 @@
 from plotext._default import default_signal
 from plotext._default import correct_xside, correct_yside
-from plotext._list import set_data
 
 
 class signal_class():
@@ -9,32 +8,27 @@ class signal_class():
 
     def set(self, *args, xside = None, yside = None):
         self.x, self.y = set_data(*args)
-        self.update_length()
+        self.length = len(self.x)
         self.xside = correct_xside(xside)
         self.yside = correct_yside(yside)
 
-    def update_length(self):
-        self.length = len(self.x)
-
-        
-    def xmin(self):
+    def get_xmin(self):
         return min(self.x, default = None)
     
-    def xmax(self):
+    def get_xmax(self):
         return max(self.x, default = None)
 
-    def xlim(self):
-        return (self.xmin(), self.xmax())
+    def get_xlim(self):
+        return (self.get_xmin(), self.get_xmax())
     
-    def ymin(self):
+    def get_ymin(self):
         return min(self.y, default = None)
     
-    def ymax(self):
+    def get_ymax(self):
         return max(self.y, default = None)
         
-    def ylim(self):
-        return (self.ymin(), self.ymax())
-
+    def get_ylim(self):
+        return (self.get_ymin(), self.get_ymax())
     
     def __repr__(self):
         out = 'length ' + str(self.length)
@@ -46,42 +40,61 @@ class signal_class():
 
 class signals_class():
     def __init__(self):
-        self.list = []
-        self.update_length()
+        self.clear_data()
 
-    def add(self, *args, **kwargs):
+    def clear_data(self):
+        self._signals = []
+    
+    def _draw(self, *args, **kwargs):
+        self._add_signal(*args, **kwargs)
+
+    def _get_xmin(self, xside = None):
+        xside = correct_xside(xside)
+        return min([s.get_xmin() for s in self._signals if s.xside == xside], default = None)
+    
+    def _get_xmax(self, xside = None):
+        xside = correct_xside(xside)
+        return max([s.get_xmax() for s in self._signals if s.xside == xside], default = None)
+
+    def _get_xlim_signals(self, xside = None):
+        return (self._get_xmin(xside), self._get_xmax(xside))
+    
+    def _get_ymin(self, yside = None):
+        yside = correct_yside(yside)
+        return min([s.get_ymin() for s in self._signals if s.yside == yside], default = None)
+    
+    def _get_ymax(self, yside = None):
+        yside = correct_yside(yside)
+        return max([s.get_ymax() for s in self._signals if s.yside == yside], default = None)
+
+    def _get_ylim_signals(self, yside = None):
+        return (self._get_ymin(yside), self._get_ymax(yside))
+
+##############################################
+###########    Draw Functions    #############
+##############################################
+
+    def _draw(self, *args, **kwargs):
+        self.extend('_draw', *args, **kwargs)
         signal = signal_class()
         signal.set(*args, **kwargs)
-        self.list.append(signal)
-        self.update_length()
+        self._signals.append(signal)
 
-    def update_length(self):
-        self.length = len(self.list)
+    def scatter(self, *args, xside = None, yside = None):
+        self._draw(*args, xside = xside, yside = yside)
 
 
-    def xmin(self, xside = None):
-        xside = correct_xside(xside)
-        return min([s.xmin() for s in self.list if s.xside == xside], default = None)
-    
-    def xmax(self, xside = None):
-        xside = correct_xside(xside)
-        return max([s.xmax() for s in self.list if s.xside == xside], default = None)
+# Signal Utilities
 
-    def xlim(self, xside = None):
-        return (self.xmin(xside), self.xmax(xside))
-    
-    def ymin(self, yside = None):
-        yside = correct_yside(yside)
-        return min([s.ymin() for s in self.list if s.yside == yside], default = None)
-    
-    def ymax(self, yside = None):
-        yside = correct_yside(yside)
-        return max([s.ymax() for s in self.list if s.yside == yside], default = None)
-
-    def ylim(self, yside = None):
-        return (self.ymin(yside), self.ymax(yside))
-
-    
-    def __repr__(self):
-        out = '\n'.join([repr(el) for el in self.list])
-        return out
+def set_data(x = None, y = None): # it return properly formatted x and y data lists
+   if x is None and y is None:
+       x, y = [], []
+   elif x is not None and y is None:
+       y = x
+       x = list(range(len(y)))
+   lx, ly = len(x), len(y)
+   if lx != ly:
+       l = min(lx, ly)
+       x = x[ : l]
+       y = y[ : l]
+   return [list(x), list(y)]

@@ -1,93 +1,161 @@
 from plotext._default import default_placement as dp
-from plotext._default import get_horizontal_alignment_index
+from plotext._default import get_horizontal_alignment_index, get_vertical_alignment_index
 from plotext._pixel import *
 from plotext._system import write
+from copy import copy
 
 
 class matrix_class():
-    def __init__(self, width = None, height = None, pixel = pixel_class()):
+    def __init__(self, width = None, height = None, marker = None, fullground = None, background = None):
         width = width if width is not None else 0
         height = height if height is not None else 0
-        self.pointer = matrix_create(width, height, pixel.pointer)
+        pixel = pixel_class(marker, fullground, background)
+        self._pointer = matrix_create(width, height, pixel._pointer)
 
-    def fill(self, pixel = pixel_class()):
-        matrix_fill(self.pointer, pixel.pointer)
+    def __del__(self):
+        matrix_destroy(self._pointer)
 
-    def insert_h(self, col, row, string, pixel = pixel_class()):
-        string = c.c_wchar_p(string)
-        matrix_insert_h(self.pointer, col, row, string, pixel.pointer)
+    def fill(self, marker = None, background = None):
+        pixel = pixel_class().set_marker(marker).set_background(background)
+        matrix_fill(self._pointer, pixel._pointer)
         return self
 
-    def insert_v(self, col, row, string, pixel = pixel_class()):
+    def _insert_marker(self, col, row, marker, fullground = None, background = None):
+        pixel = pixel_class(marker, fullground, background)
+        matrix_insert_pixel(self._pointer, col, row, pixel._pointer)
+        return self
+       
+    def _insert_string(self, col, row, string, pixel = pixel_class()):
         string = c.c_wchar_p(string)
-        matrix_insert_v(self.pointer, col, row, string, pixel.pointer)
-        
-    def insert_m(self, col, row, matrix, horizontal_alignment = "left", vertical_alignment = "top", check_space = False):
-        col = self.align_col(col, matrix.cols(), horizontal_alignment)
-        check = True if not check_space else self.check_matrix(col, row, matrix)
-        matrix_insert_m(self.pointer, col, row, matrix.pointer) if check else None
+        matrix_insert_string(self._pointer, col, row, string, pixel._pointer)
+        return self
 
-    def insert_d(self, col, row, string, pixel = pixel_class()):
-        string = c.c_wchar_p(string)
-        return matrix_insert_d(self.pointer, col, row, string, pixel.pointer)
+    def _insert_matrix(self, col, row, matrix):
+        matrix_insert_matrix(self._pointer, col, row, matrix._pointer)
 
-    def align_col(self, col, length, horizontal_alignement):
-        integer_alignment = get_horizontal_alignment_index(horizontal_alignement)
-        delta = [0, - length // 2 , - length + 1]
-        return col + delta[integer_alignment]
+    def _insert_aligned(self, col, row, matrix, ha = 'left', va = 'top', check_spaces = False):
+        ha = get_horizontal_alignment_index(ha) - 1
+        va = get_vertical_alignment_index(va) - 1
+        return matrix_insert_aligned(self._pointer, col, row, matrix._pointer, ha, va, check_spaces)
 
-    def check_matrix(self, col, row, matrix):
-        cols, rows = matrix.size()
-        res = cols <= self.cols() and rows <= self.rows() and self.check(col, row, cols, rows)
-        res = res if col == 0 else res and self.check(col - 1, row, 1, rows)
-        res = res if col == self.cols() - cols else res and self.check(col + cols, row, 1, rows)
-        return res
+    def _insert_dynamic(self, col, row, matrix):
+        return matrix_insert_dynamic(self._pointer, col, row, matrix._pointer)
 
-    def check(self, col, row, cols, rows):
-        return matrix_check(self.pointer, col, row, cols, rows)
-
-    def rows(self):
-        return matrix_rows(self.pointer)
+    def _hstack(self, matrix):
+        new = matrix_class(0, 0);
+        new._pointer = matrix_hstack(self._pointer, matrix._pointer)
+        return new
     
-    def cols(self):
-        return matrix_cols(self.pointer)
+    def _vstack(self, matrix):
+        new = matrix_class(0, 0)
+        new._pointer = matrix_vstack(self._pointer, matrix._pointer)
+        return new
 
-    def size(self):
-        return [self.cols(), self.rows()]
+    def _hstack2(self, matrix):
+        width = self._get_width() + matrix._get_width()
+        height = self._get_height() 
+        new = matrix_class(width, height)
+        new._insert_matrix(0, 0, self)
+        new._insert_matrix(self._get_width(), 0, matrix)
+        return new
 
-    def print(self):
-        write(self.get_string())
+    def _vstack2(self, matrix):
+        width = self._get_width()
+        height = self._get_height() + matrix._get_height()
+        new = matrix_class(width, height)
+        new._insert_matrix(0, 0, self)
+        new._insert_matrix(0, self._get_height(), matrix)
+        return new
 
-    def print2(self):
-        matrix_show(self.pointer)
+    def _transpose(self):
+        new = matrix_class(0, 0)
+        new._pointer = matrix_transpose(self._pointer)
+        return new
+
+    def __add__(self, matrix):
+        width = self._get_width() + matrix._get_width()
+        height = max(self._get_height(), matrix._get_height())
+        new = matrix_class(width, height)
+        new._insert_matrix(0, 0, self)
+        new._insert_matrix(self._get_width(), 0, matrix)
+        return new
+
+    def __truediv__(self, k):
+        height = self._get_height() 
+        out = matrix_class(self._get_width(), height * k)
+        for i in range(k):
+            out._insert_matrix(0, height * i, self)
+        return out
+
+    def __mul__(self, k):
+        width = self._get_width() 
+        out = matrix_class(width * k, self._get_height())
+        for i in range(k):
+            out._insert_matrix(width * i, 0, self)
+        return out
+
+    
+    def _clear(self):
+        matrix_clear(self._pointer)
+        return self
+
+    def _get_height(self):
+        return matrix_height(self._pointer)
+    
+    def _get_width(self):
+        return matrix_width(self._pointer)
+
+    def _get_size(self):
+        return [self._get_width(), self._get_height()]
+
+    def __len__(self):
+        return len(str(self))
+    
+    def _select(self, col, row, cols, rows):
+        new = matrix_class(0, 0)
+        matrix_assign(new._pointer, matrix_part(self._pointer, col, row, cols, rows))
+        return new
+
+    def _part(self, start, end):
+        return self._select(0, start, self._get_width(), end - start)
+
+    def _copy(self):
+        new = matrix_class(0, 0)
+        matrix_assign(new._pointer, self._pointer)
+        return new
+
+    def _copy_from(self, matrix):
+        matrix_assign(self._pointer, matrix._pointer)
+
+    def _resize(self, width, height, background = None):
+        p = pixel_class().set_background(background)
+        matrix_resize(self._pointer, width, height, p._pointer)
+        return self
         
-    def get_string(self, colorless = False):
-        p = matrix_get_string(self.pointer, colorless)
+    def _reset(self, width, height, background = None):
+        new = matrix_class(width, height, background = background) 
+        self._copy_from(new)
+        return self
+
+    def _get_string(self, colorless = False):
+        p = matrix_get_string(self._pointer, colorless)
         string = c.c_wchar_p.from_buffer(p).value#.decode()
         string_free_memory(p)
         return string
 
     def __str__(self):
-        return self.get_string()
+        return self._get_string()
 
     def __repr__(self):
         return str(self)
 
-    def __len__(self):
-        return len(str(self))
+    def _print(self):
+        write(self._get_string())
 
-    def __del__(self):
-        matrix_destroy(self.pointer)
+    def _print2(self):
+        matrix_show(self._pointer)        
 
-    def clear(self):
-        matrix_clear(self.pointer)
-        return self
 
-    def copy(self):
-        new = matrix_class()
-        new.pointer = matrix_copy(self.pointer)
 
-    def part(self, start, end):
-        new = matrix_class()
-        new.pointer = matrix_part(self.pointer, start, end)
-        return new
+        
+

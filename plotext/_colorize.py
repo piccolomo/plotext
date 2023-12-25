@@ -1,35 +1,47 @@
 from plotext._matrix import * 
-from plotext._string import space, nl
+from plotext._marker import space, nl
 
 class colorize(matrix_class):
     def __init__(self, string = '', fullground = None, background = None, style = None):
-        pixel = pixel_class()
-        pixel.set_fullground_color(fullground)
-        pixel.set_background_color(background)
-        pixel.set_style(style)
-
         strings = string.split('\n')
-        width = max([len(s) for s in strings]);
+        width = max([len(s) for s in strings])
         height = len(strings)
+        super().__init__(width, height)
 
-        super().__init__(width, height, pixel)
-        for i in range(height):
-            self.insert_h(0, i, strings[i], pixel)
+        pixel = pixel_class()
+        pixel.set_fullground(fullground)
+        pixel.set_background(background)
+        pixel.set_style(style)
+        
+        [self._insert_string(0, i, strings[i], pixel) for i in range(height)]
+
+    def __del__(self):
+        matrix_class.__del__(self)
+
+
+    def clear(self):
+        return self._clear()
+
+    def part(self, start, end):
+        return self._part(start, end)
+
+    def copy(self):
+        return self._copy()
+
+    def resize(self, width, height):
+        return self._resize(width, height)
+
+    def print(self):
+        self._print()
 
     def __add__(self, string):
-        string = colorize(string) if isinstance(string, str) else string
-        height = max(self.rows(), string.rows())
-        width = self.cols() + string.cols()
-        new = matrix_class(width, height)
-        new.insert_m(0, 0, self)
-        new.insert_m(self.cols(), 0, string)
-        return new
+        string = string if isinstance(string, colorize) else colorize(string)
+        return super().__add__(string)
 
-    def append(self, string):
-        string = colorize(string) if isinstance(string, str) else string
-        height = self.rows() + string.rows()
-        width = max(self.cols(), string.cols())
+    def vstack(self, matrix):
+        height = self._get_height() + matrix._get_height()
+        width = max(self._get_width(), matrix._get_width())
         new = matrix_class(width, height)
-        new.insert_m(0, 0, self)
-        new.insert_m(0, self.rows(), string)
+        new._insert_matrix(0, 0, self)
+        new._insert_matrix(0, self._get_height(), matrix)
         return new

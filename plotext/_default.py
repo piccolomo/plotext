@@ -1,31 +1,41 @@
 from plotext._system import platform
 
-warning_color = 'orange+'
-default_marker = "hd" if platform == 'unix' else 'dot'
-
-
-
 
 class default_terminal():
     width = 211 * 2 // 3
     height = 53 * 2 // 3
-    prompt_height = 4
+    size = width, height
+    prompt_height = 3
 
-        
-class default_figure():
+    
+class default_master():
     limit_width = True
     limit_height = True
-    size_direction = 1
     interactive = False
 
+    
+class default_figure():
+    pass
 
+
+class default_subplot():
+    size_direction = 1
+
+    
 class default_settings():
     ticks_color = "black"
     axes_color = "white"
-    xaxes = [True, True]
-    yaxes = [True, True]
+    canvas_color = 'white'
+    
+    frame = True
     xfrequency = 5
     yfrequency = 7
+
+    xdirection = 1
+    ydirection = 1
+
+    scales = ['linear', 'log']
+    scale = 'linear'
 
     axes = ['x', 'y']
     xsides = ["lower", "upper"] 
@@ -57,18 +67,19 @@ class default_placement():
     orientations_int = [0, 1]
     orientation = orientations[0]
         
-    horizontal_alignments = ['left', 'center', 'right']
-    horizontal_alignments_short = ['l', 'c', 'r']
-    horizontal_alignments_int = [-1, 0, 1]
-    horizontal_alignment = horizontal_alignments[1]
+    horizontal_alignments = ['left', 'center', 'right', 'dynamic']
+    horizontal_alignments_short = ['l', 'c', 'r', 'd']
+    horizontal_alignments_int = [-1, 0, 1, 2]
+    horizontal_alignment = horizontal_alignments[0]
         
-    vertical_alignments = ['lower', 'center', 'upper']
-    vertical_alignments_short = ['l', 'c', 'u']
+    vertical_alignments = ['top', 'center', 'bottom']
+    vertical_alignments_short = ['t', 'c', 'b']
     vertical_alignments_int = [-1, 0, 1]
-    vertical_alignment = vertical_alignments[1]
+    vertical_alignment = vertical_alignments[0]
 
         
 default_terminal = default_terminal()
+default_master = default_master()
 default_figure = default_figure()
 default_signal = default_signal()
 default_placement = dp = default_placement()
@@ -95,7 +106,6 @@ def yside_to_index(yside = None):
     yside = correct_yside(yside)
     return default_settings.ysides.index(yside)
 
-
 def correct_orientation(orientation = None):
     orientation = dp.orientation if orientation is None else orientation
     orientation = dp.orientations[dp.orientations_short.index(orientation)] if orientation in dp.orientations_short else orientation
@@ -111,15 +121,12 @@ def get_horizontal_alignment_index(alignment = None):
     alignment = correct_horizontal_alignment(alignment)
     return dp.horizontal_alignments.index(alignment)
 
-# def correct_vertical_alignment(alignment = None):
-#     alignment = dp.vertical_alignment if alignment is None else alignment
-#     alignment = dp.vertical_alignments[dp.vertical_alignments_short.index(alignment)] if alignment in dp.vertical_alignments_short else alignment
-#     alignment = dp.vertical_alignments[dp.vertical_alignments_int.index(alignment)] if alignment in dp.vertical_alignments_int else alignment
-#     return dp.vertical_alignment if alignment not in dp.vertical_alignments else alignment
+def correct_vertical_alignment(alignment = None):
+    alignment = dp.vertical_alignment if alignment is None else alignment
+    alignment = dp.vertical_alignments[dp.vertical_alignments_short.index(alignment)] if alignment in dp.vertical_alignments_short else alignment
+    alignment = dp.vertical_alignments[dp.vertical_alignments_int.index(alignment)] if alignment in dp.vertical_alignments_int else alignment
+    return dp.vertical_alignment if alignment not in dp.vertical_alignments else alignment
 
-# def get_vertical_alignment_index(alignment = None):
-#     alignment = correct_vertical_alignment(alignment)
-#     return dp.vertical_alignments.index(alignment)
-
-    
-# self.color_sequence = ["blue+", "green+", "red+", "cyan+"]
+def get_vertical_alignment_index(alignment = None):
+    alignment = correct_vertical_alignment(alignment)
+    return dp.vertical_alignments.index(alignment)

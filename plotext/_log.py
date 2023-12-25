@@ -1,13 +1,11 @@
 from plotext._colorize import colorize
 
-warning_color = 'orange+'
-
 class log_class():
     def __init__(self):
         self.color_positive = 'green+'
         self.color_negative = 'red'
         self.color_title = 'cyan+'
-        self.color_warning = 'orange'
+        self.color_warning = 'orange+'
         self.style_warning = 'dim'
         self.on()
 
@@ -18,6 +16,6 @@ class log_class():
         self.show = False
 
     def warning(self, text):
-        print(colorize('Warning', warning_color) + (' :' + text)) if self.show else None
+        print(colorize('Warning', self.color_warning, style = self.style_warning) + (': ' + text)) if self.show else None
         
 log = log_class()

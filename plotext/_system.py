@@ -1,16 +1,5 @@
-from copy import deepcopy as copy
 import sys
 
 platform = 'windows' if sys.platform in {'win32', 'cygwin'} else 'unix' 
 
 write = lambda string: sys.stdout.write(string)
-
-# it memorise the arguments of a function, when used as its decorator, to reduce computational time
-# class memorize:
-#     def __init__(self, function):
-#         self.f = function
-#         self.memo = {}
-#     def __call__(self, *args):
-#         if not args in self.memo:
-#             self.memo[args] = self.f(*args)
-#         return self.memo[args]
