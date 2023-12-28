@@ -1,5 +1,5 @@
-from plotext._default import default_placement as dp
-from plotext._default import get_horizontal_alignment_index, get_vertical_alignment_index
+from plotext._placement import placement
+from plotext._placement import placement
 from plotext._pixel import *
 from plotext._system import write
 from copy import copy
@@ -34,8 +34,8 @@ class matrix_class():
         matrix_insert_matrix(self._pointer, col, row, matrix._pointer)
 
     def _insert_aligned(self, col, row, matrix, ha = 'left', va = 'top', check_spaces = False):
-        ha = get_horizontal_alignment_index(ha) - 1
-        va = get_vertical_alignment_index(va) - 1
+        ha = placement.get_horizontal_alignment_index(ha) - 1
+        va = placement.get_vertical_alignment_index(va) - 1
         return matrix_insert_aligned(self._pointer, col, row, matrix._pointer, ha, va, check_spaces)
 
     def _insert_dynamic(self, col, row, matrix):

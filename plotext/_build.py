@@ -2,6 +2,8 @@ from plotext._colorize import colorize
 from plotext._marker import tick, nl, space
 from plotext._matrix import matrix_class
 from functools import lru_cache as memorize
+from plotext._converter import get_type
+import math
 
 
 class build_class():
@@ -24,18 +26,16 @@ class build_class():
     def _build_plot(self):
         r2 = [1, 2]
 
-        # 300u
-        [self._build_bar(xside) for xside in r2] # 900u
+        [self._build_bar(xside) for xside in r2]
         
-        [self._build_xticks(xside) for xside in r2] # 1.42
-        [self._build_xaxis(xside) for xside in r2] # 1.78
+        [self._build_xticks(xside) for xside in r2]
+        [self._build_xaxis(xside) for xside in r2]
         
-        [self._build_yticks(yside) for yside in r2] # 2.4
-        [self._build_yaxis(yside) for yside in r2] # 2.9
+        [self._build_yticks(yside) for yside in r2]
+        [self._build_yaxis(yside) for yside in r2]
         
-        [self._build_corner(xside, yside) for xside in r2 for yside in r2] # 3.12
-        #6.44
-
+        [self._build_corner(xside, yside) for xside in r2 for yside in r2]
+        
 
 ##############################################
 #########    Building Utilities    ###########
@@ -123,7 +123,6 @@ class build_class():
         add_tick = self._get_xaxis_height(xside) * self._get_yaxis_width(yside) #and width_canvas >= 0
         matrix._insert_marker(*position, symbol, self._ticks_color, self._axes_color) if add_tick  else None
         return matrix
-
     
     @memorize
     def _get_bar_height(self, xside):
@@ -162,13 +161,11 @@ class build_class():
         width = 0 if self._width - width_occupied - width < 0 else width
         return width
 
-    
     @memorize
     def _get_corner_size(self, xside, yside):
         width = self._get_yticks_width(yside) + self._get_yaxis_width(yside)
         height = self._get_xticks_height(xside) + self._get_xaxis_height(xside)
         return width, height
-
 
     @memorize
     def _get_height_canvas(self):
@@ -222,31 +219,45 @@ class build_class():
         row = self._get_canvas_position(1, 1)[1] if xside == 1 else self._get_xticks_position(2)[1]
         return (col, row)
 
+    def _compute_xticks(self, xside):
+        lim, frequency = self._get_xlim(xside), self._get_xfrequency(xside)
+        just_do_it = None not in lim
+        ticks = linspace(*lim, frequency) if just_do_it else None
+        return ticks
     
     @memorize
     def _get_xticks_data(self, xside):
-        frequency = self._get_xfrequency(xside)
-        ticks = self._get_xticks_set(xside)
-        lim = self._get_xlim(xside)
-        just_do_it = ticks is None and None not in lim
-        ticks = linspace(*lim, frequency) if just_do_it else ticks
-        labels = self._get_xlabels(xside)
-        just_do_it = ticks is not None and labels is None
-        labels = get_labels(ticks) if just_do_it else labels
-        labels = self.color_labels(labels) if just_do_it else labels
+        ticks, labels = self._get_xticks_set(xside), self._get_xlabels_set(xside)
+        converter = self._get_xstring_converter(xside)
+        ticks = converter.convert(ticks) if ticks is not None and get_type(ticks) == 'string' else ticks
+        ticks = self._compute_xticks(xside) if ticks is None else ticks
+        labels_needed = lambda: ticks is not None and labels is None
+        converter = self._get_xdate_converter(xside)
+        is_datetime = labels_needed() and get_type(ticks) == 'datetime'
+        labels = converter.datetimes_to_strings(ticks) if is_datetime else labels
+        labels = get_labels(ticks) if labels_needed()  else labels
+        labels = self.color_labels(labels) if labels is not None else labels
         return ticks, labels
 
+    def _compute_yticks(self, yside):
+        lim, frequency = self._get_ylim(yside), self._get_yfrequency(yside)
+        just_do_it = None not in lim
+        ticks = linspace(*lim, frequency) if just_do_it else None
+        return ticks
+    
     @memorize
     def _get_yticks_data(self, yside):
-        frequency = self._get_yfrequency(yside)
-        ticks = self._get_yticks_set(yside)
-        lim = self._get_ylim(yside)
-        just_do_it = ticks is None and None not in lim
-        ticks = linspace(*lim, frequency, self._get_yscale(yside)) if just_do_it else ticks
-        labels = self._get_ylabels(yside)
-        just_do_it = ticks is not None and labels is None
-        labels = get_labels(ticks) if just_do_it else labels
-        labels = self.color_labels(labels) if just_do_it else labels
+        ticks, labels = self._get_yticks_set(yside), self._get_ylabels_set(yside)
+        converter = self._get_ystring_converter(yside)
+        ticks = converter.convert(ticks) if ticks is not None and get_type(ticks) == 'string' else ticks
+
+        ticks = self._compute_yticks(yside) if ticks is None else ticks
+        labels_needed = lambda: ticks is not None and labels is None
+        converter = self._get_ydate_converter(yside)
+        is_datetime = labels_needed() and get_type(ticks) == 'datetime'
+        labels = converter.datetimes_to_strings(ticks) if is_datetime else labels
+        labels = get_labels(ticks) if labels_needed()  else labels
+        labels = self.color_labels(labels) if labels is not None else labels
         return ticks, labels
 
     def _get_relative_xticks(self, xside):
@@ -314,8 +325,6 @@ class build_class():
 ##############################################
 #########    Function Utilities    ###########
 ##############################################
-
-import math
 
 replace_none = lambda data, new: [data[i] if data[i] is not None else new[i]for i in range(len(data))] 
 

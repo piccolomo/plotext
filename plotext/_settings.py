@@ -1,4 +1,5 @@
-from plotext._default import default_settings, correct_xside, correct_yside, xside_to_index, yside_to_index
+from plotext._default import default_settings
+from plotext._placement import placement
 from plotext._colorize import colorize, matrix_class
 
 
@@ -79,14 +80,14 @@ class settings_class():
     def xlabel(self, label = None, xside = None):
         self.extend('xlabel', label, xside)
         label = self._correct_label(label)
-        xside = correct_xside(xside)
+        xside = placement.correct_xside(xside)
         self._bar_lower.set_center(label) if xside == 'lower' else self._bar_upper.set_label(label)
         return self
     
     def ylabel(self, label = None, yside = None):
         self.extend('ylabel', label, yside)
         label = self._correct_label(label)
-        yside = correct_yside(yside)
+        yside = placement.correct_yside(yside)
         self._bar_lower.set_left(label) if yside == 'left' else self._bar_lower.set_right(label)
         return self
 
@@ -110,31 +111,31 @@ class settings_class():
         
     def xlim(self, left = None, right = None, xside = None):
         self.extend('xlim', left, right, xside)
-        index = xside_to_index(xside)
+        index = placement.xside_to_index(xside)
         self._xlim[index] = [left, right]
         return self
 
     def ylim(self, lower = None, upper = None, yside = None):
         self.extend('ylim', lower, upper, yside)
-        index = yside_to_index(yside)
+        index = placement.yside_to_index(yside)
         self._ylim[index] = [lower, upper]
         return self
 
     def xfrequency(self, frequency = None, xside = None):
         self.extend('xfrequency', frequency, xside)
-        index = xside_to_index(xside)
+        index = placement.xside_to_index(xside)
         self._xfrequency[index] = default_settings.xfrequency if frequency is None else int(frequency)
         return self
       
     def yfrequency(self, frequency = None, yside = None):
         self.extend('yfrequency', frequency, yside)
-        index = yside_to_index(yside)
+        index = placement.yside_to_index(yside)
         self._yfrequency[index] = default_settings.yfrequency if frequency is None else int(frequency)
         return self
 
     def xticks(self, ticks = None, labels = None, xside = None):
         self.extend('xticks', ticks, labels, xside)
-        index = xside_to_index(xside)
+        index = placement.xside_to_index(xside)
         self._xticks[index] = ticks
         self._xlabels[index] = labels
         xfrequency = None if ticks is None else len(ticks)
@@ -143,7 +144,7 @@ class settings_class():
 
     def yticks(self, ticks = None, labels = None, yside = None):
         self.extend('yticks', ticks, labels, yside)
-        index = yside_to_index(yside)
+        index = placement.yside_to_index(yside)
         self._yticks[index] = ticks
         self._ylabels[index] = labels
         yfrequency = None if ticks is None else len(ticks)
@@ -152,21 +153,21 @@ class settings_class():
 
     def xreverse(self, reverse = None, xside = None):
         self.extend('xreverse', reverse, xside)
-        index = xside_to_index(xside)
+        index = placement.xside_to_index(xside)
         direction = default_settings.xdirection if reverse is None else 2 * int(not reverse) - 1
         self._xdirection[index] = direction
         return self
 
     def yreverse(self, reverse = None, yside = None):
         self.extend('yreverse', reverse, yside)
-        index = yside_to_index(yside)
+        index = placement.yside_to_index(yside)
         direction = default_settings.ydirection if reverse is None else 2 * int(not reverse) - 1
         self._ydirection[index] = direction
         return self
 
     def xscale(self, scale = None, xside = None):
         self.extend('xscale', scale, xside)
-        index = xside_to_index(xside)
+        index = placement.xside_to_index(xside)
         default_case = scale is None or scale not in default_settings.scales
         scale = default_settings.scale if default_case else scale
         self._xscale[index] = scale
@@ -175,7 +176,7 @@ class settings_class():
 
     def yscale(self, scale = None, yside = None):
         self.extend('yscale', scale, yside)
-        index = yside_to_index(yside)
+        index = placement.yside_to_index(yside)
         default_case = scale is None or scale not in default_settings.scales
         scale = default_settings.scale if default_case else scale
         self._yscale[index] = scale
@@ -184,51 +185,51 @@ class settings_class():
 # Get Functions
 
     def _get_xlim_set(self, xside):
-        index = xside_to_index(xside)
+        index = placement.xside_to_index(xside)
         return self._xlim[index]
 
     def _get_ylim_set(self, yside):
-        index = yside_to_index(yside)
+        index = placement.yside_to_index(yside)
         return self._ylim[index]
 
     def _get_xfrequency(self, xside):
-        index = xside_to_index(xside)
+        index = placement.xside_to_index(xside)
         return self._xfrequency[index]
     
     def _get_yfrequency(self, yside):
-        index = yside_to_index(yside)
+        index = placement.yside_to_index(yside)
         return self._yfrequency[index]
 
     def _get_xticks_set(self, xside):
-        index = xside_to_index(xside)
+        index = placement.xside_to_index(xside)
         return self._xticks[index]
     
     def _get_yticks_set(self, yside):
-        index = yside_to_index(yside)
+        index = placement.yside_to_index(yside)
         return self._yticks[index]
 
-    def _get_xlabels(self, xside):
-        index = xside_to_index(xside)
+    def _get_xlabels_set(self, xside):
+        index = placement.xside_to_index(xside)
         return self._xlabels[index]
     
-    def _get_ylabels(self, yside):
-        index = yside_to_index(yside)
+    def _get_ylabels_set(self, yside):
+        index = placement.yside_to_index(yside)
         return self._ylabels[index]
 
     def _get_xdirection(self, xside):
-        index = xside_to_index(xside)
+        index = placement.xside_to_index(xside)
         return self._xdirection[index]
     
     def _get_ydirection(self, yside):
-        index = yside_to_index(yside)
+        index = placement.yside_to_index(yside)
         return self._ydirection[index]
 
     def _get_xscale(self, xside):
-        index = xside_to_index(xside)
+        index = placement.xside_to_index(xside)
         return self._xscale[index]
 
     def _get_yscale(self, yside):
-        index = yside_to_index(yside)
+        index = placement.yside_to_index(yside)
         return self._yscale[index]
 
     def _get_bar_status(self, xside):
