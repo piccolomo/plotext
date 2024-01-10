@@ -236,8 +236,13 @@ class build_class():
 
         # Add Data to Canvas
         x, y, m, c, st = ut.transpose([ut.remove_outsiders(x[s], y[s], width_canvas, height_canvas, m[s], c[s], st[s]) for s in Signals], 5)
-
         x, y, m, c, st = ut.transpose([ut.brush(x[s], y[s], m[s], c[s], st[s]) for s in Signals], 5)
+
+        # if the no points appear on the plot, remove it
+        subset = lambda data: [d for i, d in enumerate(data) if len(d) > 0]
+        x, y, m, c, st, self.label = [subset(data) for data in [x, y, m, c, st, self.label]]
+        Signals = list(range(len(x)))
+
         [[self.matrix.insert_element(x[s][i] + col_start, y[s][i] + row_start, m[s][i], c[s][i], st[s][i]) for i in range(len(x[s]))] for s in Signals]
 
         # Legend Utilities
