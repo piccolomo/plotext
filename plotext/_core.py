@@ -73,7 +73,7 @@ def ylabel(label = None, yside = None):
 def xaxes(lower = None, upper = None):
     return _master.xaxes(lower, upper)
 
-def yaxes(left = None, rigth = None):
+def yaxes(left = None, right = None):
     return _master.yaxes(left, right)
 
 def frame(frame = None):
@@ -108,6 +108,20 @@ def xscale(scale = None, xside = None):
 
 def yscale(scale = None, yside = None):
     return _master.yscale(scale, yside)
+
+def xdates(xside):
+    return _master.xdates(xside)
+
+def ydates(yside):
+    return _master.ydates(yside)
+
+def horizontal_line(y, color = None, yside = None):
+    return _master.horizontal_line(y, color, yside)
+hline = horizontal_line
+
+def vertical_line(y, color = None, xside = None):
+    return _master.vertical_line(y, color, xside)
+vline = vertical_line
 
 ##############################################
 ######    Main Plotting Functions    #########

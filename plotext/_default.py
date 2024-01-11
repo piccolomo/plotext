@@ -51,8 +51,7 @@ class default_signal():
 
     
 class default_datetime_converter():
-    input_form = '%d/%m/%Y'
-    output_form = '%d/%m/%Y'
+    form = '%d/%m/%Y'
     time0 = '01/01/1900'
     zone = 'utc'
 

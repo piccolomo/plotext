@@ -42,27 +42,32 @@ class signals_class():
         self._signals = []
 
 
-    def _get_xmin(self, xside = None):
+    def _get_signals_lim(self, axis, side):
+        return self._get_signals_xlim(side) if axis == 1 else self._get_signals_ylim(side)
+
+
+    def _get_signals_xlim(self, xside = None):
+        return (self._get_signals_xmin(xside), self._get_signals_xmax(xside))
+
+    def _get_signals_ylim(self, yside = None):
+        return (self._get_signals_ymin(yside), self._get_signals_ymax(yside))
+
+
+    def _get_signals_xmin(self, xside = None):
         xside = placement.correct_xside(xside)
         return min([s.get_xmin() for s in self._signals if s.xside == xside], default = None)
     
-    def _get_xmax(self, xside = None):
+    def _get_signals_xmax(self, xside = None):
         xside = placement.correct_xside(xside)
         return max([s.get_xmax() for s in self._signals if s.xside == xside], default = None)
 
-    def _get_xlim_signals(self, xside = None):
-        return (self._get_xmin(xside), self._get_xmax(xside))
-    
-    def _get_ymin(self, yside = None):
+    def _get_signals_ymin(self, yside = None):
         yside = placement.correct_yside(yside)
         return min([s.get_ymin() for s in self._signals if s.yside == yside], default = None)
     
-    def _get_ymax(self, yside = None):
+    def _get_signals_ymax(self, yside = None):
         yside = placement.correct_yside(yside)
         return max([s.get_ymax() for s in self._signals if s.yside == yside], default = None)
-
-    def _get_ylim_signals(self, yside = None):
-        return (self._get_ymin(yside), self._get_ymax(yside))
 
 # Draw Functions
   

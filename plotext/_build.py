@@ -28,11 +28,8 @@ class build_class():
 
         [self._build_bar(xside) for xside in r2]
         
-        [self._build_xticks(xside) for xside in r2]
-        [self._build_xaxis(xside) for xside in r2]
-        
-        [self._build_yticks(yside) for yside in r2]
-        [self._build_yaxis(yside) for yside in r2]
+        [self._build_ticks(axis, side) for axis in r2 for side in r2]
+        [self._build_axis(axis, side) for axis in r2 for side in r2]
         
         [self._build_corner(xside, yside) for xside in r2 for yside in r2]
         
@@ -42,77 +39,41 @@ class build_class():
 ##############################################
 
     def _build_bar(self, xside):
-        matrix = self._get_bar(xside)
-        self._insert_matrix(*self._get_bar_position(xside), matrix)
+        self._insert_matrix(*self._get_bar_position(xside), self._get_bar(xside))
 
-    def _build_xticks(self, xside):
-        matrix, _, _  = self._get_xticks(xside)
-        self._insert_matrix(*self._get_xticks_position(xside), matrix)
+    def _build_ticks(self, axis, side):
+        self._insert_matrix(*self._get_ticks_position(axis, side), self._get_ticks(axis, side)[0])
 
-    def _build_xaxis(self, xside):
-        matrix = self._get_xaxis(xside)
-        self._insert_matrix(*self._get_xaxis_position(xside), matrix)
-
-    def _build_yticks(self, yside):
-        matrix = self._get_yticks(yside)
-        self._insert_matrix(*self._get_yticks_position(yside), matrix)
-
-    def _build_yaxis(self, yside):
-        matrix = self._get_yaxis(yside)
-        self._insert_matrix(*self._get_yaxis_position(yside), matrix)
+    def _build_axis(self, axis, side):
+        self._insert_matrix(*self._get_axis_position(axis, side), self._get_axis(axis, side))
 
     def _build_corner(self, xside, yside):
-        matrix = self._get_corner(xside, yside)
-        self._insert_matrix(*self._get_corner_position(xside, yside), matrix)
+        self._insert_matrix(*self._get_corner_position(xside, yside), self._get_corner(xside, yside))
 
         
     def _get_bar(self, xside):
-        return self._get_bar_set(xside, self._width, self._get_bar_height(xside))
+        return self._get_set_bar(xside, *self._get_bar_size(xside))
 
-    def _get_xaxis(self, xside):
-        width = self._get_width_canvas()
-        height = self._get_xaxis_height(xside)
-        _, ticks, labels = self._get_xticks(xside)
-        just_do_it = ticks is not None
-        matrix = matrix_class(width, height, tick.h, self._ticks_color, self._axes_color)
-        Rt = range(len(ticks)) if just_do_it else range(0)
-        side_tick = tick.lower if xside == 1 else tick.upper
-        [matrix._insert_marker(ticks[i], 0, side_tick, self._ticks_color, self._axes_color) for i in Rt] if just_do_it else None
-        return matrix
-    
-    @memorize
-    def _get_xticks(self, xside):
-        width = self._get_width_canvas()
-        height = self._get_xticks_height(xside)
-        ticks, labels = self._get_relative_xticks(xside)
-        just_do_it = ticks is not None and height > 0
+    def _get_ticks(self, axis, side):
+        width, height = self._get_ticks_size(axis, side)
+        ticks, labels = self._get_relative_ticks(axis, side)
+        just_do_it = ticks is not None and width != 0 and height != 0
         matrix = matrix_class(width, height, background = self._axes_color)
         Rt = range(len(ticks)) if just_do_it else range(0)
-        indexes = [i for i in Rt if matrix._insert_dynamic(ticks[i], 0, labels[i])] if just_do_it else None
-        ticks = [ticks[i] for i in indexes] if just_do_it else None
-        labels = [labels[i] for i in indexes] if just_do_it else None
+        indexes = [i for i in Rt if matrix._insert_dynamic(ticks[i], 0, labels[i])] if axis == 1 and just_do_it else None
+        ticks = [ticks[i] for i in indexes] if just_do_it and axis == 1 else ticks
+        labels = [labels[i] for i in indexes] if just_do_it and axis ==1 else labels
+        [matrix._insert_aligned(width - 1, ticks[i], labels[i], ha = 1, check_spaces = 1) for i in Rt] if just_do_it and axis == 2 else None
         return matrix, ticks, labels
-
-    def _get_yticks(self, yside):
-        width = self._get_yticks_width(yside)
-        height = self._get_height_canvas()
-        ticks, labels = self._get_relative_yticks(yside)
-        just_do_it = ticks is not None #and width > 0
-        matrix = matrix_class(width, height, background = self._axes_color)
-        Rt = range(len(ticks)) if just_do_it else range(0)
-        [matrix._insert_aligned(width - 1, ticks[i], labels[i], ha = 1, check_spaces = 1) for i in Rt] if just_do_it else None
-        return matrix
-
-    def _get_yaxis(self, yside):
-        ticks, labels = self._get_relative_yticks(yside)
-        height = self._get_height_canvas()
-        width = self._get_yaxis_width(yside)
-        just_do_it = ticks is not None and width > 0
-        matrix = matrix_class(width, height, tick.v, self._ticks_color, self._axes_color)
-        Rt = range(len(ticks)) if just_do_it else range(0)
-        side_tick = tick.l if yside == 1 else tick.r
-        ticks, _ = self._get_relative_yticks(yside)
-        [matrix._insert_marker(0, ticks[i], side_tick, self._ticks_color, self._axes_color) for i in Rt] if just_do_it else None
+    
+    def _get_axis(self, axis, side):
+        ticks = self._get_axis_ticks(axis, side)
+        size = self._get_axis_size(axis, side)
+        t = tick.h if axis == 1 else tick.v
+        matrix = matrix_class(*size, t, self._ticks_color, self._axes_color)
+        Rt = range(len(ticks))
+        [matrix._insert_marker(ticks[i][0], 0, *ticks[i][1:]) for i in Rt] if axis == 1 else None
+        [matrix._insert_marker(0, *ticks[i]) for i in Rt] if axis == 2 else None
         return matrix
 
     def _get_corner(self, xside, yside):
@@ -123,10 +84,37 @@ class build_class():
         add_tick = self._get_xaxis_height(xside) * self._get_yaxis_width(yside) #and width_canvas >= 0
         matrix._insert_marker(*position, symbol, self._ticks_color, self._axes_color) if add_tick  else None
         return matrix
+
     
+    def _get_bar_size(self, xside):
+        return self._width, self._get_bar_height(xside)
+
+    def _get_axis_size(self, axis, side):
+        return self._get_xaxis_size(side) if axis == 1 else self._get_yaxis_size(side)
+
+    def _get_xaxis_size(self, xside):
+        return (self._get_canvas_width(), self._get_xaxis_height(xside))
+
+    def _get_yaxis_size(self, yside):
+        return (self._get_yaxis_width(yside), self._get_canvas_height())
+
+    def _get_ticks_size(self, axis, side):
+        return self._get_xticks_size(side) if axis == 1 else self._get_yticks_size(side)
+
+    def _get_xticks_size(self, xside):
+         return (self._get_canvas_width(), self._get_xticks_height(xside))
+
+    def _get_yticks_size(self, yside):
+         return (self._get_yticks_width(yside), self._get_canvas_height())
+
+    @memorize
+    def _get_size_canvas(self, axis):
+         return self._get_canvas_width() if axis == 1 else self._get_canvas_height()
+
+
     @memorize
     def _get_bar_height(self, xside):
-        height = self._get_bar_status(xside)
+        height = int(self._get_bar_status(xside))
         height = 0 if xside == 1 and self._height < 1 else height
         height = 0 if xside == 2 and self._height < 2 else height
         return height
@@ -139,14 +127,6 @@ class build_class():
         return height
 
     @memorize
-    def _get_xticks_height(self, xside):
-        height = int(self._get_xticks_data(xside)[0] is not None)
-        height = 0 if xside == 1 and self._height < 5 else height
-        height = 0 if xside == 2 and self._height < 6 else height
-        return height
-    
-
-    @memorize
     def _get_yaxis_width(self, yside):
         width = int(self._yaxes[yside - 1])
         width = 0 if yside == 1 and self._width < 1 else width
@@ -154,12 +134,31 @@ class build_class():
         return width
 
     @memorize
+    def _get_xticks_height(self, xside):
+        height = int(self._get_ticks_data(1, xside)[0] is not None)
+        height = 0 if xside == 1 and self._height < 5 else height
+        height = 0 if xside == 2 and self._height < 6 else height
+        return height
+    
+    @memorize
     def _get_yticks_width(self, yside):
-        _, labels = self._get_relative_yticks(yside)
+        _, labels = self._get_relative_ticks(2, yside)
         width = max([label._get_width() for label in labels]) if labels is not None else 0
         width_occupied = sum([self._get_yaxis_width(yside) for yside in [1, 2]]) + (0 if yside == 1 else  self._get_yticks_width(1))
         width = 0 if self._width - width_occupied - width < 0 else width
         return width
+
+    @memorize
+    def _get_canvas_height(self):
+        bars_height = sum([self._get_bar_height(xside) for xside in [1, 2]])
+        xticks_height = sum([self._get_xticks_height(xside) for xside in [1, 2]])
+        xaxis_height = sum([self._get_xaxis_height(xside) for xside in [1, 2]])
+        return max(0, self._height - (bars_height + xticks_height + xaxis_height))
+
+    @memorize
+    def _get_canvas_width(self):
+        corner_width = sum([self._get_corner_size(2, yside)[0] for yside in [1, 2]])
+        return max(0, self._width - corner_width)
 
     @memorize
     def _get_corner_size(self, xside, yside):
@@ -167,45 +166,27 @@ class build_class():
         height = self._get_xticks_height(xside) + self._get_xaxis_height(xside)
         return width, height
 
-    @memorize
-    def _get_height_canvas(self):
-        bars_height = sum([self._get_bar_height(xside) for xside in [1, 2]])
-        xticks_height = sum([self._get_xticks_height(xside) for xside in [1, 2]])
-        xaxis_height = sum([self._get_xaxis_height(xside) for xside in [1, 2]])
-        return max(0, self._height - (bars_height + xticks_height + xaxis_height))
 
-    @memorize
-    def _get_width_canvas(self):
-        corner_width = sum([self._get_corner_size(2, yside)[0] for yside in [1, 2]])
-        return max(0, self._width - corner_width)
-
-
-    @memorize
-    def _get_canvas_position(self, xside, yside):
-        col = self._get_yticks_width(1) + self._get_yaxis_width(1) if yside == 1 else self._get_canvas_position(1, 1)[0] + self._get_width_canvas()
-        row = self._get_bar_height(2) + self._get_xticks_height(2) + self._get_xaxis_height(2) if xside == 2 else self._get_canvas_position(2, 1)[1] + self._get_height_canvas()
-        return col, row
-
+    
     def _get_bar_position(self, xside):
         row = 0 if xside == 2 else self._get_canvas_position(1, 1)[1] + self._get_xticks_height(1) + self._get_xaxis_height(1)
         return (0, row)
 
-    @memorize
-    def _get_xticks_position(self, xside):
-        col = self._get_yticks_width(1) + self._get_yaxis_width(1)
-        row = self._get_bar_height(2) if xside == 2 else self._get_canvas_position(1, 1)[1] + self._get_xaxis_height(1)
-        return (col, row)
+    def _get_axis_position(self, axis, side):
+        return self._get_xaxis_position(side) if axis == 1 else self._get_yaxis_position(side)
+
+    def _get_ticks_position(self, axis, side):
+        return self._get_xticks_position(side) if axis == 1 else self._get_yticks_position(side)
 
     @memorize
+    def _get_canvas_position(self, xside, yside):
+        col = self._get_yticks_width(1) + self._get_yaxis_width(1) if yside == 1 else self._get_canvas_position(1, 1)[0] + self._get_canvas_width()
+        row = self._get_bar_height(2) + self._get_xticks_height(2) + self._get_xaxis_height(2) if xside == 2 else self._get_canvas_position(2, 1)[1] + self._get_canvas_height()
+        return col, row
+
     def _get_xaxis_position(self, xside):
         col = self._get_xticks_position(1)[0]
         row = self._get_xticks_position(2)[1] + self._get_xticks_height(2) if xside == 2 else self._get_canvas_position(1, 1)[1]
-        return (col, row)
-
-    @memorize
-    def _get_yticks_position(self, yside):
-        col = 0 if yside == 1 else self._get_canvas_position(1, 2)[0] + self._get_yaxis_width(2)
-        row = self._get_canvas_position(2, 2)[1]
         return (col, row)
 
     @memorize
@@ -214,76 +195,90 @@ class build_class():
         row = self._get_yticks_position(yside)[1]
         return (col, row)
 
+    @memorize
+    def _get_xticks_position(self, xside):
+        col = self._get_yticks_width(1) + self._get_yaxis_width(1)
+        row = self._get_bar_height(2) if xside == 2 else self._get_canvas_position(1, 1)[1] + self._get_xaxis_height(1)
+        return (col, row)
+
+    @memorize
+    def _get_yticks_position(self, yside):
+        col = 0 if yside == 1 else self._get_canvas_position(1, 2)[0] + self._get_yaxis_width(2)
+        row = self._get_canvas_position(2, 2)[1]
+        return (col, row)
+
     def _get_corner_position(self, xside, yside):
         col = 0 if yside == 1 else self._get_yaxis_position(2)[0]
         row = self._get_canvas_position(1, 1)[1] if xside == 1 else self._get_xticks_position(2)[1]
         return (col, row)
 
-    def _compute_xticks(self, xside):
-        lim, frequency = self._get_xlim(xside), self._get_xfrequency(xside)
+
+    @memorize
+    def _compute_ticks(self, axis, side):
+        lim, frequency = self._get_real_lim(axis, side), self._get_set_frequency(axis, side)
         just_do_it = None not in lim
         ticks = linspace(*lim, frequency) if just_do_it else None
         return ticks
-    
+
     @memorize
-    def _get_xticks_data(self, xside):
-        ticks, labels = self._get_xticks_set(xside), self._get_xlabels_set(xside)
-        converter = self._get_xstring_converter(xside)
+    def _get_ticks_data(self, axis, side):
+        ticks, labels = self._get_set_ticks(axis, side), self._get_set_labels(axis, side)
+        converter = self._string_converter(axis, side)
         ticks = converter.convert(ticks) if ticks is not None and get_type(ticks) == 'string' else ticks
-        ticks = self._compute_xticks(xside) if ticks is None else ticks
+        ticks = self._compute_ticks(axis, side) if ticks is None else ticks
         labels_needed = lambda: ticks is not None and labels is None
-        converter = self._get_xdate_converter(xside)
+        converter = self._date(axis, side)
         is_datetime = labels_needed() and get_type(ticks) == 'datetime'
         labels = converter.datetimes_to_strings(ticks) if is_datetime else labels
         labels = get_labels(ticks) if labels_needed()  else labels
         labels = self.color_labels(labels) if labels is not None else labels
         return ticks, labels
-
-    def _compute_yticks(self, yside):
-        lim, frequency = self._get_ylim(yside), self._get_yfrequency(yside)
-        just_do_it = None not in lim
-        ticks = linspace(*lim, frequency) if just_do_it else None
-        return ticks
     
+
     @memorize
-    def _get_yticks_data(self, yside):
-        ticks, labels = self._get_yticks_set(yside), self._get_ylabels_set(yside)
-        converter = self._get_ystring_converter(yside)
-        ticks = converter.convert(ticks) if ticks is not None and get_type(ticks) == 'string' else ticks
-
-        ticks = self._compute_yticks(yside) if ticks is None else ticks
-        labels_needed = lambda: ticks is not None and labels is None
-        converter = self._get_ydate_converter(yside)
-        is_datetime = labels_needed() and get_type(ticks) == 'datetime'
-        labels = converter.datetimes_to_strings(ticks) if is_datetime else labels
-        labels = get_labels(ticks) if labels_needed()  else labels
-        labels = self.color_labels(labels) if labels is not None else labels
-        return ticks, labels
-
-    def _get_relative_xticks(self, xside):
-        width = self._get_width_canvas()
-        ticks, labels = self._get_xticks_data(xside)
-        lim = self._get_xlim(xside)
-        ticks = digitize(ticks, lim, width, self._get_xscale(xside)) if ticks is not None and None not in lim and width > 0 else None
-        ticks = None if ticks is None else ticks if self._get_xdirection(xside) == 1 else [width - 1 - el for el in ticks]
+    def _get_relative_ticks(self, axis, side):
+        length = self._get_size_canvas(axis)
+        ticks, labels = self._get_ticks_data(axis, side)
+        lim = self._get_real_lim(axis, side)
+        ticks = digitize(ticks, lim, length, self._get_set_scale(axis, side)) if ticks is not None and None not in lim and length > 0 else None
+        ticks = None if ticks is None else ticks if self._get_set_direction(axis, side) == 1 else [length - 1 - el for el in ticks]
         return ticks, labels
 
     @memorize
-    def _get_relative_yticks(self, yside):
-        height = self._get_height_canvas()
-        ticks, labels = self._get_yticks_data(yside)
-        lim = self._get_ylim(yside)
-        ticks = digitize(ticks, lim, height, self._get_yscale(yside)) if ticks is not None and None not in lim and height > 0 else None
-        ticks = None if ticks is None else (ticks if self._get_ydirection(yside) == -1 else [height - 1 - el for el in ticks])
-        return ticks, labels
+    def _get_relative_lines(self, axis, side):
+        length = self._get_size_canvas(axis)
+        lim = self._get_real_lim(axis, side)
+        ticks = digitize(self._get_set_lines(axis, side), lim, length, self._get_set_scale(axis, side)) if None not in lim and length > 0 else None
+        ticks = None if ticks is None else (ticks if self._get_set_direction(axis, side) == -1 else [length - 1 - el for el in ticks])
+        return ticks
+
+    def _get_axis_ticks(self, axis, side):
+        ticks, _ = self._get_relative_ticks(axis, side)
+        lines1 = self._get_relative_lines(axis, 1)
+        lines2 = self._get_relative_lines(axis, 2)
+        ticks = [] if ticks is None else ticks; lt = len(ticks)
+        lines1 = [] if lines1 is None else lines1; l1 = len(lines1)
+        lines2 = [] if lines2 is None else lines2; l2 = len(lines2)
+        colors1 = self._get_set_lines_colors(axis, 1)
+        colors2 = self._get_set_lines_colors(axis, 2)
+        tc, ac = self._ticks_color, self._axes_color
+        number_tick = (tick.lower if side == 1 else tick.upper) if axis == 1 else (tick.left if side == 1 else tick.right) 
+        lines_tick = (tick.right if side == 1 else tick.left) if axis == 1 else (tick.upper if side == 1 else tick.lower)
+        ticks = [(ticks[i], number_tick, tc, ac) for i in range(lt)]
+        lines1 = [(lines1[i], lines_tick, colors1[i], ac) for i in range(l1)]
+        lines2 = [(lines2[i], lines_tick, colors2[i], ac) for i in range(l2)]
+        lines = lines1 + lines2
+        lines0 = transpose(lines)[0] if len(lines) > 0 else []; ticks0 = transpose(ticks)[0] if len(ticks) > 0 else []
+        numerical_ticks = [el for el in ticks if el[0] not in lines0]
+        lines_ticks = [el for el in lines if el[0] not in ticks0]
+        common_ticks = [(el[0], tick.c, el[2], el[3]) for el in lines if el[0] in ticks0]
+        ticks = numerical_ticks + lines_ticks + common_ticks
+        return ticks
+
 
     @memorize
-    def _get_xlim(self, xside):
-        return replace_none(self._get_xlim_set(xside), self._get_xlim_signals(xside))
-
-    @memorize
-    def _get_ylim(self, yside):
-        return replace_none(self._get_ylim_set(yside), self._get_ylim_signals(yside))
+    def _get_real_lim(self, axis, side):
+        return replace_none(self._get_set_lim(axis, side), self._get_signals_lim(axis, side))
 
     color_labels = lambda self, labels: [colorize(label, self._ticks_color, self._axes_color) for label in labels]
     
@@ -291,30 +286,43 @@ class build_class():
         self._resize(*self._size, self._canvas_color)
 
     def _clear_memorized_methods(self):
-        self._get_xticks.cache_clear()
+         self._get_size_canvas.cache_clear()
+         self._get_bar_height.cache_clear()
+         self._get_xaxis_height.cache_clear()
+         self._get_yaxis_width.cache_clear()        
+         self._get_xticks_height.cache_clear()
+         self._get_yticks_width.cache_clear()
+         self._get_canvas_height.cache_clear()
+         self._get_canvas_width.cache_clear()
+         self._get_corner_size.cache_clear()
+         self._get_canvas_position.cache_clear()
+         self._get_yaxis_position.cache_clear()
+         self._get_xticks_position.cache_clear()
+         self._get_yticks_position.cache_clear()
+         self._compute_ticks.cache_clear()
+         self._get_ticks_data.cache_clear()
+         self._get_relative_ticks.cache_clear()
+         self._get_relative_lines.cache_clear()
+         self._get_real_lim.cache_clear()
+
+    #     self._get_xticks.cache_clear()
        
-        self._get_bar_height.cache_clear()
-        self._get_xaxis_height.cache_clear()
-        self._get_xticks_height.cache_clear()
-        self._get_yticks_width.cache_clear()
-        self._get_yaxis_width.cache_clear()        
-        self._get_corner_size.cache_clear()
         
-        self._get_height_canvas.cache_clear()
-        self._get_width_canvas.cache_clear()
         
-        self._get_canvas_position.cache_clear()
-        self._get_xticks_position.cache_clear()
-        self._get_xaxis_position.cache_clear()
+    #     self._get_canvas_position.cache_clear()
+    #     self._get_xaxis_position.cache_clear()
         
-        self._get_yticks_position.cache_clear()
-        self._get_yaxis_position.cache_clear()
         
-        self._get_xticks_data.cache_clear()
-        self._get_yticks_data.cache_clear()
-        self._get_relative_yticks.cache_clear()
-        self._get_xlim.cache_clear()
-        self._get_ylim.cache_clear()
+    #     self._get_xticks_data.cache_clear()
+    #     self._get_yticks_data.cache_clear()
+    #     self._get_relative_xticks.cache_clear()
+    #     self._get_relative_yticks.cache_clear()
+
+    #     self._get_relative_hlines.cache_clear()
+    #     self._get_relative_vlines.cache_clear()
+        
+    #     self._get_xlim.cache_clear()
+    #     self._get_ylim.cache_clear()
 
     def _join_matrices(self):
         cumulative_width = self._get_cumulative_widths()
@@ -367,6 +375,9 @@ def _get_distinguishing_digit(a, b): # it return the minimum amount of decimal d
     d = 0 if d == 0 else - math.log10(2 * d)
     d = 0 if d < 0 else math.ceil(d)
     return d
+
+def transpose(data): # it needs no explanation
+    return list(map(list, zip(*data)))
 
 # def get_frame(width, height):
 #     Width = range(width); Height = range(height)

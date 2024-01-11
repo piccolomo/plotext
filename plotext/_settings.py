@@ -18,6 +18,7 @@ class settings_class():
         self._init_ticks()
         self._init_direction()
         self._init_scale()
+        self._init_lines()
 
     def _clear_bars(self):
         self._bar_upper.clear()
@@ -53,6 +54,12 @@ class settings_class():
     def _init_scale(self):
         self._xscale = [default_settings.scale] * 2
         self._yscale = [default_settings.scale] * 2
+
+    def _init_lines(self):
+        self._hlines = [[], []]
+        self._vlines = [[], []]
+        self._hcolors = [[], []]
+        self._vcolors = [[], []]
         
 # User Functions
 
@@ -182,13 +189,41 @@ class settings_class():
         self._yscale[index] = scale
         return self
 
-# Get Functions
 
-    def _get_xlim_set(self, xside):
+# Get Functions
+    def _get_set_bar(self, xside, width, height):
+        return self._bar_lower.get(width, height, self._axes_color) if xside == 1 else self._bar_upper.get(width, height, self._axes_color)
+
+    def _get_set_lim(self, axis, side):
+        return self._get_set_xlim(side) if axis == 1 else self._get_set_ylim(side)
+
+    def _get_set_frequency(self, axis, side):
+        return self._get_xfrequency(side) if axis == 1 else self._get_yfrequency(side)
+
+    def _get_set_ticks(self, axis, side):
+        return self._get_xticks(side) if axis == 1 else self._get_yticks(side)
+
+    def _get_set_labels(self, axis, side):
+        return self._get_xlabels(side) if axis == 1 else self._get_ylabels(side)
+
+    def _get_set_direction(self, axis, side):
+        return self._get_xdirection(side) if axis == 1 else self._get_ydirection(side)
+    
+    def _get_set_scale(self, axis, side):
+        return self._get_xscale(side) if axis == 1 else self._get_yscale(side)
+  
+    def _get_set_lines(self, axis, side):
+        return self._get_hlines(side) if axis == 1 else self._get_vlines(side)
+    
+    def _get_set_lines_colors(self, axis, side):
+        return self._get_hcolors(side) if axis == 1 else self._get_vcolors(side)
+        
+    
+    def _get_set_xlim(self, xside):
         index = placement.xside_to_index(xside)
         return self._xlim[index]
 
-    def _get_ylim_set(self, yside):
+    def _get_set_ylim(self, yside):
         index = placement.yside_to_index(yside)
         return self._ylim[index]
 
@@ -200,19 +235,19 @@ class settings_class():
         index = placement.yside_to_index(yside)
         return self._yfrequency[index]
 
-    def _get_xticks_set(self, xside):
+    def _get_xticks(self, xside):
         index = placement.xside_to_index(xside)
         return self._xticks[index]
     
-    def _get_yticks_set(self, yside):
+    def _get_yticks(self, yside):
         index = placement.yside_to_index(yside)
         return self._yticks[index]
 
-    def _get_xlabels_set(self, xside):
+    def _get_xlabels(self, xside):
         index = placement.xside_to_index(xside)
         return self._xlabels[index]
     
-    def _get_ylabels_set(self, yside):
+    def _get_ylabels(self, yside):
         index = placement.yside_to_index(yside)
         return self._ylabels[index]
 
@@ -235,9 +270,22 @@ class settings_class():
     def _get_bar_status(self, xside):
         return self._bar_lower.status() if xside == 1 else self._bar_upper.status() 
 
-    def _get_bar_set(self, xside, width, height):
-        return self._bar_lower.get(width, height, self._axes_color) if xside == 1 else self._bar_upper.get(width, height, self._axes_color)
-        
+    def _get_hlines(self, yside):
+        index = placement.yside_to_index(yside)
+        return self._hlines[index]#, self._hcolors[index]
+
+    def _get_vlines(self, xside):
+        index = placement.xside_to_index(xside)
+        return self._vlines[index]#, self._hcolors[index]
+    
+    def _get_hcolors(self, yside):
+        index = placement.yside_to_index(yside)
+        return self._hcolors[index]#, self._hcolors[index]
+
+    def _get_vcolors(self, xside):
+        index = placement.xside_to_index(xside)
+        return self._vcolors[index]#, self._hcolors[index]
+
 # Utility Functions
 
     def _correct_label(self, label):

@@ -1,7 +1,7 @@
 from plotext._subplot import subplot_class
 from plotext._matrix import matrix_class
 from plotext._settings import settings_class
-from plotext._signal import signals_class
+from plotext._signals import signals_class
 from plotext._build import build_class
 from plotext._date import date_class
 from plotext._placement import placement
@@ -25,21 +25,27 @@ class figure_class(subplot_class, settings_class, matrix_class, signals_class, b
         self._xstring = [string_converter_class(), string_converter_class()]
         self._ystring = [string_converter_class(), string_converter_class()]
 
-    def _get_xdate_converter(self, xside):
+    def xdate(self, xside):
         xside = placement.xside_to_index(xside)
         return self._xdate[xside]
     
-    def _get_ydate_converter(self, yside):
+    def ydate(self, yside):
         yside = placement.yside_to_index(yside)
         return self._ydate[yside]
 
-    def _get_xstring_converter(self, xside):
+    def _date(self, axis, side):
+        return self.xdate(side) if axis == 1 else self.ydate(side)
+
+    def _xstring_converter(self, xside):
         xside = placement.xside_to_index(xside)
         return self._xstring[xside]
     
-    def _get_ystring_converter(self, yside):
+    def _ystring_converter(self, yside):
         yside = placement.yside_to_index(yside)
         return self._ystring[yside]
+
+    def _string_converter(self, axis, side):
+        return self._xstring_converter(side) if axis == 1 else self._ystring_converter(side)
 
     def _create_subplot(self, row = None, col = None):
         plot = figure_class(self, row, col)
@@ -50,10 +56,10 @@ class figure_class(subplot_class, settings_class, matrix_class, signals_class, b
 #  Clear Functions
 
     def clear_data(self):
-        [self._get_xdate_converter(xside).clear() for xside in [1, 2]]
-        [self._get_ydate_converter(yside).clear() for yside in [1, 2]]
-        [self._get_xstring_converter(xside).clear() for xside in [1, 2]]
-        [self._get_ystring_converter(yside).clear() for yside in [1, 2]]
+        [self.xdate(xside).clear() for xside in [1, 2]]
+        [self.ydate(yside).clear() for yside in [1, 2]]
+        [self._xstring_converter(xside).clear() for xside in [1, 2]]
+        [self._ystring_converter(yside).clear() for yside in [1, 2]]
         self._clear_signals()
 
     def clear_subplots(self):
@@ -69,15 +75,39 @@ class figure_class(subplot_class, settings_class, matrix_class, signals_class, b
     clf = clear_figure
 
 ##############################################
+###########    User Functions    #############
+##############################################
+
+
+        
+##############################################
 ###########    Draw Functions    #############
 ##############################################
+
+    def horizontal_line(self, y, color = None, yside = None):
+        ystring = get_type([y]) == 'string'
+        y = self._ystring_converter(yside).convert([y])[0] if ystring else y
+        color = self._ticks_color if color is None else color
+        self._get_hlines(yside).append(y)
+        self._get_hcolors(yside).append(color)
+        return self
+    hline = horizontal_line
+
+    def vertical_line(self, y, color = None, xside = None):
+        ystring = get_type([y]) == 'string'
+        y = self._ystring_converter(xside).convert([y])[0] if ystring else y
+        color = self._ticks_color if color is None else color
+        self._get_vlines(xside).append(y)
+        self._get_vcolors(xside).append(color)
+        return self
+    vline = vertical_line
 
     def _draw(self, *args, xside = None, yside = None):
         x, y = normalize_data(*args)
         xstring = get_type(x) == 'string'
         ystring = get_type(y) == 'string'
-        xconverter = self._get_xstring_converter(xside)
-        yconverter = self._get_ystring_converter(yside)
+        xconverter = self._xstring_converter(xside)
+        yconverter = self._ystring_converter(yside)
         x = xconverter.convert(x) if xstring  else x
         y = yconverter.convert(y) if ystring  else y
         self.xticks(*xconverter.get_ticks()) if xstring else None
