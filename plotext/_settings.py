@@ -1,6 +1,7 @@
 from plotext._default import default_settings
 from plotext._placement import placement
 from plotext._colorize import colorize, matrix_class
+from plotext._marker import tick, tick_rounded, tick_doubled, tick_dotted
 
 
 class settings_class():
@@ -13,6 +14,7 @@ class settings_class():
         self._clear_bars()
         self.clear_color()
         self._init_axes()
+        self._init_marks_style()
         self._init_lim()
         self._init_frequency()
         self._init_ticks()
@@ -32,6 +34,9 @@ class settings_class():
     def _init_axes(self):
         self._xaxes = [default_settings.frame] * 2
         self._yaxes = [default_settings.frame] * 2
+
+    def _init_marks_style(self):
+        self._tick = tick
         
     def _init_lim(self):
         self._xlim = [[None, None], [None, None]]
@@ -42,10 +47,10 @@ class settings_class():
         self._yfrequency = [default_settings.yfrequency] * 2 
     
     def _init_ticks(self):
-        self._xticks = [None, None]
-        self._yticks = [None, None]
-        self._xlabels = [None, None]
-        self._ylabels = [None, None]
+        self._xticks = [[], []]
+        self._yticks = [[], []]
+        self._xlabels = [[], []]
+        self._ylabels = [[], []]
 
     def _init_direction(self):
         self._xdirection = [default_settings.xdirection] * 2
@@ -115,7 +120,12 @@ class settings_class():
         self.xaxes(frame, frame)
         self.yaxes(frame, frame)
         return self
-        
+
+    def marks_style(self, style = None):
+        self.extend('marks_style', style)
+        self._tick = tick if style is None or style not in default_settings.marks_styles else tick_rounded if style == 'rounded' else tick_doubled if style == 'doubled' else tick_dotted if style == 'dotted' else tick
+        return self
+
     def xlim(self, left = None, right = None, xside = None):
         self.extend('xlim', left, right, xside)
         index = placement.xside_to_index(xside)
@@ -143,18 +153,18 @@ class settings_class():
     def xticks(self, ticks = None, labels = None, xside = None):
         self.extend('xticks', ticks, labels, xside)
         index = placement.xside_to_index(xside)
-        self._xticks[index] = ticks
-        self._xlabels[index] = labels
-        xfrequency = None if ticks is None else len(ticks)
+        self._xticks[index] = ticks if ticks is not None else []
+        self._xlabels[index] = labels if labels is not None else []
+        xfrequency = len(ticks)
         self.xfrequency(xfrequency, xside)
         return self
 
     def yticks(self, ticks = None, labels = None, yside = None):
         self.extend('yticks', ticks, labels, yside)
         index = placement.yside_to_index(yside)
-        self._yticks[index] = ticks
-        self._ylabels[index] = labels
-        yfrequency = None if ticks is None else len(ticks)
+        self._yticks[index] = ticks if ticks is not None else []
+        self._ylabels[index] = labels if labels is not None else []
+        yfrequency = len(ticks)
         self.yfrequency(yfrequency, yside)
         return self
 
@@ -189,8 +199,8 @@ class settings_class():
         self._yscale[index] = scale
         return self
 
-
 # Get Functions
+
     def _get_set_bar(self, xside, width, height):
         return self._bar_lower.get(width, height, self._axes_color) if xside == 1 else self._bar_upper.get(width, height, self._axes_color)
 

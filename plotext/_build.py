@@ -1,5 +1,4 @@
 from plotext._colorize import colorize
-from plotext._marker import tick, nl, space
 from plotext._matrix import matrix_class
 from functools import lru_cache as memorize
 from plotext._converter import get_type
@@ -57,7 +56,7 @@ class build_class():
     def _get_ticks(self, axis, side):
         width, height = self._get_ticks_size(axis, side)
         ticks, labels = self._get_relative_ticks(axis, side)
-        just_do_it = ticks is not None and width != 0 and height != 0
+        just_do_it = width != 0 and height != 0
         matrix = matrix_class(width, height, background = self._axes_color)
         Rt = range(len(ticks)) if just_do_it else range(0)
         indexes = [i for i in Rt if matrix._insert_dynamic(ticks[i], 0, labels[i])] if axis == 1 and just_do_it else None
@@ -67,9 +66,9 @@ class build_class():
         return matrix, ticks, labels
     
     def _get_axis(self, axis, side):
-        ticks = self._get_axis_ticks(axis, side)
+        ticks = self._get_axis_marks(axis, side)
         size = self._get_axis_size(axis, side)
-        t = tick.h if axis == 1 else tick.v
+        t = self._tick.horizontal if axis == 1 else self._tick.vertical
         matrix = matrix_class(*size, t, self._ticks_color, self._axes_color)
         Rt = range(len(ticks))
         [matrix._insert_marker(ticks[i][0], 0, *ticks[i][1:]) for i in Rt] if axis == 1 else None
@@ -79,7 +78,7 @@ class build_class():
     def _get_corner(self, xside, yside):
         width, height = self._get_corner_size(xside, yside)
         matrix = matrix_class(width, height, background = self._axes_color)
-        symbol =  tick.ul if (xside, yside) == (1, 2) else tick.ll if (xside, yside) == (2, 2) else tick.ur if (xside, yside) == (1, 1) else tick.lr
+        symbol =  self._tick.upper_left if (xside, yside) == (1, 2) else self._tick.lower_left if (xside, yside) == (2, 2) else self._tick.upper_right if (xside, yside) == (1, 1) else self._tick.lower_right
         position = (0, 0) if (xside, yside) == (1, 2) else (0, height - 1) if (xside, yside) == (2, 2) else (width - 1, 0) if (xside, yside) == (1, 1) else (width - 1, height - 1)
         add_tick = self._get_xaxis_height(xside) * self._get_yaxis_width(yside) #and width_canvas >= 0
         matrix._insert_marker(*position, symbol, self._ticks_color, self._axes_color) if add_tick  else None
@@ -143,7 +142,7 @@ class build_class():
     @memorize
     def _get_yticks_width(self, yside):
         _, labels = self._get_relative_ticks(2, yside)
-        width = max([label._get_width() for label in labels]) if labels is not None else 0
+        width = max([label._get_width() for label in labels], default = 0)
         width_occupied = sum([self._get_yaxis_width(yside) for yside in [1, 2]]) + (0 if yside == 1 else  self._get_yticks_width(1))
         width = 0 if self._width - width_occupied - width < 0 else width
         return width
@@ -217,21 +216,21 @@ class build_class():
     def _compute_ticks(self, axis, side):
         lim, frequency = self._get_real_lim(axis, side), self._get_set_frequency(axis, side)
         just_do_it = None not in lim
-        ticks = linspace(*lim, frequency) if just_do_it else None
+        ticks = linspace(*lim, frequency) if just_do_it else []
         return ticks
 
     @memorize
     def _get_ticks_data(self, axis, side):
         ticks, labels = self._get_set_ticks(axis, side), self._get_set_labels(axis, side)
         converter = self._string_converter(axis, side)
-        ticks = converter.convert(ticks) if ticks is not None and get_type(ticks) == 'string' else ticks
-        ticks = self._compute_ticks(axis, side) if ticks is None else ticks
-        labels_needed = lambda: ticks is not None and labels is None
+        ticks = converter.convert(ticks) if len(ticks) > 0 and get_type(ticks) == 'string' else ticks
+        ticks = self._compute_ticks(axis, side) if len(ticks) == 0 else ticks
+        labels_needed = lambda: len(ticks) > 0 and len(labels) == 0
         converter = self._date(axis, side)
         is_datetime = labels_needed() and get_type(ticks) == 'datetime'
         labels = converter.datetimes_to_strings(ticks) if is_datetime else labels
         labels = get_labels(ticks) if labels_needed()  else labels
-        labels = self.color_labels(labels) if labels is not None else labels
+        labels = self.color_labels(labels)
         return ticks, labels
     
 
@@ -240,40 +239,48 @@ class build_class():
         length = self._get_size_canvas(axis)
         ticks, labels = self._get_ticks_data(axis, side)
         lim = self._get_real_lim(axis, side)
-        ticks = digitize(ticks, lim, length, self._get_set_scale(axis, side)) if ticks is not None and None not in lim and length > 0 else None
-        ticks = None if ticks is None else ticks if self._get_set_direction(axis, side) == 1 else [length - 1 - el for el in ticks]
+        ticks = digitize(ticks, lim, length, self._get_set_scale(axis, side)) if ticks is not None and None not in lim and length > 0 else []
+        ticks = ticks if self._get_set_direction(axis, side) == (1 if axis == 1 else -1) else [length - 1 - el for el in ticks]
         return ticks, labels
 
     @memorize
     def _get_relative_lines(self, axis, side):
         length = self._get_size_canvas(axis)
         lim = self._get_real_lim(axis, side)
-        ticks = digitize(self._get_set_lines(axis, side), lim, length, self._get_set_scale(axis, side)) if None not in lim and length > 0 else None
-        ticks = None if ticks is None else (ticks if self._get_set_direction(axis, side) == -1 else [length - 1 - el for el in ticks])
+        ticks = digitize(self._get_set_lines(axis, side), lim, length, self._get_set_scale(axis, side)) if None not in lim and length > 0 else []
+        ticks = ticks if self._get_set_direction(axis, side) == 1 else [length - 1 - el for el in ticks]
         return ticks
 
-    def _get_axis_ticks(self, axis, side):
-        ticks, _ = self._get_relative_ticks(axis, side)
-        lines1 = self._get_relative_lines(axis, 1)
-        lines2 = self._get_relative_lines(axis, 2)
-        ticks = [] if ticks is None else ticks; lt = len(ticks)
-        lines1 = [] if lines1 is None else lines1; l1 = len(lines1)
-        lines2 = [] if lines2 is None else lines2; l2 = len(lines2)
+    def _get_axis_numerical_marks(self, axis, side):
+        ticks, _ = self._get_relative_ticks(axis, side); lt = len(ticks)
+        number_tick = (self._tick.lower if side == 1 else self._tick.upper) if axis == 1 else (self._tick.left if side == 1 else self._tick.right)
+        tc, ac = self._ticks_color, self._axes_color
+        number_tick = (self._tick.lower if side == 1 else self._tick.upper) if axis == 1 else (self._tick.left if side == 1 else self._tick.right)
+        ticks = [(ticks[i], number_tick, self._ticks_color, self._axes_color) for i in range(lt)]
+        return ticks
+
+    def _get_axis_lines_marks(self, axis, side):
+        lines1 = self._get_relative_lines(axis, 1); l1 = len(lines1)
+        lines2 = self._get_relative_lines(axis, 2); l2 = len(lines2)
         colors1 = self._get_set_lines_colors(axis, 1)
         colors2 = self._get_set_lines_colors(axis, 2)
-        tc, ac = self._ticks_color, self._axes_color
-        number_tick = (tick.lower if side == 1 else tick.upper) if axis == 1 else (tick.left if side == 1 else tick.right) 
-        lines_tick = (tick.right if side == 1 else tick.left) if axis == 1 else (tick.upper if side == 1 else tick.lower)
-        ticks = [(ticks[i], number_tick, tc, ac) for i in range(lt)]
-        lines1 = [(lines1[i], lines_tick, colors1[i], ac) for i in range(l1)]
-        lines2 = [(lines2[i], lines_tick, colors2[i], ac) for i in range(l2)]
+        lines_tick = (self._tick.upper if side == 1 else self._tick.lower) if axis == 1 else (self._tick.right if side == 1 else self._tick.left)
+        lines1 = [(lines1[i], lines_tick, colors1[i], self._axes_color) for i in range(l1)]
+        lines2 = [(lines2[i], lines_tick, colors2[i], self._axes_color) for i in range(l2)]
         lines = lines1 + lines2
-        lines0 = transpose(lines)[0] if len(lines) > 0 else []; ticks0 = transpose(ticks)[0] if len(ticks) > 0 else []
-        numerical_ticks = [el for el in ticks if el[0] not in lines0]
-        lines_ticks = [el for el in lines if el[0] not in ticks0]
-        common_ticks = [(el[0], tick.c, el[2], el[3]) for el in lines if el[0] in ticks0]
-        ticks = numerical_ticks + lines_ticks + common_ticks
-        return ticks
+        return lines
+        
+    def _get_axis_marks(self, axis, side):
+        numerical = self._get_axis_numerical_marks(axis, side)
+        lines = self._get_axis_lines_marks(axis, side)
+        
+        lines0 = transpose(lines)[0] if len(lines) > 0 else [];
+        numerical0 = transpose(numerical)[0] if len(numerical) > 0 else []
+        
+        pure_numerical = [el for el in numerical if el[0] not in lines0]
+        pure_lines = [el for el in lines if el[0] not in numerical0]
+        common = [(el[0], self._tick.cross, el[2], el[3]) for el in lines if el[0] in numerical0]
+        return pure_numerical + pure_lines + common
 
 
     @memorize
@@ -305,30 +312,11 @@ class build_class():
          self._get_relative_lines.cache_clear()
          self._get_real_lim.cache_clear()
 
-    #     self._get_xticks.cache_clear()
-       
-        
-        
-    #     self._get_canvas_position.cache_clear()
-    #     self._get_xaxis_position.cache_clear()
-        
-        
-    #     self._get_xticks_data.cache_clear()
-    #     self._get_yticks_data.cache_clear()
-    #     self._get_relative_xticks.cache_clear()
-    #     self._get_relative_yticks.cache_clear()
-
-    #     self._get_relative_hlines.cache_clear()
-    #     self._get_relative_vlines.cache_clear()
-        
-    #     self._get_xlim.cache_clear()
-    #     self._get_ylim.cache_clear()
-
     def _join_matrices(self):
         cumulative_width = self._get_cumulative_widths()
         cumulative_height = self._get_cumulative_heights()
         [self._insert_matrix(cumulative_width[col - 1], cumulative_height[row - 1], self._get_subplot(row, col)) for col in self._Cols for row in self._Rows]
-        
+
  
 ##############################################
 #########    Function Utilities    ###########
@@ -381,7 +369,7 @@ def transpose(data): # it needs no explanation
 
 # def get_frame(width, height):
 #     Width = range(width); Height = range(height)
-#     matrix = [[tick.h] * width if row in [0, height - 1] else [tick.v if col in [0, width - 1] else space for col in Width] for row in Height]
+#     matrix = [[self._tick.h] * width if row in [0, height - 1] else [self._tick.v if col in [0, width - 1] else space for col in Width] for row in Height]
 #     if width * height != 0:
 #         matrix[0][0] = tick.lower_right
 #         matrix[0][-1] = tick.lower_left

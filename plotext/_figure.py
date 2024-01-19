@@ -84,23 +84,23 @@ class figure_class(subplot_class, settings_class, matrix_class, signals_class, b
 ###########    Draw Functions    #############
 ##############################################
 
-    def horizontal_line(self, y, color = None, yside = None):
+    def vertical_line(self, y, color = None, yside = None):
         ystring = get_type([y]) == 'string'
         y = self._ystring_converter(yside).convert([y])[0] if ystring else y
         color = self._ticks_color if color is None else color
         self._get_hlines(yside).append(y)
         self._get_hcolors(yside).append(color)
         return self
-    hline = horizontal_line
+    vline = vertical_line
 
-    def vertical_line(self, y, color = None, xside = None):
+    def horizontal_line(self, y, color = None, xside = None):
         ystring = get_type([y]) == 'string'
         y = self._ystring_converter(xside).convert([y])[0] if ystring else y
         color = self._ticks_color if color is None else color
         self._get_vlines(xside).append(y)
         self._get_vcolors(xside).append(color)
         return self
-    vline = vertical_line
+    hline = horizontal_line
 
     def _draw(self, *args, xside = None, yside = None):
         x, y = normalize_data(*args)

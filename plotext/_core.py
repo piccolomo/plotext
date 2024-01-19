@@ -79,6 +79,9 @@ def yaxes(left = None, right = None):
 def frame(frame = None):
     return _master.frame(frame)
 
+def marks_style(style = None):
+    return _master.marks_style(style)
+
 def xlim(left = None, right = None, xside = None):
     return _master.xlim(left, right, xside)
 

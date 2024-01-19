@@ -22,7 +22,10 @@ class default_settings():
     ticks_color = "black"
     axes_color = "white"
     canvas_color = 'white'
-    
+
+    marks_style = 'normal'
+    marks_styles = ['normal', 'rounded', 'doubled', 'dotted']
+
     frame = True
     xfrequency = 5
     yfrequency = 7
