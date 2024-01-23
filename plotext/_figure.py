@@ -65,9 +65,9 @@ class _figure_class():
         self._limit = [self._limit_width, self._limit_height]
 
     def _set_terminal_size(self, width = None, height = None):
-        self._width_term = self.default._width_term if width is None else width
+        self._width_term = self.default.width_term if width is None else width
         extra_lines = 2 if ut.is_ipython() else 1
-        self._height_term = self.default._height_term if height is None else max(height - extra_lines, 0)
+        self._height_term = self.default.height_term if height is None else max(height - extra_lines, 0)
         self._size_term = [self._width_term, self._height_term]
 
     def _set_master_size(self):
