@@ -291,6 +291,8 @@ if platform == "windows":
 def terminal_size(): # it returns the terminal size as [width, height]
     try:
         size = shutil.get_terminal_size()
+        if size[0] == 0 or size[1] == 0:
+            return [None, None]
         return list(size)
     except OSError:
         return [None, None]
