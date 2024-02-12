@@ -18,6 +18,14 @@ class colorize(matrix_class):
     def __del__(self):
         matrix_class.__del__(self)
 
+    def _insert_string(self, col, row, string, pixel = pixel_class()):
+        string = c.c_wchar_p(string)
+        matrix_insert_string(self._pointer, col, row, string, pixel._pointer)
+        return self
+
+    def _insert_marker(self, col, row, marker, fullground = None, background = None):
+        pixel = pixel_class(marker, fullground, background)
+        return self._insert_pixel(col, row, pixel)
 
     def clear(self):
         return self._clear()

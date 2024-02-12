@@ -24,8 +24,10 @@ class master_class(figure_class):
         self._get_terminal().update_size()
         self._set_size()
 
-    def clear_sizes(self):
-        super().clear_sizes()
+    def clear_figure(self):
+        self._update_size()
+        super().clear_figure()
+        
 
     def interactive(self, interactive = None):
         self._interactive = default_master.interactive if interactive is None else bool(interactive)

@@ -2,7 +2,8 @@ from plotext._colorize import colorize
 from plotext._matrix import matrix_class
 from functools import lru_cache as memorize
 from plotext._converter import get_type
-import math
+from plotext._marker import hd_marker_codes, marker_resolution, sum_tuples
+from plotext._default import default_settings
 
 
 class build_class():
@@ -24,14 +25,13 @@ class build_class():
 
     def _build_plot(self):
         r2 = [1, 2]
-
-        [self._build_bar(xside) for xside in r2]
         
+        [self._build_bar(xside) for xside in r2]
         [self._build_ticks(axis, side) for axis in r2 for side in r2]
         [self._build_axis(axis, side) for axis in r2 for side in r2]
-        
         [self._build_corner(xside, yside) for xside in r2 for yside in r2]
-        
+        self._add_signals()
+
 
 ##############################################
 #########    Building Utilities    ###########
@@ -66,13 +66,13 @@ class build_class():
         return matrix, ticks, labels
     
     def _get_axis(self, axis, side):
-        ticks = self._get_axis_marks(axis, side)
+        coord, ticks = transpose(self._get_axis_marks(axis, side), 2)
+        coord = [(c, 0) if axis == 1 else (0, c) for c in coord]
         size = self._get_axis_size(axis, side)
         t = self._tick.horizontal if axis == 1 else self._tick.vertical
         matrix = matrix_class(*size, t, self._ticks_color, self._axes_color)
         Rt = range(len(ticks))
-        [matrix._insert_marker(ticks[i][0], 0, *ticks[i][1:]) for i in Rt] if axis == 1 else None
-        [matrix._insert_marker(0, *ticks[i]) for i in Rt] if axis == 2 else None
+        [matrix._insert_matrix(*coord[i], ticks[i]) for i in Rt] if 0 not in size else None
         return matrix
 
     def _get_corner(self, xside, yside):
@@ -81,9 +81,41 @@ class build_class():
         symbol =  self._tick.upper_left if (xside, yside) == (1, 2) else self._tick.lower_left if (xside, yside) == (2, 2) else self._tick.upper_right if (xside, yside) == (1, 1) else self._tick.lower_right
         position = (0, 0) if (xside, yside) == (1, 2) else (0, height - 1) if (xside, yside) == (2, 2) else (width - 1, 0) if (xside, yside) == (1, 1) else (width - 1, height - 1)
         add_tick = self._get_xaxis_height(xside) * self._get_yaxis_width(yside) #and width_canvas >= 0
-        matrix._insert_marker(*position, symbol, self._ticks_color, self._axes_color) if add_tick  else None
+        symbol = colorize(symbol, self._ticks_color, self._axes_color)
+        matrix._insert_matrix(*position, symbol) if add_tick else None
         return matrix
 
+    #def _get_grid(self, ) # transform into signals
+    
+    def _add_signals(self):
+        xoffset, yoffset = self._get_canvas_position(2, 1)
+        width, height = self._get_canvas_width(), self._get_canvas_height()
+        for signal in self._signals:
+            m = signal.marker
+            l = len(m)
+            m0 = m[0] if l > 0 else None
+            xres, yres = marker_resolution(m0)
+            xside, yside = signal.xside, signal.yside
+            lines = signal.lines
+            fillx = signal.fillx
+            filly = signal.filly
+            xlim = self._get_real_lim(1, xside)
+            ylim = self._get_real_lim(2, yside)
+            x = digitize(signal.x, xlim, xres * width, self._get_set_scale(1, xside))
+            y = digitize(signal.y, ylim, yres * height, self._get_set_scale(2, yside))
+            x, y, m = transpose(get_lines(x, y, m)) if lines else (x, y, m)
+            x, y, m = fill(x, y, m, filly) if filly else (x, y, m)
+            y, x, m = fill(y, x, m, fillx) if fillx else (y, x, m)
+            x, y, m = brush(x, y, m)
+            x = change_direction(x, self._get_set_direction(1, xside), xres * width)
+            y = change_direction(y, -self._get_set_direction(2, yside), yres * height)
+            x = divide(x, xres); y = divide(y, yres)
+            x, y, m = transpose(sorted(transpose([x, y, m])))
+            x, y, m = get_hd_markers(x, y, m0) if m0 in hd_marker_codes and l > 0 else (floor(x), floor(y), m)
+            x = add(x, xoffset); y = add(y, yoffset)
+            m = self._colorize(m)
+            m = [el._select(0, 0, 1, 1) for el in self._colorize(m)]
+            [self._insert_matrix(x[i], y[i], m[i]) for i in range(len(x))] #if not lines else self._insert_lines(x, y, m)
     
     def _get_bar_size(self, xside):
         return self._width, self._get_bar_height(xside)
@@ -107,7 +139,7 @@ class build_class():
          return (self._get_yticks_width(yside), self._get_canvas_height())
 
     @memorize
-    def _get_size_canvas(self, axis):
+    def _get_canvas_length(self, axis):
          return self._get_canvas_width() if axis == 1 else self._get_canvas_height()
 
 
@@ -236,7 +268,7 @@ class build_class():
 
     @memorize
     def _get_relative_ticks(self, axis, side):
-        length = self._get_size_canvas(axis)
+        length = self._get_canvas_length(axis)
         ticks, labels = self._get_ticks_data(axis, side)
         lim = self._get_real_lim(axis, side)
         ticks = digitize(ticks, lim, length, self._get_set_scale(axis, side)) if ticks is not None and None not in lim and length > 0 else []
@@ -245,7 +277,7 @@ class build_class():
 
     @memorize
     def _get_relative_lines(self, axis, side):
-        length = self._get_size_canvas(axis)
+        length = self._get_canvas_length(axis)
         lim = self._get_real_lim(axis, side)
         ticks = digitize(self._get_set_lines(axis, side), lim, length, self._get_set_scale(axis, side)) if None not in lim and length > 0 else []
         ticks = ticks if self._get_set_direction(axis, side) == 1 else [length - 1 - el for el in ticks]
@@ -256,7 +288,7 @@ class build_class():
         number_tick = (self._tick.lower if side == 1 else self._tick.upper) if axis == 1 else (self._tick.left if side == 1 else self._tick.right)
         tc, ac = self._ticks_color, self._axes_color
         number_tick = (self._tick.lower if side == 1 else self._tick.upper) if axis == 1 else (self._tick.left if side == 1 else self._tick.right)
-        ticks = [(ticks[i], number_tick, self._ticks_color, self._axes_color) for i in range(lt)]
+        ticks = [(ticks[i], colorize(number_tick, self._ticks_color, self._axes_color)) for i in range(lt)]
         return ticks
 
     def _get_axis_lines_marks(self, axis, side):
@@ -265,8 +297,8 @@ class build_class():
         colors1 = self._get_set_lines_colors(axis, 1)
         colors2 = self._get_set_lines_colors(axis, 2)
         lines_tick = (self._tick.upper if side == 1 else self._tick.lower) if axis == 1 else (self._tick.right if side == 1 else self._tick.left)
-        lines1 = [(lines1[i], lines_tick, colors1[i], self._axes_color) for i in range(l1)]
-        lines2 = [(lines2[i], lines_tick, colors2[i], self._axes_color) for i in range(l2)]
+        lines1 = [(lines1[i], colorize(lines_tick, colors1[i], self._axes_color)) for i in range(l1)]
+        lines2 = [(lines2[i], colorize(lines_tick, colors2[i], self._axes_color)) for i in range(l2)]
         lines = lines1 + lines2
         return lines
         
@@ -285,7 +317,9 @@ class build_class():
 
     @memorize
     def _get_real_lim(self, axis, side):
-        return replace_none(self._get_set_lim(axis, side), self._get_signals_lim(axis, side))
+        lim = replace_none(self._get_set_lim(axis, side), self._get_signals_lim(axis, side))
+        lim = [(1 - default_settings.lim_delta) * lim[0], (1 + default_settings.lim_delta) * lim[1]] if None not in lim and lim[0] == lim[1] else lim
+        return lim
 
     color_labels = lambda self, labels: [colorize(label, self._ticks_color, self._axes_color) for label in labels]
     
@@ -293,7 +327,7 @@ class build_class():
         self._resize(*self._size, self._canvas_color)
 
     def _clear_memorized_methods(self):
-         self._get_size_canvas.cache_clear()
+         self._get_canvas_length.cache_clear()
          self._get_bar_height.cache_clear()
          self._get_xaxis_height.cache_clear()
          self._get_yaxis_width.cache_clear()        
@@ -317,10 +351,15 @@ class build_class():
         cumulative_height = self._get_cumulative_heights()
         [self._insert_matrix(cumulative_width[col - 1], cumulative_height[row - 1], self._get_subplot(row, col)) for col in self._Cols for row in self._Rows]
 
- 
+    def _colorize(self, strings):
+        return  [el if isinstance(el, colorize) else colorize(el, self._ticks_color, self._axes_color) for el in strings]
+
 ##############################################
 #########    Function Utilities    ###########
 ##############################################
+
+import itertools
+import math
 
 replace_none = lambda data, new: [data[i] if data[i] is not None else new[i]for i in range(len(data))] 
 
@@ -337,10 +376,16 @@ def linspace(lower, upper, length = 10, scale = 'linear'): # it returns a lists 
 def digitize(data, lim, bins, scale = 'linear'):
     data = log10(data) if scale == 'log' else data
     lim = log10(lim) if scale == 'log' else lim
+    data = rescale(data, lim, bins)
+    return floor(data)
+
+def rescale(data, lim, bins):
     change = lambda el: 0.5 + (bins - 1) * (el - lim[0]) / (lim[1] - lim[0])
     data = [change(el) for el in data]
-    data = list(map(math.floor, data)) #if round else data
     return data
+
+def floor(data):
+    return list(map(math.floor, data))
 
 def log10(data): # it apply log function to the data
     return [math.log10(el) for el in data]
@@ -364,8 +409,74 @@ def _get_distinguishing_digit(a, b): # it return the minimum amount of decimal d
     d = 0 if d < 0 else math.ceil(d)
     return d
 
-def transpose(data): # it needs no explanation
-    return list(map(list, zip(*data)))
+def transpose(data, length = 1): # it needs no explanation
+    return [[]] * length if data == [] else list(map(list, zip(*data)))
+
+def change_direction(data, direction, length):
+    return data if direction == 1 else [length - 1 - el for el in data]
+
+def add(data, offset):
+    return [el + offset for el in data]
+
+def get_line(x1, y1, x2, y2, m):
+    delta_x = x2 - x1
+    delta_y = y2 - y1
+    range_y = range(min(y1, y2), max(y1, y2))
+    range_x = range(min(x1, x2), max(x1, x2))
+    if delta_x == 0:
+        return [(x1, y, m) for y in range_y]
+    elif delta_y == 0:
+        return [(x, y1, m) for x in range_x]
+    else:
+        s = delta_x / delta_y; si = s ** (-1)
+        points_y = [(round(x1 + s * (y - y1)), y, m) for y in range_y]
+        points_x = [(x, round(y1 + si * (x - x1)), m) for x in range_x]
+        return list(set(points_y + points_x))
+    
+def get_lines(x, y, m):
+    L = range(len(x) - 1)
+    return join([get_line(x[i], y[i], x[i + 1], y[i + 1], m[i]) for i in L]) + [(x[-1], y[-1], m[-1])]
+
+def join(data): # flatten lists at first level
+    #return [el for row in data for el in row]
+    return [el for row in data for el in (join(row) if type (row) == list else [row])]
+
+def divide(data, factor):
+    return [el / factor for el in data]
+
+from collections import defaultdict
+
+def get_hd_markers(x, y, m):
+    l = len(x); L = range(l)
+    xy = list(zip(floor(x), floor(y)))
+    marker = hd_marker_codes[m]
+    xyt = [(xy[i], marker.get_tuple(x[i], y[i])) for i in L]
+    xyg = defaultdict(list)
+    [xyg[el[0]].append(el[1]) for el in xyt]
+    xyg = {el: sum_tuples(*xyg[el]) for el in xyg}
+    xym = [(el[0], el[1], marker.get_marker(xyg[el])) for el in xyg]
+    return transpose(xym)
+
+def fill(x, y, m, method = None):
+    xn, yn, mn = [], [], []
+    l = len(x); L = range(l)
+    ymin = [min([y[j] for j in L if x[i] == x[j]]) for i in L] if method == 'internal' else [0] * l 
+    for i in L:
+        for y_new in range(ymin[i], y[i] + 1):
+            xn.append(x[i])
+            yn.append(y_new)
+            mn.append(m[i])
+    return xn, yn, mn
+
+def brush(*lists):
+    return transpose(no_duplicates(transpose(lists, len(lists))))
+
+def no_duplicates(data): # removes duplicates from a list
+    data.sort()
+    return list(k for k, _ in itertools.groupby(data))
+    #return list(set(list(data)))
+    
+
 
 # def get_frame(width, height):
 #     Width = range(width); Height = range(height)

@@ -1,12 +1,18 @@
 from plotext._default import default_signal
 from plotext._placement import placement
+from plotext._marker import correct_markers
 
 class signal_class():
-    def __init__(self, x, y, xside = None, yside = None):
+    def __init__(self, x, y, marker, xside, yside, lines, fillx, filly):
         self.x, self.y = x, y
+        self.length = len(x)
+        marker = correct_markers(marker)
+        self.marker = repeat(marker, self.length) if isinstance(marker, list) else marker
         self.xside = placement.correct_xside(xside)
         self.yside = placement.correct_yside(yside)
-        self.length = len(x)
+        self.lines = lines
+        self.fillx = fillx
+        self.filly = filly
 
     def get_xmin(self):
         return min(self.x, default = None)
@@ -71,13 +77,20 @@ class signals_class():
 
 # Draw Functions
   
-    def _draw(self, x, y, xside = None, yside = None):
-        self.extend('_draw', x, y, xside = None, yside = None)
-        signal = signal_class(x, y, xside, yside)
+    def _draw(self, *args, **kwargs):
+        self.extend('_draw', *args, **kwargs)
+        signal = signal_class(*args, **kwargs)
         self._signals.append(signal)
 
-    def scatter(self, *args, xside = None, yside = None):
-        self._draw(*args, xside = xside, yside = yside)
+    def scatter(self, *args, marker = None, xside = None, yside = None, fillx = False, filly = False):
+        self._draw(*args, marker = marker, xside = xside, yside = yside, lines = False, fillx = fillx, filly = filly)
+        
+    def plot(self, *args, marker = None, xside = None, yside = None, fillx = False, filly = False):
+        self._draw(*args, marker = marker, xside = xside, yside = yside, lines = True, fillx = fillx, filly = filly)
+        
 
-
-
+def repeat(data, length): # repeat the same data till length is reached
+    l = int(length / len(data) + 1); L = range(l)
+    for i in L:
+        data += data
+    return data[ : length]

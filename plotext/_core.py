@@ -76,11 +76,11 @@ def xaxes(lower = None, upper = None):
 def yaxes(left = None, right = None):
     return _master.yaxes(left, right)
 
-def frame(frame = None):
-    return _master.frame(frame)
+def frame(frame = None, style = None):
+    return _master.frame(frame, style)
 
-def marks_style(style = None):
-    return _master.marks_style(style)
+def grid(horizontal = None, vertical = None):
+    return _master.grid(horizontal, vertical)
 
 def xlim(left = None, right = None, xside = None):
     return _master.xlim(left, right, xside)
@@ -100,11 +100,11 @@ def xticks(ticks = None, labels = None, xside = None):
 def yticks(ticks = None, labels = None, yside = None):
     return _master.yticks(ticks, labels, yside)
 
-def xreverse(reverse = None, xside = None):
-    return _master.xreverse(reverse, xside)
+def xdirection(direction = None, xside = None):
+    return _master.xdirection(direction, xside)
 
-def yreverse(reverse = None, yside = None):
-    return _master.yreverse(reverse, yside)
+def ydirection(direction = None, yside = None):
+    return _master.ydirection(direction, yside)
 
 def xscale(scale = None, xside = None):
     return _master.xscale(scale, xside)
@@ -130,8 +130,12 @@ vline = vertical_line
 ######    Main Plotting Functions    #########
 ##############################################
 
-def scatter(*args, xside = None, yside = None):
-    _master.scatter(*args, xside = xside, yside = yside)
+def scatter(*args, marker = None, xside = None, yside = None, fillx = False, filly = False):
+    _master.scatter(*args, marker = marker, xside = xside, yside = yside, fillx = fillx, filly = filly)
+    show() if _master._interactive else None
+    
+def plot(*args, marker = None, xside = None, yside = None, fillx = False, filly = False):
+    _master.plot(*args, marker = marker, xside = xside, yside = yside, fillx = fillx, filly = filly)
     show() if _master._interactive else None
 
 ##############################################
@@ -150,6 +154,9 @@ def show():
 ##############################################
 ##########    Clear Functions    #############
 ##############################################
+
+def update_size():
+    return _master._update_size()
 
 def clear_sizes():
     return _master.clear_sizes()

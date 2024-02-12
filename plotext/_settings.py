@@ -1,7 +1,7 @@
 from plotext._default import default_settings
 from plotext._placement import placement
 from plotext._colorize import colorize, matrix_class
-from plotext._marker import tick, tick_rounded, tick_doubled, tick_dotted
+from plotext._marker import tick_class
 
 
 class settings_class():
@@ -14,7 +14,8 @@ class settings_class():
         self._clear_bars()
         self.clear_color()
         self._init_axes()
-        self._init_marks_style()
+        self._init_grid()
+        self._set_frame_style()
         self._init_lim()
         self._init_frequency()
         self._init_ticks()
@@ -35,8 +36,11 @@ class settings_class():
         self._xaxes = [default_settings.frame] * 2
         self._yaxes = [default_settings.frame] * 2
 
-    def _init_marks_style(self):
-        self._tick = tick
+    def _init_grid(self):
+        self._grid = [default_settings.grid] * 2
+
+    def _set_frame_style(self, style = None):
+        self._tick = tick_class(style)
         
     def _init_lim(self):
         self._xlim = [[None, None], [None, None]]
@@ -115,15 +119,11 @@ class settings_class():
         self._yaxes[1] = default_settings.frame if right is None else bool(right)
         return self
 
-    def frame(self, frame = None):
+    def frame(self, frame = None, style = None):
         self.extend('frame', frame)
         self.xaxes(frame, frame)
         self.yaxes(frame, frame)
-        return self
-
-    def marks_style(self, style = None):
-        self.extend('marks_style', style)
-        self._tick = tick if style is None or style not in default_settings.marks_styles else tick_rounded if style == 'rounded' else tick_doubled if style == 'doubled' else tick_dotted if style == 'dotted' else tick
+        self._set_frame_style(style)
         return self
 
     def xlim(self, left = None, right = None, xside = None):
@@ -168,17 +168,17 @@ class settings_class():
         self.yfrequency(yfrequency, yside)
         return self
 
-    def xreverse(self, reverse = None, xside = None):
-        self.extend('xreverse', reverse, xside)
+    def xdirection(self, direction = None, xside = None):
+        self.extend('xdirection', direction, xside)
         index = placement.xside_to_index(xside)
-        direction = default_settings.xdirection if reverse is None else 2 * int(not reverse) - 1
+        direction = default_settings.xdirection if direction is None or direction not in [1, -1] else direction
         self._xdirection[index] = direction
         return self
 
-    def yreverse(self, reverse = None, yside = None):
-        self.extend('yreverse', reverse, yside)
+    def ydirection(self, direction = None, yside = None):
+        self.extend('ydirection', direction, yside)
         index = placement.yside_to_index(yside)
-        direction = default_settings.ydirection if reverse is None else 2 * int(not reverse) - 1
+        direction = default_settings.ydirection if direction is None or direction not in [1, -1] else direction
         self._ydirection[index] = direction
         return self
 
@@ -203,6 +203,9 @@ class settings_class():
 
     def _get_set_bar(self, xside, width, height):
         return self._bar_lower.get(width, height, self._axes_color) if xside == 1 else self._bar_upper.get(width, height, self._axes_color)
+
+    def _get_set_grid(self, axis):
+        return self._grid[axis - 1]
 
     def _get_set_lim(self, axis, side):
         return self._get_set_xlim(side) if axis == 1 else self._get_set_ylim(side)
@@ -319,8 +322,8 @@ class settings_class():
         [self.yfrequency(subplot._yfrequency[yside - 1], yside) for yside in r2]
         [self.xticks(subplot._xticks[xside - 1], subplot._xlabels[xside - 1], xside) for xside in r2]
         [self.yticks(subplot._yticks[yside - 1], subplot._ylabels[yside - 1], yside) for yside in r2]
-        [self.xreverse(not(1 + subplot._xdirection[xside - 1]), xside) for xside in r2]
-        [self.yreverse(not(1 + subplot._ydirection[yside - 1]), yside) for yside in r2]
+        [self.xdirection(not(1 + subplot._xdirection[xside - 1]), xside) for xside in r2]
+        [self.ydirection(not(1 + subplot._ydirection[yside - 1]), yside) for yside in r2]
         [self.xscale(subplot._xscale[xside - 1], xside) for xside in r2]
         [self.yscale(subplot._yscale[yside - 1], yside) for yside in r2]
 

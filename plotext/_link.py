@@ -41,6 +41,10 @@ pixel_get_string = kernel.pixel_get_string
 pixel_get_string.argtypes = [c.c_void_p]
 pixel_get_string.restype = c.POINTER(c.c_wchar_p)
 
+pixel_assign = kernel.pixel_assign
+pixel_assign.argtypes = [c.c_void_p, c.c_void_p]
+pixel_assign.restype = c.c_void_p
+
 
 matrix_create = kernel.matrix_create
 matrix_create.argtypes = [c.c_size_t, c.c_size_t, c.c_void_p]
@@ -106,6 +110,11 @@ matrix_part = kernel.matrix_part
 matrix_part.argtypes = [c.c_void_p, c.c_size_t, c.c_size_t, c.c_size_t, c.c_size_t]
 matrix_part.restype = c.c_void_p
 
+matrix_get_pixel = kernel.matrix_get_pixel
+matrix_get_pixel.argtypes = [c.c_void_p, c.c_size_t, c.c_size_t]
+matrix_get_pixel.restype = c.c_void_p
+
+
 matrix_get_string = kernel.matrix_get_string
 matrix_get_string.argtypes = [c.c_void_p, c.c_bool]
 matrix_get_string.restype = c.POINTER(c.c_wchar_p)
@@ -127,26 +136,26 @@ matrix_assign.argtypes = [c.c_void_p, c.c_void_p]
 matrix_assign.restype = c.c_void_p
 
 
-markers_create = kernel.markers_create
-markers_create.argtypes = []
-markers_create.restype = c.c_void_p
+hd_markers_create = kernel.hd_markers_create
+hd_markers_create.argtypes = []
+hd_markers_create.restype = c.c_void_p
 
-markers_add = kernel.markers_add
-markers_add.argtypes = [c.c_void_p, c.POINTER(c.c_bool), c.c_size_t, c.c_wchar]
-markers_add.restype = c.c_void_p
+hd_markers_add = kernel.hd_markers_add
+hd_markers_add.argtypes = [c.c_void_p, c.POINTER(c.c_bool), c.c_size_t, c.c_wchar]
+hd_markers_add.restype = c.c_void_p
 
-markers_sum = kernel.markers_sum
-markers_sum.argtypes = [c.c_void_p, c.c_wchar, c.c_wchar]
-markers_sum.restype = c.c_wchar
+hd_markers_sum = kernel.hd_markers_sum
+hd_markers_sum.argtypes = [c.c_void_p, c.c_wchar, c.c_wchar]
+hd_markers_sum.restype = c.c_wchar
 
-markers_in = kernel.markers_in
-markers_in.argtypes = [c.c_void_p, c.c_wchar_p]
-markers_in.restype = c.c_bool
+hd_markers_in = kernel.hd_markers_in
+hd_markers_in.argtypes = [c.c_void_p, c.c_wchar_p]
+hd_markers_in.restype = c.c_bool
 
-markers_log = kernel.markers_log
-markers_log.argtypes = [c.c_void_p]
-markers_log.restype = c.c_void_p
+hd_markers_log = kernel.hd_markers_log
+hd_markers_log.argtypes = [c.c_void_p]
+hd_markers_log.restype = c.c_void_p
 
-markers_destroy = kernel.markers_destroy
-markers_destroy.argtypes = [c.c_void_p]
-markers_destroy.restype = c.c_void_p
+hd_markers_destroy = kernel.hd_markers_destroy
+hd_markers_destroy.argtypes = [c.c_void_p]
+hd_markers_destroy.restype = c.c_void_p

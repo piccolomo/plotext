@@ -102,8 +102,8 @@ class figure_class(subplot_class, settings_class, matrix_class, signals_class, b
         return self
     hline = horizontal_line
 
-    def _draw(self, *args, xside = None, yside = None):
-        x, y = normalize_data(*args)
+    def _draw(self, *args, marker = None, xside = None, yside = None, lines = False, fillx = False, filly = False):
+        x, y = order_data(*args)
         xstring = get_type(x) == 'string'
         ystring = get_type(y) == 'string'
         xconverter = self._xstring_converter(xside)
@@ -112,20 +112,20 @@ class figure_class(subplot_class, settings_class, matrix_class, signals_class, b
         y = yconverter.convert(y) if ystring  else y
         self.xticks(*xconverter.get_ticks()) if xstring else None
         self.yticks(*yconverter.get_ticks()) if ystring else None
-        super(figure_class, self)._draw(x, y, xside, yside)
+        super(figure_class, self)._draw(x, y, marker = marker, xside = xside, yside = yside, lines = lines, fillx = fillx, filly = filly)
 
 
 # Signal Utilities
 
-def normalize_data(x = None, y = None): # it return properly formatted x and y data lists
-   if x is None and y is None:
-       x, y = [], []
-   elif x is not None and y is None:
-       y = x
-       x = list(range(len(y)))
-   lx, ly = len(x), len(y)
-   if lx != ly:
-       l = min(lx, ly)
-       x = x[ : l]
-       y = y[ : l]
-   return [list(x), list(y)]
+def order_data(x = None, y = None): # it return properly formatted x and y data lists
+    if x is None and y is None:
+        x, y = [], []
+    elif x is not None and y is None:
+        y = x
+        x = list(range(len(y)))
+    lx, ly = len(x), len(y)
+    if lx != ly:
+        l = min(lx, ly)
+        x = x[ : l]
+        y = y[ : l]
+    return [list(x), list(y)]

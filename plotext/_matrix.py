@@ -20,14 +20,8 @@ class matrix_class():
         matrix_fill(self._pointer, pixel._pointer)
         return self
 
-    def _insert_marker(self, col, row, marker, fullground = None, background = None):
-        pixel = pixel_class(marker, fullground, background)
+    def _insert_pixel(self, col, row, pixel):
         matrix_insert_pixel(self._pointer, col, row, pixel._pointer)
-        return self
-       
-    def _insert_string(self, col, row, string, pixel = pixel_class()):
-        string = c.c_wchar_p(string)
-        matrix_insert_string(self._pointer, col, row, string, pixel._pointer)
         return self
 
     def _insert_matrix(self, col, row, matrix):
@@ -40,6 +34,10 @@ class matrix_class():
 
     def _insert_dynamic(self, col, row, matrix):
         return matrix_insert_dynamic(self._pointer, col, row, matrix._pointer)
+
+    def _insert_matrices(self, x, y, matrices):
+        Length = list(range(len(x)))
+        [self._insert_matrix(x[i], y[i], matrices[i]) for i in Length]
 
     def _hstack(self, matrix):
         new = matrix_class(0, 0);
@@ -119,6 +117,13 @@ class matrix_class():
     def _part(self, start, end):
         return self._select(0, start, self._get_width(), end - start)
 
+    def _get_pixel(self, col, row):
+        pointer = matrix_get_pixel(self._pointer, col, row)
+        new = pixel_class()
+        pixel_assign(new._pointer, pointer)
+        pixel_destroy(pointer)
+        return new
+
     def _copy(self):
         new = matrix_class(0, 0)
         matrix_assign(new._pointer, self._pointer)
@@ -156,6 +161,4 @@ class matrix_class():
         matrix_show(self._pointer)        
 
 
-
-        
 

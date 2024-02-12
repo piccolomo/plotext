@@ -7,7 +7,7 @@ import shutil
 class terminal_class():
     def __init__(self):
         self.set_prompt_height()
-        self._update_size()
+        self.update_size()
         self._create_master()
         self._parent = None
         
@@ -15,7 +15,7 @@ class terminal_class():
         self.prompt_height = default_terminal.prompt_height if height is None else int(height)
         return self
 
-    def _update_size(self):
+    def update_size(self):
         try:
             width, height  = shutil.get_terminal_size()
         except: #OSError:

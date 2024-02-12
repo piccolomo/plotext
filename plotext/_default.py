@@ -23,10 +23,8 @@ class default_settings():
     axes_color = "white"
     canvas_color = 'white'
 
-    marks_style = 'normal'
-    marks_styles = ['normal', 'rounded', 'doubled', 'dotted']
-
     frame = True
+    grid = False
     xfrequency = 5
     yfrequency = 7
 
@@ -38,6 +36,8 @@ class default_settings():
 
     scales = ['linear', 'log']
     scale = scales[0]
+
+    lim_delta = 5 / 100
 
         
 class default_signal():
