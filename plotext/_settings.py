@@ -1,7 +1,8 @@
 from plotext._default import default_settings
 from plotext._placement import placement
 from plotext._colorize import colorize, matrix_class
-from plotext._marker import tick_class
+from plotext._tick import tick_class
+from plotext._color import color_sequence
 
 
 class settings_class():
@@ -31,6 +32,7 @@ class settings_class():
         self.ticks_color()
         self.axes_color()
         self.canvas_color()
+        self._color_sequence = color_sequence
        
     def _init_axes(self):
         self._xaxes = [default_settings.frame] * 2

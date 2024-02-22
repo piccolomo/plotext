@@ -3,11 +3,12 @@ from plotext._color import *
 from plotext._style import *
 
 class pixel_class():
-    def __init__(self, marker = None, fullground = None, background = None):
+    def __init__(self, marker = None, fullground = None, background = None, style = None):
         self._pointer = pixel_create()
         self.set_marker(marker)
         self.set_fullground(fullground)
         self.set_background(background)
+        self.set_style(style)
 
     def __del__(self):
         pixel_destroy(self._pointer)
@@ -70,3 +71,11 @@ class pixel_class():
 
     def __repr__(self):
         return self.get_string()
+
+    def copy(self):
+        new = pixel_class(0, 0)
+        return new.copy_from(self)
+
+    def copy_from(self, pixel):
+        pixel_assign(self._pointer, pixel._pointer)
+        return self

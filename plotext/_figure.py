@@ -5,7 +5,7 @@ from plotext._signals import signals_class
 from plotext._build import build_class
 from plotext._date import date_class
 from plotext._placement import placement
-from plotext._converter import string_converter_class, get_type
+from plotext._converter import string_converter_class, get_data_type
 
 
 class figure_class(subplot_class, settings_class, matrix_class, signals_class, build_class):
@@ -85,7 +85,7 @@ class figure_class(subplot_class, settings_class, matrix_class, signals_class, b
 ##############################################
 
     def vertical_line(self, y, color = None, yside = None):
-        ystring = get_type([y]) == 'string'
+        ystring = get_data_type([y]) == 'string'
         y = self._ystring_converter(yside).convert([y])[0] if ystring else y
         color = self._ticks_color if color is None else color
         self._get_hlines(yside).append(y)
@@ -94,7 +94,7 @@ class figure_class(subplot_class, settings_class, matrix_class, signals_class, b
     vline = vertical_line
 
     def horizontal_line(self, y, color = None, xside = None):
-        ystring = get_type([y]) == 'string'
+        ystring = get_data_type([y]) == 'string'
         y = self._ystring_converter(xside).convert([y])[0] if ystring else y
         color = self._ticks_color if color is None else color
         self._get_vlines(xside).append(y)
@@ -104,8 +104,8 @@ class figure_class(subplot_class, settings_class, matrix_class, signals_class, b
 
     def _draw(self, *args, marker = None, xside = None, yside = None, lines = False, fillx = False, filly = False):
         x, y = order_data(*args)
-        xstring = get_type(x) == 'string'
-        ystring = get_type(y) == 'string'
+        xstring = get_data_type(x) == 'string'
+        ystring = get_data_type(y) == 'string'
         xconverter = self._xstring_converter(xside)
         yconverter = self._ystring_converter(yside)
         x = xconverter.convert(x) if xstring  else x

@@ -2,7 +2,7 @@ from plotext._date import date_class, dt
 import math
 
 
-def get_type(data):
+def get_data_type(data):
     return 'numerical' if len(data) == 0 else 'string' if isinstance(data[0], str) else 'datetime' if isinstance(data[0], dt) else 'numerical'
 
 

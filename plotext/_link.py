@@ -78,6 +78,10 @@ matrix_fill = kernel.matrix_fill
 matrix_fill.argtypes = [c.c_void_p, c.c_void_p]
 matrix_fill.restype = c.c_void_p
 
+matrix_fill_color = kernel.matrix_fill_color
+matrix_fill_color.argtypes = [c.c_void_p, c.c_void_p]
+matrix_fill_color.restype = c.c_void_p
+
 matrix_clear = kernel.matrix_clear
 matrix_clear.argtypes = [c.c_void_p]
 matrix_clear.restype = c.c_void_p
@@ -134,28 +138,3 @@ matrix_copy.restype = c.c_void_p
 matrix_assign = kernel.matrix_assign
 matrix_assign.argtypes = [c.c_void_p, c.c_void_p]
 matrix_assign.restype = c.c_void_p
-
-
-hd_markers_create = kernel.hd_markers_create
-hd_markers_create.argtypes = []
-hd_markers_create.restype = c.c_void_p
-
-hd_markers_add = kernel.hd_markers_add
-hd_markers_add.argtypes = [c.c_void_p, c.POINTER(c.c_bool), c.c_size_t, c.c_wchar]
-hd_markers_add.restype = c.c_void_p
-
-hd_markers_sum = kernel.hd_markers_sum
-hd_markers_sum.argtypes = [c.c_void_p, c.c_wchar, c.c_wchar]
-hd_markers_sum.restype = c.c_wchar
-
-hd_markers_in = kernel.hd_markers_in
-hd_markers_in.argtypes = [c.c_void_p, c.c_wchar_p]
-hd_markers_in.restype = c.c_bool
-
-hd_markers_log = kernel.hd_markers_log
-hd_markers_log.argtypes = [c.c_void_p]
-hd_markers_log.restype = c.c_void_p
-
-hd_markers_destroy = kernel.hd_markers_destroy
-hd_markers_destroy.argtypes = [c.c_void_p]
-hd_markers_destroy.restype = c.c_void_p

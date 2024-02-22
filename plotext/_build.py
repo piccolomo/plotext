@@ -1,13 +1,13 @@
 from plotext._colorize import colorize
 from plotext._matrix import matrix_class
 from functools import lru_cache as memorize
-from plotext._converter import get_type
-from plotext._marker import hd_marker_codes, marker_resolution, sum_tuples
+from plotext._converter import get_data_type
+from plotext._hd_marker import hd_marker_codes, sum_tuples
 from plotext._default import default_settings
 
 
 class build_class():
-
+    
     def show(self):
         self._build()
         self._print()
@@ -93,8 +93,8 @@ class build_class():
         for signal in self._signals:
             m = signal.marker
             l = len(m)
-            m0 = m[0] if l > 0 else None
-            xres, yres = marker_resolution(m0)
+            xres, yres = m[0].resolution() if l > 0 else (1, 1)
+            hd =  xres * yres != 1 and l > 0
             xside, yside = signal.xside, signal.yside
             lines = signal.lines
             fillx = signal.fillx
@@ -110,11 +110,13 @@ class build_class():
             x = change_direction(x, self._get_set_direction(1, xside), xres * width)
             y = change_direction(y, -self._get_set_direction(2, yside), yres * height)
             x = divide(x, xres); y = divide(y, yres)
-            x, y, m = transpose(sorted(transpose([x, y, m])))
-            x, y, m = get_hd_markers(x, y, m0) if m0 in hd_marker_codes and l > 0 else (floor(x), floor(y), m)
+            #x, y, m = transpose(sorted(transpose([x, y, m])))
+            x, y, m = get_hd_markers(x, y, m) if hd else (floor(x), floor(y), m)
+            #m = [el.colorize() for el in m]
             x = add(x, xoffset); y = add(y, yoffset)
-            m = self._colorize(m)
-            m = [el._select(0, 0, 1, 1) for el in self._colorize(m)]
+            print(m)
+            #m = self._colorize(m)
+            #m = [el._select(0, 0, 1, 1) for el in self._colorize(m)]
             [self._insert_matrix(x[i], y[i], m[i]) for i in range(len(x))] #if not lines else self._insert_lines(x, y, m)
     
     def _get_bar_size(self, xside):
@@ -255,11 +257,11 @@ class build_class():
     def _get_ticks_data(self, axis, side):
         ticks, labels = self._get_set_ticks(axis, side), self._get_set_labels(axis, side)
         converter = self._string_converter(axis, side)
-        ticks = converter.convert(ticks) if len(ticks) > 0 and get_type(ticks) == 'string' else ticks
+        ticks = converter.convert(ticks) if len(ticks) > 0 and get_data_type(ticks) == 'string' else ticks
         ticks = self._compute_ticks(axis, side) if len(ticks) == 0 else ticks
         labels_needed = lambda: len(ticks) > 0 and len(labels) == 0
         converter = self._date(axis, side)
-        is_datetime = labels_needed() and get_type(ticks) == 'datetime'
+        is_datetime = labels_needed() and get_data_type(ticks) == 'datetime'
         labels = converter.datetimes_to_strings(ticks) if is_datetime else labels
         labels = get_labels(ticks) if labels_needed()  else labels
         labels = self.color_labels(labels)
@@ -447,15 +449,25 @@ def divide(data, factor):
 from collections import defaultdict
 
 def get_hd_markers(x, y, m):
-    l = len(x); L = range(l)
-    xy = list(zip(floor(x), floor(y)))
-    marker = hd_marker_codes[m]
-    xyt = [(xy[i], marker.get_tuple(x[i], y[i])) for i in L]
-    xyg = defaultdict(list)
-    [xyg[el[0]].append(el[1]) for el in xyt]
-    xyg = {el: sum_tuples(*xyg[el]) for el in xyg}
-    xym = [(el[0], el[1], marker.get_marker(xyg[el])) for el in xyg]
-    return transpose(xym)
+    L = range(len(x))
+    marker = m[0].get_string(True)
+    marker = hd_marker_codes[marker]
+    xf = floor(x); yf = floor(y)
+    xy = []; mn = []; t = []
+    for i in L:
+        xyi = xf[i], yf[i]
+        ti = marker.get_tuple(x[i], y[i])
+        if xyi not in xy:
+            xy.append(xyi)
+            mn.append(m[i].copy())
+            t.append(ti)
+        else:
+            index = xy.index(xyi)
+            t[index] = sum_tuples(t[index], ti)
+    s = [marker.get_marker(el) for el in t]
+    m = [mn[i]._reset_string(s[i]) for i in range(len(s))]
+    x, y = transpose(xy, 2)
+    return x, y, m
 
 def fill(x, y, m, method = None):
     xn, yn, mn = [], [], []
@@ -472,7 +484,7 @@ def brush(*lists):
     return transpose(no_duplicates(transpose(lists, len(lists))))
 
 def no_duplicates(data): # removes duplicates from a list
-    data.sort()
+    data.sort(key = lambda el: el[:2])
     return list(k for k, _ in itertools.groupby(data))
     #return list(set(list(data)))
     

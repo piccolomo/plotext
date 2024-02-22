@@ -12,5 +12,5 @@ def color_to_integer(color):
     valid = color in color_codes
     return color_codes[color] if valid else None
 
-# self.color_sequence = ["blue+", "green+", "red+", "cyan+"]
+color_sequence = ["blue+", "green+", "red+", "cyan+"]
 

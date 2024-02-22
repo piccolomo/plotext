@@ -55,6 +55,7 @@ extern "C" {
   bool matrix_insert_dynamic(Matrix * m, size_t col, size_t row, Matrix * nm){return m->insert_dynamic(col, row, (*nm).line.at(0));}
 
   void matrix_fill(Matrix * m, Pixel * p) {m->fill(*p);}
+  void matrix_fill_color(Matrix * m, Pixel * p) {m->fill_color(*p);}
 
   void matrix_clear(Matrix * m){m -> clear();}
   

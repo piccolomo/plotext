@@ -23,8 +23,7 @@ public:
     insert(0, s, p);
     init_string();
     update_string(0);
-    update_string(s.length());
-  }
+    update_string(s.length());}
   
   String(const String & s) : pixel(s.pixel), string(s.string) {}
   
@@ -33,6 +32,16 @@ public:
   void fill(Pixel p = Pixel()){pixel.assign(width(), p); init_string();
       update_string(0);}
 
+  void fill_color(Pixel p = Pixel()){
+    for (size_t i = 0; i < width(); i++){
+      pixel.at(i).fg = p.fg;
+      pixel.at(i).bg = p.bg;
+      pixel.at(i).st = p.st;
+	};
+    init_string();
+    update_string(0);}
+
+  
   void insert(size_t col, wstring s, Pixel p = Pixel()){
     size_t sl = s.length();
     for(size_t c = col; c < col + sl; c++){
@@ -163,6 +172,7 @@ public:
   bool insert_dynamic(size_t col, size_t row, String s){return line.at(row).insert_dynamic(col, s);}
 
   void fill(Pixel p = Pixel()){for (size_t row = 0; row < height(); row++){line.at(row).fill(p);}}
+  void fill_color(Pixel p = Pixel()){for (size_t row = 0; row < height(); row++){line.at(row).fill_color(p);}}
   
   void clear(){for (size_t row = 0; row < height(); row ++){line.at(row).clear();}}
 

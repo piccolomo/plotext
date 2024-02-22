@@ -15,9 +15,14 @@ class matrix_class():
     def __del__(self):
         matrix_destroy(self._pointer)
 
-    def fill(self, marker = None, background = None):
-        pixel = pixel_class().set_marker(marker).set_background(background)
+    def fill(self, marker = None, fullground = None, background = None, style = None):
+        pixel = pixel_class(marker, fullground, background, style)
         matrix_fill(self._pointer, pixel._pointer)
+        return self
+
+    def fill_color(self, fullground = None, background = None, style = None):
+        pixel = pixel_class(None, fullground, background, style)
+        matrix_fill_color(self._pointer, pixel._pointer)
         return self
 
     def _insert_pixel(self, col, row, pixel):
@@ -142,20 +147,20 @@ class matrix_class():
         self._copy_from(new)
         return self
 
-    def _get_string(self, colorless = False):
+    def get_string(self, colorless = False):
         p = matrix_get_string(self._pointer, colorless)
         string = c.c_wchar_p.from_buffer(p).value#.decode()
         string_free_memory(p)
         return string
 
     def __str__(self):
-        return self._get_string()
+        return self.get_string()
 
     def __repr__(self):
         return str(self)
 
     def _print(self):
-        write(self._get_string())
+        write(self.get_string())
 
     def _print2(self):
         matrix_show(self._pointer)        
