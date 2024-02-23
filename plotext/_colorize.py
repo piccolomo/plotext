@@ -36,9 +36,10 @@ class colorize(matrix_class):
     def _correct_marker(self, marker):
         return marker if marker in hd_marker_codes else marker_codes[marker] if marker in marker_codes.keys() else marker
 
-    def resolution(self):
+    def resolution(self, product = True):
         string = self.get_string(1)
-        return (1, 1) if string not in hd_marker_codes else hd_marker_codes[string].shape
+        return hd_marker_codes[string].resolution(product) if string in hd_marker_codes else (1 if product else (1, 1))
+        
 
     def is_hd(self):
         return self.resolution() != (1, 1)

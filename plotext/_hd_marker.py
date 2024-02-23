@@ -10,13 +10,16 @@ class hd_marker:
    def set_shape(self, cols, rows):
       self.cols = cols
       self.rows = rows
-      self.shape = (cols, rows)
 
    def get_tuple(self, x, y):
       return get_tuple(x, y, self.cols, self.rows)
 
    def get_marker(self, tuple):
       return self.dictionary[tuple]
+
+   def resolution(self, product = True):
+      return self.rows * self.cols if product else (self.cols, self.rows)
+
 
    
 def get_tuple(x, y, cols, rows):

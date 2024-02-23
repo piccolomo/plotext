@@ -13,9 +13,10 @@ marker_codes = {'sd': '█', 'dot': '•', 'dollar': '$', 'euro': '€', 'bitcoi
 
 
 def harmonize_markers(markers):
-   hd_markers = sorted([m for m in markers if m.get_string(1) in hd_marker_codes], key = lambda marker: marker.resolution()[0])
+   hd_markers = sorted([m for m in markers if m.get_string(1) in hd_marker_codes], key = lambda marker: marker.resolution(True), reverse = True)
    hd_marker = hd_markers[0].get_string(True) if len(hd_markers) > 0 else None
    markers = [m._reset_string(hd_marker) for m in markers] if hd_marker is not None else markers
    return markers
 
 
+#def marker_class():

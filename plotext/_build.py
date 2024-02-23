@@ -93,7 +93,7 @@ class build_class():
         for signal in self._signals:
             m = signal.marker
             l = len(m)
-            xres, yres = m[0].resolution() if l > 0 else (1, 1)
+            xres, yres = m[0].resolution(False) if l > 0 else (1, 1)
             hd =  xres * yres != 1 and l > 0
             xside, yside = signal.xside, signal.yside
             lines = signal.lines
@@ -114,11 +114,10 @@ class build_class():
             x, y, m = get_hd_markers(x, y, m) if hd else (floor(x), floor(y), m)
             #m = [el.colorize() for el in m]
             x = add(x, xoffset); y = add(y, yoffset)
-            print(m)
             #m = self._colorize(m)
             #m = [el._select(0, 0, 1, 1) for el in self._colorize(m)]
-            [self._insert_matrix(x[i], y[i], m[i]) for i in range(len(x))] #if not lines else self._insert_lines(x, y, m)
-    
+            [self._insert_aligned(x[i], y[i], m[i], 0, 0) for i in range(len(x))] #if not lines else self._insert_lines(x, y, m)
+
     def _get_bar_size(self, xside):
         return self._width, self._get_bar_height(xside)
 
