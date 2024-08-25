@@ -1,10 +1,22 @@
 color, style > pixel > character > string > matrix
 
-marker, marker_info > character_canvas > string_canvas > matrix_canvas
+marker_type, character > marker
 
-marker, marker_info > point > points
+fill_info > point_info
 
-character_canvas > dot, matrix_map > dots
+marker, point_info, point_position > point > points
+
+mini_dot > mini_dot_matrix
+
+marker, mini_matrix > character_canvas > string_canvas > matrix_canvas
+
+fill_info> dot_info
+
+dot_info, fill_info > dot_matrix
+
+marker, dot_matrix, dot_position > dot
+
+dot, dots_map > dots
 
 matrix_canvas, axis > canvas
 

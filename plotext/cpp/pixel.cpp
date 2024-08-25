@@ -4,8 +4,10 @@ public:
   inline Pixel() noexcept = default;
   inline Pixel(const Fullground & fg, const Background & bg = Background(), const Style & st = Style()) noexcept : Fullground(fg), Background(bg), Style(st) {}
   inline Pixel(const string & fg, const string & bg = "", const string & st = "") noexcept : Fullground(fg), Background(bg), Style(st) {}
-
  
+  inline Pixel(const Pixel & p) noexcept : Fullground(p), Background(p), Style(p) {}
+  inline Pixel(Pixel && p) noexcept : Fullground(move(p)), Background(move(p)), Style(move(p)) {}
+
   inline Pixel & operator=(const Pixel & p) noexcept {Fullground::operator=(p); Background::operator=(p); Style::operator=(p); return *this;}
   inline bool operator==(const Pixel & p) const noexcept {return Fullground::operator==(p) and Background::operator==(p) and Style::operator==(p);}
   inline bool operator!=(const Pixel & p) const noexcept {return not (*this == p);}

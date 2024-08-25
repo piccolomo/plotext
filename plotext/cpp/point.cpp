@@ -1,25 +1,15 @@
-class Point : public Marker, public MarkerInfo {
-private: 
-  float x, y;
-
+class Point : public PointPosition, public Marker, public PointInfo {
 public:
   inline Point() noexcept = default;
-  inline Point(const float & xi, const float & yi, const Marker & m, const MarkerInfo & mi = MarkerInfo()) noexcept : x(xi), y(yi), Marker(m), MarkerInfo(mi) {}
+  inline Point(const float & xi, const float & yi, const Marker & m, const PointInfo & mi = PointInfo()) noexcept : PointPosition(xi, yi), Marker(m), PointInfo(mi) {}
+  inline Point(const float & xi, const float & yi, const Point & p, const PointInfo & mi = PointInfo()) noexcept : PointPosition(xi, yi), Marker(p.get_type(), p), PointInfo(mi) {if (p.is_normal()) {set_char(p.get_char());}}
 
-  inline Point(const float & xi, const float & yi, const Point & p, const MarkerInfo & mi = MarkerInfo()) noexcept : x(xi), y(yi), Marker(p.get_type(), p), MarkerInfo(mi) {if (p.is_normal()) {set_char(p.get_char());}}
+  inline Point(const Point & other) noexcept : PointPosition(other), Marker(other), PointInfo(other) {}
+  inline Point(Point && other) noexcept : PointPosition(move(other)), Marker(move(other)), PointInfo(move(other)) {}
 
-  inline constexpr float get_x() const {return x;}
-  inline constexpr float get_y() const {return y;}
+  inline Point & operator=(const Point & p) noexcept {PointPosition::operator=(p); Marker::operator=(p); PointInfo::operator=(p);return *this;}
 
-  inline constexpr float get_col() const {return static_cast<size_t>(x);}
-  inline constexpr float get_row() const {return static_cast<size_t>(y);}
-
-  inline void set_x(const float & el) {x = el;}
-  inline void set_y(const float & el) {y = el;}
-  
-  inline void log(const bool & full = false) const noexcept {
-  	wcout << L"(" + str_round(x, 2) + L", " + str_round(y, 2) + L", ";
-  	Marker::log(); wcout << L")";}
+  inline void log(const bool & full = false) const noexcept {wcout << L"("; PointPosition::log(); wcout << L", "; Marker::log(); if (full) {wcout << L", "; PointInfo::log();} wcout << L")";}
 };
 
   //inline Point(const Point & p) noexcept : x(p.x), y(p.y), Marker(p), MarkerInfo(p) {}//wcout << "copy ";}

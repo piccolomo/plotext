@@ -6,6 +6,9 @@ public:
   inline Character() noexcept = default;
   inline Character(const wchar_t & cn) noexcept : c(cn), Pixel() {}
   inline Character(const wchar_t & cn, const Pixel & p) noexcept : c(cn), Pixel(p) {}
+
+  inline Character(const Character & p) noexcept : Pixel(p), c(p.c) {}
+  inline Character(Character && p) noexcept : Pixel(move(p)), c(p.c) {}
   
   inline Character & operator=(const Character & cn) noexcept {c = cn.c; Pixel::operator=(cn); return *this;}
   

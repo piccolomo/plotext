@@ -1,22 +1,18 @@
-class Dot : public CharacterCanvas {
-private:
-  size_t col, row;
+class Dot : public Marker, public DotMatrix, public DotPosition {
 
 public:
-  inline Dot() noexcept : CharacterCanvas() {col = 0; row = 0;}
+  //inline Dot() noexcept : Marker(), DotMatrix(0, 0), DotPosition() {}
 
-  inline Dot(const size_t & col, const size_t & row, const CharacterCanvas & ch) noexcept : col(col), row(row), CharacterCanvas(ch) {}
-  inline Dot(const Point & p) noexcept : Dot(p.get_col(), p.get_row(), p) {add_dot(p.get_x(), p.get_y(), p);}
+  //inline Dot(const size_t & col, const size_t & row, const CharacterCanvas & ch) noexcept : col(col), row(row), CharacterCanvas(ch) {}
+  inline Dot(const Point & p) noexcept : Marker(p), DotMatrix(p), DotPosition(p) {}
 
-  inline Dot & operator=(const Dot & d) noexcept {CharacterCanvas::operator=(d); col = d.col; row = d.row; return *this;}
+  inline Dot(const Dot & p) noexcept : Marker(p), DotMatrix(p), DotPosition(p) {}
 
-  inline void set_row(const float & el) {row = el;}
-  inline void set_col(const float & el) {col = el;}
 
-  constexpr inline size_t get_col() const noexcept {return col;}
-  constexpr inline size_t get_row() const noexcept {return row;}
+  inline Dot & operator=(const Dot & d) noexcept {Marker::operator=(d); DotMatrix::operator=(d); DotPosition::operator=(d); return *this;}
+  //inline Dot & operator=(Dot && d) noexcept {Marker::operator=(move(d)); DotMatrix::operator=(move(d)); DotPosition::operator=(move(d)); return *this;}
 
-  inline void log() const noexcept {
-  	wcout << L"(" + to_wstring(col) + L", " + to_wstring(row) + L", ";
-  	CharacterCanvas::log(); wcout << L")";}
+  inline CharacterCanvas get_character_canvas() const noexcept {CharacterCanvas out(*this); out.copy_matrix(*this); return out;}
+
+  inline void log(const bool & full = false) const noexcept {wcout << L"("; DotPosition::log(); wcout << ", "; get_character_canvas().log(); if(full) {wcout << L", "; DotMatrix::log();} wcout << L")";}
 };

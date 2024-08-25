@@ -14,7 +14,7 @@ public:
   inline void set_fillx_level(const float & level) noexcept {xaxis.set_fill_level(level);}
   inline void set_filly_level(const float & level) noexcept {yaxis.set_fill_level(level);}
   
-  inline void draw(Points points, const bool & side = false) noexcept {
+  inline void draw(Points & points, const bool & side = false) noexcept {
     auto xlim = xaxis.get_lim();
     auto ylim = yaxis.get_lim();
     auto width = get_width();
@@ -28,11 +28,14 @@ public:
 
     size_t length = points.get_length();
     Dots dots(length); for(size_t i = 0; i < length; i++) {dots.add(points.at(i));}
-    
+    //dots.log(1);
+
     dots.fill(1, fillx_level);
     dots.fill(0, filly_level);
 
-    length = dots.get_length(); for(size_t i = 0; i < length; i++) {Dot & dot = dots.at(i); insert(dot.get_col(), dot.get_row(), dot);}}
+    length = dots.get_length(); for(size_t i = 0; i < length; i++) {Dot & dot = dots.at(i); insert(dot.get_col(), dot.get_row(), dot.get_character_canvas());}
+    //dots.log_map();
+    }
     	
     inline void show() noexcept {MatrixCanvas::get_matrix().show();}
 };

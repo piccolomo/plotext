@@ -23,6 +23,7 @@ inline wchar_t bool_to_wchar(const bool & value) noexcept {return value ? L'1' :
 
 inline void enable_special_characters() noexcept {setlocale(LC_ALL, "");}
 
+inline void nl() {wcout << endl;}
 
 // Cstrings
 
@@ -119,4 +120,4 @@ inline vector<float> sin(size_t periods = 2, size_t length = 200, float amplitud
 
 //inline wstring bool_to_wstring(const bool & value) noexcept {return value ? L"1" : L"0";}
 
-// inline void nl() {wcout << endl;}
+// 

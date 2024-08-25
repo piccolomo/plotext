@@ -22,15 +22,15 @@ inline wchar_t string_to_character(const string & code) {
     auto it = marker_codes.find(code);
     if (it != marker_codes.end()){return it->second;} else {return code[0];}}
 
-inline unsigned char get_marker_rows(const MarkerType & type) {
+inline unsigned char get_marker_rows(const marker_type & type) {
     auto it = marker_rows.find(type);
     if (it != marker_rows.end()) {return it->second;} else {return 0;}}
 
-inline unsigned char get_marker_cols(const MarkerType & type) {
+inline unsigned char get_marker_cols(const marker_type & type) {
     auto it = marker_cols.find(type);
     if (it != marker_cols.end()) {return it->second;} else {return 0;}}
 
-inline string get_marker_label(const MarkerType & type) {
+inline string get_marker_label(const marker_type & type) {
     for (const auto & pair: marker_labels) {if (pair.first == type) {return pair.second;}} return "normal";}
 
 inline wchar_t code_to_hd_character(const unsigned char & code) {
@@ -46,12 +46,12 @@ inline wchar_t code_to_braille_character(const unsigned char & code) {
     if (it != braille_codes.end()){return it->second;} else {return L'B';}}
     
 
-const unordered_map<MarkerType, function<wchar_t(const unsigned char &)>> marker_converters = {
+const unordered_map<marker_type, function<wchar_t(const unsigned char &)>> marker_converters = {
   {hd, code_to_hd_character},
   {fhd, code_to_fhd_character},
   {braille, code_to_braille_character}};
 
-inline function<wchar_t(const unsigned char &)> get_marker_converter(const MarkerType & type) noexcept {
+inline function<wchar_t(const unsigned char &)> get_marker_converter(const marker_type & type) noexcept {
     auto it = marker_converters.find(type);
     if (it != marker_converters.end()) {return it->second;} else {return [](const unsigned char &) { return L'N'; };}};
 
