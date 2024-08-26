@@ -7,5 +7,6 @@ plotext/#*
 #*
 .#*
 plotext/temp/
+plotext/temp2/
 plotext/bin/
 plotext/todo.txt

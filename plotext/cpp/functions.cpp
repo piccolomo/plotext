@@ -25,6 +25,10 @@ inline void enable_special_characters() noexcept {setlocale(LC_ALL, "");}
 
 inline void nl() {wcout << endl;}
 
+inline wchar_t * wstring_to_cstring(const wstring & wstr) noexcept { wchar_t * cstr = new wchar_t[wstr.size() + 1]; wcscpy(cstr, wstr.c_str()); return cstr;}
+
+inline void delete_cstring(wchar_t * cstr) noexcept {delete[] cstr;}
+
 // Cstrings
 
 inline bool same_cstrings(const wchar_t * code1, const wchar_t * code2) noexcept {return wcscmp(code1, code2) == 0;}

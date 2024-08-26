@@ -5,12 +5,19 @@ private:
 
 public:
   inline String() noexcept : chars(nullptr), width(0) {}
-  inline String(const size_t & w) noexcept : chars(new Character[w]), width(w) {}
+  inline String(const size_t & w) noexcept {create(w);}
+  inline String(const size_t & w, const Character & c) noexcept : String(w) {fill_character(c);}
+  inline String(const size_t & w, const Pixel & p) noexcept : String(w, Character(space, p)) {}
   inline String(const wstring & str, const Pixel & p = Pixel()) noexcept : String(str.size()) {for (size_t i = 0; i < width; i++) {chars[i] = Character(str[i], p);}}
-  inline ~String() noexcept {delete [] chars; chars = nullptr;}
-    
+  inline ~String() noexcept {destroy();}
+  
+  inline String(const String & other) {create(other.width); copy_from(other);}
+  inline String & operator=(const String & other) {destroy(); create(other.width); copy_from(other); return *this;}
   inline bool operator==(const String & s) const noexcept {return memcmp(chars, &(s.get_character(0)), width * sizeof(Character)) == 0;}
 
+  inline void create(const size_t & w) noexcept {width = w; chars = new Character[width];}
+  inline void destroy() noexcept {delete [] chars; chars = nullptr;}
+  inline void copy_from(const String & other) noexcept {for (size_t i = 0; i < min(width, other.width); ++i) {chars[i] = other.chars[i];}}
   inline constexpr void clear() noexcept {for (size_t i = 0; i < width; i++) {chars[i].clear();}}
 
   inline size_t get_length() const noexcept {return get_string().size();}
@@ -23,11 +30,10 @@ public:
   inline constexpr void fill_character(const Character & c = Character()) noexcept {for (size_t i = 0; i < width; i++) {chars[i] = c;}}
   inline constexpr void fill_pixel(const Pixel & p = Pixel()) noexcept {for (size_t i = 0; i < width; i++) {chars[i].set_pixel(p);}}
 
-  inline void resize(size_t new_width) noexcept {
-    String novel(new_width);
-    String reshaped = part(min(width, new_width));
-    novel.insert(0, reshaped);
-    this->operator=(novel);}  
+  inline void resize(size_t width) noexcept {
+    String temp(*this);
+    destroy(); create(width); copy_from(temp);
+  }  
   
   inline void insert(const size_t & col, const Character & c) noexcept {chars[col] = c;}
   inline void insert(const size_t & col, const String & s) noexcept {for (size_t i = 0; i < s.get_width(); i++) {chars[col + i] = s.get_character(i);}}

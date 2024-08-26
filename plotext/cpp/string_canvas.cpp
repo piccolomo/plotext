@@ -18,6 +18,8 @@ public:
   inline constexpr void fill_character(const CharacterCanvas & c) noexcept {for (size_t i = 0; i < width; i++) {chars[i] = c;}}
 
   inline void insert(const size_t & col, const CharacterCanvas & c) noexcept {chars[col] = c;}
+  //inline void insert(const size_t & col, const StringCanvas & s) noexcept {for (size_t i = 0; i < s.get_width(); i++) {chars[col + i] = s.get_character(i);}}
+
 };
 
   //inline bool operator==(const StringCanvas & s) const noexcept {return memcmp(chars, &(s.get_character(0)), width * sizeof(Character)) == 0;}

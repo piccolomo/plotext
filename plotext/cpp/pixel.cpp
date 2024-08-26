@@ -45,3 +45,6 @@ public:
     to_buffer(buffer, length);
     wcout << buffer << L"pixel" << ansi_end << endl;}
 };
+
+
+Pixel white_pixel = Pixel("", "white");

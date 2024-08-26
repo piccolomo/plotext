@@ -33,7 +33,7 @@ public:
 
   inline constexpr bool get_matrix_dot(const size_t & col, const size_t & row) const noexcept {return matrix[row][col].get_dot();}
 
-  //inline MiniDotMatrix get_mini_dot_matrix() const noexcept {MiniDotMatrix out(cols, rows); out.set_code(get_code()); return out;}
+  //inline MiniDotMatrix get_mini_dot_matrix() const noexcept {MiniDotMatrix out(cols, rows); out.copy_matrix(*this); return out;}
 
   inline unsigned char get_code() const noexcept {size_t result = 0; for (size_t r = 0; r < rows; r++) {for (size_t c = 0; c < cols; c++) {result <<= 1; result |= (matrix[r][c].get_dot() ? 1 : 0);}} return result;}
 

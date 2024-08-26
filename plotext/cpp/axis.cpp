@@ -4,7 +4,7 @@ private:
   float fill_level;
 
 public:
-  inline void set_lim(const pair<float, float> & yl) noexcept {lim = yl;}
+  inline void set_lim(const float & left, const float & right) noexcept {lim = make_pair(left, right);}
   inline void set_fill_level(const float & level) noexcept {fill_level = level;}
   
   inline constexpr pair<float, float> get_lim() const noexcept {return lim;}

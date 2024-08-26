@@ -1,7 +1,11 @@
 """\nplotext plots directly on terminal"""
     
 __name__ = "plotext"
-__version__ = "6.0.0"
+__version__ = "6.0.0beta"
 
-from ._colorize import colorize
-from ._core import *
+from ._link import *
+from ._pixel import *
+from ._matrix import *
+from ._canvas import *
+from ._points import *
+from ._utility import *
