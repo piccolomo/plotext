@@ -6,15 +6,6 @@ private:
 public:
   inline Matrix(const size_t & w, const size_t & h, const Character & c = Character()) noexcept {create(h); create_strings(w, c);}
   inline Matrix(const size_t & w, const size_t & h, const Pixel & p) noexcept : Matrix(w, h, Character(space, p)) {}
-  // inline Matrix(const wstring & str, const Pixel & p = Pixel()) noexcept {
-  //   vector<wstring> wstrings = split_string(str, new_line[0]);
-  //   size_t width = get_width_strings(wstrings);
-  //   size_t h = wstrings.size();
-  //   create(h);
-  //   for (size_t row = 0; row < h; row++) {
-  //     wstring s = wstrings.at(row);
-  //     s.resize(width, L' ');
-  //     new (&this->strings[row]) String(s, p);}}
   inline ~Matrix() noexcept {destroy();}
 
   inline Matrix(const Matrix & other) {create(other.height); copy_from(other);}
@@ -31,29 +22,29 @@ public:
   inline constexpr Character & get_character(const size_t & col, const size_t & row) const noexcept {return strings[row].get_character(col);}
   inline constexpr size_t get_height() const {return height;}
   inline constexpr size_t get_width() const {if (height == 0){return 0;} else {return strings[0].get_width();}}
-  
+  inline bool is_empty(const size_t col_start, const size_t col_stop, const size_t row_start, const size_t row_stop) const noexcept {for (size_t row = row_start; row < row_stop; row++){if(not strings[row].is_empty(col_start, col_stop)) {return false;};} return true;}
+
   inline constexpr void fill_character(const Character & c = Character()) noexcept {for (size_t row = 0; row < height; row++){strings[row].fill_character(c);}}
   inline constexpr void fill_pixel(const Pixel & p = Pixel()) noexcept {for (size_t row = 0; row < height; row++){strings[row].fill_pixel(p);}}
   inline void resize(const size_t & width, const size_t & height) noexcept {
     for (size_t row = 0; row < min(height, get_height()); row++){strings[row].resize(width);}
     Matrix temp(*this);
-  destroy(); create(height); copy_from(temp);
-  }
-    
-  inline void insert(const size_t & col, const size_t & row, const Character & c) noexcept {strings[row].insert(col, c);} 
-  inline void insert(const size_t & col, const size_t & row, const String & s) noexcept {strings[row].insert(col, s);} 
-  inline void insert(const size_t & col, const size_t & row, const wstring & s, const Pixel & p = Pixel()) noexcept {strings[row].insert(col, s, p);} 
-  
-  inline void insert(const size_t & col, const size_t & row, const Matrix & m) noexcept {for (size_t r = 0; r < m.get_height(); r++){strings[row + r].insert(col, m.get_string(r));}}
-
-  inline void insert(size_t col, size_t row, const Matrix & m, const bool & adapt) noexcept {if (not adapt) {insert(col, row, m);} else if (col < get_width() and row < get_height()) {insert(col, row, m.part(min(m.get_width(), get_width() - col), min(m.get_height(), get_height() - row)));} }
-
-  inline void insert(size_t col, size_t row, const Matrix & m, const Alignment & ha, const Alignment & va, const bool & adapt = false) noexcept {
-    col += ha.get_displacement(m.get_width());
+    destroy(); create(height); copy_from(temp);}
+   
+  inline bool insert(size_t col, size_t row, const Matrix & m, const Alignment & ha = -1, const Alignment & va = -1, const bool adapt = false) noexcept {
     row += va.get_displacement(m.get_height());
-    insert(col, row, m, adapt);}
+    for (size_t r = 0; r < m.get_height(); r++) {if (not get_string(row + r).insert(col, m.get_string(r), ha, adapt)) {return false;}} return true;}
 
-  inline void insert_dynamically(const size_t & col, const size_t & row, const Colorize & c) noexcept {strings[row].insert_dynamically(col, c);}
+  inline bool insert_colorize(const size_t & col, const size_t & row, const Colorize & c, const Alignment & ha = -1, bool check_space = false) noexcept {return get_string(row).insert_colorize(col, c, ha, check_space);}
+
+  inline bool insert_colorize_dynamically(const size_t & col, const size_t & row, const Colorize & c) noexcept {return get_string(row).insert_colorize_dynamically(col, c);}
+
+  // inline void insert(const size_t & col, const size_t & row, const Character & c) noexcept {strings[row].insert(col, c);} 
+  inline void insert(const size_t & col, const size_t & row, const String & s) noexcept {get_string(row).insert(col, s);} 
+  inline void insert(const size_t & col, const size_t & row, const wstring & s, const Pixel & p = Pixel()) noexcept {return strings[row].insert(col, s, p);}
+  // inline void insert(const size_t & col, const size_t & row, const Matrix & m) noexcept {for (size_t r = 0; r < m.get_height(); r++){strings[row + r].insert(col, m.get_string(r));}}
+
+  // inline void insert(size_t col, size_t row, const Matrix & m, const bool & adapt) noexcept {if (not adapt) {insert(col, row, m);} else if (col < get_width() and row < get_height()) {insert(col, row, m.part(min(m.get_width(), get_width() - col), min(m.get_height(), get_height() - row)));}}
   
   inline Matrix vstack(const Matrix & m, const bool & adapt = false) noexcept {
     size_t width; if (adapt) {width = max(get_width(), m.get_width());} else {width = get_width();}

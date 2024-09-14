@@ -30,17 +30,26 @@ public:
   inline constexpr void fill_character(const Character & c = Character()) noexcept {for (size_t i = 0; i < width; i++) {chars[i] = c;}}
   inline constexpr void fill_pixel(const Pixel & p = Pixel()) noexcept {for (size_t i = 0; i < width; i++) {chars[i].set_pixel(p);}}
 
-  inline void resize(size_t width) noexcept {String temp(*this); destroy(); create(width); copy_from(temp);}  
-  
-  inline void insert(const size_t & col, const Character & c) noexcept {chars[col] = c;}
-  inline void insert(const size_t & col, const Colorize & c) noexcept {for (size_t i = 0; i < c.get_length(); i++) {chars[col + i].set_pixel(c); chars[col + i].set_char(c.get_char(i));}}
+  inline void resize(size_t width) noexcept {String temp(*this); destroy(); create(width); copy_from(temp);}
 
-  inline void insert(const size_t & col, const String & s) noexcept {for (size_t i = 0; i < s.get_width(); i++) {chars[col + i] = s.get_character(i);}}
-  inline void insert(const size_t & col, const wstring & s, const Pixel & p = Pixel()) noexcept {for (size_t i = 0; i < s.size(); i++) {chars[col + i].set_char(s[i]); chars[col + i].set_pixel(p);}}
+  inline bool insert(size_t col, const String & s, const Alignment & ha = -1, bool adapt = false) noexcept {
+    col += ha.get_displacement(s.get_width());
+    if (adapt and (col < 0  or col > get_width())) {return false;}
+    size_t length = min(s.get_width(), get_length() - col);
+    for (size_t i = 0; i < length; i++) {chars[col + i] = s.get_character(i);} return true;}
 
-  inline void insert_dynamically(const size_t & col, const Colorize & s) noexcept {
+  inline bool insert_colorize(size_t col, const Colorize & c, const Alignment & ha, bool check_space = false) noexcept {
+    col += ha.get_displacement(c.get_length());
+    if (check_space and not is_empty(col, col + c.get_length())) {return false;}
+    for (size_t i = 0; i < c.get_length(); i++) {chars[col + i].set_pixel(c); chars[col + i].set_char(c.get_char(i));} return true;}
+
+  inline bool insert_colorize_dynamically(const size_t & col, const Colorize & s) noexcept {
     size_t w = s.get_length(); vector<int> displacements = get_dynamic_displacements(w);
-    for(const int & displacement: displacements){size_t c = col + displacement; if (c >= 0 and c + w - 1 < width and is_empty(c, c + w)){insert(c, s); break;}}}
+    for(auto delta: displacements){if (insert_colorize(col + delta, s, -1, 1)) {return true;}} return false;}
+
+  inline void insert(const size_t & col, const Character & c) noexcept {chars[col] = c;}
+
+  inline void insert(const size_t & col, const wstring & s, const Pixel & p = Pixel()) noexcept {for (size_t i = 0; i < s.size(); i++) {chars[col + i].set_char(s[i]); chars[col + i].set_pixel(p);}}
 
   inline String part(const size_t & start, const size_t & stop) const noexcept {size_t new_width = min(stop - start, width); String s(new_width); for (size_t i = 0; i < new_width; i++) {s.get_character(i) = get_character(start + i);} return s;}
   inline String part(const size_t & stop) const noexcept {return part(0, stop);}

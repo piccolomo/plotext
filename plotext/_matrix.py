@@ -24,11 +24,11 @@ class matrix:
 
 	def print(self, colorless = False, end = '\n', flush = True):
 		matrix_show(self._pointer, colorless)
-		write(end, flush);
+		write(end, flush)
 		return self
 
 	def copy(self):
-		return object(pointer = matrix_copy(self._pointer))
+		return matrix(pointer = matrix_copy(self._pointer))
 
 	def vstack(self, object, adapt = True):
 		object = self._correct_matrix(object)
@@ -42,20 +42,24 @@ class matrix:
 		ha = correct_ha(ha)
 		va = correct_va(va)
 		object = self._correct_matrix(object)
-		self._insert(col, row, object, ha, va, adapt)
-		return self
-
-	def _insert(self, col, row, object, ha = -1, va = -1, adapt = False):
 		matrix_insert(self._pointer, col, row, object._pointer, ha, va, adapt)
 		return self
 
-	def _insert_dynamically(self, col, row, object):
-		matrix_insert_dynamically(self._pointer, col, row, object._pointer)
-		return self
+	def _insert_colorize(self, col, row, object, ha = -1, check_space = False):
+		#object = self._correct_colorize(object)
+		return matrix_insert_colorize(self._pointer, col, row, object._pointer, ha, check_space)
+
+	def _insert_colorize_dynamically(self, col, row, object):
+		#object = self._correct_colorize(object)
+		return matrix_insert_colorize_dynamically(self._pointer, col, row, object._pointer)
 
 	def _correct_matrix(self, object):
 		from ._colorize import colorize
 		return object.get_matrix() if isinstance(object, colorize) else colorize(object).get_matrix() if isinstance(object, str) else object
+
+	# def _correct_colorize(self, object):
+	# 	from ._colorize import colorize
+	# 	return colorize(object) if isinstance(object, str) else object
 
 	def _vstack(self, object, adapt = False):
 		return matrix(pointer = matrix_vstack(self._pointer, object._pointer, adapt))
@@ -65,6 +69,9 @@ class matrix:
 
 	def _part(self, col_start, col_stop, row_start, row_stop):
 		return matrix(pointer = matrix_part(self._pointer, col_start, col_stop, row_start, row_stop))
+
+	def _is_empty(self, col_start, col_stop, row_start, row_stop):
+		return matrix_is_empty(self._pointer, col_start, col_stop, row_start, row_stop)
 
 	def _get_vslice(self, start, stop):
 		return self.part(0, self.get_width(), start, stop)

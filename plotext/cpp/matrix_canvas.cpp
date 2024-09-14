@@ -21,9 +21,3 @@ public:
 
   inline void insert(const size_t & col, const size_t & row, const CharacterCanvas & c) noexcept {strings[row].insert(col, c);} 
 };
-
-// Matrix vstack(Matrix & m1, MatrixCanvas & m2, bool & adapt = 0) {
-  
-
-
-// }

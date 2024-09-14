@@ -9,7 +9,7 @@ int main() {
 String a(10, Pixel("red", "white"));
 Colorize c(L"ciao", Pixel("red"));
 
-a.insert_dynamically(5, c);
+a.insert_colorize_dynamically(5, c);
 a.show();
 
 return 1;}
@@ -29,7 +29,6 @@ void pixel_set_style_code(Pixel * p, const char * code) {p->set_style(code);}
 void pixel_log(Pixel * p) {p->log();}
 Pixel * pixel_copy(Pixel * c) {return new Pixel(*c);}
 
-
 Canvas * canvas_new(size_t width, size_t height, Pixel * p) {return new Canvas(width, height, *p);}
 void canvas_delete(Canvas * p) {delete p;}
 void canvas_show(Canvas * canvas) {canvas->show();}
@@ -48,10 +47,15 @@ Matrix * matrix_hstack(Matrix * m1, Matrix * m2, bool adapt = 0) {return new Mat
 const wchar_t * matrix_get_wstring(Matrix * m, bool colorless) {return wstring_to_cstring(m->get_wstring(colorless));}
 void wstring_delete(wchar_t * wstr) {delete_cstring(wstr);}
 Matrix * matrix_part(Matrix * m, size_t col_start, size_t col_stop, size_t row_start, size_t row_stop) {return new Matrix(m->part(col_start, col_stop, row_start, row_stop));}
+bool matrix_is_empty(Matrix * m, size_t col_start, size_t col_stop, size_t row_start, size_t row_stop) {return m->is_empty(col_start, col_stop, row_start, row_stop);}
+
 void matrix_show(Matrix * matrix, bool colorless) {matrix->show(colorless);}
 Matrix * matrix_copy(Matrix * m) {return new Matrix(*m);}
-void matrix_insert(Matrix * m, size_t col, size_t row, Matrix * mi, int ha, int va, bool adapt) {m->insert(col, row, *mi, ha, va, adapt);}
-void matrix_insert_dynamically(Matrix * m, size_t col, size_t row, Colorize * c) {m->insert_dynamically(col, row, *c);}
+bool matrix_insert(Matrix * m, size_t col, size_t row, Matrix * mi, int ha, int va, bool adapt) {return m->insert(col, row, *mi, ha, va, adapt);}
+bool matrix_insert_colorize(Matrix * m, size_t col, size_t row, Colorize * c, int ha, bool check_space) {return m->insert_colorize(col, row, *c, ha, check_space);}
+bool matrix_insert_colorize_dynamically(Matrix * m, size_t col, size_t row, Colorize * c) {return m->insert_colorize_dynamically(col, row, *c);}
+
+
 
 Colorize * colorize_new(const wchar_t * string, Pixel * p) {return new Colorize(string, *p);}
 size_t colorize_get_length(Colorize * c) {return c->get_length();}
