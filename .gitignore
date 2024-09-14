@@ -2,6 +2,7 @@ plotext.egg-info/
 build/
 dist/
 plotext/__pycache__/
+plotext/prettydoc/__pycache__/
 *~
 plotext/#*
 #*
@@ -10,3 +11,4 @@ plotext/temp/
 plotext/temp2/
 plotext/bin/
 plotext/todo.txt
+bin/

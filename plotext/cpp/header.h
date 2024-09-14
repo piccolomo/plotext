@@ -5,6 +5,7 @@
 #include <functional>
 #include <codecvt>
 #include <iomanip>
+
 // #ifdef _WIN32
 //     #include <Windows.h>
 // #endif
@@ -14,12 +15,14 @@
 
 #include "constants.cpp"
 #include "functions.cpp"
+#include "alignment.cpp"
 
 #include "color.cpp"
 #include "style.cpp"
 #include "pixel.cpp"
 
 #include "character.cpp"
+#include "colorize.cpp"
 #include "string.cpp"
 #include "matrix.cpp"
 

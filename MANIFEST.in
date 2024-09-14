@@ -1,2 +1,2 @@
-include plotext/kernel.so
-include plotext/kernel.dll
+include plotext/cpp/kernel.so
+include plotext/cpp/kernel.dll

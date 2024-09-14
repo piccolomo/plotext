@@ -25,7 +25,7 @@ class Clink:
 
 
 void = c.c_void_p
-size = c.c_size_t
+size = c.c_size_t; integer = c.c_int
 float = c.c_float; p_float = c.POINTER(float);
 bool = c.c_bool
 wstring = c.c_wchar_p
@@ -45,19 +45,34 @@ link.add('pixel', 'set_background_rgb').input(void, size, size, size).output(voi
 link.add('pixel', 'set_background_code').input(void, string).output(void)
 link.add('pixel', 'set_style_code').input(void, string).output(void)
 link.add('pixel', 'log').input(void).output(void)
+link.add('pixel', 'copy').input(void).output(void)
+
 
 link.add('matrix', 'new').input(size, size).output(void)
 link.add('matrix', 'delete').input().output(void)
-link.add('matrix', 'show').input(void).output(void)
 link.add('matrix', 'get_width').input(void).output(size)
 link.add('matrix', 'get_height').input(void).output(size)
 link.add('matrix', 'vstack').input(void, void, bool).output(void)
 link.add('matrix', 'hstack').input(void, void, bool).output(void)
 link.add('matrix', 'get_wstring').input(void, bool).output(cstring)
-link.add('matrix', 'part').input(void, size, size, size, size).output(void)
 link.add('wstring', 'delete').input(wstring).output(void)
-link.add('colorize', 'new').input(wstring, size).output(void)
+link.add('matrix', 'part').input(void, size, size, size, size).output(void)
+link.add('matrix', 'show').input(void, bool).output(void)
+link.add('matrix', 'copy').input(void).output(void)
+link.add('matrix', 'insert').input(void, size, size, void, integer, integer, bool).output(void)
+link.add('matrix', 'insert_dynamically').input(void, size, size, void).output(void)
 
+link.add('colorize', 'new').input(wstring, void).output(void)
+link.add('colorize', 'get_length').input(void).output(size)
+link.add('colorize', 'get_wstring').input(void, bool).output(cstring)
+link.add('colorize', 'get_matrix').input(void).output(cstring)
+link.add('colorize', 'get_pixel').input(void).output(void)
+link.add('colorize', 'set_pixel').input(void).output(void)
+link.add('colorize', 'part').input(void, size, size).output(void)
+link.add('colorize', 'show').input(void, bool).output(void)
+link.add('colorize', 'copy').input(void).output(void)
+link.add('colorize', 'copy_from').input(void, void).output(void)
+link.add('colorize', 'equals').input(void, void).output(bool)
 
 link.add('canvas', 'new').input(size, size).output(void)
 link.add('canvas', 'delete').input().output(void)

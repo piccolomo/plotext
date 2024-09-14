@@ -459,17 +459,3 @@ const unordered_map<unsigned char, wchar_t> braille_codes = {
   {0b01111111, L'⣾'},
   {0b11111111, L'⣿'},
 };
-
-
-//Placements
-
-// const unordered_map<string, signed char> ha_codes = {
-//     {"left",  -1},
-//     {"center", 0},
-//     {"right",  1}};
-
-// const unordered_map<std::string, signed char> va_codes = {
-//     {"top",    -1},
-//     {"center", 0},
-//     {"bottom", 1}};
-

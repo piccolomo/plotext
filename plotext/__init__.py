@@ -3,9 +3,8 @@
 __name__ = "plotext"
 __version__ = "6.0.0beta"
 
-from ._link import *
-from ._pixel import *
-from ._matrix import *
-from ._canvas import *
-from ._points import *
-from ._utility import *
+from ._core import *
+#from .prettydoc import *
+#from .prettydoc import _doc as pdoc
+from ._doc import pd as doc
+from ._tests import run_tests as test

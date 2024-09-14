@@ -1,29 +1,15 @@
-import plotext as plt; 
+import plotext as plt
 
-l = 1000
-x = list(range(l))
-y = plt.sin(2, l)
-m = 'hd'
-px = plt.pixel_class().set_fullground_code("blue").set_background_code("white")
+w = 15
+m = plt.matrix(w, 5)
+mi = plt.colorize("ciao", "red").get_matrix()
+m2 = plt.colorize("ciao", "green")
 
-p = plt.points_class(l)
-[p.add(xi, yi, m, px) for (xi, yi) in zip(x, y)]
+[m.insert(i, 0, str(i)[-1]) for i in range(w)]
 
-c = plt.canvas(245, 55)
-c.set_xlim(0, l)
-c.set_ylim(-1, 1)
+m.insert(w - 1, 1, mi, 1)
 
-c.draw(p)
-#c.show()
+m._insert_dynamically(11, 1, m2)
 
-# plt.clf(); 
+m.print()
 
-# #plt.subplots(2,2)
-
-# plt.xlabel('ciao')
-# plt.xlim(0,6)
-# plt.scatter([1,2,3], [5,6,7])
-# plt.scatter([1,2,3], [50,6,7], yside = 2)
-
-
-# plt.show()

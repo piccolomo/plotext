@@ -28,10 +28,10 @@ public:
 
   inline void copy_pixel(const Pixel & p) noexcept {operator=(p);}
 
-  inline constexpr bool no_fullground() noexcept {return Fullground::no_color();}
-  inline constexpr bool no_background() noexcept {return Background::no_color();}
-  inline constexpr bool no_style() noexcept {return Style::no_style();}
-  inline constexpr bool no_color() noexcept {return no_fullground() and no_background() and no_style();}
+  inline constexpr bool no_fullground() const noexcept {return Fullground::no_color();}
+  inline constexpr bool no_background() const noexcept {return Background::no_color();}
+  inline constexpr bool no_style() const noexcept {return Style::no_style();}
+  inline constexpr bool no_color() const noexcept {return no_fullground() and no_background() and no_style();}
 
   inline const size_t get_length() const noexcept {return Fullground::get_length() + Background::get_length() + Style::get_length();}
 

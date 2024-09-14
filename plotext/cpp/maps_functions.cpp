@@ -54,17 +54,3 @@ const unordered_map<marker_type, function<wchar_t(const unsigned char &)>> marke
 inline function<wchar_t(const unsigned char &)> get_marker_converter(const marker_type & type) noexcept {
     auto it = marker_converters.find(type);
     if (it != marker_converters.end()) {return it->second;} else {return [](const unsigned char &) { return L'N'; };}};
-
-
-// Placement
-
-// inline signed char get_ha_code(const string & code) {
-//     auto pair = ha_codes.find(code);
-//     if (pair != ha_codes.end()) {return pair->second;}
-//     else {return -1;}};
-
-// inline signed char get_va_code(const std::string & code) {
-//     auto pair = va_codes.find(code);
-//     if (pair != va_codes.end()) {
-//         return pair->second;} else {return -1;}}
-

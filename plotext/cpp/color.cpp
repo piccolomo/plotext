@@ -46,7 +46,7 @@ public:
 
 
 
-class Background : public Color{
+class Background : public Color {
 public:
   inline Background() noexcept = default;
   inline Background(const string & color) noexcept : Color(false, color) {}

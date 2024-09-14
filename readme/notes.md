@@ -149,22 +149,10 @@ In previous versions:
 - allowed new line `'\n'` in `text()` to properly plot, solving [Issue 127](https://github.com/piccolomo/plotext/issues/127)
 - allowed TAB completion in command line tool retrieving [Pull Request 126](https://github.com/piccolomo/plotext/pull/126)
 - solved `xlim()` and `ylim()` wrong definition, solving [Issue 112](https://github.com/piccolomo/plotext/issues/112) and [Issue 123](https://github.com/piccolomo/plotext/issues/123)
-- added `indicator()` function as requested in [Issue 121](https://github.com/piccolomo/plotext/issues/121)
-- added `shtab` optional dependency as introduced in [Pull Request 118](https://github.com/piccolomo/plotext/pull/118)
 - integrated changes in [Pull Request 107](https://github.com/piccolomo/plotext/pull/107) related to allowing `plotext` with `python` with `-m` flag 
-- added `interactive()` function as requested in [Issue 115](https://github.com/piccolomo/plotext/issues/115)
-- improved way to handle `Nan` and `None` values in the data as requested in [Issue 114](https://github.com/piccolomo/plotext/issues/114)
-- added `confusion_matrix()` function, as requested in [Issue 113](https://github.com/piccolomo/plotext/issues/113)
-- added `append` parameter to the `save_fig()` function as requested in [Issue 109](https://github.com/piccolomo/plotext/issues/109)
-- added `square()` function as requested in [Issue 108](https://github.com/piccolomo/plotext/issues/108)
-- added `simple_bar()`, `simple_multiple_bar()` and `simple_stacked_bar()` functions as requested in [Issue 98](https://github.com/piccolomo/plotext/issues/98)
-- added `xreverse()` and `yreverse()` functions are requested in [Issue 86](https://github.com/piccolomo/plotext/issues/86)
-- added `polygon()` and `rectangle()` function
-- simplified bar ticks creation and added `reset_ticks` parameter, to optionally disable default ticks creation
 - no memory of past plotted bars in bar functions
 - bars can now have negative values
 - `fillx` and `filly` can now accept `True` and `False` as usual, but also a numerical value (to fill till that value) and `"internal"` (to fill till another data point is reached)
-- added `background` color in `text()` function
 - removed `version()` function, now simply `version` value
 - code reorganized:
   - introduced `_global.py` and `_matrix.py` files 
@@ -206,7 +194,7 @@ This version is only available on [GitHub](https://github.com/piccolomo/plotext/
 - removed `colorless()` function, `clear_color()` takes its place depending on which level of the subplot matrix is applied
 - introduced `fast` parameter in `matrix_plot()` and `image_plot()` for faster plotting
 - removed `size`, `keep_ratio` and `resample` parameters from `image_plot()`
-- introduced `event_plot()` as inspired by [Issue 83](https://github.com/piccolomo/plotext/issues/83)
+- introduced `event_plot()` as inspired by [Issue 83](https://github.com/piccolomo/plotext/issues/83)_
 - added `text()` function to add string labels to the plot
 - added `keep_colors` parameter in `save_fig()` to keep ansi color codes in `txt` files (file could be read with `less -R file_path.txt`)
 - removed date-time class, all tools rewritten and moved to normal level
@@ -421,7 +409,6 @@ These count as well as source of inspiration:
 
 - [plotille](https://github.com/tammoippen/plotille)
 - [termplot](https://github.com/justnoise/termplot)
-- [termgraph](https://github.com/sgeisler/termgraph)
 - [terminalplot](https://github.com/kressi/terminalplot)
 - [asciichart](https://github.com/cashlo/asciichart)
 - [uniplot](https://github.com/olavolav/uniplot)

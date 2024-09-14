@@ -1,0 +1,57 @@
+Credits
+=======
+
+Pull Requests
+-------------
+- `cwaldbieser <https://github.com/cwaldbieser>`_ for the `first_row` parameter idea in the `read_data()` method, as seen in `Pull Request 166 <https://github.com/piccolomo/plotext/pull/166>`_.
+- `luator <https://github.com/luator>`_ for fixing the legend symbol for braille markers in `Pull Request 135 <https://github.com/piccolomo/plotext/pull/135>`_.
+- `Freed-Wu <https://github.com/Freed-Wu>`_ for introducing TAB completions to the command line tool, as seen in `Pull Request 118 <https://github.com/piccolomo/plotext/pull/118>`_.
+- `pankajp <https://github.com/pankajp>`_ for allowing `plotext` to be used with `python3` with the `-m` flag, as seen in `Pull Request 107 <https://github.com/piccolomo/plotext/pull/107>`_.
+- `soraxas <https://github.com/soraxas>`_ for functionality that accounts for exponential float notation in `Pull Request 82 <https://github.com/piccolomo/plotext/pull/82>`_.
+
+Issue Reports
+-------------
+- `luator <https://github.com/luator>`_ for requesting the `marker` parameter in the `from_matplotlib()` method, as discussed in `Issue 134 <https://github.com/piccolomo/plotext/issues/134>`_.
+- `darul75 <https://github.com/darul75>`_ for requesting multiple lines in `text()`, as seen in `Issue 127 <https://github.com/piccolomo/plotext/issues/127>`_.
+- `PhilipVinc <https://github.com/PhilipVinc>`_ for the `error()` plot idea, requested in `Issue 122 <https://github.com/piccolomo/plotext/issues/122>`_.
+- `darul75 <https://github.com/darul75>`_ for requesting a simple KPI indicator, as discussed in `Issue 121 <https://github.com/piccolomo/plotext/issues/121>`_.
+- `Freed-Wu <https://github.com/Freed-Wu>`_ for requesting interactive mode in `Issue 115 <https://github.com/piccolomo/plotext/issues/115>`_.
+- `Freed-Wu <https://github.com/Freed-Wu>`_ for requesting a better way to deal with `NaN` and `None` values, as seen in `Issue 114 <https://github.com/piccolomo/plotext/issues/114>`_.
+- `3h4 <https://github.com/3h4>`_ for requesting a confusion matrix, as discussed in `Issue 113 <https://github.com/piccolomo/plotext/issues/113>`_.
+- `dns13 <https://github.com/dns13>`_ for requesting an `append` option in the `save_fig()` function, as seen in `Issue 109 <https://github.com/piccolomo/plotext/issues/109>`_.
+- `vps-eric <https://github.com/vps-eric>`_ for requesting square waves in `Issue 108 <https://github.com/piccolomo/plotext/issues/108>`_.
+- `newbiemate <https://github.com/newbiemate>`_ for requesting simple bar functionality in `Issue 98 <https://github.com/piccolomo/plotext/issues/98>`_.
+- `Neo-Oli <https://github.com/Neo-Oli>`_ for requesting braille-based markers in `Issue 89 <https://github.com/piccolomo/plotext/issues/89>`_.
+- `pieterbergmans <https://github.com/pieterbergmans>`_ for requesting reverse axes functionality in `Issue 86 <https://github.com/piccolomo/plotext/issues/86>`_.
+- `MartinThoma <https://github.com/MartinThoma>`_ for inspiring the idea behind the `event_plot()` function in `Issue 83 <https://github.com/piccolomo/plotext/issues/83>`_.
+- `wookayin <https://github.com/wookayin>`_ for requesting the back-end function `from_matplotlib()` in `Issue 75 <https://github.com/piccolomo/plotext/issues/75>`_.
+- `NLKNguyen <https://github.com/NLKNguyen>`_ for ideas inspiring the `horizontal_line` and `vertical_line` functions in `Issue 65 <https://github.com/piccolomo/plotext/issues/65>`_.
+- `jtplaarj <https://github.com/jtplaarj>`_ for great ideas and code regarding multiple and stacked bar plots in `Issue 48 <https://github.com/piccolomo/plotext/issues/48>`_.
+- `asartori86 <https://github.com/asartori86>`_ for the awesome command line tool in `Issue 47 <https://github.com/piccolomo/plotext/issues/47>`_.
+- `ethack <https://github.com/ethack>`_ for solving the single bar error in `Issue 43 <https://github.com/piccolomo/plotext/issues/43>`_.
+- `ethack <https://github.com/ethack>`_ for requesting log scale on bar plots in `Issue 37 <https://github.com/piccolomo/plotext/issues/37>`_.
+- `gregwa1953 <https://github.com/gregwa1953>`_ for inspiring the `limit_size()` function in `Issue 33 <https://github.com/piccolomo/plotext/issues/33>`_.
+- `rbanffy <https://github.com/rbanffy>`_ for the suggestion of using 3 x 2 Unicode mosaic box characters in `Issue 29 <https://github.com/piccolomo/plotext/issues/29>`_.
+- `henryiii <https://github.com/henryiii>`_ for the unit-test suggestion in `Issue 32 <https://github.com/piccolomo/plotext/issues/32>`_.
+- `whisller <https://github.com/whisller>`_ and `willmcgugan <https://github.com/willmcgugan>`_ for integration with the `Rich` package in `Issue 26 <https://github.com/piccolomo/plotext/issues/26>`_.
+- `garid3000 <https://github.com/garid3000>`_ for the idea of a function that returns the plot canvas in `Issue 20 <https://github.com/piccolomo/plotext/issues/20>`_.
+- `robintw <https://github.com/robintw>`_ and `Sauci <https://github.com/Sauci>`_ for the horizontal bar plot idea and code, respectively, in `Issue 16 <https://github.com/piccolomo/plotext/issues/16>`_.
+- `Zaneo <https://github.com/Zaneo>`_ for the multiple data set idea in `Issue 13 <https://github.com/piccolomo/plotext/issues/13>`_.
+- `Zaneo <https://github.com/Zaneo>`_ for the double axes idea in `Issue 12 <https://github.com/piccolomo/plotext/issues/12>`_.
+- Users `geoffrey-eisenbarth <https://github.com/geoffrey-eisenbarth>`_ and `matthewhanson <https://github.com/matthewhanson>`_ for requesting datetime support in `Issue 7 <https://github.com/piccolomo/plotext/issues/7>`_.
+- `kris927b <https://github.com/kris927b>`_ for requesting the histogram plot in `Issue 6 <https://github.com/piccolomo/plotext/issues/6>`_.
+
+
+Similar Projects
+================
+
+These count as well as sources of inspiration:
+
+- `plotille <https://github.com/tammoippen/plotille>`_
+- `termplot <https://github.com/justnoise/termplot>`_
+- `termgraph <https://github.com/sgeisler/termgraph>`_
+- `terminalplot <https://github.com/kressi/terminalplot>`_
+- `asciichart <https://github.com/cashlo/asciichart>`_
+- `uniplot <https://github.com/olavolav/uniplot>`_
+- `bashplotlib <https://github.com/glamp/bashplotlib>`_
+- `termplotlib <https://github.com/nschloe/termplotlib>`_

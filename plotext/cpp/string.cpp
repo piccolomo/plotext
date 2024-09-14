@@ -8,7 +8,7 @@ public:
   inline String(const size_t & w) noexcept {create(w);}
   inline String(const size_t & w, const Character & c) noexcept : String(w) {fill_character(c);}
   inline String(const size_t & w, const Pixel & p) noexcept : String(w, Character(space, p)) {}
-  inline String(const wstring & str, const Pixel & p = Pixel()) noexcept : String(str.size()) {for (size_t i = 0; i < width; i++) {chars[i] = Character(str[i], p);}}
+  //inline String(const wstring & str, const Pixel & p = Pixel()) noexcept : String(str.size()) {for (size_t i = 0; i < width; i++) {chars[i] = Character(str[i], p);}}
   inline ~String() noexcept {destroy();}
   
   inline String(const String & other) {create(other.width); copy_from(other);}
@@ -30,13 +30,17 @@ public:
   inline constexpr void fill_character(const Character & c = Character()) noexcept {for (size_t i = 0; i < width; i++) {chars[i] = c;}}
   inline constexpr void fill_pixel(const Pixel & p = Pixel()) noexcept {for (size_t i = 0; i < width; i++) {chars[i].set_pixel(p);}}
 
-  inline void resize(size_t width) noexcept {
-    String temp(*this);
-    destroy(); create(width); copy_from(temp);
-  }  
+  inline void resize(size_t width) noexcept {String temp(*this); destroy(); create(width); copy_from(temp);}  
   
   inline void insert(const size_t & col, const Character & c) noexcept {chars[col] = c;}
+  inline void insert(const size_t & col, const Colorize & c) noexcept {for (size_t i = 0; i < c.get_length(); i++) {chars[col + i].set_pixel(c); chars[col + i].set_char(c.get_char(i));}}
+
   inline void insert(const size_t & col, const String & s) noexcept {for (size_t i = 0; i < s.get_width(); i++) {chars[col + i] = s.get_character(i);}}
+  inline void insert(const size_t & col, const wstring & s, const Pixel & p = Pixel()) noexcept {for (size_t i = 0; i < s.size(); i++) {chars[col + i].set_char(s[i]); chars[col + i].set_pixel(p);}}
+
+  inline void insert_dynamically(const size_t & col, const Colorize & s) noexcept {
+    size_t w = s.get_length(); vector<int> displacements = get_dynamic_displacements(w);
+    for(const int & displacement: displacements){size_t c = col + displacement; if (c >= 0 and c + w - 1 < width and is_empty(c, c + w)){insert(c, s); break;}}}
 
   inline String part(const size_t & start, const size_t & stop) const noexcept {size_t new_width = min(stop - start, width); String s(new_width); for (size_t i = 0; i < new_width; i++) {s.get_character(i) = get_character(start + i);} return s;}
   inline String part(const size_t & stop) const noexcept {return part(0, stop);}
@@ -65,6 +69,4 @@ public:
 
   
   // inline void insert(const size_t & col, const StringTemplate & s, const HA & ha) noexcept {insert(col + ha.get_displacement(s.get_width()), s);}
-  // inline void insert_dynamic(const size_t & col, const StringTemplate & s) noexcept {
-  //   size_t w = s.get_width(); int c; HA la(-1); vector<int> displacements = get_dynamic_displacements(w);
-  // for(const int & displacement: displacements){c = col + displacement; if (c >= 0 and c + w - 1 < width and is_empty(c, c + w)){insert(c, s, la); break;}}}
+

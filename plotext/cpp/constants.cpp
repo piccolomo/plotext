@@ -6,7 +6,6 @@ const wchar_t new_line[] = L"\n";
 const wchar_t ansi_fullground[] = L"\x1b[38;";
 const wchar_t ansi_background[] = L"\x1b[48;";
 
-
 // Elements Size (number of wchar_t)
 const size_t color_size_max = 20;
 const size_t style_size_max = 19;
