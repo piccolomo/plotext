@@ -1,4 +1,5 @@
-from ._colorize import colorize, pixel, uncolorize
+from ._pixel import pixel
+from ._colorize import colorize, uncolorize
 from ._matrix import matrix
 from ._utility import sin
 from ._demo import colors, styles

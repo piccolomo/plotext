@@ -10,3 +10,5 @@ from ._doc import pd as doc
 from ._bar import bar
 
 from ._utility import hash, hash_floats
+from ._ticks import *
+from ._axis import *

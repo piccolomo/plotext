@@ -1,5 +1,5 @@
 from ._link import *
-from ._pixel import *
+from ._pixel import pixel as pixel_class
 from ._matrix import *
 from ._system import write
 from ._utility import hash
@@ -8,13 +8,13 @@ from ._utility import hash
 class colorize():
 	def __init__(self, string = None, foreground = None, background = None, style = None, pointer = None):
 		if pointer is None:
-			px = pixel(foreground, background, style)
+			px = pixel_class(foreground, background, style)
 			self._pointer = colorize_new(wstring(str(string)), px._pointer)
 		else:
 			self._pointer = pointer
 
 	def set_pixel(self, pixel = None):
-		pixel = pixel() if pixel is None else pixel
+		pixel = pixel_class() if pixel is None else pixel
 		colorize_set_pixel(self._pointer, pixel._pointer)
 		return self
 
@@ -26,7 +26,7 @@ class colorize():
 		return colorize_get_length(self._pointer)
 
 	def get_pixel(self):
-		return pixel(pointer = colorize_get_pixel(self._pointer))
+		return pixel_class(pointer = colorize_get_pixel(self._pointer))
 
 	def get_matrix(self):
 		return matrix(pointer = colorize_get_matrix(self._pointer))

@@ -1,6 +1,6 @@
 from ._text import Text, Alias
 from ._parameter import Parameter
-from ._methods import *
+from ._utility import *
 
 
 class Function:

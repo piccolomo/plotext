@@ -1,4 +1,5 @@
-from ._methods import *
+from ._utility import *
+
 
 class Text:
 	def __init__(self, text = None):

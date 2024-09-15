@@ -1,7 +1,7 @@
 from ._pixels import default_pixels
 from ._function import Function
 from ._text import Text
-from ._methods import *
+from ._utility import *
 from .._utility import hash
 
 

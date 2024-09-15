@@ -39,6 +39,7 @@ void canvas_set_filly_level(Canvas * canvas, float level) {canvas->set_filly_lev
 void canvas_draw(Canvas * canvas, Points * points) {canvas->draw(*points);}
 
 Matrix * matrix_new(size_t width, size_t height, Pixel * p) {return new Matrix(width, height, *p);}
+void matrix_clear(Matrix * m) {m->clear();}
 void matrix_delete(Matrix * p) {delete p;}
 size_t matrix_get_width(Matrix * matrix) {return matrix->get_width();}
 size_t matrix_get_height(Matrix * matrix) {return matrix->get_height();}

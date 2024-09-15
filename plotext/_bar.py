@@ -2,14 +2,8 @@ from ._matrix import *
 from ._pixel import *
 
 class bar(matrix):
-    def __init__(self, width = 0, pixel = pixel(background = "white")):
-        matrix.__init__(self, width, 1, pixel)
-        self.clear()
-
-    def clear(self):
-        self.set_left()
-        self.set_center()
-        self.set_right()
+    def __init__(self, width = 0, background = None):
+        matrix.__init__(self, width, 1, pixel(background = background))
 
     def set_left(self, label = None):
         return self._insert_colorize(0, 0, label, ha = -1, check_space = 1) if label is not None else None

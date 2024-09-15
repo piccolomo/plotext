@@ -49,6 +49,7 @@ link.add('pixel', 'copy').input(void).output(void)
 
 
 link.add('matrix', 'new').input(size, size).output(void)
+link.add('matrix', 'clear').input(void).output(void)
 link.add('matrix', 'delete').input().output(void)
 link.add('matrix', 'get_width').input(void).output(size)
 link.add('matrix', 'get_height').input(void).output(size)

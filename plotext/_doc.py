@@ -11,6 +11,7 @@ par = pd.add_parameter
 spec = pd.add_parameter_spec
 past = pd.add_past_parameter
 out = pd.add_output
+past_out = pd.add_past_output
 
 class type:
 	float = 'float'; 
@@ -105,7 +106,7 @@ out("the colorize object with updated settings", type.colorize)
 add(colorize.set_string)
 doc("It copies a string, without affecting the coloring.")
 par("string", "the string to copy"); spec(type.string)
-out("the colorize object with updated settings", type.colorize)
+past_out("colorize.set_pixel")
 
 add(colorize.print)
 doc("It prints the colorized string.")
@@ -124,7 +125,7 @@ add(colorize.vstack)
 doc("It stacks two colorize objects vertically.")
 par('string', 'the object to stack'); spec(type.colorize_plus)
 par('adapt', 'the width of the two objects must be the same, unless this parameter is set to True'); spec(type.bool, 1)
-out("colorize.hstack")
+past_out("colorize.hstack")
 
 add(uncolorize)
 doc("It remove any asci codes from a string.")
@@ -136,6 +137,10 @@ par("width", "the matrix width"); spec(type.int, 0)
 par("height", "the matrix height"); spec(type.int, 0)
 past("pixel", "colorize.set_pixel"); spec(type.pixel, "a white pixel")
 out("the matrix.", type.matrix)
+
+add(matrix.clear)
+doc("It clear the content of the matrix")
+past_out("matrix")
 
 add(matrix.get_width)
 doc("It returns the matrix width")
@@ -161,18 +166,17 @@ add(matrix.hstack)
 doc("It stacks two matrix objects horizontally.")
 par('object', 'the object to stack'); spec(type.matrix_plus)
 par('adapt', 'the height of the two objects must be the same, unless this parameter is set to True'); spec(type.bool, 0)
-out("itself", type.matrix)
+out("the combined matrices", type.matrix)
 
 add(matrix.vstack)
 doc("It stacks two matrix objects vertically.")
 par('object', 'the object to stack'); spec(type.matrix_plus)
 par('adapt', 'the width of the two objects must be the same, unless this parameter is set to True'); spec(type.bool, 0)
-out("itself", type.matrix)
+out("the combined matrices", type.matrix)
 
 add(matrix.copy)
 doc("It returns a copy of the matrix object.")
 out("the copy", type.matrix)
-
 
 add(matrix.insert)
 doc("Inserts an object at the specified coordinates inside itself.")

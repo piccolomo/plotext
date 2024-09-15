@@ -1,16 +1,21 @@
 from ._link import *
-from ._pixel import *
+from ._pixel import pixel as pixel_class
 from ._system import write
 from ._alignment import correct_ha, correct_va
 from ._utility import hash
 
 
 class matrix:
-	def __init__(self, width = 0, height = 0, pixel = pixel(background = "white"), pointer = None):
-		self._pointer = matrix_new(width, height, pixel._pointer) if pointer is None else pointer
+	def __init__(self, width = 0, height = 0, pixel = None, pointer = None):
+		px = pixel_class(background = "white") if pixel is None else pixel
+		self._pointer = matrix_new(width, height, px._pointer) if pointer is None else pointer
 
 	def __del__(self):
 		matrix_delete(self._pointer)
+
+	def clear(self):
+		matrix_clear(self._pointer)
+		return self
 
 	def get_width(self):
 		return matrix_get_width(self._pointer)

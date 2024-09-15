@@ -1,4 +1,5 @@
-from .._colorize import colorize, uncolorize, pixel
+from .._pixel import pixel
+from .._colorize import colorize, uncolorize
 from re import sub
 from copy import copy
 import inspect

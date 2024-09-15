@@ -1,4 +1,4 @@
-from ._methods import *
+from ._utility import *
 
 components_doc = {
 			"title": "The function name, which appears in doc().show()",

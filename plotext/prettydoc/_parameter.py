@@ -1,5 +1,5 @@
 from ._text import Text, LabelledText
-from ._methods import *
+from ._utility import *
 
 
 class Parameter:
