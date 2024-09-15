@@ -1,5 +1,5 @@
 """\nprettydoc creates beautiful docstrings"""
     
-from ._core import docs
+from ._docs import docs
 from ._demo import components
-from ._doc import pd as doc
+from ._test import run_tests as test

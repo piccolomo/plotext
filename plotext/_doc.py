@@ -118,13 +118,13 @@ add(colorize.hstack)
 doc("It stacks two colorize objects horizontally.")
 par('string', 'the object to stack'); spec(type.colorize_plus)
 par('adapt', 'the height of the two objects must be the same, unless this parameter is set to True'); spec(type.bool, 1)
-out("itself", type.colorize)
+out("the matrix result", type.matrix)
 
 add(colorize.vstack)
 doc("It stacks two colorize objects vertically.")
 par('string', 'the object to stack'); spec(type.colorize_plus)
 par('adapt', 'the width of the two objects must be the same, unless this parameter is set to True'); spec(type.bool, 1)
-out("itself", type.colorize)
+out("colorize.hstack")
 
 add(uncolorize)
 doc("It remove any asci codes from a string.")
@@ -184,5 +184,7 @@ par("va", "The vertical alignment, which can be 'top', 'center', 'bottom', or, e
 par('adapt', "Allows objects to be inserted outside the matrix border without causing an error. The inserted object may be trimmed to ensure it does not exceed the matrix boundaries."); spec(type.bool, 1)
 out("The updated matrix", type.matrix)
 
+add(test)
+doc("It performs unit tests for the plotext package.")
 
 pd.update()

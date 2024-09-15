@@ -22,30 +22,17 @@
    :alt: plotext logo
    :width: 590px
 
-`plotext` **plots directly on terminal**
+
+**plotting on terminal**
+
+- it provides simple utilities to color `color strings <colorize>` 
+
+- it can use it to create `colorful docstrings <prettydoc>`
+
+- it has `no dependencies`_ (only optional ones).
 
 
-.. _documentation:
+Its official documentation is `documentation`_.
 
-documentation
-=============
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Contents:
-
-   install
-   utilities
-   colorize
-   prettydoc
-   changelog
-   future
-   credits
-
-   api
-
-.. note::
-
-   This project is under active development.
-
-
+.. _no dependencies: https://github.com/piccolomo/plotext6/blob/a7cca1de5e5fbc77b1ba2952368bdf591ff31982/setup.py#L24
+.. _here: https://github.com/piccolomo/plotext6/blob/new-code/docs/source/index.rst

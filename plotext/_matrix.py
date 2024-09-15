@@ -2,6 +2,8 @@ from ._link import *
 from ._pixel import *
 from ._system import write
 from ._alignment import correct_ha, correct_va
+from ._utility import hash
+
 
 class matrix:
 	def __init__(self, width = 0, height = 0, pixel = pixel(background = "white"), pointer = None):
@@ -97,12 +99,16 @@ class matrix:
 	def __str__(self):
 		return self.get_string()
 
+	def _hash(self):
+		return hash(self.get_string())
+
 	def __getitem__(self, key):
 		width, height = self.get_width(), self.get_height()
 		key = (key, slice(0, width)) if isinstance(key, int) or isinstance(key, slice) else key
 		col_key = correct_slice(key[1], width)
 		row_key = correct_slice(key[0], height)
 		return self._part(col_key.start, col_key.stop, row_key.start, row_key.stop)
+
 
 def correct_slice(key, bins):
 	key = slice(key, key + 1) if isinstance(key, int) else key

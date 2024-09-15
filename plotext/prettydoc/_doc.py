@@ -1,5 +1,4 @@
 from ._core import *
-from ._demo import components
 
 pd = docs(1, ': ')
 #pd = docs()
@@ -102,5 +101,8 @@ past_out("docs.set_default_pixel")
 add(docs.show)
 doc("It displays all the docstrings with color formatting.")
 past_out("docs.set_default_pixel")
+
+add(test)
+doc("It performs unit tests for the prettydoc module.")
 
 pd.update()

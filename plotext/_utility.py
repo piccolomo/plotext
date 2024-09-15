@@ -1,4 +1,5 @@
 import math
+import hashlib, pickle
 
 ###############################################
 ##########    List Manipulation     ###########
@@ -28,3 +29,12 @@ def pad(string, length = None): # pad a number with spaces before to reach lengt
     return string + ' ' * (length - l)
 
 #is_string = lambda el: isinstance(el, str)
+
+
+#### not sure yet
+
+def hash(object):
+    return hashlib.sha256(pickle.dumps(object)).hexdigest()
+
+def hash_floats(data, decimals = 5):
+    return hash([round(el, decimals) for el in data])

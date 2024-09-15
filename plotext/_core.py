@@ -2,6 +2,7 @@ from ._colorize import colorize, pixel, uncolorize
 from ._matrix import matrix
 from ._utility import sin
 from ._demo import colors, styles
+from ._test import run_tests as test
 
 # from ._link import *
 # from ._pixel import *

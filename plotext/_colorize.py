@@ -2,6 +2,7 @@ from ._link import *
 from ._pixel import *
 from ._matrix import *
 from ._system import write
+from ._utility import hash
 
 
 class colorize():
@@ -85,6 +86,9 @@ class colorize():
 
 	def __str__(self):
 		return self.get_string()
+
+	def _hash(self):
+		return hash(self.get_string())
 
 
 

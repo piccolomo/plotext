@@ -48,14 +48,11 @@ const wchar_t * matrix_get_wstring(Matrix * m, bool colorless) {return wstring_t
 void wstring_delete(wchar_t * wstr) {delete_cstring(wstr);}
 Matrix * matrix_part(Matrix * m, size_t col_start, size_t col_stop, size_t row_start, size_t row_stop) {return new Matrix(m->part(col_start, col_stop, row_start, row_stop));}
 bool matrix_is_empty(Matrix * m, size_t col_start, size_t col_stop, size_t row_start, size_t row_stop) {return m->is_empty(col_start, col_stop, row_start, row_stop);}
-
 void matrix_show(Matrix * matrix, bool colorless) {matrix->show(colorless);}
 Matrix * matrix_copy(Matrix * m) {return new Matrix(*m);}
 bool matrix_insert(Matrix * m, size_t col, size_t row, Matrix * mi, int ha, int va, bool adapt) {return m->insert(col, row, *mi, ha, va, adapt);}
 bool matrix_insert_colorize(Matrix * m, size_t col, size_t row, Colorize * c, int ha, bool check_space) {return m->insert_colorize(col, row, *c, ha, check_space);}
 bool matrix_insert_colorize_dynamically(Matrix * m, size_t col, size_t row, Colorize * c) {return m->insert_colorize_dynamically(col, row, *c);}
-
-
 
 Colorize * colorize_new(const wchar_t * string, Pixel * p) {return new Colorize(string, *p);}
 size_t colorize_get_length(Colorize * c) {return c->get_length();}

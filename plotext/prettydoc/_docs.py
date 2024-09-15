@@ -2,6 +2,7 @@ from ._pixels import default_pixels
 from ._function import Function
 from ._text import Text
 from ._methods import *
+from .._utility import hash
 
 
 class docs:
@@ -85,9 +86,11 @@ class docs:
 		[set_attribute(self, el.get_name(), el.show) for el in self._functions]
 		return self
 
+	def _get_string(self):
+		return (new_lines(3)).join([el.get_title(self._get_default_pixel("title")) + new_line + el.get_docstring() for el in self._functions])
+
 	def show(self):
-		docs = (new_lines(3)).join([el.get_title(self._get_default_pixel("title")) + new_line + el.get_docstring() for el in self._functions])
-		print(docs)
+		print(self._get_string())
 		return self
 
 	
@@ -113,3 +116,6 @@ class docs:
 
 	def __add__(self, doc):
 		self._functions = self._functions + doc._functions
+
+	def _hash(self):
+		return hash(self._get_string())
