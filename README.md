@@ -1,38 +1,28 @@
-.. image:: https://badge.fury.io/py/plotext.svg
-   :target: https://badge.fury.io/py/plotext
-   :alt: PyPi
+![PyPi](https://badge.fury.io/py/plotext.svg)
+[![PyPi](https://badge.fury.io/py/plotext.svg)](https://badge.fury.io/py/plotext)
 
-.. image:: https://img.shields.io/github/stars/piccolomo/plotext.svg
-   :target: https://github.com/piccolomo/plotext/stargazers
-   :alt: GitHub stars
+![GitHub stars](https://img.shields.io/github/stars/piccolomo/plotext.svg)
+[![GitHub stars](https://img.shields.io/github/stars/piccolomo/plotext.svg)](https://github.com/piccolomo/plotext/stargazers)
 
-.. image:: https://pepy.tech/badge/plotext/month
-   :target: https://pepy.tech/project/plotext
-   :alt: Downloads
+![Downloads](https://pepy.tech/badge/plotext/month)
+[![Downloads](https://pepy.tech/badge/plotext/month)](https://pepy.tech/project/plotext)
 
-.. image:: https://img.shields.io/badge/issue_tracking-github-blue.svg
-   :target: https://github.com/piccolomo/plotext/issues
-   :alt: GitHub Issues
+![GitHub Issues](https://img.shields.io/badge/issue_tracking-github-blue.svg)
+[![GitHub Issues](https://img.shields.io/badge/issue_tracking-github-blue.svg)](https://github.com/piccolomo/plotext/issues)
 
-.. image:: https://img.shields.io/badge/PR-Welcome-%23FF8300.svg
-   :target: https://github.com/piccolomo/plotext/pulls
-   :alt: PR Welcome
+![PR Welcome](https://img.shields.io/badge/PR-Welcome-%23FF8300.svg)
+[![PR Welcome](https://img.shields.io/badge/PR-Welcome-%23FF8300.svg)](https://github.com/piccolomo/plotext/pulls)
 
-.. image:: https://raw.githubusercontent.com/piccolomo/plotext/master/data/logo.png
-   :alt: plotext logo
-   :width: 590px
+![plotext logo](https://raw.githubusercontent.com/piccolomo/plotext/master/data/logo.png)
+![plotext logo](https://raw.githubusercontent.com/piccolomo/plotext/master/data/logo.png)
 
 
 **plotting on terminal**
 
-- it provides simple utilities to color `color strings <colorize>` 
+- it provides simple utilities to color [color strings](https://github.com/piccolomo/plotext6/blob/new-code/docs/source/colorize.rst)
 
-- it can use it to create `colorful docstrings <prettydoc>`
+- it can use it to create [colorful docstrings](https://github.com/piccolomo/plotext6/blob/new-code/docs/source/prettydoc.rst)
 
-- it has `no dependencies`_ (only optional ones).
+- it has [no dependencies](https://github.com/piccolomo/plotext6/blob/a7cca1de5e5fbc77b1ba2952368bdf591ff31982/setup.py#L24) (only optional ones).
 
-
-Its official documentation is `documentation`_.
-
-.. _no dependencies: https://github.com/piccolomo/plotext6/blob/a7cca1de5e5fbc77b1ba2952368bdf591ff31982/setup.py#L24
-.. _here: https://github.com/piccolomo/plotext6/blob/new-code/docs/source/index.rst
+Its official documentation is [here](https://github.com/piccolomo/plotext6/blob/new-code/docs/source/index.rst).
