@@ -56,9 +56,9 @@ class matrix:
 		object = self._correct_colorize(string)
 		return matrix_insert_aligned(self._pointer, col, row, object._pointer, ha, check_space, change_color)
 
-	def _insert_string_dynamically(self, col, row, string, change_color = True):
-		object = self._correct_colorize(string)
-		return matrix_insert_dynamically(self._pointer, col, row, object._pointer, change_color)
+	def _insert_string_dynamically(self, col, row, string):
+		#object = self._correct_colorize(string)
+		return matrix_insert_dynamically(self._pointer, col, row, wstring(string))
 
 	def _insert_string(self, col, row, string):
 		return matrix_insert_wstring(self._pointer, col, row, wstring(string))

@@ -15,5 +15,8 @@ public:
 
 inline vector<int> get_dynamic_displacements(const size_t & width) noexcept {
     Alignment right(1), center(0);
-    vector<int> unsorted = range(right.get_displacement(width), 1);
-    return sort(unsorted, center.get_displacement(width));}
+    auto unsorted = range(right.get_displacement(width), 1);
+    auto sorted = sort(unsorted, center.get_displacement(width));
+    auto displacement = center.get_displacement(width);
+    transform(sorted.begin(), sorted.end(), sorted.begin(), [displacement](int x) { return x - displacement; });
+    return sorted;}

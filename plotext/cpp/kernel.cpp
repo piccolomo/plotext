@@ -51,7 +51,7 @@ bool matrix_is_empty(Matrix * m, size_t col_start, size_t col_stop, size_t row_s
 void matrix_show(Matrix * matrix, bool colorless) {matrix->show(colorless);}
 Matrix * matrix_copy(Matrix * m) {return new Matrix(*m);}
 bool matrix_insert(Matrix * m, size_t col, size_t row, Matrix * mi, int ha, int va, bool adapt) {return m->insert(col, row, *mi, ha, va, adapt);}
-bool matrix_insert_dynamically(Matrix * m, size_t col, size_t row, Colorize *  c, bool change_color) {return m->insert_dynamically(col, row, *c, change_color);}
+int matrix_insert_dynamically(Matrix * m, size_t col, size_t row, const wchar_t * c) {return m->insert_dynamically(col, row, c);}
 bool matrix_insert_aligned(Matrix * m, size_t col, size_t row, Colorize *  c, int ha, bool check_space, bool change_color) {return m->insert_aligned(col, row, *c, ha, check_space, change_color);}
 void matrix_insert_wstring(Matrix * m, size_t col, size_t row, const wchar_t * s) {return m->insert_wstring(col, row, s);}
 void matrix_set_char(Matrix * m, size_t col, size_t row, wchar_t cs) {m->set_char(col, row, cs);}

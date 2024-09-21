@@ -35,7 +35,9 @@ inline void delete_cstring(wchar_t * cstr) noexcept {delete[] cstr;}
 // Cstrings
 
 inline bool same_cstrings(const wchar_t * code1, const wchar_t * code2) noexcept {return wcscmp(code1, code2) == 0;}
+
 inline void copy_cstring(const wchar_t * source, wchar_t * destination) noexcept {wcscpy(destination, source);}
+
 inline void copy_part_cstring(const wchar_t * source, wchar_t * destination, const size_t & start,  const size_t & stop) noexcept {wcsncpy(destination, source + start, stop - start); destination[stop - start] = L'\0';}
 
 

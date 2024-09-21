@@ -37,7 +37,7 @@ public:
 
   inline void insert_string(const size_t & col, const size_t & row, const String & s) noexcept {get_string(row).insert(col, s);} 
 
-  inline bool insert_dynamically(const size_t & col, const size_t & row, const Colorize & s, bool change_color = true) noexcept {return get_string(row).insert_dynamically(col, s, change_color);}
+  inline int insert_dynamically(const size_t & col, const size_t & row, const wstring & s) noexcept {return get_string(row).insert_dynamically(col, s);}
 
   inline bool insert_aligned(const size_t & col, const size_t & row, const Colorize & s, const Alignment & ha = -1, bool check_space = false, bool change_color = true) noexcept {return get_string(row).insert_aligned(col, s, ha, check_space, change_color);}
 

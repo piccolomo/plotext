@@ -62,7 +62,7 @@ link.add('matrix', 'show').input(void, bool).output(void)
 link.add('matrix', 'copy').input(void).output(void)
 link.add('matrix', 'insert').input(void, size, size, void, integer, integer, bool).output(bool)
 link.add('matrix', 'insert_aligned').input(void, size, size, void, integer, bool, bool).output(bool)
-link.add('matrix', 'insert_dynamically').input(void, size, size, void, bool).output(bool)
+link.add('matrix', 'insert_dynamically').input(void, size, size, wstring).output(integer)
 link.add('matrix', 'insert_wstring').input(void, size, size, wstring).output(void)
 link.add('matrix', 'set_char').input(void, size, size, wchar).output(void)
 
