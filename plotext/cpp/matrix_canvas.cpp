@@ -12,9 +12,10 @@ public:
   
   inline constexpr size_t get_height() const {return height;}
   inline constexpr size_t get_width() const {if (height == 0){return 0;} else {return strings[0].get_width();}}
-  inline CharacterCanvas & get_character(const size_t & col,const size_t & row) const noexcept {return strings[row].get_character(col);}
+  inline constexpr StringCanvas & get_string(const size_t & row) const noexcept {return strings[row];}
+  inline CharacterCanvas & get_character(const size_t & col,const size_t & row) const noexcept {return get_string(row).get_character(col);}
   inline Matrix get_matrix() noexcept {Matrix m(get_width(), height);
-    for (size_t i = 0; i < height; i++) {m.insert(0, i, strings[i].get_string());} return m;}
+    for (size_t i = 0; i < height; i++) {m.insert_string(0, i, strings[i].get_string());} return m;}
 
   inline constexpr void fill_pixel(const Pixel & p = Pixel()) noexcept {for (size_t row = 0; row < height; row++){strings[row].fill_pixel(p);}}
   inline constexpr void fill_character(const CharacterCanvas & c) noexcept {for (size_t row = 0; row < height; row++){strings[row].fill_character(c);}}

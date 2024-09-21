@@ -52,21 +52,29 @@ class matrix:
 		matrix_insert(self._pointer, col, row, object._pointer, ha, va, adapt)
 		return self
 
-	def _insert_colorize(self, col, row, object, ha = -1, check_space = False):
-		#object = self._correct_colorize(object)
-		return matrix_insert_colorize(self._pointer, col, row, object._pointer, ha, check_space)
+	def _insert_string_aligned(self, col, row, string, ha = -1, check_space = False, change_color = True):
+		object = self._correct_colorize(string)
+		return matrix_insert_aligned(self._pointer, col, row, object._pointer, ha, check_space, change_color)
 
-	def _insert_colorize_dynamically(self, col, row, object):
+	def _insert_string_dynamically(self, col, row, string, change_color = True):
+		object = self._correct_colorize(string)
+		return matrix_insert_dynamically(self._pointer, col, row, object._pointer, change_color)
+
+	def _insert_string(self, col, row, string):
+		return matrix_insert_wstring(self._pointer, col, row, wstring(string))
+
+	def _set_char(self, col, row, char):
 		#object = self._correct_colorize(object)
-		return matrix_insert_colorize_dynamically(self._pointer, col, row, object._pointer)
+		matrix_set_char(self._pointer, col, row, wchar(char))
+		return self
 
 	def _correct_matrix(self, object):
 		from ._colorize import colorize
 		return object.get_matrix() if isinstance(object, colorize) else colorize(object).get_matrix() if isinstance(object, str) else object
 
-	# def _correct_colorize(self, object):
-	# 	from ._colorize import colorize
-	# 	return colorize(object) if isinstance(object, str) else object
+	def _correct_colorize(self, object):
+		from ._colorize import colorize
+		return colorize(object) if isinstance(object, str) else object
 
 	def _vstack(self, object, adapt = False):
 		return matrix(pointer = matrix_vstack(self._pointer, object._pointer, adapt))
