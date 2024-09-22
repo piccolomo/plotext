@@ -346,6 +346,8 @@ def datetime_to_string(datetime, output_form = None):
 def datetimes_to_strings(datetimes, output_form = None):
     return _figure._active.datetimes_to_strings(datetimes, output_form = output_form)
 
+datetimes_to_string = datetimes_to_strings
+
 def string_to_datetime(string, input_form = None):
     return _figure._active.string_to_datetime(string, input_form = input_form)
 

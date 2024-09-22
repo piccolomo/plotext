@@ -466,7 +466,7 @@ class monitor_class(build_class):
         ly = len(Y)
         marker = [marker] * ly if marker is None or type(marker) != list else marker
         color = [color] * ly if color is None else color
-        labels = [label] * ly if labels is None else labels
+        labels = [labels] * ly if labels is None else labels
         Y = ut.transpose([ut.cumsum(el) for el in ut.transpose(Y)])
         for i in range(ly - 1, -1, -1):
             self.draw_bar(x, Y[i],
