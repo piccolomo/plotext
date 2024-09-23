@@ -7,17 +7,18 @@ public:
   inline constexpr PointInfo(const FillInfo & fi) noexcept  : FillInfo(fi) {};
   //inline constexpr PointInfo operator|(const PointInfo & p) const noexcept {PointInfo r; FillInfo::operator|(r); r = r.set_lines(lines | p.lines); return r;}
   
-  inline PointInfo(const PointInfo & other) noexcept : FillInfo(other), lines(other.lines) {}
-  inline PointInfo(PointInfo && other) noexcept : FillInfo(std::move(other)), lines(other.lines) {}
+  inline PointInfo(const PointInfo & o) noexcept : FillInfo(o), lines(o.lines) {}
+  inline PointInfo(PointInfo && o) noexcept : FillInfo(std::move(o)), lines(o.lines) {}
 
   inline PointInfo & operator=(const PointInfo & p) noexcept {FillInfo::operator=(p); lines = p.lines; return *this;}
-
 
   inline constexpr void set_lines(const bool & l) noexcept {lines = l;}
   //inline constexpr void disable_lines(const bool & l) noexcept {lines = l;}
   inline constexpr bool get_lines() const noexcept {return lines;}
 
-  inline void log() const noexcept {FillInfo::log(); wcout << L", lines " << bool_to_wchar(lines);}
+  inline wstring get_wstring() const noexcept {wostringstream woss; woss << FillInfo::get_wstring() <<  L", lines " << bool_to_wchar(lines); return woss.str();}
+
+  inline void log() const noexcept {wcout << get_wstring() << flush;}
 };
 
 

@@ -6,10 +6,9 @@ using namespace std;
 
 
 int main() {
-String a(10, Pixel("red", "white"));
+Point p;
 
-//a.insert_colorless_string_dynamically(5, c);
-a.show();
+p.log();
 
 return 1;}
 
@@ -68,11 +67,21 @@ Colorize * colorize_copy(Colorize * c) {return new Colorize(*c);}
 void colorize_copy_from(Colorize * c, Colorize * c2) {*c = *c2;}
 bool colorize_equals(Colorize * c, Colorize * c2) {return *c == *c2;}
 
+Marker * marker_new_normal(wchar_t c, Pixel * p) {return new Marker(c, *p);}
+Marker * marker_new_hd(marker_type t, Pixel * p) {return new Marker(t, *p);}
+Marker * marker_copy(Marker * m) {return new Marker(*m);}
+const wchar_t * marker_get_wstring(Marker * c) {return wstring_to_cstring(c->get_wstring());}
+
+// Point * point_new(float x, float y, Marker * m, bool ls, bool fx, bool fy, bool xs, bool ys) {return new Point(x, y, *m, {ls, fx, fy, xs, ys});}
+void point_delete(Point * p) {delete p;}
+const wchar_t * point_get_wstring(Point * c, bool full) {return wstring_to_cstring(c->get_wstring(full));}
+
 Points * points_new(size_t size) {return new Points(size);}
 void points_delete(Points * p) {delete p;}
-void points_add_normal(Points * points, float x, float y, wchar_t c, Pixel * p, bool ln = 0, bool fx = 0, bool fy = 0) {points->add(x, y, Marker(c, *p), {ln, fx, fy});}
-void points_add_hd(Points * points, float x, float y, marker_type c, Pixel * p, bool ln = 0, bool fx = 0, bool fy = 0) {points->add(x, y, Marker(c, *p), {ln, fx, fy});}
-void points_log(Points * p, bool full = 0) {p->log(full);}
+void points_add(Points * points, float x, float y, Marker * c, bool ln, bool fx, bool fy) {points->add(x, y, *c, {ln, fx, fy});}
+const wchar_t * points_get_wstring(Points * c, bool full) {return wstring_to_cstring(c->get_wstring(full));}
+Point * points_at(Points * p, size_t i) {return new Point(p->at(i));}
+
 }
 
 // Fullground * fullground_new() {return new Fullground();}

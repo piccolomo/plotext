@@ -4,7 +4,7 @@ private:
 
 public:
   inline Points() noexcept = default;
-  inline Points(const size_t & size) noexcept {points.reserve(size * 50);};
+  inline Points(const size_t & size) noexcept {points.reserve(size * 50);}
 
   inline size_t get_length() const noexcept {return points.size();}
   inline Point & at(const size_t & i) noexcept {return points.at(i);}
@@ -38,9 +38,15 @@ public:
    		points.insert(points.begin(), P.begin(), P.end());
     }
 
-  inline void log(const bool & full = false) const noexcept {
+inline wstring get_wstring(const bool & full = false) const noexcept {
+    wostringstream woss;
     size_t length = get_length();
-    wcout << L"Points ["; for(size_t i = 0; i < length; i++){points.at(i).log(full); if (i != length - 1){wcout << ", ";}} wcout << L"]" << endl;}
+    woss << L"[";
+    for (size_t i = 0; i < length; i++) {woss << points.at(i).get_wstring(full); if (i != length - 1) {woss << L", ";}}
+    woss << L"]";
+    return woss.str();}
+
+  inline void log(const bool & full = false) const noexcept {wcout << get_wstring(full) << flush;}
     
   inline vector<Point>::const_iterator begin() const noexcept {return points.begin();}
   inline vector<Point>::const_iterator end() const noexcept {return points.end();}

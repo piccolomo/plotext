@@ -7,6 +7,7 @@ matrix_file_name = 'kernel.dll' if platform == 'windows' else 'kernel.so'
 matrix_file = os.path.join(folder, 'cpp', matrix_file_name)
 kernel = c.CDLL(matrix_file)
 
+
 class Clink:
 	def add(self, name, surname = None):
 		name = (name + '_' + surname) if surname is not None else name
@@ -87,11 +88,20 @@ link.add('canvas', 'set_fillx_level').input(void, float).output(void)
 link.add('canvas', 'set_filly_level').input(void, float).output(void)
 link.add('canvas', 'draw').input(void, void).output(void)
 
+link.add('marker', 'new_normal').input(wchar, void).output(void)
+link.add('marker', 'new_hd').input(size, void).output(void)
+link.add('marker', 'copy').input(void).output(void)
+link.add('marker', 'get_wstring').input(void).output(cstring)
+
+link.add('point', 'delete').input().output(void)
+link.add('point', 'get_wstring').input(void).output(cstring)
+
 link.add('points', 'new').input(size).output(void)
 link.add('points', 'delete').input().output(void)
-link.add('points', 'add_normal').input(void, float, float, wchar, void, bool, bool, bool).output(void)
-link.add('points', 'add_hd').input(void, float, float, size, void, bool, bool, bool).output(void)
-link.add('points', 'log').input(void, bool).output(void)
+link.add('points', 'add').input(void, float, float, void, bool, bool, bool).output(void)
+link.add('points', 'get_wstring').input(void).output(cstring)
+link.add('points', 'at').input(void, size).output(void)
+
 
 
 # link.add('fullground', 'new').input().output(void)

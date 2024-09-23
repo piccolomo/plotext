@@ -15,8 +15,11 @@ public:
     	else {MarkerType::to_buffer(buffer, length_buffer);}
     	cstring_to_buffer(ansi_end, buffer, length_buffer);}
 
-    inline void log() const noexcept {
-    	wchar_t buffer[marker_size_max + 1]; buffer[0] = '\0'; size_t length = 0;
-   	 	to_buffer(buffer, length);
-   	 	wcout << buffer;}
+   	inline wstring get_wstring() const noexcept {
+   		wchar_t buffer[marker_size_max + 1]; buffer[0] = '\0'; size_t length = 0;
+		to_buffer(buffer, length);
+		wstring out(buffer);
+		return out;}
+
+    inline void log() const noexcept {wcout << get_wstring() << flush;}
 };

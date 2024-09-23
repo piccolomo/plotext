@@ -9,7 +9,15 @@ public:
 
   inline Point & operator=(const Point & p) noexcept {PointPosition::operator=(p); Marker::operator=(p); PointInfo::operator=(p);return *this;}
 
-  inline void log(const bool & full = false) const noexcept {wcout << L"("; PointPosition::log(); wcout << L", "; Marker::log(); if (full) {wcout << L", "; PointInfo::log();} wcout << L")";}
+  inline wstring get_wstring(const bool & full = false) const noexcept {
+    wostringstream woss;
+    woss << L"(" << PointPosition::get_wstring() << L", " << Marker::get_wstring(); if (full) {woss << L", " << PointInfo::get_wstring();} 
+    woss << L")";
+    return woss.str();}
+
+  inline void log(const bool & full = false) const noexcept {wcout << get_wstring(full) << flush;}
+
+  // inline void log(const bool & full = false) const noexcept {wcout << L"("; PointPosition::log(); wcout << L", "; Marker::log(); if (full) {wcout << L", "; PointInfo::log();} wcout << L")" << flush;}
 };
 
   //inline Point(const Point & p) noexcept : x(p.x), y(p.y), Marker(p), MarkerInfo(p) {}//wcout << "copy ";}

@@ -20,7 +20,12 @@ public:
   inline void set_x(const float & el) {x = el;}
   inline void set_y(const float & el) {y = el;}
 
-  inline void log() const noexcept {wcout << fixed << setprecision(2) << get_x() <<  L", " << get_y();}
+  inline wstring get_wstring() const noexcept {
+    wostringstream woss;
+    woss << fixed << setprecision(2) << get_x() << L", " << get_y();
+    return woss.str();}
+
+  inline void log() const noexcept {wcout << get_wstring() << flush;}
 };
 
   //inline Point(const Point & p) noexcept : x(p.x), y(p.y), Marker(p), MarkerInfo(p) {}//wcout << "copy ";}

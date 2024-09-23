@@ -22,7 +22,12 @@ public:
 
   inline bool get_fill(const bool & xaxis = 1) const noexcept {if (xaxis) {return get_fillx();} else {return get_filly();}}
 
-  inline void log() const noexcept {wcout << L"fillx " << bool_to_wchar(fillx) <<  L", filly " << bool_to_wchar(filly);}
+  inline wstring get_wstring() const noexcept {
+    wostringstream woss;
+    woss << L"fillx " << bool_to_wchar(fillx) << L", filly " << bool_to_wchar(filly);
+    return woss.str();}
+
+  inline void log() const noexcept {wcout << get_wstring() << flush;}
 };
 
   // inline void to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept {

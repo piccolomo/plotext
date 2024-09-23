@@ -69,5 +69,4 @@ class pixel:
         from ._colorize import colorize
         return colorize("Pixel()").set_pixel(self).get_string()
 
-
-
+empty_pixel = pixel()
