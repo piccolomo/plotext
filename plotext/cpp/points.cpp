@@ -35,10 +35,15 @@ public:
     	else                   {auto Y = range(y1 + sy, y2, sy); for (auto & y: Y) {auto x = (y - y1) / s + x1; P.emplace_back(x, y, at(i), mi);}}
    		at(i).set_lines(0);}
    		if (length > 0) {at(length - 1).set_lines(0);}
-   		points.insert(points.begin(), P.begin(), P.end());
-    }
+   		points.insert(points.begin(), P.begin(), P.end());}
 
-inline wstring get_wstring(const bool & full = false) const noexcept {
+  inline float get_xmin() noexcept {float value = at(0).get_x(); for (size_t i = 1; i < get_length(); i++) {float x = at(i).get_x(); if (x < value) {value = x;}} return value;}
+  inline float get_xmax() noexcept {float value = at(0).get_x(); for (size_t i = 1; i < get_length(); i++) {float x = at(i).get_x(); if (x > value) {value = x;}} return value;}
+
+  inline float get_ymin() noexcept {float value = at(0).get_y(); for (size_t i = 1; i < get_length(); i++) {float y = at(i).get_y(); if (y < value) {value = y;}} return value;}
+  inline float get_ymax() noexcept {float value = at(0).get_y(); for (size_t i = 1; i < get_length(); i++) {float y = at(i).get_y(); if (y > value) {value = y;}} return value;}
+
+  inline wstring get_wstring(const bool & full = false) const noexcept {
     wostringstream woss;
     size_t length = get_length();
     woss << L"[";
@@ -53,24 +58,13 @@ inline wstring get_wstring(const bool & full = false) const noexcept {
  };
 
 
-/*  inline vector<float> get_x() const noexcept {
-    size_t length = get_length();
-    vector<float> x(length);
-    for(size_t i = 0; i < length; i ++){x.push_back(points.at(i).get_x());} return x;}
+
+  // inline vector<float> get_x() const noexcept {
+  //   size_t length = get_length();
+  //   vector<float> x(length);
+  //   for(size_t i = 0; i < length; i ++){x.push_back(points.at(i).get_x());} return x;}
   
-  inline vector<float> get_y() const noexcept {
-    size_t length = get_length();
-    vector<float> y(length);
-    for(size_t i = 0; i < length; i ++){y.push_back(points.at(i).get_y());} return y;}*/
-
-/*  inline pair<float, float> get_xlim() const noexcept {
-    vector<float> x = get_x();
-    float min = *min_element(x.begin(), x.end());
-    float max = *max_element(x.begin(), x.end());
-    return make_pair(min, max);}
-
-  inline pair<float, float> get_ylim() const noexcept {
-    vector<float> y = get_y();
-    float min = *min_element(y.begin(), y.end());
-    float max = *max_element(y.begin(), y.end());
-    return make_pair(min, max);}*/
+  // inline vector<float> get_y() const noexcept {
+  //   size_t length = get_length();
+  //   vector<float> y(length);
+  //   for(size_t i = 0; i < length; i ++){y.push_back(points.at(i).get_y());} return y;}

@@ -1,5 +1,7 @@
 import math
 import hashlib, pickle
+from copy import copy
+from ._link import rescale_value
 
 ###############################################
 ##########    List Manipulation     ###########
@@ -7,6 +9,16 @@ import hashlib, pickle
 
 def unique(data): # removes duplicates from a list
     return list(set(list(data)))
+
+def repeat(data, length): 
+    original = data.copy()
+    make_copy = lambda: [copy(el) for el in original]
+    l = (length + 1) // len(data);  L = range(l)
+    [data.extend(make_copy()) for i in L]
+    return data[ : length]
+
+def replace_none(data, alternative): # replace None elements in data with correspondent in alternative
+    return [d if d is not None else a for (d, a) in zip(data, alternative)]
 
 ###############################################
 ###########    List Creation     ##############
@@ -18,9 +30,18 @@ def sin(periods = 2, length = 200, amplitude = 1, phase = 0, decay = 0): # sinus
     d = decay / length
     return [amplitude * math.sin(f * el + phase) * math.exp(- d * el) for el in range(length)]
 
+def linspace(lower, upper, length = 10): # it returns a lists of numbers from lower to upper, with given length, equally distanced
+    slope = (upper - lower) / (length - 1) if length > 1 else 0
+    return [lower + x * slope for x in range(length)]
+
+def rescale(value, minimum, maximum, bins):
+    return int(rescale_value(value, minimum, maximum, bins))
+
 ###############################################
 #########   String Manipulation     ###########
 ###############################################
+
+space = ' '
 
 def pad(string, length = None): # pad a number with spaces before to reach length
     string = str(string)
@@ -28,10 +49,12 @@ def pad(string, length = None): # pad a number with spaces before to reach lengt
     length = l if length is None else int(length)
     return string + ' ' * (length - l)
 
-#is_string = lambda el: isinstance(el, str)
+def only_spaces(string): # it returns True if string is made of only empty spaces or is None or ''
+    return string == len(string) * space
 
-
-#### not sure yet
+###############################################
+##############   Hashing     ##################
+###############################################
 
 def hash(object):
     return hashlib.sha256(pickle.dumps(object)).hexdigest()

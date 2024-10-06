@@ -37,13 +37,17 @@ public:
 
   inline void insert_string(const size_t & col, const size_t & row, const String & s) noexcept {get_string(row).insert(col, s);} 
 
-  inline int insert_dynamically(const size_t & col, const size_t & row, const wstring & s) noexcept {return get_string(row).insert_dynamically(col, s);}
+  inline int insert_dynamically(const size_t & col, const size_t & row, const Colorize & s) noexcept {return get_string(row).insert_dynamically(col, s);}
 
   inline bool insert_aligned(const size_t & col, const size_t & row, const Colorize & s, const Alignment & ha = -1, bool check_space = false, bool change_color = true) noexcept {return get_string(row).insert_aligned(col, s, ha, check_space, change_color);}
 
   inline void insert_wstring(const size_t & col, const size_t & row, const wstring & s) noexcept {get_string(row).insert_wstring(col, s);}
 
-  inline void set_char(const size_t & col, const size_t & row, const wchar_t & cs) noexcept {get_character(col, row).set_char(cs);} 
+  inline void set_char(const size_t & col, const size_t & row, const wchar_t & cs) noexcept {get_character(col, row).set_char(cs);}
+  
+  inline void set_pixel(const size_t & col, const size_t & row, const Pixel & p) noexcept {get_character(col, row).set_pixel(p);}
+
+  inline void set_character(const size_t & col, const size_t & row, const Character & cs) noexcept {get_character(col, row) = cs;} 
   
 
   // inline void insert(const size_t & col, const size_t & row, const Matrix & m) noexcept {for (size_t r = 0; r < m.get_height(); r++){strings[row + r].insert(col, m.get_string(r));}}

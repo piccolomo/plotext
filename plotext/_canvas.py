@@ -1,38 +1,33 @@
 from ._link import *
-from ._pixel import white_pixel
-from ._points import *
+from ._pixel import empty_pixel
+from ._matrix import matrix
+#from ._signal import *
 
-class canvas:
-	def __init__(self, width, height, pixel = white_pixel):
+class canvas_class:
+	def __init__(self, width, height, pixel = empty_pixel):
 		self._pointer = canvas_new(width, height, pixel._pointer)
 
 	def __del__(self):
 		canvas_delete(self._pointer)
 
-	def set_xlim(self, left, right):
-		canvas_set_xlim(self._pointer, left, right)
+	def set_lim(self, axis, side, left, right):
+		canvas_set_lim(self._pointer, axis, side, left, right)
 		return self
 
-	def set_ylim(self, lower, upper):
-		canvas_set_ylim(self._pointer, lower, upper)
+	def get_lim(self, axis = 0, side = 0):
+		return canvas_get_lim_lower(self._pointer, axis, side), canvas_get_lim_upper(self._pointer, axis, side)
+
+	def set_fill_level(self, axis, side, level):
+		canvas_set_fill_level(self._pointer, axis, side, level)
 		return self
 
-	def set_fillx_level(self, level):
-		canvas_set_fillx_level(self._pointer, level)
+	def draw(self, signal):
+		canvas_draw(self._pointer, signal._pointer, signal.xside, signal.yside)
 		return self
-
-	def set_filly_level(self, level):
-		canvas_set_filly_level(self._pointer, level)
-		return self
-
-	def draw(self, points):
-		canvas_draw(self._pointer, points._pointer)
-		return self
-
-	# def draw(self, x, y, marker):
-	# 	points = points_class(len(x))
-	# 	[points.add(xi, yi, mi) for (xi, yi, mi) in zip(x, y, marker)]
-	# 	return self._draw(points)
+        
+	def get_matrix(self):
+		pointer = canvas_get_matrix(self._pointer)
+		return matrix(pointer = pointer)
 
 	def show(self):
 		canvas_show(self._pointer)

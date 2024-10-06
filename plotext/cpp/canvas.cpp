@@ -1,30 +1,36 @@
 class Canvas : public MatrixCanvas {
 private:
-  Axis xaxis;
-  Axis yaxis;
+  pair<Axis, Axis> xaxis;
+  pair<Axis, Axis> yaxis;
 
 public:
   inline Canvas(const size_t width, const size_t height) noexcept : MatrixCanvas(width, height) {}
   inline Canvas(const size_t width, const size_t height, const Character & c) noexcept : MatrixCanvas(width, height, c) {}
   inline Canvas(const size_t width, const size_t height, const Pixel & p) noexcept : MatrixCanvas(width, height, p) {}
+
+  inline Axis & get_xaxis(const bool & side) noexcept {if (side) {return xaxis.second;} else {return xaxis.first;} }
+  inline Axis & get_yaxis(const bool & side) noexcept {if (side) {return yaxis.second;} else {return yaxis.first;} }
+  inline Axis & get_axis(const bool & axis, const bool & side) noexcept {if (axis) {return get_yaxis(side);} else {return get_xaxis(side);} }
   
-  inline void set_xlim(const float & left, const float & right) noexcept {xaxis.set_lim(left, right);}
-  inline void set_ylim(const float & lower, const float & upper) noexcept {yaxis.set_lim(lower, upper);}
+  inline void set_lim(const bool & axis, const bool & side, const float & left, const float & right) noexcept {get_axis(axis, side).set_lim(left, right);}
   
-  inline void set_fillx_level(const float & level) noexcept {xaxis.set_fill_level(level);}
-  inline void set_filly_level(const float & level) noexcept {yaxis.set_fill_level(level);}
+  inline pair<float, float> get_lim(const bool & axis, const bool & side) noexcept {return get_axis(axis, side).get_lim();}
   
-  inline void draw(Points points) noexcept {
-    auto xlim = xaxis.get_lim();
-    auto ylim = yaxis.get_lim();
+  inline void set_fill_level(const bool & axis, const bool & side, const float & level) noexcept {get_axis(axis, side).set_fill_level(level);}
+
+  inline float get_fill_level(const bool & axis, const bool & side) noexcept {return get_axis(axis, side).get_fill_level();}
+  
+  inline void draw(Points points, const bool & xside = 0, const bool & yside = 0) noexcept {
+    auto xlim = get_lim(0, xside);
+    auto ylim = get_lim(1, yside);
     auto width = get_width();
     auto height = get_height();
     
     points.rescale_xy(width, height, xlim, ylim);
     points.add_lines();
 
-    size_t fillx_level = rescale(xaxis.get_fill_level(), ylim, height);
-    size_t filly_level = rescale(yaxis.get_fill_level(), xlim, width);
+    size_t fillx_level = rescale(get_fill_level(0, xside), ylim, height);
+    size_t filly_level = rescale(get_fill_level(1, yside), xlim, width);
 
     size_t length = points.get_length();
     Dots dots(length); for(size_t i = 0; i < length; i++) {dots.add(points.at(i));}
@@ -39,3 +45,6 @@ public:
     	
     inline void show() noexcept {MatrixCanvas::get_matrix().show();}
 };
+
+
+

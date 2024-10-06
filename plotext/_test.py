@@ -1,6 +1,6 @@
 import unittest
-from plotext._core import *
-from plotext._utility import hash, hash_floats
+from ._core import *
+from ._utility import hash, hash_floats
 
 
 class sin_tests(unittest.TestCase):

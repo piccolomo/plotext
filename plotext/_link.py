@@ -1,4 +1,4 @@
-from plotext._system import platform
+from ._system import platform
 import ctypes as c
 import sys, os
 
@@ -6,7 +6,6 @@ folder = os.path.dirname(os.path.realpath(__file__))
 matrix_file_name = 'kernel.dll' if platform == 'windows' else 'kernel.so'
 matrix_file = os.path.join(folder, 'cpp', matrix_file_name)
 kernel = c.CDLL(matrix_file)
-
 
 class Clink:
 	def add(self, name, surname = None):
@@ -47,6 +46,8 @@ link.add('pixel', 'set_background_code').input(void, string).output(void)
 link.add('pixel', 'set_style_code').input(void, string).output(void)
 link.add('pixel', 'log').input(void).output(void)
 link.add('pixel', 'copy').input(void).output(void)
+link.add('pixel', 'no_background').input(void).output(bool)
+link.add('pixel', 'copy_background').input(void, void).output(void)
 
 link.add('matrix', 'new').input(size, size).output(void)
 link.add('matrix', 'clear').input(void).output(void)
@@ -63,9 +64,11 @@ link.add('matrix', 'show').input(void, bool).output(void)
 link.add('matrix', 'copy').input(void).output(void)
 link.add('matrix', 'insert').input(void, size, size, void, integer, integer, bool).output(bool)
 link.add('matrix', 'insert_aligned').input(void, size, size, void, integer, bool, bool).output(bool)
-link.add('matrix', 'insert_dynamically').input(void, size, size, wstring).output(integer)
+link.add('matrix', 'insert_dynamically').input(void, size, size, void).output(integer)
 link.add('matrix', 'insert_wstring').input(void, size, size, wstring).output(void)
+link.add('matrix', 'insert_canvas').input(void, size, size, void).output(void)
 link.add('matrix', 'set_char').input(void, size, size, wchar).output(void)
+link.add('matrix', 'set_pixel').input(void, size, size, void).output(void)
 
 link.add('colorize', 'new').input(wstring, void).output(void)
 link.add('colorize', 'get_length').input(void).output(size)
@@ -78,15 +81,18 @@ link.add('colorize', 'show').input(void, bool).output(void)
 link.add('colorize', 'copy').input(void).output(void)
 link.add('colorize', 'copy_from').input(void, void).output(void)
 link.add('colorize', 'equals').input(void, void).output(bool)
+link.add('colorize', 'no_background').input(void).output(bool)
+link.add('colorize', 'copy_background').input(void, void).output(void)
 
 link.add('canvas', 'new').input(size, size).output(void)
 link.add('canvas', 'delete').input().output(void)
 link.add('canvas', 'show').input(void).output(void)
-link.add('canvas', 'set_xlim').input(void, float, float).output(void)
-link.add('canvas', 'set_ylim').input(void, float, float).output(void)
-link.add('canvas', 'set_fillx_level').input(void, float).output(void)
-link.add('canvas', 'set_filly_level').input(void, float).output(void)
-link.add('canvas', 'draw').input(void, void).output(void)
+link.add('canvas', 'set_lim').input(void, bool, bool, float, float).output(void)
+link.add('canvas', 'set_fill_level').input(void, bool, bool, float).output(void)
+link.add('canvas', 'draw').input(void, void, bool, bool).output(void)
+link.add('canvas', 'get_matrix').input(void).output(void)
+link.add('canvas', 'get_lim_lower').input(void, bool, bool).output(float)
+link.add('canvas', 'get_lim_upper').input(void, bool, bool).output(float)
 
 link.add('marker', 'new_normal').input(wchar, void).output(void)
 link.add('marker', 'new_hd').input(size, void).output(void)
@@ -100,9 +106,14 @@ link.add('points', 'new').input(size).output(void)
 link.add('points', 'delete').input().output(void)
 link.add('points', 'add').input(void, float, float, void, bool, bool, bool).output(void)
 link.add('points', 'get_wstring').input(void).output(cstring)
+link.add('points', 'get_length').input(void).output(size)
 link.add('points', 'at').input(void, size).output(void)
+link.add('points', 'get_xmin').input(void).output(float)
+link.add('points', 'get_xmax').input(void).output(float)
+link.add('points', 'get_ymin').input(void).output(float)
+link.add('points', 'get_ymax').input(void).output(float)
 
-
+link.add('rescale_value').input(float, float, float, size).output(float)
 
 # link.add('fullground', 'new').input().output(void)
 # link.add('fullground', 'set_rgb').input(void, size, size, size).output(void)

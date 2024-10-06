@@ -1,31 +1,92 @@
 from ._link import *
 from ._marker import marker as marker_class
-from ._default import xsides, ysides
+from ._correct import correct_marker, correct_side
+from ._utility import linspace
+
+
+class signals:
+	def __init__(self):
+		self._signal = []
+
+	def get_length(self):
+		return len(self._signal)
+		
+	def get_Length(self):
+		return range(self.get_length())
+
+	def add_signal(self, x, y, m, label = None, xside = 0, yside = 0):
+		length = min(len(x), len(y))
+		x = x[: length]
+		y = y[: length]
+		m = correct_marker(m, length)
+		xside = correct_side(0, xside)
+		yside = correct_side(1, yside)
+		self._signal.append(signal(x, y, m, self.check_label(label), xside, yside))
+		return self
+
+	def check_label(self, label):
+		return 'signal(' + str(self.get_length()) + ')' if label is None else label
+
+	def get_signal(self, i):
+		return self._signal[i]
+
+
+	def get_signal_limits(self, axis = 0, side = 0):
+		return self.get_signal_ylim(side) if axis else self.get_signal_xlim(side)
+
+	def get_signal_xlim(self, side = 0):
+		return (self._get_signal_xmin(side), self._get_signal_xmax(side))
+
+	def get_signal_ylim(self, side = 0):
+		return (self._get_signal_ymin(side), self._get_signal_ymax(side))
+
+	def _get_signal_xmin(self, side = 0):
+		return min([s.get_xmin() for s in self._signal if s.xside == side], default = None)
+
+	def _get_signal_xmax(self, side = 0):
+		return max([s.get_xmax() for s in self._signal if s.xside == side], default = None)
+
+	def _get_signal_ymin(self, side = 0):
+		return min([s.get_ymin() for s in self._signal if s.yside == side], default = None)
+
+	def _get_signal_ymax(self, side = 0):
+		return max([s.get_ymax() for s in self._signal if s.yside == side], default = None)
+
+
 
 class signal:
-	def __init__(self, x, y, marker, xside = None, yside = None, pointer = None):#, xside, yside, lines, fillx, filly):
-		size = len(x)
-		self._pointer = pointer if pointer is not None else points_new(size)
-		marker = correct_marker(marker, size)
-		[self.add(x[i], y[i], marker[i]) for i in range(size)]
-		self._xside = correct_xside(xside)
-		self._yside = correct_yside(yside)
-
-	def get_xside(self):
-		return self._xside
-
-	def get_yside(self):
-		return self._yside
+	def __init__(self, x, y, m, label, xside, yside):
+		length = len(x)
+		self._pointer = points_new(length)
+		[self.add(x[i], y[i], m[i]) for i in range(length)]
+		self.label = label
+		self.xside = xside
+		self.yside = yside
 
 	def __del__(self):
 		points_delete(self._pointer)
 
+	def get_length(self):
+		return points_get_length(self._pointer)
+
 	def add(self, x, y, marker):
-		points_add(self._pointer, x, y, marker._pointer, marker.get_lines(), marker.get_fillx(), marker.get_filly())
+		points_add(self._pointer, x, y, marker._pointer, 0, 0, 0)
 		return self
 
 	def at(self, index):
 		return point(pointer = points_at(self._pointer, index))
+
+	def get_xmin(self):
+		return points_get_xmin(self._pointer)
+
+	def get_xmax(self):
+		return points_get_xmax(self._pointer)
+
+	def get_ymin(self):
+		return points_get_ymin(self._pointer)
+
+	def get_ymax(self):
+		return points_get_ymax(self._pointer)
 
 	def _get_string(self, full = True):
 		p = points_get_wstring(self._pointer, full)
@@ -38,6 +99,8 @@ class signal:
 
 	def __repr__(self):
 	 	return self._get_string(0)
+
+
 
 
 class point:
@@ -55,27 +118,3 @@ class point:
 
 	def __repr__(self):
 		return self._get_string()
-
-
-def correct_single_marker(marker):
-	return marker if isinstance(marker, marker_class) else marker_class(marker)
-
-def correct_marker(marker, length):
-	marker = marker if isinstance(marker, list) else [marker]
-	marker = [correct_single_marker(el) for el in marker]
-	make_copy = lambda: [el.copy() for el in marker]
-	l = int(length / len(marker) + 1); L = range(l)
-	[marker.extend(make_copy()) for i in L]
-	return marker[ : length]
-
-def correct_side(side, sides):
-	side = sides[0] if side is None else side.strip() if isinstance(side, str) else side
-	side = sides.index(side) if side in sides else side
-	side = side if isinstance(side, int) and side in range(2) else 0
-	return side
-
-correct_xside = lambda side = None: correct_side(side, xsides)
-correct_yside = lambda side = None: correct_side(side, ysides)
-
-
-

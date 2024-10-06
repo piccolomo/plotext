@@ -6,9 +6,35 @@ using namespace std;
 
 
 int main() {
-Point p;
+enable_special_characters();
 
-p.log();
+// Points Creation
+size_t l = 1000;
+Points P(l); 
+auto x = range((float) 0., (float) l);
+auto y = sin(1, l, -1, 0, 0);
+
+vector<Pixel> Px; for (size_t i = 0; i < l; i++) {Px.emplace_back(Fullground(((float) i / l) * 250), Background("white"));}
+for (size_t i = 0; i < l; i++) {P.add(x.at(i), y.at(i), Marker(braille, Px.at(i)), {1, 1, 0});}
+//P.log();
+
+Points P2(l); 
+auto y2 = sin(2, l, -0.5, 0, 0);
+for (size_t i = 0; i < l; i++) {P2.add(x.at(i), y2.at(i), Marker('x', Pixel("blue", "white")), {0, 0, 0});}
+//P2.log(1);
+
+// Canvas Creation
+Canvas c(100, 25, Pixel("", "white"));
+//Canvas c(247, 59, Pixel("", "white"));
+ c.set_fill_level(0, 0, 0);
+ c.set_fill_level(1, 0, l / 2);
+ c.set_lim(0, 0, 0, l - 1);
+ c.set_lim(1, 0, -1, 1);
+
+c.draw(P);
+//c.draw(P2);
+
+c.show(); nl();
 
 return 1;}
 
@@ -23,6 +49,9 @@ void pixel_set_fullground_code(Pixel * p, const char * code) {p->set_fullground(
 void pixel_set_background_integer(Pixel * p, size_t r) {p->set_background(r);}
 void pixel_set_background_rgb(Pixel * p, size_t r, size_t g, size_t b) {p->set_background(r, g, b);}
 void pixel_set_background_code(Pixel * p, const char * code) {p->set_background(code);}
+bool pixel_no_background(Pixel * p) {return p->no_background();}
+void pixel_copy_background(Pixel * p, Pixel * p2) {p->copy_background(*p2);}
+
 void pixel_set_style_code(Pixel * p, const char * code) {p->set_style(code);}
 void pixel_log(Pixel * p) {p->log();}
 Pixel * pixel_copy(Pixel * c) {return new Pixel(*c);}
@@ -30,11 +59,13 @@ Pixel * pixel_copy(Pixel * c) {return new Pixel(*c);}
 Canvas * canvas_new(size_t width, size_t height, Pixel * p) {return new Canvas(width, height, *p);}
 void canvas_delete(Canvas * p) {delete p;}
 void canvas_show(Canvas * canvas) {canvas->show();}
-void canvas_set_xlim(Canvas * canvas, float left, float right) {canvas->set_xlim(left, right);}
-void canvas_set_ylim(Canvas * canvas, float left, float right) {canvas->set_ylim(left, right);}
-void canvas_set_fillx_level(Canvas * canvas, float level) {canvas->set_fillx_level(level);}
-void canvas_set_filly_level(Canvas * canvas, float level) {canvas->set_filly_level(level);}
-void canvas_draw(Canvas * canvas, Points * points) {canvas->draw(*points);}
+  //Axis * canvas_get_axis(Canvas * canvas, const bool & axis, const bool & side) {return &(canvas->get_axis(axis, side));}
+  void canvas_set_lim(Canvas * canvas, bool axis, bool side, float lower, float upper) {canvas->get_axis(axis, side).set_lim(lower, upper);}
+  void canvas_set_fill_level(Canvas * canvas, bool axis, bool side, float level) {canvas->get_axis(axis, side).set_fill_level(level);}
+  Matrix * canvas_get_matrix(Canvas * canvas) {return new Matrix(canvas->get_matrix());}
+void canvas_draw(Canvas * canvas, Points * points, bool xside, bool yside) {canvas->draw(*points, xside, yside);}
+float canvas_get_lim_lower(Canvas * canvas, bool axis, bool side) {return canvas->get_lim(axis, side).first;}
+float canvas_get_lim_upper(Canvas * canvas, bool axis, bool side) {return canvas->get_lim(axis, side).second;}
 
 Matrix * matrix_new(size_t width, size_t height, Pixel * p) {return new Matrix(width, height, *p);}
 void matrix_clear(Matrix * m) {m->clear();}
@@ -50,10 +81,18 @@ bool matrix_is_empty(Matrix * m, size_t col_start, size_t col_stop, size_t row_s
 void matrix_show(Matrix * matrix, bool colorless) {matrix->show(colorless);}
 Matrix * matrix_copy(Matrix * m) {return new Matrix(*m);}
 bool matrix_insert(Matrix * m, size_t col, size_t row, Matrix * mi, int ha, int va, bool adapt) {return m->insert(col, row, *mi, ha, va, adapt);}
-int matrix_insert_dynamically(Matrix * m, size_t col, size_t row, const wchar_t * c) {return m->insert_dynamically(col, row, c);}
+int matrix_insert_dynamically(Matrix * m, size_t col, size_t row, Colorize * c) {return m->insert_dynamically(col, row, *c);}
 bool matrix_insert_aligned(Matrix * m, size_t col, size_t row, Colorize *  c, int ha, bool check_space, bool change_color) {return m->insert_aligned(col, row, *c, ha, check_space, change_color);}
+void matrix_insert_canvas(Matrix * m, size_t col, size_t row, Canvas * canvas){
+  for (size_t r = 0; r < canvas->get_height(); r++){
+    for (size_t c = 0; c < canvas->get_width(); c++){
+      m->set_character(c + col, r + row, canvas->get_character(c, r).get_character());}}}
+
 void matrix_insert_wstring(Matrix * m, size_t col, size_t row, const wchar_t * s) {return m->insert_wstring(col, row, s);}
 void matrix_set_char(Matrix * m, size_t col, size_t row, wchar_t cs) {m->set_char(col, row, cs);}
+void matrix_set_pixel(Matrix * m, size_t col, size_t row, Pixel * p) {m->set_pixel(col, row, *p);}
+
+
 
 Colorize * colorize_new(const wchar_t * string, Pixel * p) {return new Colorize(string, *p);}
 size_t colorize_get_length(Colorize * c) {return c->get_length();}
@@ -66,13 +105,14 @@ void colorize_show(Colorize * c, bool colorless) {c->show(colorless);}
 Colorize * colorize_copy(Colorize * c) {return new Colorize(*c);}
 void colorize_copy_from(Colorize * c, Colorize * c2) {*c = *c2;}
 bool colorize_equals(Colorize * c, Colorize * c2) {return *c == *c2;}
+bool colorize_no_background(Colorize * p) {return p->no_background();}
+void colorize_copy_background(Colorize * p, Pixel * p2) {p->copy_background(*p2);}
 
 Marker * marker_new_normal(wchar_t c, Pixel * p) {return new Marker(c, *p);}
 Marker * marker_new_hd(marker_type t, Pixel * p) {return new Marker(t, *p);}
 Marker * marker_copy(Marker * m) {return new Marker(*m);}
 const wchar_t * marker_get_wstring(Marker * c) {return wstring_to_cstring(c->get_wstring());}
 
-// Point * point_new(float x, float y, Marker * m, bool ls, bool fx, bool fy, bool xs, bool ys) {return new Point(x, y, *m, {ls, fx, fy, xs, ys});}
 void point_delete(Point * p) {delete p;}
 const wchar_t * point_get_wstring(Point * c, bool full) {return wstring_to_cstring(c->get_wstring(full));}
 
@@ -81,6 +121,15 @@ void points_delete(Points * p) {delete p;}
 void points_add(Points * points, float x, float y, Marker * c, bool ln, bool fx, bool fy) {points->add(x, y, *c, {ln, fx, fy});}
 const wchar_t * points_get_wstring(Points * c, bool full) {return wstring_to_cstring(c->get_wstring(full));}
 Point * points_at(Points * p, size_t i) {return new Point(p->at(i));}
+size_t points_get_length(Points * p) {return p->get_length();}
+
+float points_get_xmin(Points * p) {return p->get_xmin();}
+float points_get_xmax(Points * p) {return p->get_xmax();}
+
+float points_get_ymin(Points * p) {return p->get_ymin();}
+float points_get_ymax(Points * p) {return p->get_ymax();}
+
+float rescale_value(float value, float min, float max, size_t bins) {return rescale(value, {min, max}, bins);}
 
 }
 
@@ -95,7 +144,6 @@ Point * points_at(Points * p, size_t i) {return new Point(p->at(i));}
 // Style * style_new() {return new Style();}
 // void style_set_code(Style * fg, const char * code) {cout << code << endl; fg->set(code);}
 
-// enable_special_characters();
 
 
 
@@ -116,33 +164,7 @@ Point * points_at(Points * p, size_t i) {return new Point(p->at(i));}
 // // m1.hstack(m2);
 // // m1.show();
 
-// // // Points Creation
-// // size_t l = 1000;
-// // Points P(l); 
-// // auto x = range((float) 0., (float) l);
-// // auto y = sin(1, l, -1, 0, 0);
 
-// // vector<Pixel> Px; for (size_t i = 0; i < l; i++) {Px.emplace_back(Fullground(((float) i / l) * 250), Background("white"));}//
-// // for (size_t i = 0; i < l; i++) {P.add(x.at(i), y.at(i), Marker(braille, Px.at(i)), {1, 1, 0});}
-// // //P.log()
-
-// // Points P2(l); 
-// // auto y2 = sin(2, l, -0.5, 0, 0);
-// // for (size_t i = 0; i < l; i++) {P2.add(x.at(i), y2.at(i), Marker('x', Pixel("blue", "white")), {0, 0, 0});}
-// // //P2.log(1);
-
-// // // Canvas Creation
-// Canvas c(200, 60, Pixel("", "white"));
-// // //Canvas c(247, 59, Pixel("", "white"));
-// // c.set_fillx_level(0);
-// // c.set_filly_level(l / 2);
-// // c.set_xlim({0, l - 1});
-// // c.set_ylim({-1, 1});
-
-// // c.draw(P);
-// // //c.draw(P2);
-
-// // c.show();
 
 // auto start = chrono::high_resolution_clock::now();
 // size_t L = 0;

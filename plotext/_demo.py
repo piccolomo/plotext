@@ -4,8 +4,6 @@ from math import ceil
 
 color_codes = ['black', 'white', 'gray', 'gray+', 'red', 'red+', 'green', 'green+', 'orange', 'orange+', 'blue', 'blue+', 'magenta', 'magenta+', 'cyan', 'cyan+']
 
-
-
 bg = 'default'
 pad_length = 10
 m = 256

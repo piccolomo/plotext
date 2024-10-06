@@ -17,9 +17,9 @@ public:
 
   inline void log(const bool & full = false) const noexcept {wcout << get_wstring(full) << flush;}
 
-  // inline void log(const bool & full = false) const noexcept {wcout << L"("; PointPosition::log(); wcout << L", "; Marker::log(); if (full) {wcout << L", "; PointInfo::log();} wcout << L")" << flush;}
 };
 
-  //inline Point(const Point & p) noexcept : x(p.x), y(p.y), Marker(p), MarkerInfo(p) {}//wcout << "copy ";}
-  //inline Point(Point && p) noexcept : x(move(p.x)), y(move(p.y)), Marker(move(p)), MarkerInfo(move(p)) {}//wcout << "move ";}
- // inline Point & operator=(const Point & p) {Marker::operator=(p); MarkerInfo::operator=(p); return *this;}
+// inline void log(const bool & full = false) const noexcept {wcout << L"("; PointPosition::log(); wcout << L", "; Marker::log(); if (full) {wcout << L", "; PointInfo::log();} wcout << L")" << flush;}
+//inline Point(const Point & p) noexcept : x(p.x), y(p.y), Marker(p), MarkerInfo(p) {}//wcout << "copy ";}
+//inline Point(Point && p) noexcept : x(move(p.x)), y(move(p.y)), Marker(move(p)), MarkerInfo(move(p)) {}//wcout << "move ";}
+// inline Point & operator=(const Point & p) {Marker::operator=(p); MarkerInfo::operator=(p); return *this;}

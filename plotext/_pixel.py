@@ -58,6 +58,13 @@ class pixel:
         pixel_set_style_code(self._pointer, code)
         return self
 
+    def _no_background(self):
+        return pixel_no_background(self._pointer)
+
+    def _copy_background(self, object):
+        pixel_copy_background(self._pointer, object._pointer)
+        return self
+
     def _show(self):
         pixel_log(self._pointer)
         return self

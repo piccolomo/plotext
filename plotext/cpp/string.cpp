@@ -37,15 +37,22 @@ public:
     size_t length = min(s.get_width(), get_length() - col);
     for (size_t i = 0; i < length; i++) {get_character(col + i) = s.get_character(i);} return true;}
 
-  inline int insert_dynamically(const size_t & col, const wstring & s) noexcept {
-    size_t w = s.size(); vector<int> displacements = get_dynamic_displacements(w);
-    for (auto delta: displacements) {if (insert_aligned(col + delta, Colorize(s), 0, 1, 0)) {return col + delta;}} return -1;}
+  // inline int insert_dynamically(const size_t & col, const wstring & s) noexcept {
+  //   size_t w = s.size(); vector<int> displacements = get_dynamic_displacements(w);
+  //   for (auto delta: displacements) {if (insert_aligned(col + delta, Colorize(s), 0, 1, 0)) {return col + delta;}} return -1;}
+
+  inline int insert_dynamically(const size_t & col, const Colorize & s) noexcept {
+    size_t w = s.get_length(); vector<int> displacements = get_dynamic_displacements(w);
+    for (auto delta: displacements) {if (insert_aligned(col + delta, s, 0, 1, 1)) {return col + delta;}} return -1;}
 
   inline bool insert_aligned(size_t col, const Colorize & s, const Alignment & ha = -1, bool check_space = false, bool change_color = true) noexcept {
-    size_t length = get_length(); size_t slength = s.get_length(); col += ha.get_displacement(slength);
-    if (check_space and (col < 0 or col + slength > length)) {return false;}
-    if (check_space and not is_empty(max(0, (int)(col - 1)), min(length, col + slength + 1))) {return false;}
-    for (size_t i = 0; i < slength; i++) {get_character(col + i).set_char(s.get_char(i)); if (change_color) {get_character(col + i).set_pixel(s);}} return true;}
+    size_t length = get_width(); 
+    size_t slength = s.get_length(); 
+    int c = col + ha.get_displacement(slength);
+    size_t start = max(0, (int)(c - 1)); 
+    size_t stop = min(length, c + slength + 1);
+    if (check_space and (c < 0 or c + slength > length or not is_empty(start, stop))) {return false;}
+    for (size_t i = 0; i < slength; i++) {get_character(c + i).set_char(s.get_char(i)); if (change_color) {get_character(c + i).set_pixel(s);}} return true;}
 
   inline void insert_wstring(const size_t & col, const wstring & s) noexcept {
     size_t length = s.size(); for (size_t i = 0; i < length; i++) {get_character(col + i).set_char(s[i]);}}

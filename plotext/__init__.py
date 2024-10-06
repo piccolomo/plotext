@@ -12,5 +12,6 @@ from ._doc import pd as doc
 # from ._ticks import *
 # from ._axis import *
 # from ._ticks import *
-from ._signal import signal
 from ._marker import marker
+from ._plot import *
+from ._system import get_terminal_size, clear_terminal

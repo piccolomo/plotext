@@ -52,20 +52,34 @@ class matrix:
 		matrix_insert(self._pointer, col, row, object._pointer, ha, va, adapt)
 		return self
 
-	def _insert_string_aligned(self, col, row, string, ha = -1, check_space = False, change_color = True):
-		object = self._correct_colorize(string)
-		return matrix_insert_aligned(self._pointer, col, row, object._pointer, ha, check_space, change_color)
-
-	def _insert_string_dynamically(self, col, row, string):
+	def _insert_aligned(self, col, row, label, ha = -1, check_space = 1, change_color = True):
 		#object = self._correct_colorize(string)
-		return matrix_insert_dynamically(self._pointer, col, row, wstring(string))
+		return matrix_insert_aligned(self._pointer, col, row, label._pointer, ha, check_space, change_color)
+
+	def _insert_dynamically(self, col, row, label):
+		#object = self._correct_colorize(string)
+		return matrix_insert_dynamically(self._pointer, col, row, label._pointer)
 
 	def _insert_string(self, col, row, string):
 		return matrix_insert_wstring(self._pointer, col, row, wstring(string))
 
+	def _insert_canvas(self, col, row, canvas):
+		matrix_insert_canvas(self._pointer, col, row, canvas._pointer)
+		return self
+
 	def _set_char(self, col, row, char):
 		#object = self._correct_colorize(object)
 		matrix_set_char(self._pointer, col, row, wchar(char))
+		return self
+	
+	def _set_pixel(self, col, row, pixel):
+		#object = self._correct_colorize(object)
+		matrix_set_pixel(self._pointer, col, row, pixel._pointer)
+		return self
+	
+	def _set_pixelled_char(self, col, row, char, pixel):
+		self._set_char(col, row, char)
+		self._set_pixel(col, row, pixel)
 		return self
 
 	def _correct_matrix(self, object):
@@ -121,7 +135,6 @@ class matrix:
 		col_key = correct_slice(key[1], width)
 		row_key = correct_slice(key[0], height)
 		return self._part(col_key.start, col_key.stop, row_key.start, row_key.stop)
-
 
 def correct_slice(key, bins):
 	key = slice(key, key + 1) if isinstance(key, int) else key

@@ -13,6 +13,7 @@ class colorize():
 		else:
 			self._pointer = pointer
 
+
 	def set_pixel(self, pixel = None):
 		pixel = pixel_class() if pixel is None else pixel
 		colorize_set_pixel(self._pointer, pixel._pointer)
@@ -59,6 +60,13 @@ class colorize():
 	def assign(self, string):
 		string  = colorize(string) if isinstance(string, str) else string
 		colorize_copy_from(self._pointer, string._pointer)
+		return self
+
+	def _no_background(self):
+		return colorize_no_background(self._pointer)
+
+	def _copy_background(self, pixel):
+		colorize_copy_background(self._pointer, pixel._pointer)
 		return self
 
 	def __repr__(self):

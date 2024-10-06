@@ -27,6 +27,7 @@ public:
   inline void set(const string & fs, const string & bs = "", const string & ss = "") noexcept  {Fullground::set(fs); Background::set(bs); Style::set(ss);}
 
   inline void copy_pixel(const Pixel & p) noexcept {operator=(p);}
+  inline void copy_background(const Pixel & p) noexcept {Background::operator=(p);}
 
   inline constexpr bool no_fullground() const noexcept {return Fullground::no_color();}
   inline constexpr bool no_background() const noexcept {return Background::no_color();}
