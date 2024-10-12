@@ -9,10 +9,7 @@ class axis:
 		self.set_status()
 		self.set_style()
 		self.set_pixel()
-		if self.axis:
-			self.tick = get_symbol(right_node, self.style) if self.side else get_symbol(left_node, self.style)
-		else:
-			self.tick = get_symbol(upper_node, self.style) if self.side else get_symbol(lower_node, self.style)
+		self.update_tick()
 
 	def set_axis(self, axis = 0, side = 0):
 		self.axis = axis
@@ -26,6 +23,12 @@ class axis:
 	def set_style(self, style = None):
 		self.style = style
 		return self
+	
+	def update_tick(self):
+		if self.axis:
+			self.tick = get_symbol(right_node, self.style) if self.side else get_symbol(left_node, self.style)
+		else:
+			self.tick = get_symbol(upper_node, self.style) if self.side else get_symbol(lower_node, self.style)
 	
 	def set_pixel(self, pixel = None):
 		self.pixel = pixel
@@ -53,6 +56,7 @@ class axes:
 		axis.set_status(status)
 		axis.set_style(style)
 		axis.set_pixel(pixel)
+		axis.update_tick()
 		return axis
 
 	def set_axes(self, status = True, style = None, pixel = None):

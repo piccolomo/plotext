@@ -197,6 +197,7 @@ class ruler(user_ticks):
 		return 'Ruler: ' + user_ticks.get_log(self) + ', real limits ' + str(self.real_limits) + ', real ' + self.ticks.get_log() + ', rescaled ' + self.rescaled_ticks.get_log()
 
 
+
 class rulers:
 	def __init__(self):
 		self._xruler = [ruler(), ruler()]
@@ -253,14 +254,3 @@ def _distinguishing_digit(a, b): # it return the minimum amount of decimal digit
     d = 0 if d < 0 else math.ceil(d)
     d = d + 1 if round(a, d) == round(b, d) else d
     return d
-
-
-
-# def set_signal_limits(self, limits = None):
-# 	self.signal_limits = [None, None] if limits is None else limits
-# 	return self
-
-
-
-
-
