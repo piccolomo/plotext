@@ -5,6 +5,7 @@ build/
 dist/
 bin/
 test.py
+plotext/.*
 
 *~
 plotext/#*

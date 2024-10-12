@@ -33,11 +33,14 @@ class part:
 	def has_width(self):
 		return self.width != 0
 
+	def get_col(self, side = 0):
+		return self.col + (self.width if side else 0)
 
+	def get_row(self, side = 0):
+		return self.row + (self.height if side else 0)
+	
 	def get_position(self, xside = 0, yside = 0):
-		col = self.col + (self.width if xside else 0)
-		row = self.row + (self.height if yside else 0)
-		return col, row
+		return self.get_col(xside), self.get_row(yside)
 
 	def get_width(self):
 		return self.width
@@ -47,12 +50,6 @@ class part:
 
 	def get_size(self):
 		return self.width, self.height
-
-	def get_col(self):
-		return self.col
-
-	def get_row(self):
-		return self.row
 
 	def __str__(self):
 		return self.name + ': position: ' + str((self.col, self.row)) + ', size: ' + str((self.width, self.height))
@@ -87,6 +84,71 @@ class parts:
 		self.width = max(0, width)
 		self.height = max(0, height)
 
+	def get_upper_height(self):
+		return self.upper_bar.height + self.upper_axis.height + self.upper_ticks.height
+
+	def get_lower_height(self):
+		return self.lower_bar.height + self.lower_axis.height + self.lower_ticks.height
+
+	def get_canvas_height(self):
+		return self.height - self.get_upper_height() - self.get_lower_height()
+
+	def get_left_width(self):
+		return self.left_ticks.width + self.left_axis.width
+
+	def get_right_width(self):
+		return self.right_ticks.width + self.right_axis.width
+
+	def get_canvas_width(self):
+		return self.width - self.get_left_width() - self.get_right_width()
+
+	def update_canvas_size(self):
+		canvas_height = self.get_canvas_height()
+		canvas_width = self.get_canvas_width()
+
+		self.canvas.set_size(canvas_width, canvas_height)
+		self.left_ticks.set_height(canvas_height)
+		self.left_axis.set_height(canvas_height)
+		self.right_axis.set_height(canvas_height)
+		self.right_ticks.set_height(canvas_width)
+
+	def update_widths(self):
+		self.upper_bar.set_width(self.width)
+		self.lower_bar.set_width(self.width)
+
+		xwidth = self.canvas.width + self.left_axis.width + self.right_axis.width
+		#xwidth = 0 if xwidth <=2 else xwidth
+		self.upper_ticks.set_width(xwidth)
+		self.upper_axis.set_width(xwidth)
+		self.lower_axis.set_width(xwidth)
+		self.lower_ticks.set_width(xwidth)
+
+
+	def update_positions(self):
+		self.upper_bar.set_position(0, 0)
+
+		left_width = self.get_left_width()
+		upper_height = self.get_upper_height()
+	
+		self.upper_ticks.set_position(left_width, self.upper_bar.get_row(1))
+		self.upper_axis.set_position(self.left_ticks.width, self.upper_ticks.get_row(1))
+
+		self.left_ticks.set_position(0, upper_height)
+		self.left_axis.set_position(self.left_ticks.width, upper_height)
+
+		self.canvas.set_position(left_width, upper_height)
+
+		self.right_axis.set_position(self.canvas.get_col(1), upper_height)
+		self.right_ticks.set_position(self.right_axis.get_col(1), upper_height)
+
+		self.lower_axis.set_position(self.left_ticks.width, self.canvas.get_row(1))
+		self.lower_ticks.set_position(left_width, self.lower_axis.get_row(1))
+
+		self.lower_bar.set_position(0, self.lower_ticks.get_row(1))
+
+
+
+
 	def get_parts(self):
 		return [value for value in vars(self).values() if isinstance(value, part)]
 
@@ -102,47 +164,3 @@ class parts:
 		print("Height Test", height_test)
 		print("Height Test 2", height_test2)
 		return self
-
-	# def add_part(self, name):
-	# 	self.part[name] = part()
-	# 	return self.part[name]
-
-	# def get_part(self, name):
-	# 	return self.part[name]
-
-
-	# def set_part_position(self, name, col, row):
-	# 	return self.get_part(name).set_position(col, row)
-
-	# def set_part_size(self, name, width, height):
-	# 	return self.get_part(name).set_size(width, height)
-
-	# def set_part_width(self, name, width):
-	# 	return self.get_part(name).set_width(width)
-
-	# def set_part_height(self, name, height):
-	# 	return self.get_part(name).set_height(height)
-
-
-	# def get_part_position(self, name, xside = 0, yside = 0):
-	# 	return self.get_part(name).get_position(xside, yside)
-
-	# def get_part_width(self, name):
-	# 	return self.get_part(name).get_width()
-
-	# def get_part_height(self, name):
-	# 	return self.get_part(name).get_height()
-
-
-	# def part_has_size(self, name):
-	# 	return self.get_part(name).has_size()
-
-	# def part_has_width(self, name):
-	# 	return self.get_part(name).has_width()
-
-	# def part_has_height(self, name):
-	# 	return self.get_part(name).has_height()
-
-	# def log_parts(self):
-	# 	[print(k + ':', self.part[k]) for k in self.part.keys()]
-	# 	return self

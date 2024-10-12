@@ -1,7 +1,7 @@
 from ._parts import parts
 from ._signal import signals
 from ._labels import labels
-from ._ticks import ticks
+from ._ticks import rulers
 from ._matrix import matrix as matrix_class
 from ._default import *
 from ._correct import correct_pixel, correct_axis_style
@@ -10,12 +10,12 @@ from ._canvas import canvas_class
 from ._axis import axes
 
 
-class plot(parts, signals, labels, ticks, axes):
+class plot(parts, signals, labels, rulers, axes):
 	def __init__(self):
 		parts.__init__(self)
 		signals.__init__(self)
 		labels.__init__(self)
-		ticks.__init__(self)
+		rulers.__init__(self)
 		axes.__init__(self)
 		
 		self.set_ticks_pixel()
@@ -25,7 +25,7 @@ class plot(parts, signals, labels, ticks, axes):
 	def set_ticks_pixel(self, pixel = None):
 		pixel = correct_pixel(pixel, default_ticks_pixel)
 		labels.set_ticks_pixel(self, pixel)
-		ticks.set_ticks_pixel(self, pixel)
+		rulers.set_ticks_pixel(self, pixel)
 		return self
 
 	def set_axes(self, status = True, style = None, pixel = None):
@@ -63,18 +63,16 @@ class plot(parts, signals, labels, ticks, axes):
 
 		# Lower Ticks Height
 		ruler = self.get_ruler(0, 0)
-		ruler.set_signal_limits(self.get_signal_limits(0, 0))
-		ruler.filter()
+		ruler.update_real_limits(*self.get_signal_limits(0, 0))
 		ruler.update()
-		height = ruler.get_status(); height *= self.height >= height + threshold; threshold += height
+		height = ruler.is_active(); height *= self.height >= height + threshold; threshold += height
 		self.lower_ticks.set_height(height)
 
 		# Upper Ticks Height
 		ruler = self.get_ruler(0, 1)
-		ruler.set_signal_limits(self.get_signal_limits(0, 1))
-		ruler.filter()
+		ruler.update_real_limits(*self.get_signal_limits(0, 1))
 		ruler.update()
-		height = ruler.get_status(); height *= self.height >= threshold; threshold += height
+		height = ruler.is_active(); height *= self.height >= threshold; threshold += height
 		self.upper_ticks.set_height(height)
 
 
@@ -91,69 +89,26 @@ class plot(parts, signals, labels, ticks, axes):
 
 		# Left Ticks Width
 		ruler = self.get_ruler(1, 0)
-		ruler.set_signal_limits(self.get_signal_limits(1, 0))
-		ruler.filter()
+		ruler.update_real_limits(*self.get_signal_limits(1, 0))
 		ruler.update()
 		width = ruler.get_labels_width(); width *= self.width >= width + threshold; threshold += width
 		self.left_ticks.set_width(width)
 
 		# Right Ticks Width
 		ruler = self.get_ruler(1, 1)
-		ruler.set_signal_limits(self.get_signal_limits(1, 1))
-		ruler.filter()
+		ruler.update_real_limits(*self.get_signal_limits(1, 1))
 		ruler.update()
 		width = ruler.get_labels_width(); width *= self.width >= width + threshold; threshold += width
 		self.right_ticks.set_width(width)
 
-
-		# Canvas Size
-		upper_height = self.upper_bar.height + self.upper_axis.height + self.upper_ticks.height
-		lower_height = self.lower_bar.height + self.lower_axis.height + self.lower_ticks.height
-		canvas_height = self.height - upper_height - lower_height
-
-		left_ticks_width = self.left_ticks.width 
-		left_width = left_ticks_width + self.left_axis.width
-		right_width = self.right_ticks.width + self.right_axis.width
-		canvas_width = self.width - left_width - right_width
-
-		self.canvas.set_size(canvas_width, canvas_height)
-		self.left_ticks.set_height(canvas_height)
-		self.left_axis.set_height(canvas_height)
-		self.right_axis.set_height(canvas_height)
-		self.right_ticks.set_height(canvas_width)
-
+		# Canvas Size 
+		self.update_canvas_size()
 
 		# Upper and Lower Widths
-		self.upper_bar.set_width(self.width)
-		self.lower_bar.set_width(self.width)
-
-		xwidth = self.canvas.width + self.left_axis.width + self.right_axis.width
-		#xwidth = 0 if xwidth <=2 else xwidth
-		self.upper_ticks.set_width(xwidth)
-		self.upper_axis.set_width(xwidth)
-		self.lower_axis.set_width(xwidth)
-		self.lower_ticks.set_width(xwidth)
+		self.update_widths()
 
 		# Part Positions
-		self.upper_bar.set_position(0, 0)
-	
-		self.upper_ticks.set_position(left_ticks_width + self.left_axis.width, self.upper_bar.row + self.upper_bar.height)
-		self.upper_axis.set_position(left_ticks_width, self.upper_ticks.row + self.upper_ticks.height)
-
-		self.left_ticks.set_position(0, upper_height)
-		self.left_axis.set_position(self.left_ticks.width, upper_height)
-
-		self.canvas.set_position(left_width, upper_height)
-
-		self.right_axis.set_position(left_width + self.canvas.width, upper_height)
-		self.right_ticks.set_position(self.right_axis.col + self.right_axis.width, upper_height)
-
-		self.lower_axis.set_position(left_ticks_width, self.canvas.row + self.canvas.height)
-		self.lower_ticks.set_position(left_ticks_width + self.left_axis.width, self.lower_axis.row + self.lower_axis.height)
-
-		self.lower_bar.set_position(0, self.lower_ticks.row + self.lower_ticks.height)
-
-		#self.log_parts()
+		self.update_positions()
 
 		matrix = matrix_class(self.width, self.height)
 
@@ -173,7 +128,7 @@ class plot(parts, signals, labels, ticks, axes):
 			col, row = self.upper_ticks.get_position()
 			ruler = self.get_ruler(0, 1)
 			ruler.rescale(self.canvas.width)
-			ticks = [matrix._insert_dynamically(col + c, row, label) for c, label in ruler.get_tuples()]
+			ticks = [matrix._insert_dynamically(col + c, row, label) for c, label in ruler.get_rescaled_tuples()]
 
 		if self.upper_axis.has_size():
 			axis = self.get_axis(0, 1)
@@ -187,7 +142,7 @@ class plot(parts, signals, labels, ticks, axes):
 			col, row = self.lower_ticks.get_position()
 			ruler = self.get_ruler(0, 0)
 			ruler.rescale(self.canvas.width)
-			ticks = [matrix._insert_dynamically(col + c, row, label) for c, label in ruler.get_tuples()]
+			ticks = [matrix._insert_dynamically(col + c, row, label) for c, label in ruler.get_rescaled_tuples()]
 
 		if self.lower_axis.has_size():
 			axis = self.get_axis(0, 0)
@@ -201,7 +156,7 @@ class plot(parts, signals, labels, ticks, axes):
 			offset = self.canvas.row
 			ruler = self.get_ruler(1, 0)
 			ruler.rescale(self.canvas.height)
-			[ticks.append(row + offset) if matrix._insert_aligned(0, row + offset, label, -1) else None for row, label in ruler.get_tuples()]
+			[ticks.append(row + offset) if matrix._insert_aligned(0, row + offset, label, -1) else None for row, label in ruler.get_rescaled_tuples()]
 
 		if self.left_axis.has_size():
 			axis = self.get_axis(1, 0)
@@ -216,7 +171,7 @@ class plot(parts, signals, labels, ticks, axes):
 			offset = self.right_ticks.row
 			ruler = self.get_ruler(1, 1)
 			ruler.rescale(self.canvas.height)
-			[ticks.append(row + offset) if matrix._insert_aligned(col, row + offset, label, -1) else None for row, label in ruler.get_tuples()]
+			[ticks.append(row + offset) if matrix._insert_aligned(col, row + offset, label, -1) else None for row, label in ruler.get_rescaled_tuples()]
 
 		if self.right_axis.has_size():
 			axis = self.get_axis(1, 1)
