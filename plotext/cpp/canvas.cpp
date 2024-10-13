@@ -21,10 +21,12 @@ public:
   inline float get_fill_level(const bool & axis, const bool & side) noexcept {return get_axis(axis, side).get_fill_level();}
 
   inline void set_delta(const bool & axis, const bool & side, const float & delta) noexcept {get_axis(axis, side).set_delta(delta);}
-
   inline float get_delta(const bool & axis, const bool & side) noexcept {return get_axis(axis, side).get_delta();}
 
-  
+  inline void set_scale(const bool & axis, const bool & side, const axis_scale & s) noexcept {get_axis(axis, side).set_scale(s);}
+  inline axis_scale get_scale(const bool & axis, const bool & side) noexcept {return get_axis(axis, side).get_scale();}
+
+ 
   inline void draw(Points points, const bool & xside = 0, const bool & yside = 0) noexcept {
     auto xlim = get_lim(0, xside);
     auto ylim = get_lim(1, yside);
@@ -33,6 +35,12 @@ public:
 
     auto xdelta = get_delta(0, xside);
     auto ydelta = get_delta(1, yside);
+
+    auto xscale = get_scale(0, xside);
+    auto yscale = get_scale(1, yside);
+
+    if (xscale == log_scale) {points.log_x();}
+    if (yscale == log_scale) {points.log_y();}
 
     points.rescale_x(width, xlim, xdelta);
     points.rescale_y(height, ylim, ydelta);

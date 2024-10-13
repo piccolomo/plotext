@@ -104,8 +104,8 @@ class user_ticks(ticks):
 		ticks.__init__(self)
 		self.set_default_frequency()
 		self.set_limits()
-
 		self.set_direction()
+		self.set_scale()
 		self.set_frequency()
 	
 	
@@ -141,7 +141,10 @@ class user_ticks(ticks):
 	def set_direction(self, direction = None):
 		self.direction = correct_direction(direction)
 		return self 
-
+	
+	def set_scale(self, scale = None):
+		self.scale = correct_scale(scale)
+		return self
 
 	def set_frequency(self, frequency = None):
 		self.frequency = self.default_frequency if frequency is None else frequency
@@ -156,10 +159,13 @@ class user_ticks(ticks):
 	
 	def get_direction(self):
 		return self.direction
+	
+	def get_scale(self):
+		return self.scale
 
 
 	def get_log(self):
-		return 'frequency: ' + str(self.frequency) + ', user limits: ' + str(self.get_user_limits()) + ', position: ' + str(self.limit_alignment) + ', direction ' + str(self.direction)
+		return 'frequency: ' + str(self.frequency) + ', user limits: ' + str(self.get_user_limits()) + ', position: ' + str(self.limit_alignment) + ', direction: ' + str(self.direction) + ', scale: ' + str(self.scale)
 
 	def __repr__(self):
 		return 'Auto Ticks: ' + self.get_log()
@@ -178,14 +184,19 @@ class ruler(user_ticks):
 		self.real_limits = replace_none(self.user_limits, [signal_lower, signal_upper])
 		return self
 
-	def get_real_limits(self):
-		return self.real_limits[::self.direction]
+	def get_real_limits(self, direction = 1):
+		return self.real_limits[ : : self.direction * direction]
+		
+		
+	def get_scaled_limits(self, direction = 1):
+		return apply_scale(self.get_real_limits(direction), self.scale)
 	
 
 	def get_auto_ticks(self):
-		limits = self.get_real_limits()
-		positions = linspace(*limits, self.frequency) if None not in limits else []
-		return ticks().set(positions, self.get_auto_labels(positions))
+		limits = self.get_scaled_limits()
+		positions_scaled = linspace(*limits, self.frequency) if None not in limits else []
+		positions_unscaled = reverse_scale(positions_scaled, self.scale)
+		return ticks().set(positions_scaled, self.get_auto_labels(positions_unscaled))
 	
 	def get_ticks(self):
 		limits = self.get_real_limits()
@@ -201,8 +212,9 @@ class ruler(user_ticks):
 		return self
 		
 	def rescale(self, bins, direction = 1):
-		limits = self.get_real_limits()[::direction]
-		positions = [rescale(el, *limits, bins, self.get_limit_delta()) for el in self.ticks.get_positions(self)]
+		limits = self.get_scaled_limits(direction)
+		positions = self.ticks.get_positions()
+		positions = [rescale(el, *limits, bins, self.get_limit_delta()) for el in positions]
 		labels = self.ticks.get_labels()
 		self.rescaled_ticks.set(positions, labels)
 		return self

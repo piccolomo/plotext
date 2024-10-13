@@ -11,6 +11,19 @@ public:
 
   inline void add(const float & xi, const float & yi, const Marker & m, const PointInfo & mi = PointInfo()) noexcept {points.emplace_back(xi, yi, m, mi);}
 
+  inline void log_x() {
+    for(size_t i = 0; i < get_length(); i++) {
+      Point & p = points.at(i);
+      float x = p.get_x();
+      p.set_x(log10(x));}}
+
+  inline void log_y() {
+    for(size_t i = 0; i < get_length(); i++) {
+      Point & p = points.at(i);
+      float y = p.get_y();
+      p.set_y(log10(y));}}
+
+
   inline void rescale_x(const size_t & width, const pair<float, float> & xlim, const float & delta) {
     for(size_t i = 0; i < get_length(); i++) {
       Point & p = points.at(i);

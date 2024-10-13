@@ -93,8 +93,8 @@ inline constexpr size_t get_bit_position(const size_t & col, const size_t & row,
 
 
 // Data Modification
-const float delta = pow(10, -4);
-inline float rescale(const float & el, const pair<float, float> & lim, const size_t & bins, const float & delta = pow(10, -4)) noexcept {return delta + (bins - 2 * delta) * (el - lim.first) / (lim.second - lim.first);}
+//const float delta = pow(10, -4);
+inline float rescale(const float & el, const pair<float, float> & lim, const size_t & bins, const float & delta) noexcept {return delta + (bins - 2 * delta) * (el - lim.first) / (lim.second - lim.first);}
 
 inline vector<int> sort(const vector<int> & unsorted, const int & reference) noexcept {
    vector<int> sorted = unsorted;
@@ -122,14 +122,7 @@ inline vector<float> sin(size_t periods = 2, size_t length = 200, float amplitud
     for (int el = 0; el < length; el = el + delta) {result.push_back(amplitude * sin(f * el + phase) * exp(-d * el));}
     return result;};
 	
-	
 //inline float round_up(const float & value, const size_t & precision) noexcept {float factor = pow(10.0, precision); return round(value * factor) / factor;}
 //inline size_t to_size_t(const float & value) noexcept {return static_cast<size_t>(value);}
-
-
-
 //inline float rescale(const float & el, const pair<float, float> & lim, const size_t & bins) noexcept {return 0.5 + delta + (bins - 1 - 2 * delta) * (el - lim.first) / (lim.second - lim.first);}
-
 //inline wstring bool_to_wstring(const bool & value) noexcept {return value ? L"1" : L"0";}
-
-// 

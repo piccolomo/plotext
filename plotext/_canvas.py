@@ -1,6 +1,7 @@
 from ._link import *
 from ._pixel import empty_pixel
 from ._matrix import matrix
+from ._constants import scales
 #from ._signal import *
 
 
@@ -26,6 +27,10 @@ class canvas_class:
 		canvas_set_delta(self._pointer, axis, side, delta)
 		return self
 
+	def set_scale(self, axis, side, scale):
+		scale = scales.index(scale) if scale in scales else 1
+		canvas_set_scale(self._pointer, axis, side, scale)
+		return self
 
 	def draw(self, signal):
 		canvas_draw(self._pointer, signal._pointer, signal.xside, signal.yside)

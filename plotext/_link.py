@@ -90,6 +90,7 @@ link.add('canvas', 'show').input(void).output(void)
 link.add('canvas', 'set_lim').input(void, bool, bool, float, float).output(void)
 link.add('canvas', 'set_fill_level').input(void, bool, bool, float).output(void)
 link.add('canvas', 'set_delta').input(void, bool, bool, float).output(void)
+link.add('canvas', 'set_scale').input(void, bool, bool, size).output(void)
 
 link.add('canvas', 'draw').input(void, void, bool, bool).output(void)
 link.add('canvas', 'get_matrix').input(void).output(void)

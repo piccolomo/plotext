@@ -20,6 +20,19 @@ def repeat(data, length):
 def replace_none(data, alternative): # replace None elements in data with correspondent in alternative
     return [d if d is not None else a for (d, a) in zip(data, alternative)]
 
+
+def log(data): # it apply log function to the data
+    return [math.log10(el) for el in data] #if isinstance(data, list) else math.log10(data)
+
+def power10(data): # it reverse the effect of log function to the data
+    return [10 ** el for el in data]
+
+def apply_scale(data, scale): 
+    return log(data) if scale == "log" else data
+
+def reverse_scale(data, scale):
+    return power10(data) if scale == "log" else data
+
 ###############################################
 ###########    List Creation     ##############
 ###############################################
@@ -35,6 +48,7 @@ def linspace(lower, upper, length = 10): # it returns a lists of numbers from lo
     return [lower + x * slope for x in range(length)]
 
 def rescale(value, minimum, maximum, bins, delta):
+    #[value, minimum, maximum] = apply_scale([value, minimum, maximum], scale)
     return int(rescale_value(value, minimum, maximum, bins, delta))
 
 ###############################################

@@ -63,6 +63,8 @@ void canvas_show(Canvas * canvas) {canvas->show();}
 void canvas_set_lim(Canvas * canvas, bool axis, bool side, float lower, float upper) {canvas->get_axis(axis, side).set_lim(lower, upper);}
 void canvas_set_fill_level(Canvas * canvas, bool axis, bool side, float level) {canvas->get_axis(axis, side).set_fill_level(level);}
 void canvas_set_delta(Canvas * canvas, bool axis, bool side, float delta) {canvas->get_axis(axis, side).set_delta(delta);}
+void canvas_set_scale(Canvas * canvas, bool axis, bool side, axis_scale scale) {canvas->get_axis(axis, side).set_scale(scale);}
+
 Matrix * canvas_get_matrix(Canvas * canvas) {return new Matrix(canvas->get_matrix());}
 void canvas_draw(Canvas * canvas, Points * points, bool xside, bool yside) {canvas->draw(*points, xside, yside);}
 float canvas_get_lim_lower(Canvas * canvas, bool axis, bool side) {return canvas->get_lim(axis, side).first;}

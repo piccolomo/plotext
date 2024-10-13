@@ -14,3 +14,5 @@ delta = 10 ** (-4)
 limit_delta = [1 / 2 + delta, 0 + delta]
 
 directions = [-1, 1]
+
+scales = ["linear", "log"]
