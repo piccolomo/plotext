@@ -1,6 +1,8 @@
 from ._symbols import *
 from ._colorize import colorize
-#from ._utility import set_data
+from ._correct import correct_axis_style, correct_pixel
+from ._default import default_axes_pixel 
+
 
 
 class axis:
@@ -59,7 +61,9 @@ class axes:
 		axis.update_tick()
 		return axis
 
-	def set_axes(self, status = True, style = None, pixel = None):
+	def frame(self, status = True, style = None, pixel = None):
+		style = correct_axis_style(style)
+		pixel = correct_pixel(pixel, default_axes_pixel)
 		r2 = [0, 1]
 		[self.set_axis(axis, side, status, style, pixel) for axis in r2 for side in r2]
 		return self
@@ -67,6 +71,7 @@ class axes:
 	def get_axis(self, axis = 0, side = 0):
 		container = self._yaxis if axis else self._xaxis
 		return container[side]
+
 	
 	def get_string(self, axis = 0, side = 0):
 		return self.get_axis(axis, side).get_string()

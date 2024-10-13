@@ -1,6 +1,6 @@
 from ._correct import *
 from ._utility import linspace, rescale, replace_none
-from ._default import xfrequency, yfrequency
+from ._default import xfrequency, yfrequency, default_ticks_pixel
 import math
 
 
@@ -103,15 +103,18 @@ class user_ticks(ticks):
 		self.set_pixel() 
 		ticks.__init__(self)
 		self.set_default_frequency()
-		self.set_user_limits()
-		self.set_limits_position()
+		self.set_limits()
+
+		self.set_direction()
 		self.set_frequency()
 	
 	
 	def set_pixel(self, pixel = None):
+		pixel = correct_pixel(pixel, default_ticks_pixel)
 		self.pixel = pixel
+		return self
 
-	def set(self, positions = [], labels = None):
+	def set_ticks(self, positions = [], labels = None):
 		labels = self.get_auto_labels(positions) if labels is None else labels
 		ticks.set(self, positions, labels)
 		return self
@@ -126,12 +129,19 @@ class user_ticks(ticks):
 		self.default_frequency = frequency
 		return self
 
-	def set_user_limits(self, lower = None, upper = None):
+	def set_limits(self, lower = None, upper = None, position = None):
 		self.user_limits = [lower, upper]
-
-	def set_limits_position(self, position = None):
-		self.limits_position = correct_limits_position(position)
 		return self
+
+	def set_alignment(self, alignment = None):
+		self.limit_alignment = correct_limit_alignment(alignment)
+		return self
+
+
+	def set_direction(self, direction = None):
+		self.direction = correct_direction(direction)
+		return self 
+
 
 	def set_frequency(self, frequency = None):
 		self.frequency = self.default_frequency if frequency is None else frequency
@@ -141,12 +151,15 @@ class user_ticks(ticks):
 	def get_user_limits(self):
 		return self.user_limits
 	
-	def get_limits_delta(self):
-		return get_limits_delta(self.limits_position)
+	def get_limit_delta(self):
+		return get_limit_delta(self.limit_alignment)
+	
+	def get_direction(self):
+		return self.direction
 
 
 	def get_log(self):
-		return 'frequency: ' + str(self.frequency) + ', user limits: ' + str(self.get_user_limits()) + ', position: ' + str(self.limits_position)
+		return 'frequency: ' + str(self.frequency) + ', user limits: ' + str(self.get_user_limits()) + ', position: ' + str(self.limit_alignment) + ', direction ' + str(self.direction)
 
 	def __repr__(self):
 		return 'Auto Ticks: ' + self.get_log()
@@ -166,7 +179,7 @@ class ruler(user_ticks):
 		return self
 
 	def get_real_limits(self):
-		return self.real_limits
+		return self.real_limits[::self.direction]
 	
 
 	def get_auto_ticks(self):
@@ -187,9 +200,9 @@ class ruler(user_ticks):
 		self.ticks.copy_from(self.get_ticks())
 		return self
 		
-	def rescale(self, bins):
-		limits = self.get_real_limits()
-		positions = [rescale(el, *limits, bins, self.get_limits_delta()) for el in self.ticks.get_positions(self)]
+	def rescale(self, bins, direction = 1):
+		limits = self.get_real_limits()[::direction]
+		positions = [rescale(el, *limits, bins, self.get_limit_delta()) for el in self.ticks.get_positions(self)]
 		labels = self.ticks.get_labels()
 		self.rescaled_ticks.set(positions, labels)
 		return self
@@ -210,43 +223,50 @@ class rulers:
 		self._xruler = [ruler(), ruler()]
 		self._yruler = [ruler(), ruler()]
 
-		self.set_default_frequencies()
+		self._set_default_frequencies()
 
-	def get_ruler(self, axis = 0, side = 0):
-		container = self._yruler if axis else self._xruler
-		return container[side]
-	
-	def set_default_frequencies(self):
+	def _set_default_frequencies(self):
 		[el.set_default_frequency(xfrequency) for el in self._xruler]
 		[el.set_frequency() for el in self._xruler]
 
 		[el.set_default_frequency(yfrequency) for el in self._yruler]
 		[el.set_frequency() for el in self._yruler]
 
-	
+
+	def get_ruler(self, axis = 0, side = 0):
+		axis = correct_axis(axis)
+		side = correct_side(axis, side)
+		container = self._yruler if axis else self._xruler
+		return container[side]
+
 	def set_ticks_pixel(self, pixel = None):
 		[el.set_pixel(pixel) for el in self._xruler]
 		[el.set_pixel(pixel) for el in self._yruler]
 		return self
-
-	def set_ticks(self, ticks = [], labels = None, axis = 0, side = 0):
-		axis = correct_axis(axis)
-		side = correct_side(axis, side)
-		self.get_ruler(axis, side).set(ticks, labels)
+	
+	def set_limits_alignment(self, alignment = None):
+		[el.set_alignment(alignment) for el in self._xruler]
+		[el.set_alignment(alignment) for el in self._yruler]
 		return self
 
-	def set_limits(self, lower = None, upper = None, position = None, axis = 0, side = 0):
-		axis = correct_axis(axis)
-		side = correct_side(axis, side)
-		ruler = self.get_ruler(axis, side)
-		ruler.set_user_limits(lower, upper)
-		ruler.set_limits_position(position)
-		return self
+	# def set_ticks(self, ticks = [], labels = None, axis = 0, side = 0):
+	# 	axis = correct_axis(axis)
+	# 	side = correct_side(axis, side)
+	# 	self.get_ruler(axis, side).set(ticks, labels)
+	# 	return self
 
-	def set_frequency(self, frequency, axis = 0, side = 0):
-		axis = correct_axis(axis)
-		side = correct_xside(side)
-		self.get_ruler(axis, side).set_frequency(frequency)
+	# def set_limits(self, lower = None, upper = None, position = None, axis = 0, side = 0):
+	# 	axis = correct_axis(axis)
+	# 	side = correct_side(axis, side)
+	# 	ruler = self.get_ruler(axis, side)
+	# 	ruler.set_user_limits(lower, upper)
+	# 	ruler.set_limits_alignment(position)
+	# 	return self
+
+	# def set_frequency(self, frequency, axis = 0, side = 0):
+	# 	axis = correct_axis(axis)
+	# 	side = correct_xside(side)
+	# 	self.get_ruler(axis, side).set_frequency(frequency)
 		return self
 
 

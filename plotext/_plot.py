@@ -19,20 +19,20 @@ class plot(parts, signals, labels, rulers, axes):
 		axes.__init__(self)
 		
 		self.set_ticks_pixel()
-		self.set_axes()
+		self.frame()
 		self.set_canvas_pixel()
 
-	def set_ticks_pixel(self, pixel = None):
-		pixel = correct_pixel(pixel, default_ticks_pixel)
-		labels.set_ticks_pixel(self, pixel)
-		rulers.set_ticks_pixel(self, pixel)
-		return self
+	# def set_ticks_pixel(self, pixel = None):
+	# 	pixel = correct_pixel(pixel, default_ticks_pixel)
+	# 	labels.set_ticks_pixel(self, pixel)
+	# 	rulers.set_ticks_pixel(self, pixel)
+	# 	return self
 
-	def set_axes(self, status = True, style = None, pixel = None):
-		style = correct_axis_style(style)
-		pixel = correct_pixel(pixel, default_axes_pixel)
-		axes.set_axes(self, status, style, pixel)
-		return self
+	# def set_axes(self, status = True, style = None, pixel = None):
+	# 	style = correct_axis_style(style)
+	# 	pixel = correct_pixel(pixel, default_axes_pixel)
+	# 	axes.set_axes(self, status, style, pixel)
+	# 	return self
 		
 	def set_canvas_pixel(self, pixel = None):
 		self.canvas_pixel = correct_pixel(pixel, default_canvas_pixel)
@@ -155,7 +155,7 @@ class plot(parts, signals, labels, rulers, axes):
 		if self.left_ticks.has_size():
 			offset = self.canvas.row
 			ruler = self.get_ruler(1, 0)
-			ruler.rescale(self.canvas.height)
+			ruler.rescale(self.canvas.height, -1)
 			[ticks.append(row + offset) if matrix._insert_aligned(0, row + offset, label, -1) else None for row, label in ruler.get_rescaled_tuples()]
 
 		if self.left_axis.has_size():
@@ -170,7 +170,7 @@ class plot(parts, signals, labels, rulers, axes):
 			col = self.right_ticks.col
 			offset = self.right_ticks.row
 			ruler = self.get_ruler(1, 1)
-			ruler.rescale(self.canvas.height)
+			ruler.rescale(self.canvas.height, -1)
 			[ticks.append(row + offset) if matrix._insert_aligned(col, row + offset, label, -1) else None for row, label in ruler.get_rescaled_tuples()]
 
 		if self.right_axis.has_size():
@@ -186,7 +186,7 @@ class plot(parts, signals, labels, rulers, axes):
 				for side in r2:
 					ruler = self.get_ruler(axis, side)
 					limits = ruler.get_real_limits()
-					delta = ruler.get_limits_delta()
+					delta = ruler.get_limit_delta()
 					canvas.set_lim(axis, side, *limits) if None not in limits else None
 					canvas.set_delta(axis, side, delta)
 			[canvas.draw(self.get_signal(i)) for i in self.get_Length()]

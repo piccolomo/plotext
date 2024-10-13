@@ -1,4 +1,5 @@
-from ._correct import correct_axis, correct_label, correct_side
+from ._correct import *
+from ._default import default_labels_pixel
 
 
 class labels:
@@ -7,7 +8,9 @@ class labels:
 		#self.set_ticks_pixel()
 
 	def set_ticks_pixel(self, pixel = None):
+		pixel = correct_pixel(pixel, default_labels_pixel)
 		self.ticks_pixel = pixel
+		return self
 
 	def clear(self):
 		#self.set_ticks_pixel()

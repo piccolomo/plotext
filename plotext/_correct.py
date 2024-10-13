@@ -42,8 +42,12 @@ def correct_side(axis, side):
 	sides = ysides if axis else xsides
 	return correct_boolean_string(side, sides)
 
-def correct_limits_position(position):
-	return limits_positions[0] if position is None or position not in limits_positions else position
+def correct_limit_alignment(alignment):
+	return limit_alignments[0] if alignment is None or alignment not in limit_alignments else alignment
 
-def get_limits_delta(position):
-	return limits_delta[limits_positions.index(position)]
+def get_limit_delta(alignment):
+	return limit_delta[limit_alignments.index(alignment)]
+
+def correct_direction(direction):
+	return directions[1] if direction is None or direction not in directions else direction
+

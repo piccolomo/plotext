@@ -3,6 +3,7 @@ from ._pixel import empty_pixel
 from ._matrix import matrix
 #from ._signal import *
 
+
 class canvas_class:
 	def __init__(self, width, height, pixel = empty_pixel):
 		self._pointer = canvas_new(width, height, pixel._pointer)

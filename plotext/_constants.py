@@ -9,6 +9,8 @@ ysides = ['left', 'right']
 hd_markers = ["hd", "fhd", "braille"]
 default_marker = "hd"
 
-limits_positions = ["center", "edge"]
+limit_alignments = ["center", "edge"]
 delta = 10 ** (-4)
-limits_delta = [1 / 2 + delta, 0 + delta]
+limit_delta = [1 / 2 + delta, 0 + delta]
+
+directions = [-1, 1]

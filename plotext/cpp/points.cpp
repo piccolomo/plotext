@@ -21,7 +21,7 @@ public:
     for(size_t i = 0; i < get_length(); i++) {
       Point & p = points.at(i);
       float r = rescale(p.get_y(), ylim, height, delta);
-      p.set_y(r);}}
+      p.set_y(height - r);}}
 
   inline void add_lines() noexcept {
  		size_t length = get_length();

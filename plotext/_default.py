@@ -1,5 +1,7 @@
 xfrequency = 7
 yfrequency = 5
+
+default_labels_pixel = ["blue+", "white"]
 default_ticks_pixel = ["blue+", "white"]
 default_axes_pixel = ["black", "white"]
 default_canvas_pixel = ["default", "white"]
