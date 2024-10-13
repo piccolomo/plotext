@@ -34,8 +34,8 @@ def linspace(lower, upper, length = 10): # it returns a lists of numbers from lo
     slope = (upper - lower) / (length - 1) if length > 1 else 0
     return [lower + x * slope for x in range(length)]
 
-def rescale(value, minimum, maximum, bins):
-    return int(rescale_value(value, minimum, maximum, bins))
+def rescale(value, minimum, maximum, bins, delta):
+    return int(rescale_value(value, minimum, maximum, bins, delta))
 
 ###############################################
 #########   String Manipulation     ###########

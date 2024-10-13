@@ -19,18 +19,28 @@ public:
   inline void set_fill_level(const bool & axis, const bool & side, const float & level) noexcept {get_axis(axis, side).set_fill_level(level);}
 
   inline float get_fill_level(const bool & axis, const bool & side) noexcept {return get_axis(axis, side).get_fill_level();}
+
+  inline void set_delta(const bool & axis, const bool & side, const float & delta) noexcept {get_axis(axis, side).set_delta(delta);}
+
+  inline float get_delta(const bool & axis, const bool & side) noexcept {return get_axis(axis, side).get_delta();}
+
   
   inline void draw(Points points, const bool & xside = 0, const bool & yside = 0) noexcept {
     auto xlim = get_lim(0, xside);
     auto ylim = get_lim(1, yside);
     auto width = get_width();
     auto height = get_height();
-    
-    points.rescale_xy(width, height, xlim, ylim);
+
+    auto xdelta = get_delta(0, xside);
+    auto ydelta = get_delta(1, yside);
+
+    points.rescale_x(width, xlim, xdelta);
+    points.rescale_y(height, ylim, ydelta);
+
     points.add_lines();
 
-    size_t fillx_level = rescale(get_fill_level(0, xside), ylim, height);
-    size_t filly_level = rescale(get_fill_level(1, yside), xlim, width);
+    size_t fillx_level = rescale(get_fill_level(0, xside), ylim, height, xdelta);
+    size_t filly_level = rescale(get_fill_level(1, yside), xlim, width, ydelta);
 
     size_t length = points.get_length();
     Dots dots(length); for(size_t i = 0; i < length; i++) {dots.add(points.at(i));}

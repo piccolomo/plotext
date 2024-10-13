@@ -20,6 +20,11 @@ class canvas_class:
 	def set_fill_level(self, axis, side, level):
 		canvas_set_fill_level(self._pointer, axis, side, level)
 		return self
+	
+	def set_delta(self, axis, side, delta):
+		canvas_set_delta(self._pointer, axis, side, delta)
+		return self
+
 
 	def draw(self, signal):
 		canvas_draw(self._pointer, signal._pointer, signal.xside, signal.yside)

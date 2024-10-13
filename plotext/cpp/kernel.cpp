@@ -59,10 +59,11 @@ Pixel * pixel_copy(Pixel * c) {return new Pixel(*c);}
 Canvas * canvas_new(size_t width, size_t height, Pixel * p) {return new Canvas(width, height, *p);}
 void canvas_delete(Canvas * p) {delete p;}
 void canvas_show(Canvas * canvas) {canvas->show();}
-  //Axis * canvas_get_axis(Canvas * canvas, const bool & axis, const bool & side) {return &(canvas->get_axis(axis, side));}
-  void canvas_set_lim(Canvas * canvas, bool axis, bool side, float lower, float upper) {canvas->get_axis(axis, side).set_lim(lower, upper);}
-  void canvas_set_fill_level(Canvas * canvas, bool axis, bool side, float level) {canvas->get_axis(axis, side).set_fill_level(level);}
-  Matrix * canvas_get_matrix(Canvas * canvas) {return new Matrix(canvas->get_matrix());}
+//Axis * canvas_get_axis(Canvas * canvas, const bool & axis, const bool & side) {return &(canvas->get_axis(axis, side));}
+void canvas_set_lim(Canvas * canvas, bool axis, bool side, float lower, float upper) {canvas->get_axis(axis, side).set_lim(lower, upper);}
+void canvas_set_fill_level(Canvas * canvas, bool axis, bool side, float level) {canvas->get_axis(axis, side).set_fill_level(level);}
+void canvas_set_delta(Canvas * canvas, bool axis, bool side, float delta) {canvas->get_axis(axis, side).set_delta(delta);}
+Matrix * canvas_get_matrix(Canvas * canvas) {return new Matrix(canvas->get_matrix());}
 void canvas_draw(Canvas * canvas, Points * points, bool xside, bool yside) {canvas->draw(*points, xside, yside);}
 float canvas_get_lim_lower(Canvas * canvas, bool axis, bool side) {return canvas->get_lim(axis, side).first;}
 float canvas_get_lim_upper(Canvas * canvas, bool axis, bool side) {return canvas->get_lim(axis, side).second;}
@@ -129,7 +130,7 @@ float points_get_xmax(Points * p) {return p->get_xmax();}
 float points_get_ymin(Points * p) {return p->get_ymin();}
 float points_get_ymax(Points * p) {return p->get_ymax();}
 
-float rescale_value(float value, float min, float max, size_t bins) {return rescale(value, {min, max}, bins);}
+float rescale_value(float value, float min, float max, size_t bins, float delta) {return rescale(value, {min, max}, bins, delta);}
 
 }
 

@@ -184,8 +184,11 @@ class plot(parts, signals, labels, rulers, axes):
 			canvas = canvas_class(*self.canvas.get_size(), self.canvas_pixel)
 			for axis in r2:
 				for side in r2:
-					limits = self.get_ruler(axis, side).get_real_limits()
+					ruler = self.get_ruler(axis, side)
+					limits = ruler.get_real_limits()
+					delta = ruler.get_limits_delta()
 					canvas.set_lim(axis, side, *limits) if None not in limits else None
+					canvas.set_delta(axis, side, delta)
 			[canvas.draw(self.get_signal(i)) for i in self.get_Length()]
 			matrix._insert_canvas(*self.canvas.get_position(), canvas)
 

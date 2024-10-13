@@ -94,7 +94,7 @@ inline constexpr size_t get_bit_position(const size_t & col, const size_t & row,
 
 // Data Modification
 const float delta = pow(10, -4);
-inline float rescale(const float & el, const pair<float, float> & lim, const size_t & bins) noexcept {return delta + (bins - 2 * delta) * (el - lim.first) / (lim.second - lim.first);}
+inline float rescale(const float & el, const pair<float, float> & lim, const size_t & bins, const float & delta = pow(10, -4)) noexcept {return delta + (bins - 2 * delta) * (el - lim.first) / (lim.second - lim.first);}
 
 inline vector<int> sort(const vector<int> & unsorted, const int & reference) noexcept {
    vector<int> sorted = unsorted;

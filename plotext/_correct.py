@@ -2,7 +2,7 @@ from ._utility import *
 from ._colorize import colorize
 from ._pixel import pixel as pixel_class
 from ._marker import marker as marker_class
-from ._constants import axes, axis_styles, xsides, ysides
+from ._constants import *
 
 
 def correct_axis_style(style):
@@ -41,3 +41,9 @@ correct_axis = lambda axis = None: correct_boolean_string(axis, axes)
 def correct_side(axis, side):
 	sides = ysides if axis else xsides
 	return correct_boolean_string(side, sides)
+
+def correct_limits_position(position):
+	return limits_positions[0] if position is None or position not in limits_positions else position
+
+def get_limits_delta(position):
+	return limits_delta[limits_positions.index(position)]

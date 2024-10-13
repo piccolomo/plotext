@@ -1,4 +1,4 @@
-from ._correct import correct_axis, correct_side, correct_labels
+from ._correct import *
 from ._utility import linspace, rescale, replace_none
 from ._default import xfrequency, yfrequency
 import math
@@ -104,6 +104,7 @@ class user_ticks(ticks):
 		ticks.__init__(self)
 		self.set_default_frequency()
 		self.set_user_limits()
+		self.set_limits_position()
 		self.set_frequency()
 	
 	
@@ -128,6 +129,10 @@ class user_ticks(ticks):
 	def set_user_limits(self, lower = None, upper = None):
 		self.user_limits = [lower, upper]
 
+	def set_limits_position(self, position = None):
+		self.limits_position = correct_limits_position(position)
+		return self
+
 	def set_frequency(self, frequency = None):
 		self.frequency = self.default_frequency if frequency is None else frequency
 		return self
@@ -136,13 +141,16 @@ class user_ticks(ticks):
 	def get_user_limits(self):
 		return self.user_limits
 	
+	def get_limits_delta(self):
+		return get_limits_delta(self.limits_position)
 
 
 	def get_log(self):
-		return 'frequency: ' + str(self.frequency) + ', user limits: ' + str(self.get_user_limits())
+		return 'frequency: ' + str(self.frequency) + ', user limits: ' + str(self.get_user_limits()) + ', position: ' + str(self.limits_position)
 
 	def __repr__(self):
 		return 'Auto Ticks: ' + self.get_log()
+
 
 
 class ruler(user_ticks):
@@ -181,7 +189,7 @@ class ruler(user_ticks):
 		
 	def rescale(self, bins):
 		limits = self.get_real_limits()
-		positions = [rescale(el, *limits, bins) for el in self.ticks.get_positions(self)]
+		positions = [rescale(el, *limits, bins, self.get_limits_delta()) for el in self.ticks.get_positions(self)]
 		labels = self.ticks.get_labels()
 		self.rescaled_ticks.set(positions, labels)
 		return self
@@ -191,7 +199,6 @@ class ruler(user_ticks):
 	
 	def get_labels_width(self):
 		return self.ticks.get_labels_width()
-
 
 	def __repr__(self):
 		return 'Ruler: ' + user_ticks.get_log(self) + ', real limits ' + str(self.real_limits) + ', real ' + self.ticks.get_log() + ', rescaled ' + self.rescaled_ticks.get_log()
@@ -224,18 +231,23 @@ class rulers:
 
 	def set_ticks(self, ticks = [], labels = None, axis = 0, side = 0):
 		axis = correct_axis(axis)
-		side = correct_xside(side)
-		return self.get_ruler(axis, side).set(ticks, labels)
+		side = correct_side(axis, side)
+		self.get_ruler(axis, side).set(ticks, labels)
+		return self
 
-	def set_limits(self, lower, upper, axis = 0, side = 0):
+	def set_limits(self, lower = None, upper = None, position = None, axis = 0, side = 0):
 		axis = correct_axis(axis)
-		side = correct_xside(side)
-		return self.get_ruler(axis, side).set_limits([lower, upper])
+		side = correct_side(axis, side)
+		ruler = self.get_ruler(axis, side)
+		ruler.set_user_limits(lower, upper)
+		ruler.set_limits_position(position)
+		return self
 
 	def set_frequency(self, frequency, axis = 0, side = 0):
 		axis = correct_axis(axis)
 		side = correct_xside(side)
-		return self.get_ruler(axis, side).set_frequency(frequency)
+		self.get_ruler(axis, side).set_frequency(frequency)
+		return self
 
 
 def get_labels(ticks): # it returns the approximated string version of the data ticks

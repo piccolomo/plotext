@@ -89,6 +89,8 @@ link.add('canvas', 'delete').input().output(void)
 link.add('canvas', 'show').input(void).output(void)
 link.add('canvas', 'set_lim').input(void, bool, bool, float, float).output(void)
 link.add('canvas', 'set_fill_level').input(void, bool, bool, float).output(void)
+link.add('canvas', 'set_delta').input(void, bool, bool, float).output(void)
+
 link.add('canvas', 'draw').input(void, void, bool, bool).output(void)
 link.add('canvas', 'get_matrix').input(void).output(void)
 link.add('canvas', 'get_lim_lower').input(void, bool, bool).output(float)
@@ -113,7 +115,7 @@ link.add('points', 'get_xmax').input(void).output(float)
 link.add('points', 'get_ymin').input(void).output(float)
 link.add('points', 'get_ymax').input(void).output(float)
 
-link.add('rescale_value').input(float, float, float, size).output(float)
+link.add('rescale_value').input(float, float, float, size, float).output(float)
 
 # link.add('fullground', 'new').input().output(void)
 # link.add('fullground', 'set_rgb').input(void, size, size, size).output(void)

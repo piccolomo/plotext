@@ -11,12 +11,17 @@ public:
 
   inline void add(const float & xi, const float & yi, const Marker & m, const PointInfo & mi = PointInfo()) noexcept {points.emplace_back(xi, yi, m, mi);}
 
-  inline void rescale_xy(const size_t & width, const size_t & height, const pair<float, float> & xlim, const pair<float, float> & ylim) {
+  inline void rescale_x(const size_t & width, const pair<float, float> & xlim, const float & delta) {
     for(size_t i = 0; i < get_length(); i++) {
       Point & p = points.at(i);
-      float c = rescale(p.get_x(), xlim, width);
-      float r = rescale(p.get_y(), ylim, height);
-      p.set_x(c); p.set_y(r);}}
+      float c = rescale(p.get_x(), xlim, width, delta);
+      p.set_x(c);}}
+
+  inline void rescale_y(const size_t & height, const pair<float, float> & ylim, const float & delta) {
+    for(size_t i = 0; i < get_length(); i++) {
+      Point & p = points.at(i);
+      float r = rescale(p.get_y(), ylim, height, delta);
+      p.set_y(r);}}
 
   inline void add_lines() noexcept {
  		size_t length = get_length();
