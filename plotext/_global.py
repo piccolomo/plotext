@@ -15,13 +15,104 @@ figure = _figure_class() # the main figure at top level
 ##############################################
 
 def simple_bar(*args, width = None, marker = None, color = None, title = None):
+    """
+    Creates a simpler and sketchier version of a horizontal bar plot.
+    
+    This updated version properly handles positive and negative values by:
+    - Drawing a zero axis (vertical line)
+    - Positive values extend to the right of the axis
+    - Negative values extend to the left of the axis
+    
+    Args:
+        *args: The data to plot (labels and values)
+        width: The width of the plot
+        marker: The marker to use for the bars
+        color: The color of the bars
+        title: The title of the plot
+    """
+    # Process arguments
     x, y = ut.set_data(*args)
+    
+    # Get marker
     marker = ut.correct_marker(marker)
-
+    
+    # Handle colors
     color_ok = ut.is_color(color) or (isinstance(color, list) and len(color) == len(x))
-    color = [color] if color_ok else None
+    pos_color = color if color_ok else "green"
+    neg_color = color if color_ok else "red"
 
-    simple_stacked_bar(x, [y], width = width, marker = marker, colors = color, title = title)
+    # Ensure lists
+    x = list(map(str, x))
+    y = list(y)
+    
+    # Get terminal width if no width is provided
+    term_width = ut.terminal_width()
+    width = term_width if width is None else min(width, term_width)
+    
+    # Format labels and prepare for display
+    x = ut.add_extra_spaces(x, 'right')
+    label_width = len(x[0]) if x else 0
+    
+    # Find max absolute value for scaling
+    max_abs_val = max([abs(val) for val in y], default=0)
+    if max_abs_val == 0:
+        max_abs_val = 1  # Avoid division by zero
+    
+    # Calculate how much width to allocate for the chart area (minus labels, axis and values)
+    value_display_width = 8  # Approximate width for the value display
+    axis_width = 1  # Width of the axis character
+    chart_width = width - label_width - value_display_width - 2  # -2 for spacing
+    
+    # Calculate scale - how many characters per unit value
+    half_chart_width = chart_width // 2 - 1  # Reserve half for pos, half for neg
+    scale = half_chart_width / max_abs_val
+    
+    # Build the chart
+    output = []
+    
+    # Add title if provided
+    if title:
+        output.append(ut.get_title(title, width))
+    
+    # For each value, create a bar
+    for i, (label, val) in enumerate(zip(x, y)):
+        # Format label
+        label_colored = ut.colorize(label, 'gray+', 'bold')
+        
+        # Calculate bar length
+        bar_len = int(abs(val) * scale)
+        bar_len = min(bar_len, half_chart_width)  # Cap length to avoid overflow
+        
+        # Create the bar
+        if val > 0:
+            # Positive value - bar extends to right
+            left_space = ' ' * half_chart_width
+            bar = marker * bar_len
+            bar_colored = ut.apply_ansi(bar, pos_color, 1)
+            right_space = ' ' * (half_chart_width - bar_len)
+        elif val < 0:
+            # Negative value - bar extends to left
+            left_space = ' ' * (half_chart_width - bar_len)
+            bar = marker * bar_len
+            bar_colored = ut.apply_ansi(bar, neg_color, 1)
+            right_space = ' ' * half_chart_width
+        else:
+            # Zero value - no bar
+            left_space = ' ' * half_chart_width
+            bar_colored = ''
+            right_space = ' ' * half_chart_width
+        
+        # Format the value display
+        val_display = ut.colorize(f'{val:.2f}', 'gray+', 'bold')
+        
+        # Build the complete line
+        axis_char = ut.colorize('|', 'gray+', 'bold')
+        line = f"{label_colored} {left_space}{bar_colored}{axis_char}{right_space} {val_display}"
+        output.append(line)
+    
+    # Set the plot to the figure
+    figure.monitor.matrix.canvas = '\n'.join(output)
+    figure.monitor.fast_plot = True
 
 def simple_stacked_bar(*args, width = None, marker = None, colors = None, title = None, labels = None):
     x, y, Y, width = ut.bar_data(*args, width = width)
