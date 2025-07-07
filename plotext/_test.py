@@ -1,13 +1,13 @@
 import unittest
-from ._core import *
-from ._utility import hash, hash_floats
+from plotext._core import *
+from plotext._methods import object_methods
 
 
 class sin_tests(unittest.TestCase):
     def test1(self):
         expected = 'fdeed1bbd0757e2a7345b3d12533ce3334e4444fe4f90832713cb70885b980c0'
         result = sin(periods = 3, length = 100, amplitude = 1, phase = 0.1, decay = 1)
-        self.assertEqual(hash_floats(result), expected)
+        self.assertEqual(object_methods.hash_floats(result), expected)
 
 
 class colorize_tests(unittest.TestCase):

@@ -6,54 +6,52 @@
 #include <codecvt>
 #include <iomanip>
 
-// #ifdef _WIN32
-//     #include <Windows.h>
-// #endif
-
-#include "maps.cpp"
-#include "maps_functions.cpp"
-
-#include "constants.cpp"
-#include "functions.cpp"
-#include "alignment.cpp"
-
-#include "color.cpp"
-#include "style.cpp"
-#include "pixel.cpp"
-
-#include "character.cpp"
-#include "colorize.cpp"
-#include "string.cpp"
-#include "matrix.cpp"
-
-#include "marker_type.cpp"
-#include "marker.cpp"
-
-#include "fill_info.cpp"
-#include "mini_dot.cpp"
-#include "dot_info.cpp"
-
-#include "point_info.cpp"
-#include "point_position.cpp"
-#include "point.cpp"
-#include "points.cpp"
-
-#include "dot_matrix.cpp"
-#include "mini_dot_matrix.cpp"
-
-#include "character_canvas.cpp"
-#include "string_canvas.cpp"
-#include "matrix_canvas.cpp"
-
-#include "dot_position.cpp"
-#include "dot.cpp"
-
-#include "dots_map.cpp"
-#include "dots.cpp"
-
-#include "axis.cpp"
-#include "canvas.cpp"
+#ifdef _WIN32
+    #include <Windows.h>
+#endif
 
 
+// Utility modules
+#include "utility/constants.cpp"
+#include "utility/maps.cpp"
+#include "utility/strings.cpp"
+#include "utility/cstrings.cpp"
+#include "utility/data.cpp"
+#include "utility/bit.cpp"
 
 
+// Pixel modules
+#include "pixel/color.cpp"
+#include "pixel/style.cpp"
+#include "pixel/pixel.cpp"
+#include "pixel/colorize.cpp"
+
+
+// Character modules
+#include "character/character.cpp"
+#include "character/marker_type.cpp"
+#include "character/marker.cpp"
+#include "character/matrix_bool.cpp"
+#include "character/character_hd.cpp"
+
+
+// Point modules
+#include "point/point_position.cpp"
+#include "point/point.cpp"
+#include "point/points.cpp"
+
+
+// Dot modules
+#include "dot/dot_position.cpp"
+#include "dot/dot.cpp"
+#include "dot/dots_map.cpp"
+#include "dot/dots.cpp"
+
+
+// Matrix modules
+#include "matrix/alignment.cpp"
+#include "matrix/line.cpp"
+#include "matrix/matrix.cpp"
+
+// Optional/Commented out for now
+// #include "matrix/matrix_hd.cpp"

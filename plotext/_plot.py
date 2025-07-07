@@ -1,197 +1,236 @@
-from ._parts import parts
-from ._signal import signals
-from ._labels import labels
-from ._ticks import rulers
-from ._matrix import matrix as matrix_class
-from ._default import *
-from ._correct import correct_pixel, correct_axis_style
-from ._pixel import pixel
-from ._canvas import canvas_class
-from ._axis import axes
+from plotext._build import plot_build_class
+from plotext._parts import parts_class
+from plotext._subplot import subplot_class
+from plotext._labels import labels_class
+from plotext._rulers import rulers_class
+from plotext._axes import axes_class
+from plotext._signal import signal_class
+from plotext._signals import signals_class
+from plotext._legend import legend_class
+
+from plotext._correct import correct_class as correct
+from plotext._default import default_canvas_pixel, default_lines_pixel, default_legend_pixel
+from plotext._constants import r2
+from plotext._matrix import join_matrices
+from time import time
 
 
-class plot(parts, signals, labels, rulers, axes):
-	def __init__(self):
-		parts.__init__(self)
-		signals.__init__(self)
-		labels.__init__(self)
-		rulers.__init__(self)
-		axes.__init__(self)
-		
-		self.set_ticks_pixel()
-		self.frame()
-		self.set_canvas_pixel()
+class plot_class(plot_build_class, subplot_class):
 
-	# def set_ticks_pixel(self, pixel = None):
-	# 	pixel = correct_pixel(pixel, default_ticks_pixel)
-	# 	labels.set_ticks_pixel(self, pixel)
-	# 	rulers.set_ticks_pixel(self, pixel)
-	# 	return self
+    def __init__(self):
+        self.parts = parts_class()
+        self.labels = labels_class()
+        self.rulers = rulers_class()
+        self.axes = axes_class()
+        self.signals = signals_class()
+        self._legend = legend_class()
+        
+        subplot_class.__init__(self)
+        plot_build_class.__init__(self)
 
-	# def set_axes(self, status = True, style = None, pixel = None):
-	# 	style = correct_axis_style(style)
-	# 	pixel = correct_pixel(pixel, default_axes_pixel)
-	# 	axes.set_axes(self, status, style, pixel)
-	# 	return self
-		
-	def set_canvas_pixel(self, pixel = None):
-		self.canvas_pixel = correct_pixel(pixel, default_canvas_pixel)
-		return self
-		
-	def build(self):
-		# Tools
-		r2 = [0, 1]
-
-		# Upper Bar Height
-		threshold = 0
-		height = self.upper_labels_present(); height *= self.height >= height + threshold; threshold += height
-		self.upper_bar.set_height(height)
-
-		# Lower Bar Height
-		height = self.lower_labels_present(); height *= self.height >= height + threshold; threshold += height
-		self.lower_bar.set_height(height)
-
-		# Lower Axis Height
-		axis = self.get_axis(0, 0)
-		height = axis.status; height *= self.height >= height + threshold; threshold += height
-		self.lower_axis.set_height(height)
-
-		# Upper Axis Height
-		axis = self.get_axis(0, 1)
-		height = axis.status; height *= self.height >= height + threshold; threshold += height
-		self.upper_axis.set_height(height)
-
-		# Lower Ticks Height
-		ruler = self.get_ruler(0, 0)
-		ruler.update_real_limits(*self.get_signal_limits(0, 0))
-		ruler.update()
-		height = ruler.is_active(); height *= self.height >= height + threshold; threshold += height
-		self.lower_ticks.set_height(height)
-
-		# Upper Ticks Height
-		ruler = self.get_ruler(0, 1)
-		ruler.update_real_limits(*self.get_signal_limits(0, 1))
-		ruler.update()
-		height = ruler.is_active(); height *= self.height >= threshold; threshold += height
-		self.upper_ticks.set_height(height)
+        self.canvas_pixel()
 
 
-		# Left Axis Width
-		threshold = 0
-		axis = self.get_axis(1, 0)
-		width = axis.status; width *= self.width >= width + threshold; threshold += width
-		self.left_axis.set_width(width)
+    # Subplot handling methods
 
-		# Right Axis Width
-		axis = self.get_axis(1, 1)
-		width = axis.status; width *= self.width >= width + threshold; threshold += width
-		self.right_axis.set_width(width)
+    def subplots(self, rows = None, cols = None):
+        subplot_class.subplots(self, rows, cols)
+        if self.has_subplots():
+            [self.get_subplot(*pos).clone(self) for pos in self.get_slots_range()]
+        return self
 
-		# Left Ticks Width
-		ruler = self.get_ruler(1, 0)
-		ruler.update_real_limits(*self.get_signal_limits(1, 0))
-		ruler.update()
-		width = ruler.get_labels_width(); width *= self.width >= width + threshold; threshold += width
-		self.left_ticks.set_width(width)
+    def clear(self):
+        self.parts.clear()
+        self.labels.clear()
+        self.rulers.clear()
+        self.axes.clear()
+        self.signals.clear()
+        self._legend.clear()
+        subplot_class.clear(self)
+        return self
 
-		# Right Ticks Width
-		ruler = self.get_ruler(1, 1)
-		ruler.update_real_limits(*self.get_signal_limits(1, 1))
-		ruler.update()
-		width = ruler.get_labels_width(); width *= self.width >= width + threshold; threshold += width
-		self.right_ticks.set_width(width)
+    def clone(self, plot):
+        self.labels.clone(plot.labels)
+        self.rulers.clone(plot.rulers)
+        self.axes.clone(plot.axes)
+        self.signals.clone(plot.signals)
+        self.legend.clone(plot.legend)
+        return self
 
-		# Canvas Size 
-		self.update_canvas_size()
 
-		# Upper and Lower Widths
-		self.update_widths()
+    # Size and label setters
 
-		# Part Positions
-		self.update_positions()
+    def set_size(self, width = None, height = None):
+        subplot_class.set_size(self, width, height)
+        self.parts.set_size(*self.get_size())
+        return self
 
-		matrix = matrix_class(self.width, self.height)
 
-		if self.upper_bar.has_size():
-			matrix._insert_aligned(self.width // 2, 0, self.xlabel[1], 0) if self.xlabel[1] is not None else None
-			title_centered = matrix._insert_aligned(self.width // 2, 0, self.title, 0) if self.title is not None else False
-			None if title_centered else matrix._insert_aligned(0, 0, self.title, -1) if self.title is not None else None
 
-		if self.lower_bar.has_size():
-			row = self.lower_bar.row
-			matrix._insert_aligned(0, row, self.ylabel[0], -1) if self.ylabel[0] is not None else None
-			matrix._insert_aligned(self.width // 2, row, self.xlabel[0], 0) if self.xlabel[0] is not None else None
-			matrix._insert_aligned(self.width - 1, row, self.ylabel[1], 1) if self.ylabel[1] is not None else None
+     # Ruler and axis setters
 
-		ticks = []
-		if self.upper_ticks.has_size():
-			col, row = self.upper_ticks.get_position()
-			ruler = self.get_ruler(0, 1)
-			ruler.rescale(self.canvas.width)
-			ticks = [matrix._insert_dynamically(col + c, row, label) for c, label in ruler.get_rescaled_tuples()]
 
-		if self.upper_axis.has_size():
-			axis = self.get_axis(0, 1)
-			string = axis.get_string(self.upper_axis.width)
-			col, row = self.upper_axis.get_position()
-			[matrix._set_pixelled_char(col + c, row, char, axis.pixel) for c, char in enumerate(string)]
-			[matrix._set_char(c, row, axis.tick) for c in ticks if c != -1] if self.upper_axis.width > 2 else None
 
-		ticks = []
-		if self.lower_ticks.has_size():
-			col, row = self.lower_ticks.get_position()
-			ruler = self.get_ruler(0, 0)
-			ruler.rescale(self.canvas.width)
-			ticks = [matrix._insert_dynamically(col + c, row, label) for c, label in ruler.get_rescaled_tuples()]
 
-		if self.lower_axis.has_size():
-			axis = self.get_axis(0, 0)
-			string = axis.get_string(self.lower_axis.width, self.upper_axis.has_size())
-			col, row = self.lower_axis.get_position()
-			[matrix._set_pixelled_char(col + c, row, char, axis.pixel) for c, char in enumerate(string)]
-			[matrix._set_char(c, row, axis.tick) for c in ticks if c != -1] if self.lower_axis.width > 2 else None
-	
-		ticks = []
-		if self.left_ticks.has_size():
-			offset = self.canvas.row
-			ruler = self.get_ruler(1, 0)
-			ruler.rescale(self.canvas.height, -1)
-			[ticks.append(row + offset) if matrix._insert_aligned(0, row + offset, label, -1) else None for row, label in ruler.get_rescaled_tuples()]
+    # Additional setters
 
-		if self.left_axis.has_size():
-			axis = self.get_axis(1, 0)
-			string = axis.get_string(self.left_axis.height)
-			col, row = self.left_axis.get_position()
-			[matrix._set_pixelled_char(col, row + r, char, axis.pixel) for r, char in enumerate(string)]
-			[matrix._set_char(col, r, axis.tick) for r in ticks] #if self.left_axis.height > 2 else None
+    def title(self, title = None):
+        title = correct.label(title)
+        self.labels.set_title(title)
+        if self.has_subplots():
+            [self.get_subplot(*pos).title(title) for pos in self.get_slots_range()]
+        return self
 
-		ticks = []
-		if self.right_ticks.has_size():
-			col = self.right_ticks.col
-			offset = self.right_ticks.row
-			ruler = self.get_ruler(1, 1)
-			ruler.rescale(self.canvas.height, -1)
-			[ticks.append(row + offset) if matrix._insert_aligned(col, row + offset, label, -1) else None for row, label in ruler.get_rescaled_tuples()]
+    def _set_label(self, label = None, axis = 0, side = 0):
+        sides = correct.sides(axis, side)
+        label = correct.label(label)
+        if label is not None: 
+            [self.labels.set_label(axis, side, label) for side in sides] 
+        if self.has_subplots():
+            [self.get_subplot(*pos).xlabel(label, side) for pos in self.get_slots_range()]
+        return self
 
-		if self.right_axis.has_size():
-			axis = self.get_axis(1, 1)
-			string = axis.get_string(self.right_axis.height)
-			col, row = self.right_axis.get_position()
-			[matrix._set_pixelled_char(col, row + r, char, axis.pixel) for r, char in enumerate(string)]
-			[matrix._set_char(col, r, axis.tick) for r in ticks] #if self.right_axis.height > 2 else None
 
-		if self.canvas.has_size():
-			canvas = canvas_class(*self.canvas.get_size(), self.canvas_pixel)
-			for axis in r2:
-				for side in r2:
-					ruler = self.get_ruler(axis, side)
-					limits = ruler.get_real_limits()
-					delta = ruler.get_limit_delta()
-					scale = ruler.get_scale()
-					canvas.set_lim(axis, side, *limits) if None not in limits else None
-					canvas.set_delta(axis, side, delta)
-					canvas.set_scale(axis, side, scale)
-			[canvas.draw(self.get_signal(i)) for i in self.get_Length()]
-			matrix._insert_canvas(*self.canvas.get_position(), canvas)
+    def xlabel(self, label = None, side = 0):
+        return self._set_label(label = label, axis = 0, side = side)
 
-		return matrix
+    def ylabel(self, label = None, side = 0):
+        return self._set_label(label = label, axis = 1, side = side)
+
+
+    def _set_lim(self, left = None, right = None, axis = 0, side = 0):
+        self.rulers.get(axis, side).set_limits(left, right)
+        if self.has_subplots():
+            [self.get_subplot(*pos).xlim(left, right) for pos in self.get_slots_range()]
+        return self
+
+    def xlim(self, left = None, right = None, side = 0):
+        return self._set_lim(left, right, 0, side)
+
+    def ylim(self, lower = None, upper = None, side = 0):
+        return self._set_lim(lower, upper, 1, side)
+
+    def _set_ruler(self, frequency = None, scale = None, alignment = None, direction = None, pixel = None, axis = 0, side = 0):
+        sides = correct.sides(axis, side)
+        alignment = correct.limits_alignment(alignment)
+        direction = correct.limits_direction(direction)
+        scale = correct.scale(scale)
+        pixel = correct.ruler_pixel(pixel)
+        [self.rulers.get(axis, side).set(frequency = frequency, alignment = alignment, direction = direction, scale = scale, pixel = pixel) for side in sides]
+        if self.has_subplots():
+            [self.get_subplot(*pos).set_ruler(requency = frequency, axis = axis, side = side, alignment = alignment, direction = direction, scale = scale, pixel = pixel) for pos in self.get_slots_range()]
+        return self
+
+    def xruler(self, frequency = None, scale = None, alignment = None, direction = None, pixel = None, side = 0):
+        return self._set_ruler(frequency = frequency, alignment = alignment, direction = direction, scale = scale, pixel = pixel, axis = 0, side = side)
+
+    def yruler(self, frequency = None, scale = None, alignment = None, direction = None, pixel = None, side = 0):
+        return self._set_ruler(frequency = frequency, alignment = alignment, direction = direction, scale = scale, pixel = pixel, axis = 1, side = side)
+
+
+    def _set_ticks(self, ticks = None, labels = None, axis = 0, side = 0):
+        self.rulers.get(axis, side).set_ticks(positions = ticks, labels = labels)
+        if self.has_subplots():
+            [self.get_subplot(*pos).xticks(ticks = ticks, labels = labels, side = side) for pos in self.get_slots_range()]
+        return self
+
+    def xticks(self, ticks = None, labels = None, side = 0):
+        return self._set_ticks(ticks = ticks, labels = labels, axis = 0, side = side)
+
+    def yticks(self, ticks = None, labels = None, side = 0):
+        return self._set_ticks(ticks = ticks, labels = labels, axis = 1, side = side)
+
+
+
+    def _set_axis(self, status = None, style = None, pixel = None, axis = 0, side = 0):
+        sides = correct.sides(axis, side)
+        style = correct.axis_style(style)
+        pixel = correct.axis_pixel(pixel)
+        [self.axes.get(axis, side).set(status, style, pixel) for side in sides]
+        if self.has_subplots():
+            [self.get_subplot(*pos).xaxis(side = side, status = status, style = style, pixel = pixel) for pos in self.get_slots_range()]
+        return self
+
+    def xaxis(self, status = None, style = None, pixel = None, side = 0):
+        return self._set_axis(status = status, style = style, pixel = pixel, axis = 0, side = side)
+
+    def yaxis(self, status = None, style = None, pixel = None, side = 0):
+        return self._set_axis(status = status, style = style, pixel = pixel, axis = 1, side = side)
+
+    def frame(self, frame = True, style = None, pixel = None):
+        self.xaxis(frame, style = style, pixel = pixel, side = r2)
+        self.yaxis(frame, style = style, pixel = pixel, side = r2)
+        return self
+
+
+
+    def canvas_pixel(self, pixel = None):
+        self._canvas_pixel = correct.pixel(pixel, default_canvas_pixel)
+        if self.has_subplots():
+            [self.get_subplot(*pos).canvas_pixel(pixel) for pos in self.get_slots_range()]
+        return self
+
+
+    # Add a line to the specified ruler with given properties
+    def _add_line(self, position, style = None, pixel = None, axis = 0, side = 0):
+        #orientation = correct.orientation(orientation)
+        sides = correct.sides(axis, side)
+        style = correct.line_style(style)
+        pixel = correct.pixel(pixel, default_lines_pixel)
+        [self.rulers.add_line(position, style, pixel, axis, side) for side in sides]
+        if self.has_subplots():
+            [self.get_subplot(*pos)._add_line(axis = axis, position = position, side = side, status = status, style = style, pixel = pixel) for pos in self.get_slots_range()]
+        return self
+
+    def xline(self, position, style = None, pixel = None, side = 0):
+        return self._add_line(position = position, style = style, axis = 0, side = side)
+
+
+    def legend(self, x = 0, y = 0, relative = False, active = True, ha = -1, va = 1, pixel = None, xside = 0, yside = 0):
+        ha = correct.ha(ha)
+        va = correct.va(va)
+        xside = correct.side(0, xside)
+        yside = correct.side(1, yside)
+        pixel = correct.pixel(pixel, default_legend_pixel)
+        self._legend.set_position(x, y, relative).set_active(active).set_alignment(ha, va).set_pixel(pixel).set_axes(xside, yside)
+        if self.has_subplots():
+            [self.get_subplot(*pos).legend(x = x, y = y, relative = relative, active = active, ha = ha, va = va, pixel = pixel, xside = xside, yside = yside) for pos in self.get_slots_range()]
+        return self
+
+    def draw(self, x = None, y = None, m = None, xside = None, yside = None, label = None, yfill = None, mfill = None):
+        x, y = correct.data(x, y)
+        length = len(x)
+        m = correct.markers(m, length)
+        xside = correct.side(0, xside)
+        yside = correct.side(1, yside)
+        label = correct.signal_label(label, length)
+        signal = signal_class(x, y, m, xside, yside, label)
+        if yfill is not None:
+            x, yfill = correct.data(x, yfill)
+            mfill = m if mfill is None else mfill
+            mfill = correct.markers(mfill, length)
+            signal.set_fill(x, yfill, mfill)
+        self.signals.add(signal)
+        marker = signal.get(0).get_marker()
+        label = correct.label(signal.label, self._legend.pixel)
+        self._legend.add(marker, label)
+        if self.has_subplots():
+            [self.get_subplot(*pos).draw(x = x, y = y, m = m, xside = xside, yside = yside, label = label, yfill = yfill, mfill = mfill) for pos in self.get_slots_range()]
+        return self 
+
+
+    # Build and show methods
+
+    def show(self):
+        t = time()
+        out = self.build()
+        out.print()
+        self._time = time() - t
+
+    def build(self):
+        if self.no_subplots():
+            out = self.get_plot_matrix()
+        else:
+            matrices = [[self.get_subplot(row, col).get_plot_matrix() for col in self.get_cols_range()] for row in self.get_rows_range()]
+            out = join_matrices(matrices)
+        return out

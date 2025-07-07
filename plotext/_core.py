@@ -1,16 +1,32 @@
-from ._pixel import pixel
-from ._colorize import colorize, uncolorize
-from ._matrix import matrix
-from ._utility import sin
-from ._demo import colors, styles
-from ._test import run_tests as test
+# Internal imports: classes and constants
+from plotext._cimport import pixel_class, colorize_class as colorize, matrix_class as matrix
 
-# from ._link import *
-# from ._pixel import *
-# from ._matrix import *
-# from ._canvas import *
-# from ._points import *
-# 
+# Terminal utilities and classes
+from plotext._terminal import terminal_class as _terminal_class
 
-# from ._prettydoc import *
-# from ._doc import *
+# Mathematical and marker utilities
+from plotext._methods import list_methods as _list_methods
+from plotext._marker import marker_class as marker
+
+from plotext._demo import colors, styles
+from plotext._methods import string_methods as _string_methods
+
+class pixel(pixel_class):
+	pass
+
+
+# Initialize terminal and master canvas
+terminal = _terminal_class()
+master = terminal.master
+
+# Terminal utility functions
+terminal_size = terminal.get_size
+clear_terminal = terminal.clear
+
+# Trigonometric utility
+sin = _list_methods.sin
+uncolorize = _string_methods.uncolorize
+
+
+# Docsrings
+#from plotext._doc import docs

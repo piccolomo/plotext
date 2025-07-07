@@ -13,7 +13,7 @@ Version 6.0
 
 Version 5.3
 -----------
-Available on `GitHub <https://github.com/piccolomo/plotext/releases/tag/5.3.0>`_ only.
+Available on `Plotext GitHub 5.30 <https://github.com/piccolomo/plotext/releases/tag/5.3.0>`_ only.
 
 - Documentation Updates
 	- All docstrings updated.
@@ -84,7 +84,7 @@ versions < 5.2.8
 
 Version 5.1
 -----------
-This version is available on `GitHub <https://github.com/piccolomo/plotext/releases/tag/5.1.0>`_ only.
+This version is available on `Plotext GitHub 5.1.0 <https://github.com/piccolomo/plotext/releases/tag/5.1.0>`_ only.
 
 - New Features
 	- Added `error()` function as requested in `Issue 91 <https://github.com/piccolomo/plotext/issues/91>`_.

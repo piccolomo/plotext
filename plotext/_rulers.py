@@ -1,0 +1,72 @@
+from plotext._default import default_xfrequency, default_yfrequency, default_lines_pixel
+from plotext._constants import r2
+from plotext._ruler import ruler_class
+from plotext._methods import *
+
+
+class rulers_class:
+
+    def __init__(self):
+        self.x = [ruler_class(), ruler_class()]
+        self.y = [ruler_class(), ruler_class()]
+        self._set_default_frequencies()
+
+    # Clear all rulers and return self for chaining
+    def clear(self):
+        self.get(0, 0).clear()
+        self.get(0, 1).clear()
+        self.get(1, 0).clear()
+        self.get(1, 1).clear()
+        return self
+
+    # Set default frequencies for x and y rulers
+    def _set_default_frequencies(self):
+        [el.set_default_frequency(default_xfrequency) for el in self.x]
+        [el.set_frequency() for el in self.x]
+        [el.set_default_frequency(default_yfrequency) for el in self.y]
+        [el.set_frequency() for el in self.y]
+
+    # Return ruler at specified axis and side (axis=0 for x, 1 for y)
+    def get(self, axis=0, side=0):
+        container = self.y if axis else self.x
+        return container[side]
+
+    # Add a line to the specified ruler with given properties
+    def add_line(self, position, style = None, pixel = None, orientation = None, side = None):
+        self.get(orientation, side).lines.add(position, orientation, style, pixel)
+        return self
+
+    # Clone rulers from another rulers_class instance
+    def clone(self, rulers):
+        [self.get(axis, side).clone(rulers.get(axis, side)) for axis in r2 for side in r2]
+        return self
+
+    # Update ticks limits for all rulers based on signals limits
+    def update_ticks_limits(self, signals):
+        [self.get(axis, side).update_ticks_limits(signals.get_limits(axis, side)) for axis in r2 for side in r2]
+        return self
+
+    # Update lines limits for all rulers
+    def update_lines_limits(self):
+        [self.get(axis, side).update_lines_limits() for axis in r2 for side in r2]
+        return self
+
+    # Update ticks for all rulers
+    def update_ticks(self):
+        [self.get(axis, side).update_ticks() for axis in r2 for side in r2]
+        return self
+
+    # Generate a log string for all rulers
+    def get_log(self):
+        log = ''
+        for axis in r2:
+            for side in r2:
+                log += log_methods.axis(axis, side) + ' ' + self.get(axis, side).get_log() + '\n'
+        return log
+
+    # Print the log of all rulers
+    def log(self):
+        print(self.get_log())
+
+    def __repr__(self):
+        return self.get_log()

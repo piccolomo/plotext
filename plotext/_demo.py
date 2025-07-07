@@ -1,8 +1,8 @@
-from ._colorize import colorize
-from ._utility import unique, pad
+from plotext._colorize import colorize_class as colorize
+from plotext._methods import *
+from plotext._constants import color_codes, style_codes
 from math import ceil
 
-color_codes = ['black', 'white', 'gray', 'gray+', 'red', 'red+', 'green', 'green+', 'orange', 'orange+', 'blue', 'blue+', 'magenta', 'magenta+', 'cyan', 'cyan+']
 
 bg = 'default'
 pad_length = 10
@@ -11,8 +11,10 @@ cols = 18
 rows = ceil(m / cols)
 color_index = lambda col, row: row * cols + col if row * cols + col < m else ''
 
+pad = string_methods.pad
+
 def colors():
-    colors_no_plus = unique([el.replace('+', '') for el in color_codes if el not in ['default', 'black', 'white']])
+    colors_no_plus = list_methods.unique([el.replace('+', '') for el in color_codes if el not in ['default', 'black', 'white']])
     colors_plus = [el + '+' for el in colors_no_plus]
     colors_no_plus = [colorize(pad(color, pad_length), foreground = color, background = bg) for color in colors_no_plus]
     colors_plus = [colorize(pad(color, pad_length), foreground = color, background = bg) for color in colors_plus]
@@ -30,7 +32,6 @@ def colors():
     colorize("\nRGB Tuples like", style = "bold").print(end = ': '); colorize(rgb, rgb, "bold", style = "bold").print()
 
 
-style_codes = ['bold', 'dim', 'italic', 'underline', 'double-underline', 'strike', 'inverted', 'flash']
 styles_colorized = [colorize(el, style = el) for el in style_codes]
 
 def styles():

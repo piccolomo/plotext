@@ -1,300 +1,81 @@
-from ._correct import *
-from ._utility import linspace, rescale, replace_none
-from ._default import xfrequency, yfrequency, default_ticks_pixel
-import math
+from plotext._methods import *
+from plotext._tick import tick_class
 
 
-class tick:
-	def __init__(self, position, label):
-		self.set(position, label)
+class ticks_class:
 
-	def set(self, position, label):
-		self.set_position(position)
-		self.set_label(label)
-		return self
-
-	def set_position(self, position):
-		self.position = position
-		return self
-	
-	def set_label(self, label):
-		self.label = label
-		return self
-
-
-	def get(self):
-		return self.position, self.label
-
-	def get_position(self):
-		return self.position
-
-	def get_label(self):
-		return self.label
-	
-
-	def is_whitin_limits(self, limits):
-		return self.position >= limits[0] and self.position <= limits[1]
-
-	def copy(self):
-		return tick(self.get_position(), self.get_label())
-
-	def __repr__(self):
-		return str(self.get())
-
-
-class ticks:
-	def __init__(self):
-		self.set()
-
-	def set(self, positions = [], labels = []):
-		self._ticks = [tick(t, l) for (t, l) in zip(positions, labels)]
-		return self
-	
-	def set_positions(self, positions):
-		[t.set_position(p) for t, p in zip(self._ticks, positions)]
-		return self
-	
-	def copy_from(self, ticks):
-		self._ticks = ticks.copy()._ticks
-		return self
-	
-
-	def get_positions(self, limits = None):
-		return [el.get_position() for el in self._ticks]
-
-	def get_labels(self):
-		return [el.get_label() for el in self._ticks]
-
-	def get_tuples(self):
-		return [el.get() for el in self._ticks]
-	
-
-	def get_labels_width(self):
-		return max([len(label) for label in self.get_labels()], default = 0)
-	
-	def is_active(self):
-		return self.get_length() > 0
-
-	def get_length(self):
-		return len(self._ticks)
-
-
-	def select(self, limits):
-		new = ticks()
-		new._ticks = [el.copy() for el in self._ticks if el.is_whitin_limits(limits)] 
-		return new
-
-	def copy(self):
-		new = ticks()
-		new._ticks = [el.copy() for el in self._ticks]
-		return new
-
-
-	def get_log(self):
-		return 'ticks: ' + str(self._ticks)
-
-	def __repr__(self):
-		return self.get_log()
-
-
-
-class user_ticks(ticks):
-	def __init__(self):
-		self.set_pixel() 
-		ticks.__init__(self)
-		self.set_default_frequency()
-		self.set_limits()
-		self.set_direction()
-		self.set_scale()
-		self.set_frequency()
-	
-	
-	def set_pixel(self, pixel = None):
-		pixel = correct_pixel(pixel, default_ticks_pixel)
-		self.pixel = pixel
-		return self
-
-	def set_ticks(self, positions = [], labels = None):
-		labels = self.get_auto_labels(positions) if labels is None else labels
-		ticks.set(self, positions, labels)
-		return self
-	
-	def get_auto_labels(self, positions):
-		labels = get_labels(positions)
-		labels = correct_labels(labels, self.pixel)
-		return labels
-	
-
-	def set_default_frequency(self, frequency = None):
-		self.default_frequency = frequency
-		return self
-
-	def set_limits(self, lower = None, upper = None, position = None):
-		self.user_limits = [lower, upper]
-		return self
-
-	def set_alignment(self, alignment = None):
-		self.limit_alignment = correct_limit_alignment(alignment)
-		return self
-
-
-	def set_direction(self, direction = None):
-		self.direction = correct_direction(direction)
-		return self 
-	
-	def set_scale(self, scale = None):
-		self.scale = correct_scale(scale)
-		return self
-
-	def set_frequency(self, frequency = None):
-		self.frequency = self.default_frequency if frequency is None else frequency
-		return self
-	
-
-	def get_user_limits(self):
-		return self.user_limits
-	
-	def get_limit_delta(self):
-		return get_limit_delta(self.limit_alignment)
-	
-	def get_direction(self):
-		return self.direction
-	
-	def get_scale(self):
-		return self.scale
-
-
-	def get_log(self):
-		return 'frequency: ' + str(self.frequency) + ', user limits: ' + str(self.get_user_limits()) + ', position: ' + str(self.limit_alignment) + ', direction: ' + str(self.direction) + ', scale: ' + str(self.scale)
-
-	def __repr__(self):
-		return 'Auto Ticks: ' + self.get_log()
-
-
-
-class ruler(user_ticks):
-	def __init__(self):
-		user_ticks.__init__(self)
-		self.ticks = ticks()
-		self.rescaled_ticks = ticks()
-		self.update_real_limits()
-
-
-	def update_real_limits(self, signal_lower = None, signal_upper = None):
-		self.real_limits = replace_none(self.user_limits, [signal_lower, signal_upper])
-		return self
-
-	def get_real_limits(self, direction = 1):
-		return self.real_limits[ : : self.direction * direction]
-		
-		
-	def get_scaled_limits(self, direction = 1):
-		return apply_scale(self.get_real_limits(direction), self.scale)
-	
-
-	def get_auto_ticks(self):
-		limits = self.get_scaled_limits()
-		positions_scaled = linspace(*limits, self.frequency) if None not in limits else []
-		positions_unscaled = reverse_scale(positions_scaled, self.scale)
-		return ticks().set(positions_scaled, self.get_auto_labels(positions_unscaled))
-	
-	def get_ticks(self):
-		limits = self.get_real_limits()
-		selected = user_ticks.select(self, limits)
-		return selected if selected.is_active() else self.get_auto_ticks()
-
-	def is_active(self):
-		return None not in self.get_real_limits() or user_ticks.is_active(self)
-
-
-	def update(self):
-		self.ticks.copy_from(self.get_ticks())
-		return self
-		
-	def rescale(self, bins, direction = 1):
-		limits = self.get_scaled_limits(direction)
-		positions = self.ticks.get_positions()
-		positions = [rescale(el, *limits, bins, self.get_limit_delta()) for el in positions]
-		labels = self.ticks.get_labels()
-		self.rescaled_ticks.set(positions, labels)
-		return self
-	
-	def get_rescaled_tuples(self):
-		return self.rescaled_ticks.get_tuples()
-	
-	def get_labels_width(self):
-		return self.ticks.get_labels_width()
-
-	def __repr__(self):
-		return 'Ruler: ' + user_ticks.get_log(self) + ', real limits ' + str(self.real_limits) + ', real ' + self.ticks.get_log() + ', rescaled ' + self.rescaled_ticks.get_log()
-
-
-
-class rulers:
-	def __init__(self):
-		self._xruler = [ruler(), ruler()]
-		self._yruler = [ruler(), ruler()]
-
-		self._set_default_frequencies()
-
-	def _set_default_frequencies(self):
-		[el.set_default_frequency(xfrequency) for el in self._xruler]
-		[el.set_frequency() for el in self._xruler]
-
-		[el.set_default_frequency(yfrequency) for el in self._yruler]
-		[el.set_frequency() for el in self._yruler]
-
-
-	def get_ruler(self, axis = 0, side = 0):
-		axis = correct_axis(axis)
-		side = correct_side(axis, side)
-		container = self._yruler if axis else self._xruler
-		return container[side]
-
-	def set_ticks_pixel(self, pixel = None):
-		[el.set_pixel(pixel) for el in self._xruler]
-		[el.set_pixel(pixel) for el in self._yruler]
-		return self
-	
-	def set_limits_alignment(self, alignment = None):
-		[el.set_alignment(alignment) for el in self._xruler]
-		[el.set_alignment(alignment) for el in self._yruler]
-		return self
-
-	# def set_ticks(self, ticks = [], labels = None, axis = 0, side = 0):
-	# 	axis = correct_axis(axis)
-	# 	side = correct_side(axis, side)
-	# 	self.get_ruler(axis, side).set(ticks, labels)
-	# 	return self
-
-	# def set_limits(self, lower = None, upper = None, position = None, axis = 0, side = 0):
-	# 	axis = correct_axis(axis)
-	# 	side = correct_side(axis, side)
-	# 	ruler = self.get_ruler(axis, side)
-	# 	ruler.set_user_limits(lower, upper)
-	# 	ruler.set_limits_alignment(position)
-	# 	return self
-
-	# def set_frequency(self, frequency, axis = 0, side = 0):
-	# 	axis = correct_axis(axis)
-	# 	side = correct_xside(side)
-	# 	self.get_ruler(axis, side).set_frequency(frequency)
-		return self
-
-
-def get_labels(ticks): # it returns the approximated string version of the data ticks
-    d = distinguishing_digit(ticks)
-    formatting_string = "{:." + str(d) + "f}"
-    labels = [formatting_string.format(el) for el in ticks]
-    return labels
-
-def distinguishing_digit(data): # it return the minimum amount of decimal digits necessary to distinguish all elements of a list
-    d = [_distinguishing_digit(data[i], data[i + 1]) for i in range(len(data) - 1)]
-    return max(d, default = 1)
-
-def _distinguishing_digit(a, b): # it return the minimum amount of decimal digits necessary to distinguish a from b (when both are rounded to those digits).
-    d = abs(a - b)
-    d = 0 if d == 0 else - math.log10(2 * d)
-    d = 0 if d < 0 else math.ceil(d)
-    d = d + 1 if round(a, d) == round(b, d) else d
-    return d
+    # Initialize with empty ticks
+    def __init__(self):
+        self.clear()
+
+    # Clear all ticks
+    def clear(self):
+        self.set()
+        return self
+
+    # Set ticks from positions and labels
+    def set(self, positions = [], labels = []):
+        self.ticks = [tick_class(t, l) for t, l in zip(positions, labels)]
+        return self
+
+    # Set only the tick positions
+    def set_positions(self, positions):
+        [t.set_position(p) for t, p in zip(self.ticks, positions)]
+        return self
+
+
+    # Return all (position, label) pairs
+    def get(self):
+        return [el.get() for el in self.ticks]
+
+    # Return only tick positions
+    def get_positions(self, limits = None):
+        return [el.get_position() for el in self.ticks]
+
+    # Return only tick labels
+    def get_labels(self):
+        return [el.get_label() for el in self.ticks]
+
+    # Return the maximum width of tick labels
+    def get_labels_width(self):
+        return max([len(label) for label in self.get_labels()], default = 0)
+
+    # Return number of ticks
+    def get_length(self):
+        return len(self.ticks)
+
+    # Check if ticks are active (non-empty)
+    def is_active(self):
+        return self.get_length() > 0
+
+    # Return a new ticks object with ticks within limits
+    def select(self, limits):
+        new = ticks_class()
+        new.ticks = [el.copy() for el in self.ticks if el.is_within_limits(limits)]
+        return new
+
+    # Rescale tick positions within limits
+    def rescale(self, limits, bins, delta):
+        positions = self.get_positions()
+        positions = [int(list_methods.rescale(el, *limits, bins, delta)) for el in positions]
+        self.set_positions(positions)
+        return self
+
+    # Clone ticks from another ticks object
+    def clone(self, ticks):
+        self.ticks = [el.copy() for el in ticks.ticks]
+        return self
+
+
+    # Return a short log string
+    def get_log(self):
+        return 'Ticks ' + str(self.get_length())
+
+    # Print the log string
+    def log(self):
+        print(self.get_log())
+
+    # String representation
+    def __repr__(self):
+        return self.get_log()
+

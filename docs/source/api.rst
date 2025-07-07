@@ -15,6 +15,10 @@ The `plotext` module is the main package, offering various tools for creating vi
 .. autofunction:: plotext.styles
 .. autofunction:: plotext.sin
 
+.. autoclass:: plotext.pixel
+
+.. autofunction:: plotext.pixel.set
+
 .. autoclass:: plotext.colorize
    :members:
    :undoc-members:

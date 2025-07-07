@@ -1,0 +1,535 @@
+// This file provides a set of utilities for handling color codes, text styles, 
+// markers (including normal, HD, FHD, and Braille), and their respective codes.
+
+// Color
+
+const unordered_map<string, unsigned char> color_codes = {
+    {"black",    0},
+    {"white",   15},
+    {"gray",     8},
+    {"gray+",    7},
+    {"red",      1},
+    {"red+",     9},
+    {"green",    2},
+    {"green+",  10},
+    {"orange",   3},
+    {"orange+", 11},
+    {"blue",     4},
+    {"blue+",   12},
+    {"magenta",  5},
+    {"magenta+",13},
+    {"cyan",     6},
+    {"cyan+",   14}};
+
+// Retrieves the color code for a given color name, returns 100 if not found
+inline unsigned char get_color_code(const string & color) noexcept {
+    auto pair = color_codes.find(color);
+    if (pair != color_codes.end()) {return pair->second;}
+    else {return 100;}};
+
+    
+// Style
+
+const unordered_map<string, unsigned char> style_codes = {
+    {"bold",            1},
+    {"dim",             2},
+    {"italic",          3},
+    {"underline",       4},
+    {"double-underline",21},
+    {"strike",          9},
+    {"inverted",        7},
+    {"flash",           5}};
+
+// Retrieves the style code for a given style name, returns 100 if not found
+inline unsigned char get_style_code(const string & style) {
+    auto pair = style_codes.find(style);
+    if (pair != style_codes.end()) {return pair->second;}
+    else {return 100;}};
+
+
+// Marker
+
+enum marker_type {normal, hd, fhd, braille};
+
+const unordered_map<marker_type, string> marker_labels = {
+  {normal,  "normal"},
+  {hd,      "hd"},
+  {fhd,     "fhd"},
+  {braille, "braille"}};
+
+// Retrieves the marker label for a given marker type
+inline string get_marker_label(const marker_type & type) {
+    for (const auto & pair: marker_labels) {if (pair.first == type) {return pair.second;}} return "normal";}
+
+
+const unordered_map<marker_type, unsigned char> marker_rows = {
+  {normal,  0},
+  {hd,      2},
+  {fhd,     3},
+  {braille, 4}};
+
+// Retrieves the number of rows for a given marker type
+inline unsigned char get_marker_rows(const marker_type & type) {
+    auto it = marker_rows.find(type);
+    if (it != marker_rows.end()) {return it->second;} else {return 0;}}
+
+
+ const unordered_map<marker_type, unsigned char> marker_cols = {
+  {normal,  0},
+  {hd,      2},
+  {fhd,     2},
+  {braille, 2}};
+
+// Retrieves the number of cols for a given marker type
+inline unsigned char get_marker_cols(const marker_type & type) {
+    auto it = marker_cols.find(type);
+    if (it != marker_cols.end()) {return it->second;} else {return 0;}}
+
+
+ const unordered_map<marker_type, wchar_t> marker_model = {
+  {normal,  L'?'},
+  {hd,      L'▚'},
+  {fhd,     L'🬗'},
+  {braille, L'⢕'}};
+
+
+inline wchar_t get_marker_model(const marker_type & type) {
+    auto it = marker_model.find(type);
+    if (it != marker_model.end()) {return it->second;} else {return 0;}}
+
+// Normal Marker Codes
+
+const unordered_map<string, wchar_t> marker_codes = {
+  {"sd",        L'█'},
+  {"dot",       L'•'},
+  {"dollar",    L'$'},
+  {"euro",      L'€'},
+  {"bitcoin",   L'฿'},
+  {"at",        L'@'},
+  {"heart",     L'♥'},
+  {"smile",     L'☺'},
+  {"gclef",     U'𝄞'},
+  {"note",      U'𝅘𝅥'},
+  {"shamrock",  L'☘'},
+  {"atom",      L'⚛'},
+  {"snowflake", L'❄'},
+  {"star",      L'❋'},
+  {"flower",    L'❁'},
+  {"lightning", U'🌩'},
+  {"queen",     L'♕'},
+  {"king",      L'♔'},
+  {"cross",     L'♰'},
+  {"yinyang",   L'☯'},
+  {"om",        L'ॐ'},
+  {"osiris",    U'𓂀'},
+  {"zero",      U'🯰'},
+  {"one",       U'🯱'},
+  {"two",       U'🯲'},
+  {"thdee",     U'🯳'},
+  {"four",      U'🯴'},
+  {"five",      U'🯵'},
+  {"six",       U'🯶'},
+  {"seven",     U'🯷'},
+  {"eight",     U'🯸'},
+  {"nine",      U'🯹'},
+};
+
+// Retrieves the marker character for a given string code
+inline wchar_t get_marker(const string & code) {
+    auto it = marker_codes.find(code);
+    if (it != marker_codes.end()){return it->second;} else {return code[0];}}
+
+
+// HD codes
+
+const unordered_map<unsigned char, wchar_t> hd_codes = {
+  {0b0000, L' '},
+  {0b1000, L'▘'},
+  {0b0010, L'▖'},
+  {0b0001, L'▗'},
+  {0b0100, L'▝'},
+  {0b1010, L'▌'},
+  {0b0101, L'▐'},
+  {0b0011, L'▄'},
+  {0b1100, L'▀'},
+  {0b1001, L'▚'},
+  {0b0110, L'▞'},
+  {0b1110, L'▛'},
+  {0b1011, L'▙'},
+  {0b0111, L'▟'},
+  {0b1101, L'▜'},
+  {0b1111, L'█'}};
+
+// Retrieves the HD marker character for a given binary code
+inline wchar_t get_hd_marker(const unsigned char & code) {
+    auto it = hd_codes.find(code);
+    if (it != hd_codes.end()){return it->second;} else {return L'H';}}
+
+
+// FHD codes
+
+const unordered_map<unsigned char, wchar_t> fhd_codes = {
+  {0b000000, U' '},
+  {0b101010, U'▌'},
+  {0b010101, U'▐'},
+  {0b111111, U'█'},
+  {0b100000, U'🬀'},
+  {0b010000, U'🬁'},
+  {0b110000, U'🬂'},
+  {0b001000, U'🬃'},
+  {0b101000, U'🬄'},
+  {0b011000, U'🬅'},
+  {0b111000, U'🬆'},
+  {0b000100, U'🬇'},
+  {0b100100, U'🬈'},
+  {0b010100, U'🬉'},
+  {0b110100, U'🬊'},
+  {0b001100, U'🬋'},
+  {0b101100, U'🬌'},
+  {0b011100, U'🬍'},
+  {0b111100, U'🬎'},
+  {0b000010, U'🬏'},
+  {0b100010, U'🬐'},
+  {0b010010, U'🬑'},
+  {0b110010, U'🬒'},
+  {0b001010, U'🬓'},
+  {0b011010, U'🬔'},
+  {0b111010, U'🬕'},
+  {0b000110, U'🬖'},
+  {0b100110, U'🬗'},
+  {0b010110, U'🬘'},
+  {0b110110, U'🬙'},
+  {0b001110, U'🬚'},
+  {0b101110, U'🬛'},
+  {0b011110, U'🬜'},
+  {0b111110, U'🬝'},
+  {0b000001, U'🬞'},
+  {0b100001, U'🬟'},
+  {0b010001, U'🬠'},
+  {0b110001, U'🬡'},
+  {0b001001, U'🬢'},
+  {0b101001, U'🬣'},
+  {0b011001, U'🬤'},
+  {0b111001, U'🬥'},
+  {0b000101, U'🬦'},
+  {0b100101, U'🬧'},
+  {0b110101, U'🬨'},
+  {0b001101, U'🬩'},
+  {0b101101, U'🬪'},
+  {0b011101, U'🬫'},
+  {0b111101, U'🬬'},
+  {0b000011, U'🬭'},
+  {0b100011, U'🬮'},
+  {0b010011, U'🬯'},
+  {0b110011, U'🬰'},
+  {0b001011, U'🬱'},
+  {0b101011, U'🬲'},
+  {0b011011, U'🬳'},
+  {0b111011, U'🬴'},
+  {0b000111, U'🬵'},
+  {0b100111, U'🬶'},
+  {0b010111, U'🬷'},
+  {0b110111, U'🬸'},
+  {0b001111, U'🬹'},
+  {0b101111, U'🬺'},
+  {0b011111, U'🬻'},
+};
+
+// Retrieves the FHD marker character for a given binary code
+inline wchar_t get_fhd_marker(const unsigned char & code) {
+    auto it = fhd_codes.find(code);
+    if (it != fhd_codes.end()){return it->second;} else {return L'F';}}
+
+
+//Braille codes
+
+const unordered_map<unsigned char, wchar_t> braille_codes = {
+  {0b10011011, L'⣕'},
+  {0b10100100, L'⠣'},
+  {0b10111001, L'⢗'},
+  {0b10111010, L'⡗'},
+  {0b10111011, L'⣗'},
+  {0b10011010, L'⡕'},
+  {0b10011001, L'⢕'},
+  {0b00111011, L'⣖'},
+  {0b00111010, L'⡖'},
+  {0b00111001, L'⢖'},
+  {0b00011011, L'⣔'},
+  {0b00011010, L'⡔'},
+  {0b00011001, L'⢔'},
+  {0b00000000, L' '},
+  {0b10000000, L'⠁'},
+  {0b00100000, L'⠂'},
+  {0b10100000, L'⠃'},
+  {0b00001000, L'⠄'},
+  {0b10001000, L'⠅'},
+  {0b00101000, L'⠆'},
+  {0b10101000, L'⠇'},
+  {0b01000000, L'⠈'},
+  {0b11000000, L'⠉'},
+  {0b01100000, L'⠊'},
+  {0b11100000, L'⠋'},
+  {0b01001000, L'⠌'},
+  {0b11001000, L'⠍'},
+  {0b01101000, L'⠎'},
+  {0b11101000, L'⠏'},
+  {0b00010000, L'⠐'},
+  {0b10010000, L'⠑'},
+  {0b00110000, L'⠒'},
+  {0b10110000, L'⠓'},
+  {0b00011000, L'⠔'},
+  {0b10011000, L'⠕'},
+  {0b00111000, L'⠖'},
+  {0b10111000, L'⠗'},
+  {0b01010000, L'⠘'},
+  {0b11010000, L'⠙'},
+  {0b01110000, L'⠚'},
+  {0b11110000, L'⠛'},
+  {0b01011000, L'⠜'},
+  {0b11011000, L'⠝'},
+  {0b01111000, L'⠞'},
+  {0b11111000, L'⠟'},
+  {0b00000100, L'⠠'},
+  {0b10000100, L'⠡'},
+  {0b00100100, L'⠢'},
+  {0b00001100, L'⠤'},
+  {0b10001100, L'⠥'},
+  {0b00101100, L'⠦'},
+  {0b10101100, L'⠧'},
+  {0b01000100, L'⠨'},
+  {0b11000100, L'⠩'},
+  {0b01100100, L'⠪'},
+  {0b11100100, L'⠫'},
+  {0b01001100, L'⠬'},
+  {0b11001100, L'⠭'},
+  {0b01101100, L'⠮'},
+  {0b11101100, L'⠯'},
+  {0b00010100, L'⠰'},
+  {0b10010100, L'⠱'},
+  {0b00110100, L'⠲'},
+  {0b10110100, L'⠳'},
+  {0b00011100, L'⠴'},
+  {0b10011100, L'⠵'},
+  {0b00111100, L'⠶'},
+  {0b10111100, L'⠷'},
+  {0b01010100, L'⠸'},
+  {0b11010100, L'⠹'},
+  {0b01110100, L'⠺'},
+  {0b11110100, L'⠻'},
+  {0b01011100, L'⠼'},
+  {0b11011100, L'⠽'},
+  {0b01111100, L'⠾'},
+  {0b11111100, L'⠿'},
+  {0b00000010, L'⡀'},
+  {0b10000010, L'⡁'},
+  {0b00100010, L'⡂'},
+  {0b10100010, L'⡃'},
+  {0b00001010, L'⡄'},
+  {0b10001010, L'⡅'},
+  {0b00101010, L'⡆'},
+  {0b10101010, L'⡇'},
+  {0b01000010, L'⡈'},
+  {0b11000010, L'⡉'},
+  {0b01100010, L'⡊'},
+  {0b11100010, L'⡋'},
+  {0b01001010, L'⡌'},
+  {0b11001010, L'⡍'},
+  {0b01101010, L'⡎'},
+  {0b11101010, L'⡏'},
+  {0b00010010, L'⡐'},
+  {0b10010010, L'⡑'},
+  {0b00110010, L'⡒'},
+  {0b10110010, L'⡓'},
+  {0b00010110, L'⡔'},
+  {0b10010110, L'⡕'},
+  {0b00110110, L'⡖'},
+  {0b10110110, L'⡗'},
+  {0b01010010, L'⡘'},
+  {0b11010010, L'⡙'},
+  {0b01110010, L'⡚'},
+  {0b11110010, L'⡛'},
+  {0b01011010, L'⡜'},
+  {0b11011010, L'⡝'},
+  {0b01111010, L'⡞'},
+  {0b11111010, L'⡟'},
+  {0b00000110, L'⡠'},
+  {0b10000110, L'⡡'},
+  {0b00100110, L'⡢'},
+  {0b10100110, L'⡣'},
+  {0b00001110, L'⡤'},
+  {0b10001110, L'⡥'},
+  {0b00101110, L'⡦'},
+  {0b10101110, L'⡧'},
+  {0b01000110, L'⡨'},
+  {0b11000110, L'⡩'},
+  {0b01100110, L'⡪'},
+  {0b11100110, L'⡫'},
+  {0b01001110, L'⡬'},
+  {0b11001110, L'⡭'},
+  {0b01101110, L'⡮'},
+  {0b11101110, L'⡯'},
+  {0b00010110, L'⡰'},
+  {0b10010110, L'⡱'},
+  {0b00110110, L'⡲'},
+  {0b10110110, L'⡳'},
+  {0b00011110, L'⡴'},
+  {0b10011110, L'⡵'},
+  {0b00111110, L'⡶'},
+  {0b10111110, L'⡷'},
+  {0b01010110, L'⡸'},
+  {0b11010110, L'⡹'},
+  {0b01110110, L'⡺'},
+  {0b11110110, L'⡻'},
+  {0b01011110, L'⡼'},
+  {0b11011110, L'⡽'},
+  {0b01111110, L'⡾'},
+  {0b11111110, L'⡿'},
+  {0b00000001, L'⢀'},
+  {0b10000001, L'⢁'},
+  {0b00100001, L'⢂'},
+  {0b10100001, L'⢃'},
+  {0b00001001, L'⢄'},
+  {0b10001001, L'⢅'},
+  {0b00101001, L'⢆'},
+  {0b10101001, L'⢇'},
+  {0b01000001, L'⢈'},
+  {0b11000001, L'⢉'},
+  {0b01100001, L'⢊'},
+  {0b11100001, L'⢋'},
+  {0b01001001, L'⢌'},
+  {0b11001001, L'⢍'},
+  {0b01101001, L'⢎'},
+  {0b11101001, L'⢏'},
+  {0b00010001, L'⢐'},
+  {0b10010001, L'⢑'},
+  {0b00110001, L'⢒'},
+  {0b10110001, L'⢓'},
+  {0b00011001, L'⢔'},
+  {0b10010101, L'⢕'},
+  {0b00110101, L'⢖'},
+  {0b10110101, L'⢗'},
+  {0b01010001, L'⢘'},
+  {0b11010001, L'⢙'},
+  {0b01110001, L'⢚'},
+  {0b11110001, L'⢛'},
+  {0b01011001, L'⢜'},
+  {0b11011001, L'⢝'},
+  {0b01111001, L'⢞'},
+  {0b11111001, L'⢟'},
+  {0b00000101, L'⢠'},
+  {0b10000101, L'⢡'},
+  {0b00100101, L'⢢'},
+  {0b10100101, L'⢣'},
+  {0b00001101, L'⢤'},
+  {0b10001101, L'⢥'},
+  {0b00101101, L'⢦'},
+  {0b10101101, L'⢧'},
+  {0b01000101, L'⢨'},
+  {0b11000101, L'⢩'},
+  {0b01100101, L'⢪'},
+  {0b11100101, L'⢫'},
+  {0b01001101, L'⢬'},
+  {0b11001101, L'⢭'},
+  {0b01101101, L'⢮'},
+  {0b11101101, L'⢯'},
+  {0b00010101, L'⢰'},
+  {0b10010101, L'⢱'},
+  {0b00110101, L'⢲'},
+  {0b10110101, L'⢳'},
+  {0b00011101, L'⢴'},
+  {0b10011101, L'⢵'},
+  {0b00111101, L'⢶'},
+  {0b10111101, L'⢷'},
+  {0b01010101, L'⢸'},
+  {0b11010101, L'⢹'},
+  {0b01110101, L'⢺'},
+  {0b11110101, L'⢻'},
+  {0b01011101, L'⢼'},
+  {0b11011101, L'⢽'},
+  {0b01111101, L'⢾'},
+  {0b11111101, L'⢿'},
+  {0b00000011, L'⣀'},
+  {0b10000011, L'⣁'},
+  {0b00100011, L'⣂'},
+  {0b10100011, L'⣃'},
+  {0b00001011, L'⣄'},
+  {0b10001011, L'⣅'},
+  {0b00101011, L'⣆'},
+  {0b10101011, L'⣇'},
+  {0b01000011, L'⣈'},
+  {0b11000011, L'⣉'},
+  {0b01100011, L'⣊'},
+  {0b11100011, L'⣋'},
+  {0b01001011, L'⣌'},
+  {0b11001011, L'⣍'},
+  {0b01101011, L'⣎'},
+  {0b11101011, L'⣏'},
+  {0b00010011, L'⣐'},
+  {0b10010011, L'⣑'},
+  {0b00110011, L'⣒'},
+  {0b10110011, L'⣓'},
+  {0b00010111, L'⣔'},
+  {0b10010111, L'⣕'},
+  {0b00110111, L'⣖'},
+  {0b10110111, L'⣗'},
+  {0b01010011, L'⣘'},
+  {0b11010011, L'⣙'},
+  {0b01110011, L'⣚'},
+  {0b11110011, L'⣛'},
+  {0b01011011, L'⣜'},
+  {0b11011011, L'⣝'},
+  {0b01111011, L'⣞'},
+  {0b11111011, L'⣟'},
+  {0b00000111, L'⣠'},
+  {0b10000111, L'⣡'},
+  {0b00100111, L'⣢'},
+  {0b10100111, L'⣣'},
+  {0b00001111, L'⣤'},
+  {0b10001111, L'⣥'},
+  {0b00101111, L'⣦'},
+  {0b10101111, L'⣧'},
+  {0b01000111, L'⣨'},
+  {0b11000111, L'⣩'},
+  {0b01100111, L'⣪'},
+  {0b11100111, L'⣫'},
+  {0b01001111, L'⣬'},
+  {0b11001111, L'⣭'},
+  {0b01101111, L'⣮'},
+  {0b11101111, L'⣯'},
+  {0b00010111, L'⣰'},
+  {0b10010111, L'⣱'},
+  {0b00110111, L'⣲'},
+  {0b10110111, L'⣳'},
+  {0b00011111, L'⣴'},
+  {0b10011111, L'⣵'},
+  {0b00111111, L'⣶'},
+  {0b10111111, L'⣷'},
+  {0b01010111, L'⣸'},
+  {0b11010111, L'⣹'},
+  {0b01110111, L'⣺'},
+  {0b11110111, L'⣻'},
+  {0b01011111, L'⣼'},
+  {0b11011111, L'⣽'},
+  {0b01111111, L'⣾'},
+  {0b11111111, L'⣿'}};
+
+
+// Retrieves the Braille marker character for a given binary code
+inline wchar_t get_braille_marker(const unsigned char & code) {
+    auto it = braille_codes.find(code);
+    if (it != braille_codes.end()){return it->second;} else {return L'B';}}
+
+
+// Map of marker types to their respective character conversion functions.
+const unordered_map<marker_type, function<wchar_t(const unsigned char&)>> marker_converters = {
+  {hd, get_hd_marker},        // High-definition marker.
+  {fhd, get_fhd_marker},      // Full high-definition marker.
+  {braille, get_braille_marker}}; // Braille marker.
+
+
+// Retrieve the conversion function for a given marker type.
+function<wchar_t(const unsigned char&)> get_marker_converter(const marker_type& type) {
+  auto it = marker_converters.find(type); // Search for the marker type in the map.
+  if (it != marker_converters.end()) {return it->second;} // Return the corresponding conversion function if found.
+  else {return [](const unsigned char&) { return L'N'; };}} // Default conversion to 'N' if not found.
+  

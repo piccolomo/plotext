@@ -1,120 +1,59 @@
-from ._link import *
-from ._marker import marker as marker_class
-from ._correct import correct_marker, correct_side
-from ._utility import linspace
+from plotext._clink import clink
+from plotext._point import point_class
+from plotext._points import points_class
 
 
-class signals:
-	def __init__(self):
-		self._signal = []
+class signal_class(points_class):
 
-	def get_length(self):
-		return len(self._signal)
-		
-	def get_Length(self):
-		return range(self.get_length())
+    # Initialize a signal from x, y, m arrays or pointer
+    def __init__(self, x = None, y = None, m = None, xside = None, yside = None, label = None, pointer = None):
+        if pointer is None:
+            length = len(x)
+            super().__init__(length)
+            [self.add(point_class(x[i], y[i], m[i])) for i in range(length)]
+        else:
+            super().__init__(pointer = pointer)
+        self.set_xside(xside)
+        self.set_yside(yside)
+        self.set_label(label)
 
-	def add_signal(self, x, y, m, label = None, xside = 0, yside = 0):
-		length = min(len(x), len(y))
-		x = x[: length]
-		y = y[: length]
-		m = correct_marker(m, length)
-		xside = correct_side(0, xside)
-		yside = correct_side(1, yside)
-		self._signal.append(signal(x, y, m, self.check_label(label), xside, yside))
-		return self
+    # Destructor calls parent destructor
+    def __del__(self): super().__del__()
 
-	def check_label(self, label):
-		return 'signal(' + str(self.get_length()) + ')' if label is None else label
+    # Set x-side attribute
+    def set_xside(self, side = None): self.xside = side; return self
 
-	def get_signal(self, i):
-		return self._signal[i]
+    # Set y-side attribute
+    def set_yside(self, side = None): self.yside = side; return self
 
+    # Set label attribute
+    def set_label(self, label = None): self.label = label; return self
 
-	def get_signal_limits(self, axis = 0, side = 0):
-		return self.get_signal_ylim(side) if axis else self.get_signal_xlim(side)
+    # Set fill points from x, y, m arrays
+    def set_fill(self, x = None, y = None, m = None):
+        length = min(len(x), self.get_length())
+        [self.set_fill_point(i, point_class(x[i], y[i], m[i])) for i in range(length)]
+        return self
 
-	def get_signal_xlim(self, side = 0):
-		return (self._get_signal_xmin(side), self._get_signal_xmax(side))
+    # Return a copy of the signal
+    def copy(self):
+        return signal_class(xside = self.xside, yside = self.yside, label = self.label, pointer = clink.points_copy(self._pointer))
 
-	def get_signal_ylim(self, side = 0):
-		return (self._get_signal_ymin(side), self._get_signal_ymax(side))
+    # Get label as string
+    def get_label(self): return str(self.label)
 
-	def _get_signal_xmin(self, side = 0):
-		return min([s.get_xmin() for s in self._signal if s.xside == side], default = None)
+    # Generate a log string of the signal
+    def get_log(self):
+        log = self.get_label() + ', '
+        log += 'xside ' + str(self.xside) + ', '
+        log += 'yside ' + str(self.yside) + '\n'
+        log += self.get_string() + '\n'
+        return log
 
-	def _get_signal_xmax(self, side = 0):
-		return max([s.get_xmax() for s in self._signal if s.xside == side], default = None)
+    # Print the log string
+    def log(self):
+        print(self.get_log())
+        return self
 
-	def _get_signal_ymin(self, side = 0):
-		return min([s.get_ymin() for s in self._signal if s.yside == side], default = None)
-
-	def _get_signal_ymax(self, side = 0):
-		return max([s.get_ymax() for s in self._signal if s.yside == side], default = None)
-
-
-
-class signal:
-	def __init__(self, x, y, m, label, xside, yside):
-		length = len(x)
-		self._pointer = points_new(length)
-		[self.add(x[i], y[i], m[i]) for i in range(length)]
-		self.label = label
-		self.xside = xside
-		self.yside = yside
-
-	def __del__(self):
-		points_delete(self._pointer)
-
-	def get_length(self):
-		return points_get_length(self._pointer)
-
-	def add(self, x, y, marker):
-		points_add(self._pointer, x, y, marker._pointer, 0, 0, 0)
-		return self
-
-	def at(self, index):
-		return point(pointer = points_at(self._pointer, index))
-
-	def get_xmin(self):
-		return points_get_xmin(self._pointer)
-
-	def get_xmax(self):
-		return points_get_xmax(self._pointer)
-
-	def get_ymin(self):
-		return points_get_ymin(self._pointer)
-
-	def get_ymax(self):
-		return points_get_ymax(self._pointer)
-
-	def _get_string(self, full = True):
-		p = points_get_wstring(self._pointer, full)
-		string = wstring.from_buffer(p).value
-		wstring_delete(p)
-		return string
-
-	def log(self):
-		print(self._get_string(1))
-
-	def __repr__(self):
-	 	return self._get_string(0)
-
-
-
-
-class point:
-	def __init__(self, pointer = None):
-		self._pointer = pointer 
-		
-	def __del__(self):
-		point_delete(self._pointer)
-
-	def _get_string(self):
-		p = point_get_wstring(self._pointer)
-		string = wstring.from_buffer(p).value
-		wstring_delete(p)
-		return string
-
-	def __repr__(self):
-		return self._get_string()
+    # Representation returns the log string
+    def __repr__(self): return self.get_log()

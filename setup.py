@@ -19,9 +19,11 @@ setup(
     license = "MIT",
     url = 'https://github.com/piccolomo/plotext',
     packages = find_packages(),
+    #packages=find_packages(exclude=["plotext/prettydoc/*", "plotext/*"]),
     python_requires = ">=3.5",
     include_package_data = True,
     install_requires = [],
+
     extras_require = {"image": ["pillow>=8.4"], "video": ["pillow>=8.4", "pafy>=0.5.5", "opencv-python>=4.5.5", "ffpyplayer>=4.3.5", "youtube-dl==2020.12.2"], "completion": ["shtab"]},
     classifiers = [],
     )
