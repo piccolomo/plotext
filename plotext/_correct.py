@@ -1,11 +1,11 @@
 from re import sub
 
-from plotext._cimport import *
 from plotext._methods import *
-from plotext._default import default_labels_pixel, default_axis_pixel, default_ruler_pixel
+#from plotext._default import default_labels_pixel, default_axis_pixel, default_ruler_pixel
 from plotext._constants import *
-from plotext._colorize import colorize_class
-from plotext._marker import marker_class
+from plotext._colorize import colorize
+from plotext._marker import marker
+from plotext._pixel import pixel
 
 
 class correct_class:
@@ -25,10 +25,10 @@ class correct_class:
     # Correct matrix object by checking its type and converting if necessary
     @staticmethod
     def matrix(obj):
-        if isinstance(obj, colorize_class):
+        if isinstance(obj, colorize):
             return obj.get_matrix()
         if isinstance(obj, str):
-            return colorize_class(obj).get_matrix()
+            return colorize(obj).get_matrix()
         return obj
 
 
@@ -61,7 +61,7 @@ class correct_class:
             return va.index(alignement) - 1
         if alignement in ha_short:
             return alignement
-        return -1
+        return 1
 
 
     # Corrects the docstring by formatting and capitalizing if needed
@@ -101,21 +101,21 @@ class correct_class:
         return scale
 
 
-    # Correct the pixel for rulers
-    @staticmethod
-    def ruler_pixel(pixel):
-        return correct_class.pixel(pixel, default_ruler_pixel)
+    # # Correct the pixel for rulers
+    # @staticmethod
+    # def ruler_pixel(pixel):
+    #     return correct_class.pixel(pixel, default_ruler_pixel)
 
 
     # Correct a single label, applying default pixel settings
     @staticmethod
-    def label(label, default_pixel = default_labels_pixel):
+    def label(label, default_pixel):
         if label is None or string_methods.only_spaces(label):
             return None
         if isinstance(label, str):
-            label = colorize_class(label.strip()).set_pixel(default_pixel)
-        if label is not None and label._no_background():
-            label._copy_background(default_pixel)
+            label = colorize(label.strip()).set_pixel(default_pixel)
+        #and label._no_background():
+        label._fix_background(default_pixel)
         return label
 
 
@@ -126,7 +126,9 @@ class correct_class:
 
 
     # Correct a single axis string or boolean
-    #single_axis = staticmethod(lambda axis = None: correct_class.boolean_string(axis, axis_names))
+    @staticmethod
+    def axis(axis):
+        return correct_class.boolean_string(axis, axis_names)
 
 
     # Correct the side of an axis to ensure it is valid
@@ -160,14 +162,18 @@ class correct_class:
         return [correct_class.side(axis, s) for s in side_list]
 
 
+    @staticmethod
+    def status(value, default):
+        return value if value is not None else default
+
     # Correct the axis style to ensure it is valid
     @staticmethod
     def axis_style(style):
         return style if style in axis_styles else axis_styles[0]
 
 
-    # Correct axis pixel with default axis pixel
-    axis_pixel = staticmethod(lambda pixel = None: correct_class.pixel(pixel, default_axis_pixel))
+    # # Correct axis pixel with default axis pixel
+    # axis_pixel = staticmethod(lambda pixel = None: correct_class.pixel(pixel, default_axis_pixel))
 
 
     # Correct a boolean or string side to ensure it is valid
@@ -208,30 +214,30 @@ class correct_class:
 
     # Correct a single marker, wrapping it into a marker object if needed
     @staticmethod
-    def marker(marker):
-        if isinstance(marker, marker_class):
-            return marker
-        if marker is not None:
-            return marker_class(marker)
-        return marker_class()
-
+    def marker(marker, default_marker):
+        if marker is None:
+            return default_marker
+        if isinstance(marker, str):
+            return marker_class(marker)._fix(default_marker)
+        if isinstance(marker, list):
+            return marker_class(*marker)._fix(default_marker)
+        return marker
 
     # Correct a list of markers, repeating them to match the specified length
     @staticmethod
-    def markers(marker, length):
+    def markers(marker, default_marker, length):
         if not isinstance(marker, list):
             marker = [marker]
-        marker = [correct_class.marker(m) for m in marker]
+        marker = [correct_class.marker(m, default_marker) for m in marker]
         return list_methods.repeat(marker, length)
 
 
-    # Create signal label, defaulting to 'signal(length)' if label is None
-    @staticmethod
-
-    def signal_label(label, length):
-        if label is None:
-            label = f'signal({length})'
-        return colorize_class(label)
+    # # Create signal label, defaulting to 'signal(length)' if label is None
+    # @staticmethod
+    # def signal_label(label, length):
+    #     if label is None:
+    #         label = f'signal({length})'
+    #     return colorize_class(label)
 
     # Correct the limits by combining the current and new limits
     @staticmethod

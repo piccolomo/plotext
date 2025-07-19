@@ -2,7 +2,7 @@ from plotext.prettydoc._text import text_class, alias_class
 from plotext.prettydoc._parameter import parameter_class
 from plotext._constants import space, empty
 from plotext._methods import * 
-from plotext._colorize import colorize_class
+from plotext._colorize import colorize
 
 
 class function_class:
@@ -81,7 +81,7 @@ class function_class:
 
     # Return colored function name string
     def get_title(self, pixel):
-        return colorize_class(self.get_name()).set_pixel(pixel).get_string()
+        return colorize(self.get_name()).set_pixel(pixel).get_string()
 
     def __repr__(self):
         return "PrettyFunctionDoc(" + self.get_name() + ")"

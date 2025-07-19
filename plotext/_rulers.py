@@ -1,16 +1,14 @@
-from plotext._default import default_xfrequency, default_yfrequency, default_lines_pixel
 from plotext._constants import r2
-from plotext._ruler import ruler_class
+from plotext._ruler import *
 from plotext._methods import *
 
 
 class rulers_class:
 
     def __init__(self):
-        self.x = [ruler_class(), ruler_class()]
-        self.y = [ruler_class(), ruler_class()]
-        self._set_default_frequencies()
-
+        self.x = [xruler_class(), xruler_class()]
+        self.y = [yruler_class(), yruler_class()]
+        
     # Clear all rulers and return self for chaining
     def clear(self):
         self.get(0, 0).clear()
@@ -19,12 +17,33 @@ class rulers_class:
         self.get(1, 1).clear()
         return self
 
+    def set(self, frequency = None, scale = None, alignment = None, direction = None, pixel = None, axis = 0, side = 0):
+        axis = correct.axis(axis)
+        sides = correct.sides(axis, side)
+        [self.get(axis, side).set(frequency = frequency, alignment = alignment, direction = direction, scale = scale, pixel = pixel) for side in sides]
+        return self
+
+    def set_ticks(self, ticks = None, labels = None, axis = 0, side = 0):
+        axis = correct.axis(axis)
+        sides = correct.sides(axis, side)
+        [self.get(axis, side).set_ticks(positions = ticks, labels = labels) for side in sides]
+        return self
+
+   # Set default frequencies for x and y rulers
+    def set_xfrequency(self, frequency = None):
+        [el.set_frequency(frequency) for el in self.x]
+        return self
+
     # Set default frequencies for x and y rulers
-    def _set_default_frequencies(self):
-        [el.set_default_frequency(default_xfrequency) for el in self.x]
-        [el.set_frequency() for el in self.x]
-        [el.set_default_frequency(default_yfrequency) for el in self.y]
-        [el.set_frequency() for el in self.y]
+    def set_yfrequency(self, frequency = None):
+        [el.set_frequency(frequency) for el in self.y]
+        return self
+
+    # Set default frequencies for x and y rulers
+    def set_pixel(self, pixel = None):
+        [el.set_pixel(pixel) for el in self.x]
+        [el.set_pixel(pixel) for el in self.y]
+        return self
 
     # Return ruler at specified axis and side (axis=0 for x, 1 for y)
     def get(self, axis=0, side=0):
@@ -33,6 +52,8 @@ class rulers_class:
 
     # Add a line to the specified ruler with given properties
     def add_line(self, position, style = None, pixel = None, orientation = None, side = None):
+        sides = correct.single_side(axis, side)
+        
         self.get(orientation, side).lines.add(position, orientation, style, pixel)
         return self
 

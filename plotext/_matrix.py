@@ -1,17 +1,18 @@
 # Internal library imports
-from plotext._cimport import *
+from plotext._pixel import pixel as pixel_class
 from plotext._correct import correct_class as correct
 from plotext._methods import *
+from plotext._clink import clink, wchar, wstring
 # Standard and internal utility imports
 #from plotext._methods import object_methods #hash, write
 
 
-class matrix_class:
+class matrix:
 
     # Initialize a matrix with optional pixel and pointer
-    def __init__(self, width = 0, height = 0, pixel = None, pointer = None):
+    def __init__(self, width = 0, height = 0, pixel = None, _pointer = None):
         px = pixel_class(background = "white") if pixel is None else pixel
-        self._pointer = clink.matrix_new(width, height, px._pointer) if pointer is None else pointer
+        self._pointer = clink.matrix_new(width, height, px._pointer) if _pointer is None else _pointer
 
 
     # Delete the matrix (free memory)
@@ -58,11 +59,11 @@ class matrix_class:
 
 
     # Insert a matrix-like object with alignment
-    def insert(self, col, row, object, ha = -1, va = -1):
+    def insert(self, col, row, matrix, ha = -1, va = 1):
         ha = correct.ha(ha)
         va = correct.va(va)
-        object = correct.matrix(object)
-        return self._insert_matrix_aligned(col, row, object, ha, va)
+        #object = correct.matrix(object) 
+        return self._insert_matrix_aligned(col, row, matrix, ha, va)
 
     # Insert another matrix directly
     def _insert_matrix(self, col, row, object):
@@ -71,6 +72,7 @@ class matrix_class:
 
     # Insert a matrix with alignment
     def _insert_matrix_aligned(self, col, row, object, ha = -1, va = -1):
+        va *= -1
         return clink.matrix_insert_matrix_aligned(self._pointer, col, row, object._pointer, ha, va)
 
     # Insert a colorized label with alignment
@@ -82,32 +84,32 @@ class matrix_class:
         return clink.matrix_insert_colorized_dynamically(self._pointer, col, row, label._pointer)
 
     # Insert dot-like elements (e.g., for plots)
-    def insert_dots(self, dots):
+    def _insert_dots(self, dots):
         clink.matrix_insert_dots(self._pointer, dots._pointer)
 
 
 
-    # Vertically stack with another matrix-like object
-    def vstack(self, object, adapt = True):
-        object = correct.matrix(object)
-        return self._vstack(object, adapt)
+    # # Vertically stack with another matrix-like object
+    # def vstack(self, matrix, adapt = True):
+    #     #object = correct.matrix(object)
+    #     return self._vstack(matrix, adapt)
 
-    # Horizontally stack with another matrix-like object
-    def hstack(self, object, adapt = True):
-        object = correct.matrix(object)
-        return self._hstack(object, adapt)
+    # # Horizontally stack with another matrix-like object
+    # def hstack(self, matrix, adapt = True):
+    #     #object = correct.matrix(object)
+    #     return self._hstack(matrix, adapt)
 
     # Perform the vertical stacking operation
-    def _vstack(self, object, adapt = False):
-        return matrix_class(pointer = clink.matrix_vstack(self._pointer, object._pointer, adapt))
+    def vstack(self, matrix, adapt = False):
+        return matrix(_pointer = clink.matrix_vstack(self._pointer, matrix._pointer, adapt))
 
     # Perform the horizontal stacking operation
-    def _hstack(self, object, adapt = False):
-        return matrix_class(pointer = clink.matrix_hstack(self._pointer, object._pointer, adapt))
+    def hstack(self, matrix, adapt = False):
+        return matrix(_pointer = clink.matrix_hstack(self._pointer, matrix._pointer, adapt))
     
     # Create and return a copy of this matrix object
     def copy(self):
-        return matrix_class(pointer = clink.matrix_copy(self._pointer))  # Create a copy of the matrix
+        return matrix(_pointer = clink.matrix_copy(self._pointer))  # Create a copy of the matrix
 
     # Get the matrix as a (possibly colorless) string
     def get_string(self, colorless = False):
@@ -148,14 +150,14 @@ class matrix_class:
 
 
     def _part(self, col_start, col_stop, row_start, row_stop):
-        return matrix_class(pointer = clink.matrix_part(self._pointer, col_start, col_stop, row_start, row_stop))  # Get sub-matrix
+        return matrix(_pointer = clink.matrix_part(self._pointer, col_start, col_stop, row_start, row_stop))  # Get sub-matrix
 
 
-# Combine a 2D list (matrix) of matrix_class objects into a single larger matrix.
+# Combine a 2D list (matrix) of matrix objects into a single larger matrix.
 
 def join_matrices(matrices):
     if not matrices or not matrices[0]:
-        return matrix_class(0, 0)  # Return empty matrix if input is empty
+        return matrix(0, 0)  # Return empty matrix if input is empty
 
     rows, cols = len(matrices), len(matrices[0])
 
@@ -169,7 +171,7 @@ def join_matrices(matrices):
     total_height = sum(heights)
 
     # Create new matrix to hold the combined result
-    M = matrix_class(total_width, total_height)
+    M = matrix(total_width, total_height)
 
     # Insert each sub-matrix at its corresponding position
     for r in range(rows):

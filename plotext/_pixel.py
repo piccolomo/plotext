@@ -1,11 +1,11 @@
-from plotext._cimport import *
+from plotext._clink import clink, wstring
 
 
-class pixel_class:
+class pixel:
     
     # Initialize pixel pointer and set foreground, background, style
-    def __init__(self, foreground = None, background = None, style = None, pointer = None):
-        self._pointer = clink.pixel_new() if pointer is None else pointer
+    def __init__(self, foreground = None, background = None, style = None, _pointer = None):
+        self._pointer = clink.pixel_new() if _pointer is None else _pointer
         self.set(foreground, background, style)
 
 
@@ -97,11 +97,11 @@ class pixel_class:
 
     # Create and return a copy of this pixel object
     def copy(self):
-        return pixel_class(pointer = clink.pixel_copy(self._pointer))
+        return pixel(_pointer = clink.pixel_copy(self._pointer))
 
     # Clone pixel data from another pixel
-    def clone(self, other):
-        clink.pixel_copy_pixel(self._pointer, other._pointer)
+    def clone(self, pixel):
+        clink.pixel_copy_pixel(self._pointer, pixel._pointer)
         return self
 
     # Log pixel information (for debugging)
@@ -123,3 +123,6 @@ class pixel_class:
     # Representation of the pixel object as string
     def __repr__(self):
         return self.get_string()
+
+    def __copy__(self):
+        return self.copy()

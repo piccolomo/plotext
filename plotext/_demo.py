@@ -1,4 +1,4 @@
-from plotext._colorize import colorize_class as colorize
+from plotext._colorize import colorize
 from plotext._methods import *
 from plotext._constants import color_codes, style_codes
 from math import ceil
@@ -41,6 +41,7 @@ def styles():
     eg = colorize('multiple styles are accepted', 'cyan+')
     eg +=", eg: "; eg += colorize(style, style = style)
     eg.print()
+
 
 # def themes():
 #     themes = list(_themes.keys())[::]

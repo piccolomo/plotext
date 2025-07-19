@@ -3,11 +3,11 @@ from plotext._constants import space, new_line
 from plotext.prettydoc._function import function_class
 
 from plotext._methods import * 
-from plotext._colorize import colorize_class
+from plotext._colorize import colorize
 from plotext._correct import correct_class as correct
 
 
-class docs_class:
+class docs:
     def __init__(self, colorless=False, separator=None):
         self._functions = []
         self._colorless = colorless
@@ -48,9 +48,9 @@ class docs_class:
         fun = self._last()
         pixel = fun.doc.get_pixel()
         if fun.get_parameters() == 1:
-            fun.parameters_intro.set(colorize_class('This is its parameter:').set_pixel(pixel))
+            fun.parameters_intro.set(colorize('This is its parameter:').set_pixel(pixel))
         elif fun.get_parameters() == 2:
-            fun.parameters_intro.set(colorize_class('These are its parameters:').set_pixel(pixel))
+            fun.parameters_intro.set(colorize('These are its parameters:').set_pixel(pixel))
         return self
 
     # Add a parameter with name and doc
@@ -79,7 +79,7 @@ class docs_class:
         return self
 
     # Add output specification for the last function
-    def add_output(self, doc=None, type=None):
+    def add_output(self, doc = None, type = None):
         name = self._colorize("Returns", "output.name")
         doc = self._colorize(doc, "output.doc")
         doc.set_string(correct.doc(doc.get_string(1), 0))
@@ -88,6 +88,9 @@ class docs_class:
         out.set_type_label(self._colorize("type", "output.type.label"))
         out.set_separator(self._separator)
         return self
+
+    # def add_output_type(self, type = None):
+
 
     # Add previously defined output from another function
     def add_past_output(self, function):
@@ -116,9 +119,9 @@ class docs_class:
     def _colorize(self, text, component):
         if text is None:
             return None
-        if isinstance(text, colorize_class):
+        if isinstance(text, colorize):
             return text
-        return colorize_class(text).set_pixel(self._get_default_pixel(component))
+        return colorize(text).set_pixel(self._get_default_pixel(component))
 
     # Retrieve default pixel for a component
     def _get_default_pixel(self, component):

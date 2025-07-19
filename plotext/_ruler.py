@@ -5,8 +5,9 @@ from plotext._limits import limits_class
 from plotext._lines import lines_class  # Manages lines associated with the ruler
 
 from plotext._correct import correct_class as correct
-from plotext._default import default_ruler_pixel
+from plotext._derived import *
 from plotext._methods import *
+
 
 class ruler_class:
     def __init__(self):
@@ -14,20 +15,19 @@ class ruler_class:
         self.limits = limits_class()
         self.lines = lines_class()
         self.set_pixel()
-        self.set_default_frequency()
         self.set_frequency()
 
     # Reset ruler to defaults
     def clear(self):
         self.ticks.clear()
         self.limits.clear()
-        self.pixel = default_ruler_pixel
-        self.set_default_frequency()
+        self.set_pixel()
+        self.set_frequency()
         self.lines.clear()
         return self
 
     # Set alignment, direction, scale, and pixel
-    def set(self, frequency = None, scale = None, alignment = None, direction = None, pixel = None):
+    def set(self, frequency = None, scale = None, alignment = None, direction = None, pixel = None, default_frequency = None):
         self.set_frequency(frequency)
         self.set_alignment(alignment)
         self.set_direction(direction)
@@ -38,6 +38,7 @@ class ruler_class:
 
     # Set alignment of limits
     def set_alignment(self, alignment = None):
+        alignment = correct.limits_alignment(alignment)
         self.limits.set_alignment(alignment)
         return self
 
@@ -58,6 +59,7 @@ class ruler_class:
 
     # Set pixel style
     def set_pixel(self, pixel = None):
+        pixel = correct.pixel(pixel, default_ruler_pixel)
         self.pixel = pixel
         return self
 
@@ -66,14 +68,14 @@ class ruler_class:
         self.limits.set(lower, upper)
         return self
 
-    # Set default frequency for ticks
-    def set_default_frequency(self, frequency = None):
-        self.default_frequency = frequency
-        return self
+    # # Set default frequency for ticks
+    # def set_default_frequency(self, frequency = None):
+    #     self.default_frequency = frequency
+    #     return self
 
     # Set frequency for ticks
-    def set_frequency(self, frequency = None):
-        self.frequency = self.default_frequency if frequency is None else frequency
+    def set_frequency(self, frequency = None, default_frequency = None):
+        self.frequency = default_frequency if frequency is None else frequency 
         return self
 
     # Set ticks positions and labels
@@ -162,7 +164,6 @@ class ruler_class:
         self.ticks.clone(ruler.ticks)
         self.limits.clone(ruler.limits)
         self.pixel = ruler.pixel
-        self.default_frequency = ruler.default_frequency
         self.frequency = ruler.frequency
         self.lines.clone(ruler.lines)
         return self
@@ -171,6 +172,19 @@ class ruler_class:
     # String representation of the ruler
     def __repr__(self):
         return self.get_log()
+
+
+class xruler_class(ruler_class):
+    def set_frequency(self, frequency = None):
+        ruler_class.set_frequency(self, frequency, default_xfrequency)
+        return self
+
+
+class yruler_class(ruler_class):
+    def set_frequency(self, frequency = None):
+        ruler_class.set_frequency(self, frequency, default_yfrequency)
+        return self
+
 
 
 

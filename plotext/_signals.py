@@ -1,10 +1,14 @@
 from plotext._methods import *  # For matrix operations
 from plotext._constants import r2  # Axis side constants
+from plotext._signal import signal_class
+from plotext._correct import correct_class as correct
+from plotext._derived import default_marker
 
 
 class signals_class:
     def __init__(self):
         self.clear()
+        self.set_default_marker()
 
     # Clear all stored signals
     def clear(self):
@@ -13,6 +17,14 @@ class signals_class:
     # Add a new signal
     def add(self, signal):
         self.signal.append(signal)
+        return self
+
+    def set_default_marker(self):
+        self.default_marker = default_marker
+        return self
+
+    def update_default_marker(self, marker):
+        self.default_marker._fix(marker)
         return self
 
     # Get number of signals stored
@@ -54,8 +66,22 @@ class signals_class:
             signal.fix_background(pixel)
         return self
 
+    def scatter(self, *args, marker = None, fillx = None, filly = None, xside = None, yside = None, label = None):
+        x, y = correct.data(*args)
+        length = len(x)
+        label = label = f"signal({self.get_length()})" if label is None else label
+        signal = signal_class(x, y, marker, xside, yside, label, self.default_marker)
+        if filly is not None:
+            x, filly = correct.data(x, filly)
+            fillm = m if fillm is None else fillm
+            fillm = correct.markers(fillm, length)
+            signal.set_fill(x, filly, fillm)
+        self.add(signal)
+        return self 
+
+
     # Select signals matching xside and yside criteria
-    def select(self, xside=None, yside=None):
+    def select(self, xside = None, yside = None):
         xside = r2 if xside is None else [xside]
         yside = r2 if yside is None else [yside]
         filtered = [s for s in self.signal if s.xside in xside and s.yside in yside]
@@ -78,7 +104,7 @@ class signals_class:
     def get_log(self):
         log = f"{self.get_length()} Signals \n"
         for i in self.get_range():
-            log += ' ' + self.get(i).get_log() + '\n'
+            log += ' ' + self.get(i).get_log(0) + '\n'
         return log
 
     # String representation returns the log summary

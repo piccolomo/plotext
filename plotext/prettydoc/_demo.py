@@ -1,6 +1,7 @@
 from plotext._correct import correct_class as correct
 from plotext._constants import space, new_line
-from plotext._cimport import *
+from plotext._colorize import colorize
+
 
 # Documentation for PrettyDoc components
 components_doc = {
@@ -23,8 +24,8 @@ components_doc = {
 # Display PrettyDoc components documentation
 def components():
     colorize_class("PrettyDoc Components", style = 'bold').print()
-    out = [colorize_class(el + space, 'cyan+', style = 'default') +
-           colorize_class(correct.docstring(components_doc[el], 0), style = "italic")
+    out = [colorize(el + space, 'cyan+', style = 'default') +
+           colorize(correct.docstring(components_doc[el], 0), style = "italic")
            for el in components_doc]
     out = [el.get_string() for el in out]
     out = new_line.join(out)

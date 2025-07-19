@@ -1,19 +1,23 @@
-from plotext._matrix import matrix_class
+from plotext._matrix import matrix as matrix_class
 from plotext._axes import axes_class
-from plotext._default import default_legend_pixel
 from plotext._methods import *
+from plotext._derived import *
+from plotext._correct import correct_class as correct
 
 
 class legend_class:
     def __init__(self):
-        self.clear()
+        self.axes = axes_class()
+        self.clear_settings()
+        self.clear_signals()
+        self.clear_signals()
+        self.set_pixel() 
+
 
     # Reset legend to initial state
-    def clear(self):
-        self.clear_signals()
-        self.axes = axes_class()
-        self.set_active(False)
-        self.set_pixel()
+    def clear_settings(self,):
+        self.axes.clear_settings()
+        self.set_active()
         self.frame()
         self.set_position()
         self.set_alignment()
@@ -26,8 +30,17 @@ class legend_class:
         self.labels = []
         return self
 
+    def set(self, x = 0, y = 0, relative = False, status = None, ha = None, va = None, pixel = None, xside = None, yside = None):
+        self.set_position(x, y, relative)
+        self.set_active(status)
+        self.set_alignment(ha, va)
+        self.set_pixel(pixel)
+        self.set_axes(xside, yside)
+        return self
+
     # Activate or deactivate the legend
-    def set_active(self, active = True):
+    def set_active(self, active = None):
+        active = default_legend_status if active is None else active
         self.active = active
         return self
 
@@ -37,26 +50,31 @@ class legend_class:
     def disable(self):
         return self.set_active(False)
 
-    # Set pixel style for the legend
-    def set_pixel(self, pixel = default_legend_pixel):
-        self.pixel = pixel
+    # Set pixel, default if none provided
+    def set_pixel(self, pixel = None, default_pixel = None):
+        pixel = correct.pixel(pixel, default_line_pixel)
+        self.pixel = self.axes.pixel = pixel 
         return self
 
     # Set legend position (x, y) and whether position is relative
-    def set_position(self, x = 0, y = 0, relative = False):
-        self.x = x
-        self.y = y
-        self.relative = relative
+    def set_position(self, x = None, y = None, relative = None):
+        self.x = default_legend_x_position if x is None else x
+        self.y = default_legend_y_position if y is None else y
+        self.relative = default_legend_relative if relative is None else relative
         return self
 
     # Set horizontal and vertical alignment
     def set_alignment(self, ha = -1, va = 1):
+        ha = correct.ha(ha)
+        va = correct.va(va)
         self.ha = ha  # horizontal alignment
         self.va = va  # vertical alignment
         return self
 
     # Set axes sides for x and y
     def set_axes(self, xside = 0, yside = 0):
+        xside = correct.side(0, xside)
+        yside = correct.side(1, yside)
         self.xside = xside
         self.yside = yside
         return self
@@ -70,16 +88,19 @@ class legend_class:
         return self.ha, self.va
 
     # Compute absolute position along an axis using scaler and bin count
-    def get_absolute_position(self, axis, scaler, bins):
+    def get_absolute_position(self, axis, ruler, bins):
         col = self.x if axis == 0 else self.y
+        #col = bins - 1 if col is None else col
         side = self.xside if axis == 0 else self.yside
+        #direction = ruler.get_direction()
 
         if self.relative:
-            direction = scaler.get_direction()
-            lim = scaler.get_limits(scaled=True, direction=direction)
-            delta = scaler.get_delta()
-            col = bins - 1 if col is None else col
+            lim = ruler.get_limits(scaled = True, direction = 1)
+            delta = ruler.get_delta()
             col = int(list_methods.rescale(col, *lim, bins, delta))
+
+        #col = bins - 1 - col if direction == -1 else col
+        
         return col
 
     # Set frame style for legend axes
@@ -97,7 +118,7 @@ class legend_class:
     # Compute width of legend (max label length + padding + frame size)
     def get_width(self):
         frame = 4 * self.axes.get(1, 0).status
-        return max((len(el) for el in self.labels), default=0) + 2 + frame
+        return max((len(el) for el in self.labels), default = 0) + 2 + frame
 
     # Compute height of legend (rows plus frame size)
     def get_height(self):
@@ -110,6 +131,8 @@ class legend_class:
 
     # Add a marker-label pair to legend
     def add(self, marker, label):
+        #marker = correct.marker(marker, default_)
+        label = correct.label(label, default_legend_pixel)
         self.markers.append(marker)
         self.labels.append(label)
         return self
@@ -194,7 +217,7 @@ class legend_class:
         align = f"ha = {self.ha}, va = {self.va}"
         axes = f"xside = {self.xside}, yside = {self.yside}"
         count = self.get_length()
-        out = f"Legend {state}, length {count}, pos = {pos}, {align}, {axes}, {self.pixel}"
+        out = f"Legend {state}, length {count}, pos = {pos}, {align}, {axes}, {self.pixel},  axis status {self.axes.get(0).status}, axes style {self.axes.get(0).style}"
         for i in self.get_range():
             out += f"\n {self.markers[i]} {self.labels[i]}"
         return out

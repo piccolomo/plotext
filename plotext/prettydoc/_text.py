@@ -51,6 +51,9 @@ class text_class:
         out.set(self.get())
         return out
 
+    def __repr__(self):
+        return "PrettyText: " + self.get_string()
+
 
 
 # Class for managing labeled text (label + value)

@@ -1,15 +1,16 @@
-from plotext._cimport import *
+from plotext._clink import clink, wstring, wchar
 from plotext._constants import hd_markers
+from plotext._pixel import pixel as pixel_class
 
 
-class marker_class:
+class marker:
     # Initialize marker with style, colors, and optional pointer
-    def __init__(self, marker = 'hd', foreground = 'default', background = 'default', style = 'default', pointer = None):
-        if pointer is not None:
-            self._pointer = pointer
+    def __init__(self, marker = 'hd', foreground = 'default', background = 'default', style = 'default', _pointer = None):
+        if _pointer is not None:
+            self._pointer = _pointer
         else:
-            pixel = pixel_class(foreground, background, style)
-            p = pixel._pointer
+            px = pixel_class(foreground, background, style)
+            p = px._pointer
             marker = default_marker if marker is None else marker
             marker = hd_markers.index(marker) + 1 if marker in hd_markers else str(marker)[0]
             if isinstance(marker, str):
@@ -21,6 +22,11 @@ class marker_class:
     def __del__(self):
         clink.marker_delete(self._pointer)
 
+    # Fix marker by copying from another pixel's pointer
+    def _fix(self, pixel):
+        clink.marker_fix(self._pointer, pixel._pointer)
+        return self
+
     # Get marker model character
     def get_model(self):
         p = clink.marker_get_model(self._pointer)
@@ -29,7 +35,7 @@ class marker_class:
 
     # Get associated pixel object
     def get_pixel(self):
-        return pixel_class(pointer = clink.marker_get_pixel(self._pointer))
+        return pixel_class(_pointer = clink.marker_get_pixel(self._pointer))
 
     # Get string representation of the marker
     def get_string(self):
@@ -40,7 +46,7 @@ class marker_class:
 
     # Return a copy of this marker
     def copy(self):
-        return marker_class(pointer = clink.marker_copy(self._pointer))
+        return marker(_pointer = clink.marker_copy(self._pointer))
 
     def __copy__(self):
         return self.copy()

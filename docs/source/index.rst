@@ -35,8 +35,9 @@ documentation
    :caption: Contents:
 
    install
-   utilities
+   basic
    colorize
+   utilities
    prettydoc
    changelog
    future

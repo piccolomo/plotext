@@ -27,11 +27,13 @@ class limits_class:
 
     # Set alignment for limits
     def set_alignment(self, alignment = "center"):
+
         self.alignment = alignment
         return self
 
     # Set direction for limits
     def set_direction(self, direction = 1):
+        direction = correct.limits_direction(direction)
         self.direction = direction
         return self
 
@@ -42,6 +44,7 @@ class limits_class:
 
     # Set scale for limits
     def set_scale(self, scale = "linear"):
+        scale = correct.scale(scale)
         self.scale = scale
         return self
 

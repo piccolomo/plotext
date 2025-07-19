@@ -1,17 +1,18 @@
 from plotext._methods import *
-from plotext._cimport import *
+from plotext._clink import clink, wstring
+from plotext._pixel import pixel
 
 
-class colorize_class():
+class colorize:
     
     # Initialize colorize object with optional string and pixel styling
-    def __init__(self, string = None, foreground = None, background = None, style = None, pointer = None):
-        if pointer is None:
+    def __init__(self, string = None, foreground = None, background = None, style = None, _pointer = None):
+        if _pointer is None:
             string = '' if string is None else str(string)
-            px = pixel_class(foreground, background, style)
+            px = pixel(foreground, background, style)
             self._pointer = clink.colorize_new(wstring(str(string)), px._pointer)
         else:
-            self._pointer = pointer
+            self._pointer = _pointer
 
     # Cleanup colorize object
     def __del__(self):
@@ -25,7 +26,7 @@ class colorize_class():
 
     # Set string content, preserving current pixel style
     def set_string(self, string):
-        new = colorize_class(string).set_pixel(self.get_pixel())
+        new = colorize(string).set_pixel(self.get_pixel())
         return self.clone(new)
 
     # Get length of colorized string
@@ -34,12 +35,12 @@ class colorize_class():
 
     # Get pixel associated with colorize object
     def get_pixel(self):
-        return pixel_class(pointer = clink.colorize_get_pixel(self._pointer))
+        return pixel(_pointer = clink.colorize_get_pixel(self._pointer))
 
     # Get matrix representation of the colorized string
     def get_matrix(self):
-        from plotext._matrix import matrix_class
-        return matrix_class(pointer = clink.colorize_get_matrix(self._pointer))
+        from plotext._matrix import matrix
+        return matrix(_pointer = clink.colorize_get_matrix(self._pointer))
 
     # Retrieve the string; optionally remove colors
     def get_string(self, colorless = False):
@@ -56,26 +57,26 @@ class colorize_class():
 
     # Create a copy of this colorize object
     def copy(self):
-        return colorize_class(pointer = clink.colorize_copy(self._pointer))
+        return colorize(_pointer = clink.colorize_copy(self._pointer))
 
     # Get substring of the colorized string
     def _part(self, start, stop):
-        return colorize_class(pointer = clink.colorize_part(self._pointer, start, stop))
+        return colorize(_pointer = clink.colorize_part(self._pointer, start, stop))
 
     # Horizontally stack with another string or colorize object
-    def hstack(self, string, adapt = True):
-        string = colorize_class(string) if isinstance(string, str) else string
-        return self.get_matrix().hstack(string.get_matrix(), adapt)
+    def hstack(self, colorized, adapt = True):
+        #string = colorize(string) if isinstance(string, str) else string
+        return self.get_matrix().hstack(colorized.get_matrix(), adapt)
 
     # Vertically stack with another string or colorize object
-    def vstack(self, string, adapt = True):
-        string = colorize_class(string) if isinstance(string, str) else string
-        return self.get_matrix().vstack(string.get_matrix(), adapt)
+    def vstack(self, colorized, adapt = True):
+        #string = colorize(string) if isinstance(string, str) else string
+        return self.get_matrix().vstack(colorized.get_matrix(), adapt)
 
     # Clone from another string or colorize object
-    def clone(self, string):
-        string = colorize_class(string) if isinstance(string, str) else string
-        clink.colorize_copy_from(self._pointer, string._pointer)
+    def clone(self, colorized):
+        #string = colorize(string) if isinstance(string, str) else string
+        clink.colorize_copy_from(self._pointer, colorized._pointer)
         return self
 
     # Check if no background set
@@ -116,7 +117,7 @@ class colorize_class():
 
     # Equality comparison
     def __eq__(self, string):
-        string = colorize_class(string) if isinstance(string, str) else string
+        string = colorize(string) if isinstance(string, str) else string
         return clink.colorize_equals(self._pointer, string._pointer)
 
     # Copy protocol

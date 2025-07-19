@@ -21,11 +21,14 @@ class line_class:
 
     # Set the style (e.g., 'default', 'double')
     def set_style(self, style):
+        style = correct.line_style(style)
         self.style = style
         return self
 
     # Set the pixel (rendering style)
     def set_pixel(self, pixel = None):
+        pixel = correct.pixel(pixel, default_lines_pixel)
+
         self.pixel = pixel
 
 

@@ -11,13 +11,12 @@ plotext
 
 The `plotext` module is the main package, offering various tools for creating visual representations in the terminal.
 
-.. autofunction:: plotext.colors
-.. autofunction:: plotext.styles
-.. autofunction:: plotext.sin
+
 
 .. autoclass:: plotext.pixel
-
-.. autofunction:: plotext.pixel.set
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 .. autoclass:: plotext.colorize
    :members:
@@ -30,6 +29,14 @@ The `plotext` module is the main package, offering various tools for creating vi
    :members:
    :undoc-members:
    :show-inheritance:
+
+.. autofunction:: plotext.scatter
+
+.. autofunction:: plotext.colors
+.. autofunction:: plotext.styles
+.. autofunction:: plotext.test
+.. autofunction:: plotext.sin
+
 
 .. _prettydoc_api:
 
@@ -44,3 +51,4 @@ The `prettydoc` module is responsible for managing and customizing docstring for
    :show-inheritance:
 
 .. autofunction:: plotext.prettydoc.components
+.. autofunction:: plotext.prettydoc.test

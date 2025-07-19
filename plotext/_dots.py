@@ -1,4 +1,4 @@
-from plotext._cimport import *
+from plotext._clink import clink
 
 
 class dots_class:

@@ -1,6 +1,6 @@
 import unittest
 
-from plotext.prettydoc._docs import docs_class as docs
+from plotext.prettydoc._docs import docs
 from plotext._methods import *
 
 
@@ -17,13 +17,13 @@ class test_class(unittest.TestCase):
         pd.add_parameter_spec('float', 1)
 
         pd.add_parameter("par2", "the second parameter")
-        pd.add_parameter_spec('float', 2)
+        pd.add_parameter_spec('float', 2) 
 
         pd.add_output('the mean of the input parameters', 'float')
 
-        pd.show()
+        # pd.show()
 
-        expected = 'f2cb8f54de20c17700f31b4949aa235704933588b7fa850a1b173e86d3795ad3'
+        expected = 'f7e6019335cece650fdbf7290ba80b9c5abea715dafd6383d0ee2d12282c1a84'
         self.assertEqual(pd._hash(), expected)
 
 

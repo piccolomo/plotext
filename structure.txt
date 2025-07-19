@@ -1,0 +1,30 @@
+init
+	system
+	pixel 
+		clink
+	colorize
+		clink, colorize
+	matrix
+		clink, pixel
+	marker
+	core
+		terminal
+		
+	demo
+		methods
+	
+	test
+	doc
+		init (no circular issue)
+	
+	preetydoc
+		docs
+			pixels
+			functions
+				test
+				parameter
+		demo
+		test
+		doc
+			docs (no circular issue)
+		

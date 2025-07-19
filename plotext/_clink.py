@@ -66,6 +66,7 @@ clink.add('pixel', 'no', 'background').input(void).output(bool)
 clink.add('pixel', 'copy', 'background').input(void, void).output(void)
 clink.add('pixel', 'copy', 'pixel').input(void, void).output(void)
 clink.add('pixel', 'fix', 'background').input(void, void).output(void)
+clink.add('pixel', 'fix').input(void, void).output(void)
 
 # Add colorize-related functions to link
 clink.add('colorize', 'new').input(wstring, void).output(void)
@@ -116,6 +117,7 @@ clink.add('marker', 'copy').input(void).output(void)
 clink.add('marker', 'get', 'wstring').input(void).output(cstring)
 clink.add('marker', 'get', 'model').input(void).output(cstring)
 clink.add('marker', 'get', 'pixel').input(void).output(void)
+clink.add('marker', 'fix').input(void, void).output(void)
 
 # Add point-related functions to link
 clink.add('point', 'new').input(float, float, void).output(void)

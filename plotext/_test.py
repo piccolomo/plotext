@@ -1,5 +1,5 @@
 import unittest
-from plotext._core import *
+from plotext import *
 from plotext._methods import object_methods
 
 

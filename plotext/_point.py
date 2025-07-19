@@ -1,4 +1,5 @@
-from plotext._cimport import *
+from plotext._clink import clink, wstring
+from plotext._marker import marker as marker_class
 
 
 # Point class representing a graphical point with coordinates and an associated marker
@@ -35,7 +36,7 @@ class point_class:
 
     # Get marker object associated with this point
     def get_marker(self):
-        return marker_class(pointer = clink.point_get_marker(self._pointer))
+        return marker_class(_pointer = clink.point_get_marker(self._pointer))
 
     def __repr__(self):
         return self.get_string()

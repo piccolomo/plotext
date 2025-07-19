@@ -110,7 +110,7 @@ public:
       size_t length = 0;
       to_buffer(buffer, length);
       cstring_to_buffer(L"Pixel", buffer, length);
-      cstring_to_buffer(ansi_end, buffer, length);
+      if (not no_color()){cstring_to_buffer(ansi_end, buffer, length);}
       return wstring(buffer);}
 
   // Log the pixel information
@@ -133,6 +133,7 @@ extern "C" {
   void pixel_copy_background(Pixel * p, Pixel * p2) noexcept {p->copy_background(*p2);}
   void pixel_copy_pixel(Pixel * p, Pixel * p2) noexcept {p->copy_pixel(*p2);}
   void pixel_fix_background(Pixel * p, Pixel * pixel) noexcept {p->fix_background(*pixel);}
+  void pixel_fix(Pixel * p, Pixel * pixel) noexcept {p->fix(*pixel);}
   void pixel_set_style_code(Pixel * p, char * code) noexcept {p->set_style(code);}
   void pixel_print(const Pixel * p) noexcept {p->print();}
   const wchar_t * pixel_get_wstring(const Pixel * c) noexcept {return wstring_to_cstring(c->get_wstring());}

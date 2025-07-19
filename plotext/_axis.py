@@ -1,7 +1,7 @@
-from plotext._colorize import colorize_class as colorize
-from plotext._default import default_axis_pixel
+from plotext._colorize import colorize
 from plotext._symbols import *
-
+from plotext._correct import correct_class as correct
+from plotext._derived import *
 
 class axis_class:
     # Initialize axis with axis and side
@@ -10,16 +10,10 @@ class axis_class:
         self.set()
         self.update_tick()
 
-    # Reset axis properties to defaults
-    def clear(self):
-        self.set_status()
-        self.set_style()
-        self.pixel.clone(default_axis_pixel)
-        self.update_tick()
-        return self
-
     # Set axis and side attributes
     def set_axis(self, axis = 0, side = 0):
+        # axis = correct.axis(axis)
+        # side = correct.single_side(axis, side)
         self.axis = axis
         self.side = side
         return self
@@ -31,19 +25,27 @@ class axis_class:
         self.set_pixel(pixel)
         return self
 
+    def clear_settings(self):
+        self.set_status()
+        self.set_style()
+        return self
+
     # Set axis active status
     def set_status(self, status = True):
+        status = correct.status(status, default_axis_status)
         self.status = status
         return self
 
     # Set style of axis symbols
     def set_style(self, style = None):
+        style = correct.axis_style(style)
         self.style = style
         return self
 
     # Set pixel, default if none provided
-    def set_pixel(self, pixel = None):
-        self.pixel = default_axis_pixel if pixel is None else pixel
+    def set_pixel(self, pixel = None, default_pixel = None):
+        pixel = correct.pixel(pixel, default_ruler_pixel)
+        self.pixel = pixel
         return self
 
     # Update tick symbol based on axis and side

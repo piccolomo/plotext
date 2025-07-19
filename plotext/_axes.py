@@ -1,5 +1,7 @@
 from plotext._axis import axis_class
 from plotext._constants import r2
+from plotext._correct import correct_class as correct
+from plotext._derived import *
 
 
 class axes_class:
@@ -9,16 +11,28 @@ class axes_class:
         self.yaxis = [axis_class(1, 0), axis_class(1, 1)]
 
     # Clear all axes
-    def clear(self):
-        self.get(0, 0).clear()
-        self.get(0, 1).clear()
-        self.get(1, 0).clear()
-        self.get(1, 1).clear()
+    def clear_settings(self):
+        self.get(0, 0).clear_settings()
+        self.get(0, 1).clear_settings()
+        self.get(1, 0).clear_settings()
+        self.get(1, 1).clear_settings()
+        return self
+
+    def set(self, status = None, style = None, pixel = None, axis = 0, side = 0):
+        axis = correct.axis(axis)
+        sides = correct.sides(axis, side)
+        [self.get(axis, side).set(status, style, pixel) for side in sides]
         return self
 
     # Set frame status, style, and pixel for all axes
     def frame(self, frame = True, style = None, pixel = None):
         [self.get(axis, side).set_status(frame).set_style(style).set_pixel(pixel) for axis in r2 for side in r2]
+        return self
+
+    # Set default frequencies for x and y rulers
+    def set_pixel(self, pixel = None):
+        [el.set_pixel(pixel) for el in self.xaxis]
+        [el.set_pixel(pixel) for el in self.yaxis]
         return self
 
     # Get axis object based on axis and side

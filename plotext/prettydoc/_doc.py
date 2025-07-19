@@ -1,5 +1,5 @@
 from plotext.prettydoc import * 
-from plotext.prettydoc._docs import docs_class as docs  # Import all core functions and classes
+#from plotext._doc import type
 
 # Create an instance of the docs class with specific separator
 pd = docs(1, ': ')  
@@ -16,123 +16,110 @@ out = pd.add_output  # Method to add output documentation
 past_out = pd.add_past_output  # Method to add past output to the function
 
 
-class type:  # Class defining different data types for documentation
-    bool = 'bool'  # Boolean type
+class type:
+    float = 'float'; 
+    floats = 'a list of float numbers'; 
+    int = 'int'; 
+    bool = 'bool'; 
+    string = 'a string'
+    tuple = 'a tuple'
+
+    pixel = "plotext.pixel"
+    colorize = "plotext.colorize"
+    matrix = "plotext.matrix"
+
+    color = "a string color code, an integer (lower than 256) or a tuple of 3 integers (each lower than 256)"
+    style = 'a style code string'
+
+    alignment = "a string or an integer"
+
+    data = "one or two lists of numbers"
+    marker = "a character, a marker code, a plotext.marker() object, or a list thereof"
+    yside = "'left' (0 in short) or 'right' (1 in short)"
+    xside = "'lower' (0 in short) or 'upper' (1 in short)"
+    label = 'a string or colorize object'
+
+
+
     docs = 'plotext.prettydoc.docs'  # PrettyDoc class
-    string = 'string'  # String type
-    function = 'function'  # Function type
-    colorize_plus = "plotext.colorize or string"  # Colorize plus type
+    function = 'a python function'  # Function type
 
-    float = 'float'  # Float type
-    floats = 'floats'  # Floats type
-    int = 'int'  # Integer type
-
-    pixel = "plotext.pixel"  # Pixel type in plotext
-    colorize = "plotext.colorize"  # Colorize type
-    matrix = "plotext.matrix"  # Matrix type
-    matrix_plus = "plotext.matrix or plotext.colorize or a string"  # Matrix or colorize or string type
-    color = "string color code, integer (lower than 256), a tuple of 3 integers (each lower than 256)"  # Color type
-    alignment = "string or integer"  # Alignment type
 
 class message:  # Class for message components in PrettyDoc
+    colors = "access the plotext.colors() method for the available color codes."
+    styles = "access the plotext.styles() method for the available style codes."
     components = "Access the plotext.prettydoc.components() method for the available components."  # Message for accessing PrettyDoc components
 
-# Adding function documentation to PrettyDoc instance
-add(docs, 'docs')  
-doc("An object of this class is used to add beautiful docstrings to your functions.")
-par("colorless", "Determines whether the function docstrings should be colorless. Regardless of this parameter, the colored version is registered as an attribute (named after the function) of the class object")  
-spec(type.bool, False)  # Specifying the type for 'colorless' parameter
-par("separator", "specifies the separator between fields like parameter name and its description, etc.")  
-spec(type.string, repr(" "))  # Specifying the type for 'separator' parameter
-out("itself", type.docs)  # Adding output documentation
 
-# Adding documentation for set_default_pixel method
-add(docs.set_default_pixel, 'docs.set_default_pixel')  
-doc("It allows to change the default coloring of a specific prettydoc docstring component.")
-par("component", "Specifies which component to change the coloring of; " + message.components)  
-spec(type.string)  # Specifying type for 'component'
-out("itself, updated", type.docs)  # Adding output documentation
+add(docs)
+doc("Initializes a PrettyDoc object to create and manage visually enhanced docstrings for functions and classes.")
+par("colorless", "Specifies whether the function docstrings should exclude color formatting. The colored version is always stored as an attribute (named after the function) of this class object."); spec(type.bool, False)
+par("separator", "Defines the separator used between fields, such as parameter names and their descriptions."); spec(type.string, repr(" "))
+out("The PrettyDoc object itself", type.docs)
 
-# Adding documentation for components method
-add(components, 'components')  
-doc("It displays the available docstring components, which can be modified using the plotext.prettydoc.docs().set_default_pixel() method.")
+add(docs.set_default_pixel)
+doc("Configures the default color and style settings for a specific PrettyDoc docstring component.")
+par("component", "Identifies the docstring component to modify; available components can be retrieved via " + message.components)
+spec(type.string)
+out("The updated PrettyDoc object", type.docs)
 
-# Adding documentation for add_function method
-add(docs.add_function, 'docs.add_function')  
-doc("It adds a function to the docs() object. Once the function all subsequent methods will refer to the last function added. Finally use the docs.update() method to process and register the docstrings.")
-par("function", "The function to which the pretty docstring will be added.")
-par("name", "The name of the function. If None, it defaults to the function’s __qualname__ attribute.")  
-spec("a function", "None")  # Specifying type for 'function'
-past_out("docs.set_default_pixel")  # Adding output from past method
+add(components)
+doc("Lists the available docstring components that can be customized using the plotext.prettydoc.docs().set_default_pixel() method.")
 
-# Adding documentation for add_doc method
-add(docs.add_doc, 'docs.add_doc')  
-doc("It adds the documentation body to the last function.")
-par("doc", "the documentation describing the function")  
-spec(type.colorize_plus)  # Specifying type for 'doc'
-past_out("docs.set_default_pixel")  # Adding output from past method
+add(docs.add_function)
+doc("Registers a function with the PrettyDoc object for docstring customization. All subsequent method calls will apply to the most recently added function until docs.update() is called to finalize and register the docstrings.") 
+par("function", "The function to which the customized docstring will be applied.")
+par("name", "The name for the function. If not provided, defaults to the function’s __qualname__ attribute."); spec(type.function)
+past_out("docs.set_default_pixel")
 
-# Adding documentation for add_alias method
-add(docs.add_alias, 'docs.add_alias')  
-doc("It adds an alias to the last function.")
-par("alias", "the name of the alias")  
-spec(type.colorize_plus)  # Specifying type for 'alias'
-past_out("docs.set_default_pixel")  # Adding output from past method
+add(docs.add_doc)
+doc("Appends a main documentation description to the most recently added function.")
+par("doc", "The descriptive text for the function’s purpose and behavior."); spec(type.label)
+past_out("docs.set_default_pixel")
 
-# Adding documentation for add_parameter method
-add(docs.add_parameter, 'docs.add_parameter')  
-doc("It adds a parameter to the last function.")
-par("name", "the name of the parameter")  
-spec(type.colorize_plus)  # Specifying type for 'name'
-par("doc", "its main description")  
-spec(type.colorize_plus)  # Specifying type for 'doc'
-past_out("docs.set_default_pixel")  # Adding output from past method
+add(docs.add_alias)
+doc("Assigns an alias name to the most recently added function.")
+par("alias", "The alias name to associate with the function."); spec(type.label)
+past_out("docs.set_default_pixel")
 
-# Adding documentation for add_parameter_spec method
-add(docs.add_parameter_spec, 'docs.add_parameter_spec')  
-doc("It adds the type and default specification to the last parameter added.")
-par("type", "its type")  
-spec(type.colorize_plus)  # Specifying type for 'type'
-par("default", "its default value")  
-spec(type.colorize_plus)  # Specifying type for 'default'
-past_out("docs.set_default_pixel")  # Adding output from past method
+add(docs.add_parameter)
+doc("Adds a parameter description to the most recently added function.")
+par("name", "The name of the parameter to document."); spec(type.label)
+par("doc", "The detailed description of the parameter’s purpose."); spec(type.label)
+past_out("docs.set_default_pixel")
 
-# Adding documentation for add_past_parameter method
-add(docs.add_past_parameter, 'docs.add_past_parameter')  
-doc("It adds a parameter from a previously added function to the current one.")
-par("name", "the name of the parameter")  
-spec(type.colorize_plus)  # Specifying type for 'name'
-par("function", "the past function name")  
-spec(type.colorize_plus)  # Specifying type for 'function'
-past_out("docs.set_default_pixel")  # Adding output from past method
+add(docs.add_parameter_spec)
+doc("Specifies the type and default value for the most recently added parameter.")
+par("type", "The data type of the parameter."); spec(type.label)
+par("default", "The default value of the parameter, if applicable."); spec(type.label, None)
+past_out("docs.set_default_pixel")
 
-# Adding documentation for add_output method
-add(docs.add_output, 'docs.add_output')  
-doc("It adds the output documentation to the last function.")
-par("type", "the output type")  
-spec(type.colorize_plus)  # Specifying type for 'type'
-par("doc", "the output main description")  
-spec(type.colorize_plus)  # Specifying type for 'doc'
-past_out("docs.set_default_pixel")  # Adding output from past method
+add(docs.add_past_parameter)
+doc("Copies a parameter’s details from a previously documented function to the current function.")
+par("name", "The name of the parameter to copy."); spec(type.label)
+par("function", "The name of the previously documented function containing the parameter."); spec(type.string)
+past_out("docs.set_default_pixel")
 
-# Adding documentation for add_past_output method
-add(docs.add_past_output, 'docs.add_past_output')  
-doc("It adds the output details from a previously added function to the current one.")
-past("function", "docs.add_past_parameter")  # Using past function for 'function'
-past_out("docs.set_default_pixel")  # Adding output from past method
+add(docs.add_output)
+doc("Documents the output details for the most recently added function.")
+par("type", "The data type of the function’s output."); spec(type.label)
+par("doc", "A description of the function’s output."); spec(type.label)
+past_out("docs.set_default_pixel")
 
-# Adding documentation for update method
-add(docs.update, 'docs.update')  
-doc("It processes and updates the function docstrings.")
-past_out("docs.set_default_pixel")  # Adding output from past method
+add(docs.add_past_output)
+doc("Copies output details from a previously documented function to the current function.")
+past("function", "docs.add_past_parameter")
+past_out("docs.set_default_pixel")
 
-# Adding documentation for show method
-add(docs.show, 'docs.show')  
-doc("It displays all the docstrings with color formatting.")
-past_out("docs.set_default_pixel")  # Adding output from past method
+add(docs.update)
+doc("Finalizes and applies the customized docstrings to all registered functions.")
+past_out("docs.set_default_pixel")
 
-# Adding documentation for test method
-add(test, 'test')  
-doc("It performs unit tests for the prettydoc module.")
+add(docs.show)
+doc("Renders all registered docstrings with their color and style formatting.")
+past_out("docs.set_default_pixel")
 
-pd.update()  # Update the PrettyDoc instance with all added documentation
+add(test, 'test')
+doc("Executes unit tests to validate the functionality of the PrettyDoc module.")
+
+pd.update()

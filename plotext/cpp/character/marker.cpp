@@ -61,5 +61,7 @@ extern "C" {
     const wchar_t * marker_get_wstring(Marker * c) noexcept {return wstring_to_cstring(c->get_wstring());}
     wchar_t marker_get_model(Marker * cs) noexcept {return cs->get_model();}
     Pixel * marker_get_pixel(Marker * cs) noexcept {return new Pixel(cs->get_pixel());}
+    void marker_fix(Marker * p, Pixel * pixel) noexcept {p->fix(*pixel);}
+
 
 }

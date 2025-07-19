@@ -33,6 +33,18 @@ class terminal_class:
             # fallback defaults if terminal size cannot be determined
             return default_terminal_prompt_height, default_terminal_prompt_height
 
+    def get_parent(self, level = None):
+        return None
+
+    def _is_terminal(self):
+        return True
+
+    def _is_master(self):
+        return True
+
+    def _is_sub_master(self):
+        return False
+
     # Set prompt height (default or custom)
     def set_prompt_height(self, height = None):
         self.prompt_height = default_terminal_prompt_height if height is None else int(height)
@@ -49,7 +61,22 @@ class terminal_class:
 
     # Create a plot master object for the terminal
     def _create_master(self):
-        self.master = plot_class()
+        self._master = plot_class(parent = self)
+        self._master._set_size(*self._size)
+        #self.master.set_active(self.master)
+
+    def get_master(self):
+        return self._master
+
+    def get_log(self):
+        out = str(self)
+        out += '\n└─' + self._master.get_log()
+        return out
+
+    # Print the log string
+    def log(self):
+        print(self.get_log())
+        return self
 
     # String representation of the terminal object
     def __repr__(self):

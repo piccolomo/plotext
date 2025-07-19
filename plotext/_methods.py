@@ -79,8 +79,8 @@ class string_methods:
     # Remove ANSI color codes from a string or colorize object
     @staticmethod
     def uncolorize(string):
-        from plotext._colorize import colorize_class
-        if isinstance(string, colorize_class):
+        from plotext._colorize import colorize
+        if isinstance(string, colorize):
             return string.get_string(1)
         colored = lambda string: ansi_begin in string
         while colored(string):

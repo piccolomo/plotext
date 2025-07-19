@@ -8,86 +8,113 @@ from plotext._signal import signal_class
 from plotext._signals import signals_class
 from plotext._legend import legend_class
 
+
 from plotext._correct import correct_class as correct
-from plotext._default import default_canvas_pixel, default_lines_pixel, default_legend_pixel
+from plotext._derived import default_canvas_pixel
 from plotext._constants import r2
 from plotext._matrix import join_matrices
-from time import time
+from plotext._timer import timer_class
 
 
 class plot_class(plot_build_class, subplot_class):
 
-    def __init__(self):
-        self.parts = parts_class()
-        self.labels = labels_class()
-        self.rulers = rulers_class()
-        self.axes = axes_class()
-        self.signals = signals_class()
+    def __init__(self, parent):
+        self._parts = parts_class()
+        self._labels = labels_class()
+        self._rulers = rulers_class()
+        self._axes = axes_class()
+        self._signals = signals_class()
         self._legend = legend_class()
+        self._timer = timer_class()
         
-        subplot_class.__init__(self)
+        subplot_class.__init__(self, parent)
         plot_build_class.__init__(self)
 
-        self.canvas_pixel()
+        self.clear()
 
 
     # Subplot handling methods
 
     def subplots(self, rows = None, cols = None):
-        subplot_class.subplots(self, rows, cols)
-        if self.has_subplots():
-            [self.get_subplot(*pos).clone(self) for pos in self.get_slots_range()]
+        subplot_class._subplots(self, rows, cols)
+        if self._has_subplots():
+            [self._get_subplot(*pos)._clone(self) for pos in self._get_slots_range()]
+        return self
+
+    def clear_size(self):
+        self._parts.clear()
+        subplot_class._clear(self)
+        if self._has_subplots():
+            [self._get_subplot(*pos).clear_size() for pos in self._get_slots_range()]
+        return self
+
+    def clear_data(self):
+        self._signals.clear()
+        self._legend.clear_signals()
+        if self._has_subplots():
+            [self._get_subplot(*pos).clear_data() for pos in self._get_slots_range()]
+        return self
+
+    def clear_settings(self):
+        self._rulers.clear()
+        self._axes.clear_settings()
+        self._labels.clear()
+        self._legend.clear_settings()
+
+        self._rulers.set_xfrequency()
+        self._rulers.set_yfrequency()
+
+        if self._has_subplots():
+            [self._get_subplot(*pos).clear_settings() for pos in self._get_slots_range()]
+        return self
+
+    def clear_pixels(self):
+        self._labels.set_pixel()
+        self._rulers.set_pixel()
+        self._axes.set_pixel()
+        self._legend.set_pixel()
+        self.canvas_pixel()
+        self._signals.set_default_marker().update_default_marker(self._canvas_pixel)
+        if self._has_subplots():
+            [self._get_subplot(*pos).clear_size() for pos in self._get_slots_range()]
         return self
 
     def clear(self):
-        self.parts.clear()
-        self.labels.clear()
-        self.rulers.clear()
-        self.axes.clear()
-        self.signals.clear()
-        self._legend.clear()
-        subplot_class.clear(self)
+        self.clear_size()
+        self.clear_data()
+        self.clear_settings()
+        self.clear_pixels()
         return self
 
-    def clone(self, plot):
-        self.labels.clone(plot.labels)
-        self.rulers.clone(plot.rulers)
-        self.axes.clone(plot.axes)
-        self.signals.clone(plot.signals)
-        self.legend.clone(plot.legend)
+    def _clone(self, plot):
+        self._labels.clone(plot._labels)
+        self._rulers.clone(plot._rulers)
+        self._axes.clone(plot._axes)
+        self._signals.clone(plot._signals)
+        self._legend.clone(plot._legend)
         return self
 
 
     # Size and label setters
 
-    def set_size(self, width = None, height = None):
-        subplot_class.set_size(self, width, height)
-        self.parts.set_size(*self.get_size())
+    def _set_size(self, width = None, height = None):
+        subplot_class._set_size(self, width, height)
+        self._parts.set_size(*self.get_size())
         return self
-
-
-
-     # Ruler and axis setters
-
-
 
 
     # Additional setters
 
     def title(self, title = None):
-        title = correct.label(title)
-        self.labels.set_title(title)
-        if self.has_subplots():
-            [self.get_subplot(*pos).title(title) for pos in self.get_slots_range()]
+        self._labels.set_title(title)
+        if self._has_subplots():
+            [self._get_subplot(*pos).title(title) for pos in self._get_slots_range()]
         return self
 
     def _set_label(self, label = None, axis = 0, side = 0):
-        sides = correct.sides(axis, side)
-        label = correct.label(label)
-        if label is not None: 
-            [self.labels.set_label(axis, side, label) for side in sides] 
-        if self.has_subplots():
-            [self.get_subplot(*pos).xlabel(label, side) for pos in self.get_slots_range()]
+        self._labels.set_label(axis, side, label) 
+        if self._has_subplots():
+            [self._get_subplot(*pos).xlabel(label, side) for pos in self._get_slots_range()]
         return self
 
 
@@ -100,8 +127,8 @@ class plot_class(plot_build_class, subplot_class):
 
     def _set_lim(self, left = None, right = None, axis = 0, side = 0):
         self.rulers.get(axis, side).set_limits(left, right)
-        if self.has_subplots():
-            [self.get_subplot(*pos).xlim(left, right) for pos in self.get_slots_range()]
+        if self._has_subplots():
+            [self._get_subplot(*pos).xlim(left, right) for pos in self._get_slots_range()]
         return self
 
     def xlim(self, left = None, right = None, side = 0):
@@ -111,14 +138,9 @@ class plot_class(plot_build_class, subplot_class):
         return self._set_lim(lower, upper, 1, side)
 
     def _set_ruler(self, frequency = None, scale = None, alignment = None, direction = None, pixel = None, axis = 0, side = 0):
-        sides = correct.sides(axis, side)
-        alignment = correct.limits_alignment(alignment)
-        direction = correct.limits_direction(direction)
-        scale = correct.scale(scale)
-        pixel = correct.ruler_pixel(pixel)
-        [self.rulers.get(axis, side).set(frequency = frequency, alignment = alignment, direction = direction, scale = scale, pixel = pixel) for side in sides]
-        if self.has_subplots():
-            [self.get_subplot(*pos).set_ruler(requency = frequency, axis = axis, side = side, alignment = alignment, direction = direction, scale = scale, pixel = pixel) for pos in self.get_slots_range()]
+        self._rulers.set(frequency = frequency, alignment = alignment, direction = direction, scale = scale, pixel = pixel, axis = axis, side = side)
+        if self._has_subplots():
+            [self._get_subplot(*pos)._set_ruler(frequency = frequency, axis = axis, side = side, alignment = alignment, direction = direction, scale = scale, pixel = pixel) for pos in self._get_slots_range()]
         return self
 
     def xruler(self, frequency = None, scale = None, alignment = None, direction = None, pixel = None, side = 0):
@@ -127,11 +149,10 @@ class plot_class(plot_build_class, subplot_class):
     def yruler(self, frequency = None, scale = None, alignment = None, direction = None, pixel = None, side = 0):
         return self._set_ruler(frequency = frequency, alignment = alignment, direction = direction, scale = scale, pixel = pixel, axis = 1, side = side)
 
-
     def _set_ticks(self, ticks = None, labels = None, axis = 0, side = 0):
-        self.rulers.get(axis, side).set_ticks(positions = ticks, labels = labels)
-        if self.has_subplots():
-            [self.get_subplot(*pos).xticks(ticks = ticks, labels = labels, side = side) for pos in self.get_slots_range()]
+        self.rulers.set_ticks(axis = axis, side = side, positions = ticks, labels = labels)
+        if self._has_subplots():
+            [self._get_subplot(*pos)._set_ticks(ticks = ticks, labels = labels, axis = axis, side = side) for pos in self._get_slots_range()]
         return self
 
     def xticks(self, ticks = None, labels = None, side = 0):
@@ -140,15 +161,10 @@ class plot_class(plot_build_class, subplot_class):
     def yticks(self, ticks = None, labels = None, side = 0):
         return self._set_ticks(ticks = ticks, labels = labels, axis = 1, side = side)
 
-
-
     def _set_axis(self, status = None, style = None, pixel = None, axis = 0, side = 0):
-        sides = correct.sides(axis, side)
-        style = correct.axis_style(style)
-        pixel = correct.axis_pixel(pixel)
-        [self.axes.get(axis, side).set(status, style, pixel) for side in sides]
-        if self.has_subplots():
-            [self.get_subplot(*pos).xaxis(side = side, status = status, style = style, pixel = pixel) for pos in self.get_slots_range()]
+        self._axes.set(axis = axis, side = side, status = status, style = style, pixel = pixel)
+        if self._has_subplots():
+            [self._get_subplot(*pos)._set_axis(axis = axis, side = side, status = status, style = style, pixel = pixel) for pos in self._get_slots_range()]
         return self
 
     def xaxis(self, status = None, style = None, pixel = None, side = 0):
@@ -162,75 +178,71 @@ class plot_class(plot_build_class, subplot_class):
         self.yaxis(frame, style = style, pixel = pixel, side = r2)
         return self
 
-
-
     def canvas_pixel(self, pixel = None):
         self._canvas_pixel = correct.pixel(pixel, default_canvas_pixel)
-        if self.has_subplots():
-            [self.get_subplot(*pos).canvas_pixel(pixel) for pos in self.get_slots_range()]
+        if self._has_subplots():
+            [self._get_subplot(*pos).canvas_pixel(pixel) for pos in self._get_slots_range()]
         return self
 
 
     # Add a line to the specified ruler with given properties
     def _add_line(self, position, style = None, pixel = None, axis = 0, side = 0):
-        #orientation = correct.orientation(orientation)
-        sides = correct.sides(axis, side)
-        style = correct.line_style(style)
-        pixel = correct.pixel(pixel, default_lines_pixel)
-        [self.rulers.add_line(position, style, pixel, axis, side) for side in sides]
-        if self.has_subplots():
-            [self.get_subplot(*pos)._add_line(axis = axis, position = position, side = side, status = status, style = style, pixel = pixel) for pos in self.get_slots_range()]
+        self._rulers.add_line(position, style, pixel, axis, side)
+        if self._has_subplots():
+            [self._get_subplot(*pos)._add_line(axis = axis, position = position, side = side, status = status, style = style, pixel = pixel) for pos in self._get_slots_range()]
         return self
 
     def xline(self, position, style = None, pixel = None, side = 0):
         return self._add_line(position = position, style = style, axis = 0, side = side)
 
 
-    def legend(self, x = 0, y = 0, relative = False, active = True, ha = -1, va = 1, pixel = None, xside = 0, yside = 0):
-        ha = correct.ha(ha)
-        va = correct.va(va)
-        xside = correct.side(0, xside)
-        yside = correct.side(1, yside)
-        pixel = correct.pixel(pixel, default_legend_pixel)
-        self._legend.set_position(x, y, relative).set_active(active).set_alignment(ha, va).set_pixel(pixel).set_axes(xside, yside)
-        if self.has_subplots():
-            [self.get_subplot(*pos).legend(x = x, y = y, relative = relative, active = active, ha = ha, va = va, pixel = pixel, xside = xside, yside = yside) for pos in self.get_slots_range()]
+    def legend(self, x = 0, y = 0, relative = False, status = True, ha = None, va = None, pixel = None, xside = None, yside = None):
+        self._legend.set(x, y, relative, status, ha, va, pixel, xside, yside)
+        if self._has_subplots():
+            [self._get_subplot(*pos).legend(x = x, y = y, relative = relative, status = status, ha = ha, va = va, pixel = pixel, xside = xside, yside = yside) for pos in self._get_slots_range()]
         return self
 
-    def draw(self, x = None, y = None, m = None, xside = None, yside = None, label = None, yfill = None, mfill = None):
-        x, y = correct.data(x, y)
-        length = len(x)
-        m = correct.markers(m, length)
-        xside = correct.side(0, xside)
-        yside = correct.side(1, yside)
-        label = correct.signal_label(label, length)
-        signal = signal_class(x, y, m, xside, yside, label)
-        if yfill is not None:
-            x, yfill = correct.data(x, yfill)
-            mfill = m if mfill is None else mfill
-            mfill = correct.markers(mfill, length)
-            signal.set_fill(x, yfill, mfill)
-        self.signals.add(signal)
-        marker = signal.get(0).get_marker()
-        label = correct.label(signal.label, self._legend.pixel)
-        self._legend.add(marker, label)
-        if self.has_subplots():
-            [self.get_subplot(*pos).draw(x = x, y = y, m = m, xside = xside, yside = yside, label = label, yfill = yfill, mfill = mfill) for pos in self.get_slots_range()]
+    def scatter(self, *args, marker = None, fillx = None, filly = None, xside = None, yside = None, label = None):
+        self._signals.scatter(*args, marker = marker, fillx = fillx, filly = filly, xside = xside, label = label)
+        signal = self._signals.get(-1)
+        label = signal.label
+        marker = signal.get_marker() 
+        self._legend.add(marker, label) 
+        if self._has_subplots():
+            [self._get_subplot(*pos).scatter(*args, marker = marker, fillx = fillx, filly = filly, xside = xside, yside = yside, label = label) for pos in self._get_slots_range()]
         return self 
 
 
     # Build and show methods
 
+    def _start_event(self, event):
+        self._timer.start(event)
+        return self
+
+    def _stop_event(self, event):
+        self._timer.stop(event)
+        return self
+
+    def time(self, full = True):
+        self._timer.report(full)
+        return self
+
     def show(self):
-        t = time()
         out = self.build()
+        self._start_event("print")
         out.print()
-        self._time = time() - t
+        self._stop_event("print")
+
 
     def build(self):
-        if self.no_subplots():
-            out = self.get_plot_matrix()
+        self._timer.clear()
+        if self._no_subplots():
+            out = self._get_plot_matrix()
         else:
-            matrices = [[self.get_subplot(row, col).get_plot_matrix() for col in self.get_cols_range()] for row in self.get_rows_range()]
+            self._start_event("create matrices")
+            matrices = [[self._get_subplot(row, col)._get_plot_matrix() for col in self._get_cols_range()] for row in self._get_rows_range()]
+            self._stop_event("create matrices")
+            self._start_event("join matrices")
             out = join_matrices(matrices)
+            self._stop_event("join matrices")
         return out
