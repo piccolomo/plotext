@@ -808,7 +808,6 @@ class monitor_class(build_class):
         self.set_axes_color('default');
         self.set_canvas_color('default');
         self.set_title('Heatmap')
-        print(dataframe)
 
     def draw_image(self, path, marker = None, style = None, fast = False, grayscale = False):
         from PIL import Image        
