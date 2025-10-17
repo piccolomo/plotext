@@ -7,12 +7,21 @@ inline wchar_t * wstring_to_cstring(const wstring & wstr) noexcept {
     return cstr;}
 
 // Delete a C-style wide string
-inline void delete_cstring(wchar_t *cstr) noexcept {
-    delete[] cstr;}
+inline void delete_cstring(wchar_t *cstr) noexcept {delete[] cstr;}
 
-// Compare two C-style wide strings.
-inline bool same_cstrings(const wchar_t * code1, const wchar_t * code2) noexcept {
-    return wcscmp(code1, code2) == 0;}
+// Compare two wide strings knowing their length.
+inline bool same_cstrings(const wchar_t * code1, const wchar_t * code2, size_t length) noexcept {
+    return length == 0 || memcmp(code1, code2, length * sizeof(wchar_t)) == 0;}
+
+//Compare two C-style wide strings.
+inline bool same_cstrings(const wchar_t * code1, const wchar_t * code2) noexcept {return wcscmp(code1, code2) == 0;}
+
+// Copy a wide string knowing its length.
+inline void copy_cstring(const wchar_t * source, wchar_t * destination, size_t length) noexcept {
+    if (length == 0) { destination[0] = L'\0'; return; }
+    memcpy(destination, source, length * sizeof(wchar_t));
+    destination[length] = L'\0'; // keep null-terminated
+}
 
 // Copy a C-style wide string to another C-style wide string.
 inline void copy_cstring(const wchar_t * source, wchar_t * destination) noexcept {
@@ -27,7 +36,7 @@ inline void copy_part_cstring(const wchar_t *source, wchar_t *destination, const
 inline size_t count_newlines(const wchar_t * str) noexcept {
     return count(str, str + std::wcslen(str), L'\n');}
 
-inline void show_ansi_wstring(const wchar_t * code){for (size_t i = 0; i < wcslen(code); i++){wcout << i << space <<code[i] << ansi_end << endl;}}
+inline void show_ansi_wstring(const wchar_t * code){for (size_t i = 0; i < wcslen(code); i++){wcout << i << space << code[i] << ansi_end << endl;}}
 
 //Buffer
 
@@ -35,6 +44,12 @@ inline void show_ansi_wstring(const wchar_t * code){for (size_t i = 0; i < wcsle
 inline void cstring_to_buffer(const wchar_t * string, wchar_t * buffer, size_t &length_buffer) noexcept {
     wcscpy(buffer + length_buffer, string);
     length_buffer += wcslen(string);}
+
+inline void cstring_to_buffer(const wchar_t * string, size_t string_length,  wchar_t * buffer, size_t & length_buffer) noexcept {
+    memcpy(buffer + length_buffer, string, string_length * sizeof(wchar_t));
+    length_buffer += string_length;
+    buffer[length_buffer] = L'\0';  // keep null-terminated if desired
+}
 
 // Append a wide character to a buffer and update the buffer length.
 inline constexpr void wchar_to_buffer(const wchar_t character, wchar_t *buffer, size_t &length_buffer) noexcept {

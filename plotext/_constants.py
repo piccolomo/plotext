@@ -21,13 +21,13 @@ period = '.'
 ansi_begin = '\x1b['
 
 # Marker types and default marker
-hd_markers = ["hd", "fhd", "braille"]
+hd_markers = ["none", "hd", "fhd", "braille"]
 default_marker = "hd"
 
 # Plot limit alignments and adjustment delta
 limit_alignments = ["center", "edge"]
-delta = 10 ** (-4)
-limit_delta = [0.5 + delta, 0 + delta]
+delta = 10 ** (-5)
+limit_delta = [0.5, delta]
 
 # Directions for movement or orientation
 directions = [-1, 1]

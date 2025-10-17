@@ -8,7 +8,6 @@ from plotext._signal import signal_class
 from plotext._signals import signals_class
 from plotext._legend import legend_class
 
-
 from plotext._correct import correct_class as correct
 from plotext._derived import default_canvas_pixel
 from plotext._constants import r2
@@ -137,17 +136,17 @@ class plot_class(plot_build_class, subplot_class):
     def ylim(self, lower = None, upper = None, side = 0):
         return self._set_lim(lower, upper, 1, side)
 
-    def _set_ruler(self, frequency = None, scale = None, alignment = None, direction = None, pixel = None, axis = 0, side = 0):
+    def ruler(self, frequency = None, scale = None, alignment = None, direction = None, pixel = None, axis = None, side = None):
         self._rulers.set(frequency = frequency, alignment = alignment, direction = direction, scale = scale, pixel = pixel, axis = axis, side = side)
         if self._has_subplots():
             [self._get_subplot(*pos)._set_ruler(frequency = frequency, axis = axis, side = side, alignment = alignment, direction = direction, scale = scale, pixel = pixel) for pos in self._get_slots_range()]
         return self
 
-    def xruler(self, frequency = None, scale = None, alignment = None, direction = None, pixel = None, side = 0):
-        return self._set_ruler(frequency = frequency, alignment = alignment, direction = direction, scale = scale, pixel = pixel, axis = 0, side = side)
+    def xruler(self, frequency = None, scale = None, alignment = None, direction = None, pixel = None, side = None):
+        return self.ruler(frequency = frequency, alignment = alignment, direction = direction, scale = scale, pixel = pixel, axis = 0, side = side)
 
-    def yruler(self, frequency = None, scale = None, alignment = None, direction = None, pixel = None, side = 0):
-        return self._set_ruler(frequency = frequency, alignment = alignment, direction = direction, scale = scale, pixel = pixel, axis = 1, side = side)
+    def yruler(self, frequency = None, scale = None, alignment = None, direction = None, pixel = None, side = None):
+        return self.ruler(frequency = frequency, alignment = alignment, direction = direction, scale = scale, pixel = pixel, axis = 1, side = side)
 
     def _set_ticks(self, ticks = None, labels = None, axis = 0, side = 0):
         self.rulers.set_ticks(axis = axis, side = side, positions = ticks, labels = labels)
@@ -202,15 +201,34 @@ class plot_class(plot_build_class, subplot_class):
             [self._get_subplot(*pos).legend(x = x, y = y, relative = relative, status = status, ha = ha, va = va, pixel = pixel, xside = xside, yside = yside) for pos in self._get_slots_range()]
         return self
 
-    def scatter(self, *args, marker = None, fillx = None, filly = None, xside = None, yside = None, label = None):
-        self._signals.scatter(*args, marker = marker, fillx = fillx, filly = filly, xside = xside, label = label)
-        signal = self._signals.get(-1)
-        label = signal.label
-        marker = signal.get_marker() 
-        self._legend.add(marker, label) 
+    def draw(self, signal):
+        self._signals.draw(signal)
         if self._has_subplots():
-            [self._get_subplot(*pos).scatter(*args, marker = marker, fillx = fillx, filly = filly, xside = xside, yside = yside, label = label) for pos in self._get_slots_range()]
+            [self._get_subplot(*pos).draw(signal) for pos in self._get_slots_range()]
         return self 
+
+    def scatter(self, *args, marker = None, fillx = None, filly = None, xside = None, yside = None, label = None):
+        signal = signal_class(*args, marker = marker, xside = xside, yside = yside, label = label, plot = 0)
+        [signal.set_fill_point(i, point.get_x(), 0, point.get_marker()) for i, point in enumerate(signal)] if fillx else None
+        [signal.set_fill_point(i, 0, point.get_y(), point.get_marker()) for i, point in enumerate(signal)] if filly else None
+        self.draw(signal)
+        return self
+
+    def plot(self, *args, marker = None, fillx = None, filly = None, xside = None, yside = None, label = None):
+        signal = signal_class(*args, marker = marker, xside = xside, yside = yside, label = label, plot = 1)
+        [signal.set_fill_point(i, point.get_x(), 0, point.get_marker()) for i, point in enumerate(signal)] if fillx else None
+        [signal.set_fill_point(i, 0, point.get_y(), point.get_marker()) for i, point in enumerate(signal)] if filly else None
+        self.draw(signal)
+        return self
+
+
+    # def plot(self, *args, marker = None, fillx = None, filly = None, xside = None, yside = None, label = None):
+    #     self._signals.plot(*args, marker = marker, fillx = fillx, filly = filly, xside = xside, label = label)
+    #     signal = self._signals.get(-1)
+    #     label = signal.label
+    #     marker = signal.get_marker() 
+    #     self._legend.add(marker, label) 
+    #     return self 
 
 
     # Build and show methods

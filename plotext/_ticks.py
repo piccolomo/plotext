@@ -57,7 +57,8 @@ class ticks_class:
     # Rescale tick positions within limits
     def rescale(self, limits, bins, delta):
         positions = self.get_positions()
-        positions = [int(list_methods.rescale(el, *limits, bins, delta)) for el in positions]
+        positions = [list_methods.rescale(el, *limits, bins, delta) for el in positions]
+        positions = list_methods.to_integers(positions)
         self.set_positions(positions)
         return self
 

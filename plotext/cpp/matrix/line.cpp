@@ -1,29 +1,24 @@
 class Line {
 private:
-    CharacterHD * chars;  // Pointer to an array of CharacterHD
-    size_t width;            // Width of the canvas
+    CharacterHD * chars = nullptr;  // Pointer to array of CharacterHD
+    size_t width = 0;               // Width of the line
 
 public:
-  // Default constructor initializes chars as nullptr and width as 0
-  Line() : chars(nullptr), width(0) {}
+    // Constructors
+    constexpr Line() noexcept = default;
 
-  // Constructor that initializes chars with a new array of CharacterHD and sets width
-  Line(const size_t & w) : chars(new CharacterHD[w]), width(w) {} 
+    explicit Line(const size_t w) noexcept
+        : chars(new CharacterHD[w]()), width(w) {}
 
-  // Constructor that initializes chars and sets width, and fills with a given CharacterHD
-  Line(const size_t & w, const CharacterHD & c) : Line(w) {fill_character(c);}
+    Line(const size_t w, const CharacterHD & c) noexcept
+        : Line(w) { fill_character(c); }
 
-  // Constructor that initializes chars and sets width, and fills with a given Pixel
-  Line(const size_t & w, const Pixel & p) : Line(w) {fill_pixel(p);}
+    Line(const size_t w, const Pixel & p) noexcept
+        : Line(w) { fill_pixel(p); }
 
-  // Copy constructor.
-  Line(const Line & other) {create(other.width); copy_from(other);}
-
-  // Copy constructor.
-  Line(const wstring & str) : Line(str.size()) {insert_wstring(0, str);}
-
-  // Destructor cleans up allocated memory for chars
-  ~Line() {delete[] chars; chars = nullptr;}
+    Line(const Line & other) {
+        create(other.width);
+        copy_from(other);}
 
   // Copy assignment operator.
   Line & operator=(const Line & other) {
@@ -33,16 +28,16 @@ public:
     return *this;}
 
   // Equality operator compares character arrays.
-  bool operator==(const Line & s) const {return memcmp(chars, &(s.get_character(0)), width * sizeof(CharacterHD)) == 0;}
+  constexpr bool operator==(const Line & s) const noexcept {return width == s.width && memcmp(chars, s.chars, width * sizeof(CharacterHD)) == 0;}
 
   // Allocate memory for the string and set its width.
-  void create(const size_t & w) {width = w; chars = new CharacterHD[width];}
+  inline void create(const size_t w) noexcept {width = w; chars = new CharacterHD[width];}
 
   // Release allocated memory.
-  void destroy() {delete[] chars; chars = nullptr;}
+  inline void destroy() noexcept {delete[] chars; chars = nullptr; width = 0;}
 
   // Clear the content of the string.
-  void clear() {for (size_t i = 0; i < width; i++) {chars[i].clear();}}
+  inline void clear() noexcept {for (size_t i = 0; i < width; i++) {chars[i].clear();}}
 
     // Resize the string while preserving content.
   void resize(size_t new_width) {
@@ -51,17 +46,33 @@ public:
     create(new_width);
     copy_from(temp);}
 
-  // Fills the entire canvas with a given Pixel
-  void fill_pixel(const Pixel & p = Pixel()) {
-    for (size_t i = 0; i < width; i++) {
-      chars[i].set_pixel(p);}}
+  inline void fill_pixel(const Pixel & p = Pixel()) noexcept {
+        for (size_t i = 0; i < width; i++) { chars[i].set_pixel(p); }}
 
-  // Fills the entire canvas with a given CharacterHD
-  void fill_character(const CharacterHD & c) {
-    for (size_t i = 0; i < width; i++) {chars[i] = c;}}
+  inline void fill_character(const CharacterHD & c) noexcept {
+      for (size_t i = 0; i < width; i++) { chars[i] = c; }}
 
-  // Copy characters from another string.
-  void copy_from(const Line & other) {for (size_t i = 0; i < min(width, other.width); ++i) {chars[i] = other.chars[i];}}
+  inline void copy_from(const Line & other) noexcept {
+      const size_t n = std::min(width, other.width);
+      for (size_t i = 0; i < n; ++i) { chars[i] = other.chars[i]; }}
+
+// Accessors
+  constexpr size_t get_width() const noexcept { return width; }
+  inline CharacterHD & get_character(const size_t col) const noexcept { return chars[col]; }
+  inline wchar_t get_wcharacter(const size_t col) const noexcept { return chars[col].get_wcharacter(); }
+
+    // Checks
+  bool is_empty(const size_t start, const size_t end) const noexcept {
+      for (size_t col = start; col < end; col++)
+          if (!get_character(col).is_empty()) return false;
+      return true;}
+
+  constexpr bool different_pixel(const size_t col) const noexcept {return chars[col].different(chars[col - 1]);}
+
+  // Modifiers
+  inline void set_character(const size_t col, const CharacterHD & c) noexcept {get_character(col) = c;}
+
+
 
   // Get a part of the string between two positions.
   Line part(const size_t & start, const size_t & stop) const {

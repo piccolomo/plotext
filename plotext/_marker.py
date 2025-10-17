@@ -16,7 +16,8 @@ class marker:
             if isinstance(marker, str):
                 self._pointer = clink.marker_new_normal(wchar(marker), p)
             else:
-                self._pointer = clink.marker_new_hd(marker, p)
+                self._pointer = clink.marker_new_type(marker, p)
+
 
     # Delete underlying marker pointer
     def __del__(self):

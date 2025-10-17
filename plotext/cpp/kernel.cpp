@@ -5,11 +5,12 @@ using namespace std;
 int main() {
    enable_special_characters();
 
-   auto c = Colorize(L"ciao"); c.print(); nl(); nl();
-   auto m = Matrix(10, 20, Pixel("red", "white")); m.print(); nl(); nl();
+   Style s("bold");
+   s.log();
+   s.set("italic");
+   s.log();
+   Pixel f("blue");
+   f.set_background("red");
+   f.print();
 
-   m.insert_colorized_aligned(0,0, c);
-
-   m.print(); nl();
-
-return 1;}
+   return 1; }

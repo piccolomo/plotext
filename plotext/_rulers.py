@@ -18,9 +18,9 @@ class rulers_class:
         return self
 
     def set(self, frequency = None, scale = None, alignment = None, direction = None, pixel = None, axis = 0, side = 0):
-        axis = correct.axis(axis)
+        axes = correct.axes(axis)
         sides = correct.sides(axis, side)
-        [self.get(axis, side).set(frequency = frequency, alignment = alignment, direction = direction, scale = scale, pixel = pixel) for side in sides]
+        [self.get(axis, side).set(frequency = frequency, alignment = alignment, direction = direction, scale = scale, pixel = pixel) for axis in axes for side in sides]
         return self
 
     def set_ticks(self, ticks = None, labels = None, axis = 0, side = 0):
@@ -46,14 +46,13 @@ class rulers_class:
         return self
 
     # Return ruler at specified axis and side (axis=0 for x, 1 for y)
-    def get(self, axis=0, side=0):
+    def get(self, axis = 0, side = 0):
         container = self.y if axis else self.x
         return container[side]
 
     # Add a line to the specified ruler with given properties
     def add_line(self, position, style = None, pixel = None, orientation = None, side = None):
         sides = correct.single_side(axis, side)
-        
         self.get(orientation, side).lines.add(position, orientation, style, pixel)
         return self
 

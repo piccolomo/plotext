@@ -90,10 +90,12 @@ class ruler_class:
     # Update limits with new limits object
     def update_ticks_limits(self, limits):
         self.limits.update(limits)
+        return self
 
     # Update limits based on line limits
     def update_lines_limits(self):
         self.limits.update(self.lines.get_limits())
+        return self
 
     # Update ticks based on selected ticks
     def update_ticks(self):

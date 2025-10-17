@@ -2,45 +2,42 @@
 
 class MarkerType {
 private:
-    marker_type type; // Enum representing the marker type (e.g., normal, hd, etc.)
+    marker_type type = normal; // Default to normal
 
 public:
-    // Constructor: Initializes the marker type to a default value (normal).
-    MarkerType(const marker_type & t = normal) : type(t) {}
+    // Constructors
+    constexpr MarkerType(marker_type t = normal) noexcept : type(t) {}
+    MarkerType(const MarkerType &) noexcept = default;
+    MarkerType(MarkerType &&) noexcept = default;
 
-    // Copy constructor
-    MarkerType(const MarkerType & other) : type(other.type) {}
- 
-    // Move constructor
-    MarkerType(MarkerType && other) : type(other.type) {}
+    // Assignment
+    MarkerType & operator=(const MarkerType &) noexcept = default;
 
-    // Assignment operator
-    MarkerType & operator=(const MarkerType & m) {
-        type = m.type;
-        return *this;}
+    // Equality
+    constexpr bool operator==(const MarkerType & m) const noexcept { return type == m.type; }
+    constexpr bool operator!=(const MarkerType & m) const noexcept { return type != m.type; }
 
-    // Reset the marker type to normal.
-    void clear() {type = normal;}
+    // Reset / Set
+    constexpr void clear() noexcept { type = normal; }
+    constexpr void set(marker_type t = normal) noexcept { type = t; }
 
-    // Set a new marker type.
-    void set(const marker_type & t = normal) {type = t;}
+    // Getters
+    constexpr marker_type get() const noexcept { return type; }
+    size_t get_rows() const noexcept { return get_marker_rows(type); }
+    size_t get_cols() const noexcept { return get_marker_cols(type); }
+    size_t get_resolution() const noexcept { return get_rows() * get_cols(); }
 
-    // Get the current marker type.
-    constexpr marker_type get() const {return type;}
+    // Type checks
+    constexpr bool is_none() const noexcept { return type == none; }
+    constexpr bool is_normal() const noexcept { return type == normal; }
+    constexpr bool is_hd() const noexcept { return type == hd; }
+    constexpr bool is_fhd() const noexcept { return type == fhd; }
+    constexpr bool is_braille() const noexcept { return type == braille; }
+    constexpr bool is_high_definition() const noexcept { return !is_none() && !is_normal(); }
 
-    // Marker dimensions and resolution
-    size_t get_rows() const {return get_marker_rows(type);}
-    size_t get_cols() const {return get_marker_cols(type);}
-    size_t get_resolution() const {return get_cols() * get_rows();}
-
-    // Check if the marker type is normal.
-    constexpr bool is_normal() const {return type == normal;}
-
-    // Check if the marker type is not normal.
-    constexpr bool is_hd() const {return type != normal;}
 
     // Copy the marker type's label into a buffer.
     virtual void to_buffer(wchar_t * buffer, size_t & length_buffer) const {
-        string str = get_marker_label(type); // Convert marker type to string label
-        cstring_to_buffer(string_to_wstring(str).c_str(), buffer, length_buffer);}
+        const wchar_t * str = get_marker_label(type); // Convert marker type to string label
+        cstring_to_buffer(str, buffer, length_buffer);}
 };

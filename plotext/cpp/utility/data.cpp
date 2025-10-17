@@ -25,9 +25,15 @@ inline vector<int> sort(const vector<int> &unsorted, const int &reference) noexc
     sort(sorted.begin(), sorted.end(), comparator);
     return sorted;}
 
+
 // Rescale a value based on given limits and bins.
 inline float rescale_element(const float & el, const pair<float, float> & lim, const size_t & bins, const float & delta) noexcept {
-    return delta + (bins - 2 * delta) * (el - lim.first) / (lim.second - lim.first);}
+    float delta1 = delta + 1.7343535343434e-4;
+    float delta2 = delta + 1.1848522657534e-4;
+    return delta1 + (bins - delta1 - delta2) * (el - lim.first) / (lim.second - lim.first);}
+
+
+//inline size_t abs_size(const int value) {return static_cast<size_t>(value < 0 ? -value : value);}
 
 
 extern "C" {

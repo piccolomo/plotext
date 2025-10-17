@@ -132,17 +132,19 @@ class legend_class:
     # Add a marker-label pair to legend
     def add(self, marker, label):
         #marker = correct.marker(marker, default_)
+        label = correct.legend_label(label, self.get_length()) 
         label = correct.label(label, default_legend_pixel)
-        self.markers.append(marker)
-        self.labels.append(label)
+        self.markers.append(marker) 
+        self.labels.append(label) 
         return self
 
-    # # Update legend with markers and labels from signals
-    # def update(self, signals):
-    #     for signal in signals:
-    #         marker = signal.get(0).get_marker()
-    #         label = signal.label
-    #         self.add(marker, label)
+    # Update legend with markers and labels from signals
+    def update(self, signals):
+        self.clear_signals()
+        for signal in signals:
+            marker = signal.get_marker() 
+            label = signal.get_label() 
+            self.add(marker, label) 
 
     def fix_background(self, pixel):
         self.pixel._fix_background(pixel)

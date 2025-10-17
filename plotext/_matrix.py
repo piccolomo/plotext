@@ -62,7 +62,7 @@ class matrix:
     def insert(self, col, row, matrix, ha = -1, va = 1):
         ha = correct.ha(ha)
         va = correct.va(va)
-        #object = correct.matrix(object) 
+        matrix = correct.matrix(matrix) 
         return self._insert_matrix_aligned(col, row, matrix, ha, va)
 
     # Insert another matrix directly
@@ -83,9 +83,12 @@ class matrix:
     def _insert_colorized_dynamically(self, col, row, label):
         return clink.matrix_insert_colorized_dynamically(self._pointer, col, row, label._pointer)
 
-    # Insert dot-like elements (e.g., for plots)
-    def _insert_dots(self, dots):
-        clink.matrix_insert_dots(self._pointer, dots._pointer)
+    # # Insert dot-like elements (e.g., for plots)
+    # def _insert_dots(self, dots):
+    #     clink.matrix_insert_dots(self._pointer, dots._pointer)
+
+    def _insert_signal(self, signal):
+        clink.matrix_insert_signal(self._pointer, signal._pointer)
 
 
 
@@ -101,15 +104,15 @@ class matrix:
 
     # Perform the vertical stacking operation
     def vstack(self, matrix, adapt = False):
-        return matrix(_pointer = clink.matrix_vstack(self._pointer, matrix._pointer, adapt))
+        return self.__class__(_pointer = clink.matrix_vstack(self._pointer, matrix._pointer, adapt))
 
     # Perform the horizontal stacking operation
     def hstack(self, matrix, adapt = False):
-        return matrix(_pointer = clink.matrix_hstack(self._pointer, matrix._pointer, adapt))
+        return self.__class__(_pointer = clink.matrix_hstack(self._pointer, matrix._pointer, adapt))
     
     # Create and return a copy of this matrix object
     def copy(self):
-        return matrix(_pointer = clink.matrix_copy(self._pointer))  # Create a copy of the matrix
+        return self.__class__(_pointer = clink.matrix_copy(self._pointer))  # Create a copy of the matrix
 
     # Get the matrix as a (possibly colorless) string
     def get_string(self, colorless = False):
@@ -132,7 +135,7 @@ class matrix:
         return self.get_string()
 
     def _hash(self):
-        return object_methods.hash(self.get_string())  # Return hash of the matrix
+        return object_methods.hash(self.get_string()) # Return hash of the matrix
 
     def __truediv__(self, object):
         return self.vstack(object, 1)  # Vertically stack matrix with another object
@@ -150,7 +153,7 @@ class matrix:
 
 
     def _part(self, col_start, col_stop, row_start, row_stop):
-        return matrix(_pointer = clink.matrix_part(self._pointer, col_start, col_stop, row_start, row_stop))  # Get sub-matrix
+        return self.__class__(_pointer = clink.matrix_part(self._pointer, col_start, col_stop, row_start, row_stop))  # Get sub-matrix
 
 
 # Combine a 2D list (matrix) of matrix objects into a single larger matrix.

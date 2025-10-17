@@ -1,7 +1,8 @@
 from plotext._matrix import matrix as matrix_class
 from plotext._dots import dots_class
 from plotext._rulers import rulers_class
-
+from plotext._points_map import points_map
+from plotext._points import points_class
 
 
 class plot_build_class:
@@ -117,12 +118,12 @@ class plot_build_class:
 
         # add points to canvas
         if self._parts.canvas.has_size():
-            self._start_event("adding points")
-            
+            self._start_event("rescaling signals")
+            col_offset, row_offset = self._parts.canvas.col, self._parts.canvas.row
+
             for signal in signals: 
-                dots = dots_class(self._signals.get_total_points())
-                xside = signal.xside
-                yside = signal.yside
+                xside = signal.get_xside()
+                yside = signal.get_yside()
 
                 xruler = irulers.get(0, xside) 
                 yruler = irulers.get(1, yside) 
@@ -139,27 +140,29 @@ class plot_build_class:
                 signal.log_x() if xscale == "log" else None 
                 signal.log_y() if yscale == "log" else None 
 
-                # signal.log()
-
                 signal.rescale_x(xlim, width_canvas, xdelta) 
                 signal.rescale_y(ylim, height_canvas, ydelta) 
 
-                col_offset, row_offset = self._parts.canvas.col, self._parts.canvas.row
-                signal.add_offset(col_offset, row_offset)
+            self._stop_event("rescaling signals")
 
-                signal.fill()
+            self._start_event("plot")
+            [signal.plot() for signal in signals if signal._plot] 
+            self._stop_event("plot")
 
-                [dots.add(point) for point in signal if 0 <= point.get_col() - col_offset < width_canvas and 0 <= point.get_row() - row_offset < height_canvas]
+            self._start_event("squash")
+            map = points_map(width_canvas, height_canvas)
+            [signal.squash(map) for signal in signals] # if signals.get_total_points() > 1000 else None
+            self._stop_event("squash")
 
-                matrix._insert_dots(dots)
-            self._stop_event("adding points")
+            self._start_event("adding points to canvas")
+            [signal.add_offset(col_offset, row_offset) for signal in signals] 
+            [matrix._insert_signal(signal) for signal in signals] 
+            self._stop_event("adding points to canvas")
 
-      
-
-        
+              
         # Add upper bar labels and title  
         if self._parts.upper_bar.has_size(): 
-            self._start_event("upper bar")
+            self._start_event("upper bar") 
             part = matrix_class(self._parts.width, 1, self._labels.pixel) 
             part._insert_colorized_aligned(self._parts.width // 2, 0, self._labels.x[1], 0) if self._labels.x[1] is not None else None
             title_centered = part._insert_colorized_aligned(self._parts.width // 2, 0, self._labels.title, 0) if self._labels.title is not None else False
@@ -199,7 +202,6 @@ class plot_build_class:
             col, row = self._parts.upper_axis.get_position()
             [matrix._set_pixelled_character(col + c, row, char, axis.pixel) for c, char in enumerate(string)]
             [matrix._set_character(c, row, axis.tick) for c in ticks if c != -1] if width > 2 else None
-
             left_axis = matrix_class(self._parts.left_ticks.width, 1, axis.pixel); matrix._insert_matrix(0, row, left_axis)
             right_axis = matrix_class(self._parts.right_ticks.width, 1, axis.pixel); matrix._insert_matrix(self._parts.right_ticks.col, row, right_axis)
             self._stop_event("upper axis")
@@ -225,7 +227,6 @@ class plot_build_class:
             col, row = self._parts.lower_axis.get_position()
             [matrix._set_pixelled_character(col + c, row, char, axis.pixel) for c, char in enumerate(string)]
             [matrix._set_character(c, row, axis.tick) for c in ticks if c != -1] if width > 2 else None
-
             left_axis = matrix_class(self._parts.left_ticks.width, 1, axis.pixel); matrix._insert_matrix(0, row, left_axis)
             right_axis = matrix_class(self._parts.right_ticks.width, 1, axis.pixel); matrix._insert_matrix(self._parts.right_ticks.col, row, right_axis)
             self._stop_event("lower axis")
@@ -277,21 +278,27 @@ class plot_build_class:
             self._stop_event("right axis")
 
         # Legend
+
+
         if self._legend.active: 
-            self._start_event("legend")
+            self._start_event("legend") 
+
+            self._legend.update(signals)
+
             self._legend.fix_background(self._canvas_pixel)
-            xruler = irulers.get(0, self._legend.xside)
-            yruler = irulers.get(1, self._legend.yside)
 
-            col = self._legend.get_absolute_position(0, xruler, width_canvas) + col_canvas
-            row = self._legend.get_absolute_position(1, yruler, height_canvas) + row_canvas
+            xruler = irulers.get(0, self._legend.xside) 
+            yruler = irulers.get(1, self._legend.yside) 
 
-            ha, va = self._legend.get_alignments(); 
-            m = self._legend.get()
-            matrix._insert_matrix_aligned(col, row, m, ha, va)
+            col = self._legend.get_absolute_position(0, xruler, width_canvas) + col_canvas 
+            row = self._legend.get_absolute_position(1, yruler, height_canvas) + row_canvas 
 
-            self._parts.legend.set_position(col, row)
-            self._parts.legend.set_size(*self._legend.get_size())
+            ha, va = self._legend.get_alignments() 
+            m = self._legend.get() 
+            matrix._insert_matrix_aligned(col, row, m, ha, va) 
+
+            self._parts.legend.set_position(col, row) 
+            self._parts.legend.set_size(*self._legend.get_size()) 
             self._stop_event("legend")
 
         return matrix

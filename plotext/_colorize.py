@@ -65,12 +65,12 @@ class colorize:
 
     # Horizontally stack with another string or colorize object
     def hstack(self, colorized, adapt = True):
-        #string = colorize(string) if isinstance(string, str) else string
+        colorized = correct_colorized(colorized)
         return self.get_matrix().hstack(colorized.get_matrix(), adapt)
 
     # Vertically stack with another string or colorize object
     def vstack(self, colorized, adapt = True):
-        #string = colorize(string) if isinstance(string, str) else string
+        colorized = correct_colorized(colorized)
         return self.get_matrix().vstack(colorized.get_matrix(), adapt)
 
     # Clone from another string or colorize object
@@ -131,3 +131,6 @@ class colorize:
     # Hash helper
     def _hash(self):
         return object_methods.hash(self.get_string())
+
+def correct_colorized(colorized):
+    return colorize(colorized) if isinstance(colorized, str) else colorized

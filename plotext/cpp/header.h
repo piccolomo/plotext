@@ -1,10 +1,11 @@
 #include <cstring>
 #include <iostream>
-#include <vector>
+//#include <vector>
 #include <cmath>
 #include <functional>
 #include <codecvt>
 #include <iomanip>
+#include <cstdint>
 
 #ifdef _WIN32
     #include <Windows.h>
@@ -18,6 +19,7 @@
 #include "utility/cstrings.cpp"
 #include "utility/data.cpp"
 #include "utility/bit.cpp"
+#include "utility/vector.cpp"
 
 
 // Pixel modules
@@ -27,30 +29,35 @@
 #include "pixel/colorize.cpp"
 
 
-// Character modules
+// // Character modules
 #include "character/character.cpp"
 #include "character/marker_type.cpp"
 #include "character/marker.cpp"
 #include "character/matrix_bool.cpp"
-#include "character/character_hd.cpp"
 
 
 // Point modules
 #include "point/point_position.cpp"
 #include "point/point.cpp"
-#include "point/points.cpp"
+
+#include "character/character_hd.cpp"
+
+#include "point/point_filled.cpp"
+#include "point/points_map.cpp"
+#include "point/points_filled.cpp"
+#include "point/signal.cpp"
 
 
-// Dot modules
-#include "dot/dot_position.cpp"
-#include "dot/dot.cpp"
-#include "dot/dots_map.cpp"
-#include "dot/dots.cpp"
+
+// // Dot modules
+// #include "dot/dot_position.cpp"
+// #include "dot/dot.cpp"
+// #include "dot/dots.cpp"
 
 
-// Matrix modules
+// // Matrix modules
 #include "matrix/alignment.cpp"
-#include "matrix/line.cpp"
+//#include "matrix/line.cpp"
 #include "matrix/matrix.cpp"
 
 // Optional/Commented out for now

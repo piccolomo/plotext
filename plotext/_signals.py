@@ -1,7 +1,6 @@
 from plotext._methods import *  # For matrix operations
 from plotext._constants import r2  # Axis side constants
-from plotext._signal import signal_class
-from plotext._correct import correct_class as correct
+from plotext._signal import signal_class#, get_scatter_points
 from plotext._derived import default_marker
 
 
@@ -45,7 +44,7 @@ class signals_class:
 
     # Get combined x-axis limits from all signals
     def get_xlimits(self):
-        limits = [signal.get_xlimits() for signal in self.signal]
+        limits = [signal.get_xlimits() for signal in self.signal] 
         limits = list_methods.transpose(limits, 2)
         return [min(limits[0], default=None), max(limits[1], default=None)]
 
@@ -56,7 +55,7 @@ class signals_class:
         return [min(limits[0], default=None), max(limits[1], default=None)]
 
     # Get limits for specified axis and side
-    def get_limits(self, axis=0, side=0):
+    def get_limits(self, axis = 0, side = 0):
         selection = self.select(yside=side) if axis else self.select(xside=side)
         return selection.get_ylimits() if axis else selection.get_xlimits()
 
@@ -66,25 +65,42 @@ class signals_class:
             signal.fix_background(pixel)
         return self
 
-    def scatter(self, *args, marker = None, fillx = None, filly = None, xside = None, yside = None, label = None):
-        x, y = correct.data(*args)
-        length = len(x)
-        label = label = f"signal({self.get_length()})" if label is None else label
-        signal = signal_class(x, y, marker, xside, yside, label, self.default_marker)
-        if filly is not None:
-            x, filly = correct.data(x, filly)
-            fillm = m if fillm is None else fillm
-            fillm = correct.markers(fillm, length)
-            signal.set_fill(x, filly, fillm)
+    #def get_
+
+    def draw(self, signal):
+        #signal = get_scatter_points(*args, marker = marker, xside = xside, yside = yside, label = label) 
+
+        # if filly is not None and filly != False:
+        #     level = 0 if isinstance(filly, bool) else filly 
+        #     filly = [level] * length
+        #     fillm = m if fillm is None else fillm
+        #     fillm = correct.markers(fillm, default_marker, length)
+        #     signal.set_fill(x, filly, fillm)
+            
         self.add(signal)
         return self 
+
+    # def plot(self, *args, marker = None, fillx = None, filly = None, xside = None, yside = None, label = None):
+    #     x, y = correct.data(*args)
+    #     length = len(x)
+    #     label = self.correct_label(label)
+    #     m = correct.markers(marker, default_marker, length)
+    #     signal = signal_class(x, y, m, xside, yside, label, self.default_marker) 
+    #     xf = [x[0]] + x[:-1]
+    #     yf = [y[0]] + y[:-1]
+    #     mf = [m[0]] + m[:-1]
+    #     #signal.set_fill(xf, yf, mf)
+    #     self.add(signal)
+    #     return self
+
+
 
 
     # Select signals matching xside and yside criteria
     def select(self, xside = None, yside = None):
         xside = r2 if xside is None else [xside]
         yside = r2 if yside is None else [yside]
-        filtered = [s for s in self.signal if s.xside in xside and s.yside in yside]
+        filtered = [s for s in self.signal if s.get_xside() in xside and s.get_yside() in yside]
         new_signals = signals_class()
         new_signals.signal = filtered
         return new_signals
@@ -101,10 +117,10 @@ class signals_class:
         return self
 
     # Generate a summary log of signals
-    def get_log(self):
+    def get_log(self, fill = False):
         log = f"{self.get_length()} Signals \n"
         for i in self.get_range():
-            log += ' ' + self.get(i).get_log(0) + '\n'
+            log += ' ' + self.get(i).get_log(fill) + '\n'
         return log
 
     # String representation returns the log summary
@@ -112,8 +128,8 @@ class signals_class:
         return self.get_log()
 
     # Print the log summary
-    def log(self):
-        print(self.get_log())
+    def log(self, fill = False):
+        print(self.get_log(fill))
 
     # Iterator over stored signals
     def __iter__(self):

@@ -161,6 +161,10 @@ class list_methods:
     def power10(data):
         return [10 ** el for el in data]
 
+    @staticmethod
+    def to_integers(data):
+        return list(map(int, data))
+
 
 
 

@@ -24,19 +24,16 @@ public:
         destroy(); string = o.string; o.destroy(); copy_pixel(o); return *this;}
 
     // Equality operator
-    bool operator==(const Colorize& c) const noexcept {
-        return Pixel::operator==(c) && same_cstrings(c.string, string);}
+    bool operator==(const Colorize& c) const noexcept {return Pixel::operator==(c) && same_cstrings(c.string, string);}
 
     // Memory management for the string
-    void create(const size_t& size) noexcept {
-        string = new wchar_t[size + 1]; wmemset(string, L'\0', size);}
+    void create(const size_t& size) noexcept {string = new wchar_t[size + 1]; wmemset(string, L'\0', size);}
 
-    void destroy() noexcept {
-        delete[] string; string = nullptr;}
+    void destroy() noexcept {delete[] string; string = nullptr;}
 
     // Accessor methods
     wchar_t get_wcharacter(const size_t& pos) const noexcept {return string[pos];}
-    size_t get_length() const {return wcslen(string);}
+    size_t get_length() const noexcept {return wcslen(string);}
     const wchar_t* get_cstring() const noexcept {return string;}
     wstring get_string() const {return wstring(string);}
     Pixel & get_pixel() {return *this;}
@@ -49,16 +46,31 @@ public:
 
     Colorize part(const size_t & stop) const noexcept {return part(0, stop);}
 
-    // Convert the object to a buffer (useful for displaying the string with color)
-    void to_buffer(wchar_t * buffer, size_t & length_buffer, const bool & colorless = false) const noexcept {
-        vector<wstring> wstrings = split_wstring(get_string());
-        size_t height = wstrings.size();
-        bool add_color = !(colorless || no_color());
-        for (size_t row = 0; row < height; row++) {
-            if (add_color) { Pixel::to_buffer(buffer, length_buffer); }
-            cstring_to_buffer(wstrings.at(row).c_str(), buffer, length_buffer);
-            if (add_color) { cstring_to_buffer(ansi_end, buffer, length_buffer); }
-            if (row != height - 1) { cstring_to_buffer(new_line, buffer, length_buffer);}}}
+    // // Convert the object to a buffer (useful for displaying the string with color)
+    // void to_buffer(wchar_t * buffer, size_t & length_buffer, const bool & colorless = false) const noexcept {
+    //     vector<wstring> wstrings = split_wstring(get_string());
+    //     size_t height = wstrings.size();
+    //     bool add_color = !(colorless || no_color());
+    //     for (size_t row = 0; row < height; row++) {
+    //         if (add_color) { Pixel::to_buffer(buffer, length_buffer); }
+    //         cstring_to_buffer(wstrings.at(row).c_str(), buffer, length_buffer);
+    //         if (add_color) { cstring_to_buffer(ansi_end, buffer, length_buffer); }
+    //         if (row != height - 1) { cstring_to_buffer(new_line, buffer, length_buffer);}}}
+
+
+    void to_buffer(wchar_t * buffer, size_t & length_buffer, bool colorless = false) const noexcept {
+        const bool add_color = !colorless && Pixel::has_color();
+        const wchar_t * src = string;
+        while (*src) {
+            if (add_color) Pixel::to_buffer(buffer, length_buffer); // start color for line
+
+            while (*src && *src != L'\n') {buffer[length_buffer++] = *src++;}
+
+            if (add_color) cstring_to_buffer(ansi_end, buffer, length_buffer); // end color for line
+
+            if (*src == L'\n') {buffer[length_buffer++] = *src++; }}
+        buffer[length_buffer] = L'\0';}
+
 
     // Return the string as a wstring with optional color stripping
     wstring get_wstring(const bool& colorless = false) const noexcept {

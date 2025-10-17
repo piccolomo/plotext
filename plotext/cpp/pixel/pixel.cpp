@@ -4,7 +4,7 @@ class Pixel : public Fullground, public Background, public Style {
 
 public:
   // Default constructor
-  Pixel() = default;
+  constexpr Pixel() = default;
 
   // Constructor with Fullground, Background, and Style
   Pixel(const Fullground & fg, const Background & bg = Background(), const Style & st = Style()) : Fullground(fg), Background(bg), Style(st) {}
@@ -42,7 +42,7 @@ public:
   void set_fullground(const unsigned char & r) {Fullground::set(r);}
 
   // Set Fullground color (string)
-  void set_fullground(string color) {Fullground::set(color);}
+  void set_fullground(const string & color) {Fullground::set(color);}
 
   // Set Background color (RGB)
   void set_background(const unsigned char & r, const unsigned char & g, const unsigned char & b) {Background::set(r, g, b);}
@@ -86,20 +86,25 @@ public:
 
   // Check if no color or style is set (Fullground, Background, Style)
   bool no_color() const noexcept {return no_fullground() && no_background() && no_style();}
+  bool has_color() const noexcept {return ! no_color();}
 
   // Get the total length of the pixel (Fullground, Background, and Style)
-  size_t get_length() const noexcept{return Fullground::get_length() + Background::get_length() + Style::get_length();}
+  size_t get_length() const noexcept {return Fullground::get_length() + Background::get_length() + Style::get_length();}
 
   // Copy the pixel data to a buffer
-  void to_buffer(wchar_t * buffer, size_t & length_buffer) const {
+  inline void to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept {
     Fullground::to_buffer(buffer, length_buffer);
     Background::to_buffer(buffer, length_buffer);
     Style::to_buffer(buffer, length_buffer);}
 
+  // inline void stream_fullground_code() const noexcept {return wcout<<Fullground::get_code();}
+  // inline const wchar_t * get_background_code() const noexcept {return Background::get_code();}
+  // inline const wchar_t * get_style_code() const noexcept {return Style::get_code();}
+
   const wchar_t * get_code() const noexcept {
-    wchar_t* buffer = new wchar_t[pixel_size_max + 1];
+    wchar_t * buffer = new wchar_t[pixel_size_max + 1];
     buffer[0] = '\0'; 
-    size_t length = 0;
+    size_t length = 0; 
     to_buffer(buffer, length); return buffer;}
 
   void show_code() const {show_ansi_wstring(get_code());}
@@ -110,11 +115,15 @@ public:
       size_t length = 0;
       to_buffer(buffer, length);
       cstring_to_buffer(L"Pixel", buffer, length);
-      if (not no_color()){cstring_to_buffer(ansi_end, buffer, length);}
+      if (has_color()){cstring_to_buffer(ansi_end, buffer, length);}
       return wstring(buffer);}
 
   // Log the pixel information
   void print() const {wcout << get_wstring();}
+
+  inline void stream() const {Fullground::stream(); Background::stream(); Style::stream();} 
+
+
 };
 
 // A white pixel with no Fullground and a white Background
@@ -138,5 +147,4 @@ extern "C" {
   void pixel_print(const Pixel * p) noexcept {p->print();}
   const wchar_t * pixel_get_wstring(const Pixel * c) noexcept {return wstring_to_cstring(c->get_wstring());}
   Pixel * pixel_copy(const Pixel * c) noexcept {return new Pixel(*c);}
-
 }

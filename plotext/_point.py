@@ -13,23 +13,35 @@ class point_class:
     def __del__(self):
         clink.point_delete(self._pointer)
 
-    # Set fill properties for the point
-    def set_fill(self, bool = 0, x = 0, y = 0):
-        print(x, y)
-        clink.point_set_fill(self._pointer, bool, x, y)
-        return self
+    # # Set fill properties for the point
+    # def set_fill(self, bool = 0, x = 0, y = 0):
+    #     print(x, y)
+    #     clink.point_set_fill(self._pointer, bool, x, y)
+    #     return self 
 
-    # Get column (x-coordinate)
+    # Get column (x-coordinate) 
+    def get_x(self):
+        return clink.point_get_x(self._pointer) 
+
+    # Get row (y-coordinate)
+    def get_y(self):
+        return clink.point_get_y(self._pointer) 
+
+    def get_marker(self):
+        return marker_class(_pointer = point_get_marker(self._pointer))
+
+
+    # Get column (x-coordinate) 
     def get_col(self):
-        return clink.point_get_col(self._pointer)
+        return clink.point_get_col(self._pointer) 
 
     # Get row (y-coordinate)
     def get_row(self):
-        return clink.point_get_row(self._pointer)
+        return clink.point_get_row(self._pointer) 
 
     # Get string representation of the point
-    def get_string(self):
-        p = clink.point_get_wstring(self._pointer)
+    def get_string(self, fill):
+        p = clink.point_get_wstring(self._pointer, fill)
         string = wstring.from_buffer(p).value
         clink.wstring_delete(p)
         return string
@@ -39,10 +51,10 @@ class point_class:
         return marker_class(_pointer = clink.point_get_marker(self._pointer))
 
     def __repr__(self):
-        return self.get_string()
+        return self.get_string(1)
 
     # Print the point string and return self
-    def log(self):
-        print(self.get_string())
+    def log(self, fill = True):
+        print(self.get_string(fill))
         return self
 

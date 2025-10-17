@@ -4,10 +4,11 @@
 class Style {
 private:
   wchar_t code[19]; // Buffer to store the style code.
+  size_t length;
 
 public:
   // Default constructor: Clears the style code.
-  Style() {clear();}
+  constexpr Style() noexcept : code{L'\0'}, length(0) {}
 
   // Constructor that sets the style based on a string.
   Style(const string & style) {clear(); set(style);}
@@ -19,18 +20,19 @@ public:
   Style(Style && st) = default;
 
   // Equality operator: Compares style codes for equality.
-  bool operator==(const Style& st) const {return same_cstrings(code, st.get_code());}
+  bool operator==(const Style& st) const {return length == st.length and same_cstrings(code, st.get_code(), length);}
 
   // Assignment operator: Copies the style code from another Style object.
   Style & operator=(const Style& st) {
-    copy_cstring(st.get_code(), code);
-    return *this;}
+    length = st.length;
+    copy_cstring(st.get_code(), code, length);
+    return *this;} 
 
   // Clears the style code.
-  void clear() {code[0] = L'\0';}
+  void clear() {code[0] = L'\0'; length = 0;}
 
   // Sets the style based on a string (e.g., "bold", "underline").
-  void set(const string & style) {
+  inline void set(const string & style) {
 
     // Split the input style string into individual styles (e.g., "bold underline").
     vector<string> styles = split_string(style);
@@ -52,10 +54,11 @@ public:
         size_t len = wcslen(code);   // Find the length of the current code.
         code[len - 1] = L'm';        // Replace the last char with 'm'.
         code[len] = L'\0'; } // Null-terminate the string.
-  }   
+
+    length = wcslen(code);}
 
   // Returns the length of the style code.
-  size_t get_length() const {return wcslen(code);}
+  size_t get_length() const {return length;}
 
   // Returns the current style code.
   const wchar_t * get_code() const {return code;}
@@ -63,14 +66,18 @@ public:
   void show_code() const {show_ansi_wstring(get_code());}
 
   // Checks if no style is set (empty code).
-  bool no_style() const {return code[0] == L'\0';}
+  bool no_style() const {return length == 0;}
+  bool has_style() const { return length != 0; }
 
-  // Converts the style code to a buffer for terminal output.
-  void to_buffer(wchar_t * buffer, size_t & length_buffer) const {
-    if (!no_style()) {cstring_to_buffer(code, buffer, length_buffer);}}
-
+  inline void to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept {
+      if (has_style()) {  // only copy if style is set
+          cstring_to_buffer(code, length, buffer, length_buffer);}}
+        
   // Logs the current style code.
   void log() const {wcout << code << L"style" << ansi_end << endl;}
+
+  inline void stream() const {wcout.write(code, length);} 
+
 };
 
 

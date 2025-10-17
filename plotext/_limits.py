@@ -13,6 +13,7 @@ class limits_class:
         self.set_alignment()
         self.set_direction()
         self.set_scale()
+        return self
 
     # Set lower and upper limits
     def set(self, lower = None, upper = None):
@@ -27,7 +28,6 @@ class limits_class:
 
     # Set alignment for limits
     def set_alignment(self, alignment = "center"):
-
         self.alignment = alignment
         return self
 

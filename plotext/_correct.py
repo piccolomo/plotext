@@ -3,8 +3,8 @@ from re import sub
 from plotext._methods import *
 #from plotext._default import default_labels_pixel, default_axis_pixel, default_ruler_pixel
 from plotext._constants import *
-from plotext._colorize import colorize
-from plotext._marker import marker
+from plotext._colorize import colorize as colorize_class
+from plotext._marker import marker as marker_class
 from plotext._pixel import pixel
 
 
@@ -25,10 +25,10 @@ class correct_class:
     # Correct matrix object by checking its type and converting if necessary
     @staticmethod
     def matrix(obj):
-        if isinstance(obj, colorize):
+        if isinstance(obj, colorize_class):
             return obj.get_matrix()
         if isinstance(obj, str):
-            return colorize(obj).get_matrix()
+            return colorize_class(obj).get_matrix()
         return obj
 
 
@@ -112,7 +112,7 @@ class correct_class:
     def label(label, default_pixel):
         if label is None or string_methods.only_spaces(label):
             return None
-        if isinstance(label, str):
+        if isinstance(label, str): 
             label = colorize(label.strip()).set_pixel(default_pixel)
         #and label._no_background():
         label._fix_background(default_pixel)
@@ -124,19 +124,28 @@ class correct_class:
     def labels(labels, default_pixel):
         return [correct_class.label(label, default_pixel) for label in labels]
 
+    # Correct side input to a list of valid side values
+    @staticmethod
+    def axes(axis):
+        if axis is None:
+            side_list = r2
+        elif object_methods.is_list_like(axis):
+            side_list = axis
+        else:
+            side_list = [axis]
+        return [correct_class.axis(a) for a in side_list]
+
 
     # Correct a single axis string or boolean
     @staticmethod
     def axis(axis):
         return correct_class.boolean_string(axis, axis_names)
 
-
     # Correct the side of an axis to ensure it is valid
     @staticmethod
     def side(axis, side):
         sides = ysides if axis else xsides
         return correct_class.boolean_string(side, sides)
-
 
     # # Correct axis input to a list of valid axis values
     # @staticmethod
@@ -231,23 +240,47 @@ class correct_class:
         marker = [correct_class.marker(m, default_marker) for m in marker]
         return list_methods.repeat(marker, length)
 
-
-    # # Create signal label, defaulting to 'signal(length)' if label is None
-    # @staticmethod
-    # def signal_label(label, length):
-    #     if label is None:
-    #         label = f'signal({length})'
-    #     return colorize_class(label)
-
     # Correct the limits by combining the current and new limits
     @staticmethod
     def limits(limits, new_limits):
         new_limits = limits if new_limits is None else new_limits
         limits = list_methods.replace_none(limits, new_limits)
+        [a, b] = limits
+        limits = [a - 1, b + 1] if a == b and a is not None else limits
         #minimum = min(limits[0], new_limits[0]) if new_limits[0] is not None else limits[0]
         #maximum = max(limits[1], new_limits[1]) if new_limits[1] is not None else limits[1]
         return limits
 
     # Correct the line style to ensure it is valid
+    @staticmethod
     def line_style(style):
         return style if style in line_styles else line_styles[0]
+
+    @staticmethod
+    def label(label, default_pixel):
+        if label is None or string_methods.only_spaces(label):
+            return None
+        if isinstance(label, str): 
+            label = colorize_class(label.strip()).set_pixel(default_pixel)
+        #and label._no_background():
+        label._fix_background(default_pixel)
+        return label
+
+
+    @staticmethod
+    def signal_label(label): 
+        return "xxxxxx" if label is None else label.strip() 
+
+    # @staticmethod
+    # def signal_label(label, length):
+    #     return f"signal[{length}]" if label is None else label
+
+    # Create signal label, defaulting to 'signal(length)' if label is None 
+    @staticmethod
+    def legend_label(label, length): 
+        return f'signal[{length}]' if len(label) == 0 else label
+
+
+    @staticmethod
+    def bool(element = None):
+        return element if isinstance(element, bool) or element in r2 else False

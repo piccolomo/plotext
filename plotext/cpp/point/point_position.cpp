@@ -2,40 +2,60 @@
 
 class PointPosition {
 private:
-  float x, y; // Coordinates of the point
+    float x = 0.0f;
+    float y = 0.0f;
 
 public:
-  PointPosition() = default; // Default constructor
-  PointPosition(const float & xi, const float & yi) : x(xi), y(yi) {} // Constructor with x and y
+    // Constructors
+    constexpr PointPosition() noexcept = default;
+    constexpr PointPosition(float xi, float yi) noexcept : x(xi), y(yi) {}
+    constexpr PointPosition(const PointPosition& other) noexcept = default;
+    constexpr PointPosition(PointPosition&& other) noexcept = default;
 
-  PointPosition(const PointPosition & other) : x(other.x), y(other.y) {} // Copy constructor
-  PointPosition(PointPosition && other) : x(other.x), y(other.y) {} // Move constructor
+    // Assignment operator
+    constexpr PointPosition& operator=(const PointPosition& p) noexcept = default;
 
-  PointPosition & operator=(const PointPosition & p) {x = p.x; y = p.y; return *this;} // Assignment operator
+    // Equality operator
+    constexpr bool operator==(const PointPosition& p) const noexcept { return x == p.x && y == p.y; }
+    constexpr bool operator!=(const PointPosition& p) const noexcept { return !(*this == p); }
 
-  float get_x() const noexcept {return x;} // Get x-coordinate
-  float get_y() const noexcept {return y;} // Get y-coordinate
+    // Getters
+    constexpr float get_x() const noexcept { return x; }
+    constexpr float get_y() const noexcept { return y; }
 
-  float get_col() const noexcept {return static_cast<size_t>(x);} // Get column (as size_t)
-  float get_row() const noexcept {return static_cast<size_t>(y);} // Get row (as size_t)
+    // Convert to integer coordinates
+    constexpr size_t get_col() const noexcept { return static_cast<size_t>(x); }
+    constexpr size_t get_row() const noexcept { return static_cast<size_t>(y); }
 
-  void set_x(const float & el) noexcept {x = el;} // Set x-coordinate
-  void set_y(const float & el) noexcept {y = el;} // Set y-coordinate
-  void set(const float & xi, const float & yi) noexcept {x = xi; y = yi;}
-  void add_offset(const float & dx, const float & dy) noexcept {x += dx; y += dy;}
+    // Inner position within a marker cell
+    constexpr unsigned char get_inner_col(const size_t marker_cols) const noexcept {return static_cast<unsigned char>((x - get_col()) * marker_cols); }
 
-  void rescale_x(const pair<float, float> & xlim, const size_t & width, const float & delta) noexcept {x = rescale_element(x, xlim, width, delta);}
-  void rescale_y(const pair<float, float> & ylim, const size_t & height, const float & delta) noexcept {y = rescale_element(y, ylim, height, delta);}
+    constexpr unsigned char get_inner_row(const size_t marker_rows) const noexcept {return static_cast<unsigned char>((y - get_row()) * marker_rows); }
 
-  void log_x() noexcept {x = log10(x);} 
-  void log_y() noexcept {y = log10(y);} 
+    // Setters
+    constexpr void set_x(float el) noexcept { x = el; }
+    constexpr void set_y(float el) noexcept { y = el; }
+    constexpr void set(float xi, float yi) noexcept { x = xi; y = yi; }
 
-  wstring get_wstring() const noexcept { 
-    // Returns a wide string representation of the point
-    wostringstream woss; 
-    woss << fixed << setprecision(3) << get_x() << L", " << get_y(); 
-    return woss.str();
-  }
+    // Rescaling
+    void rescale_x(const pair<float, float>& xlim, size_t width, float delta) noexcept { 
+        x = rescale_element(x, xlim, width, delta); }
 
-  void log() const {wcout << get_wstring() << flush;} // Logs the point to standard output
+    void rescale_y(const pair<float, float>& ylim, size_t height, float delta) noexcept { 
+        y = rescale_element(y, ylim, height, delta); }
+
+    // Offset addition
+    constexpr void add_offset(size_t dx, size_t dy) noexcept { x += static_cast<float>(dx); y += static_cast<float>(dy); }
+
+    // Logarithmic transformation
+    void log_x() noexcept { x = log10f(x); }
+    void log_y() noexcept { y = log10f(y); }
+
+    // Fast string representation without stringstreams
+    wstring get_wstring() const noexcept {
+        wchar_t buffer[32]; // enough for two floats with precision
+        swprintf(buffer, sizeof(buffer)/sizeof(wchar_t), L"%.2f, %.2f", x, y);
+        return wstring(buffer);}
+
+    void log() const noexcept { wcout << get_wstring() << flush; }
 };
