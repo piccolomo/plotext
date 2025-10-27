@@ -1,14 +1,14 @@
 from plotext.prettydoc._text import text_class, alias_class
 from plotext.prettydoc._parameter import parameter_class
 from plotext._constants import space, empty
-from plotext._methods import * 
+from plotext._methods.string import * 
 from plotext._colorize import colorize
 
 
 class function_class:
-    def __init__(self, function, name = None):
-        self.function = function
-        self.name = self.function.__qualname__.lower() if name is None else name
+    def __init__(self, *function, name = None):
+        self.function = list(function)
+        self.name = self.function[0].__qualname__.lower() if name is None else name
         self.doc = text_class()
         self.alias = alias_class()
         self.parameters_intro = text_class()
@@ -49,20 +49,21 @@ class function_class:
             self.alias.get_docstring(space),
             self.parameters_intro.get_docstring(space),
         ]
-        doc1 = string_methods.connect_strings(docs, empty)
-        docs = [par.get_docstring(string_methods.new_lines(2)) for par in self.parameters]
-        doc2 = string_methods.connect_strings(docs)
-        doc3 = self.output.get_docstring(string_methods.new_lines(2))
-        doc = string_methods.connect_strings([doc1, doc2, doc3])
-        return string_methods.uncolorize(doc) if colorless else doc
+        doc1 = connect_strings(docs, empty)
+        docs = [par.get_docstring(new_lines(2)) for par in self.parameters]
+        doc2 = connect_strings(docs)
+        doc3 = self.output.get_docstring(new_lines(2))
+        doc = connect_strings([doc1, doc2, doc3])
+        return uncolorize(doc) if colorless else doc
 
     # Print the function docstring
     def show(self, colorless=False):
         print(self.get_docstring(colorless))
 
     # Update the function's __doc__ attribute
-    def update(self, colorless=False):
-        self.function.__doc__ = self.get_docstring(colorless)
+    def update(self, colorless = False):
+        for function in self.function:
+            function.__doc__ = self.get_docstring(colorless)
         return self
 
     # Return number of parameters

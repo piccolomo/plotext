@@ -91,6 +91,9 @@ public:
   // Get the total length of the pixel (Fullground, Background, and Style)
   size_t get_length() const noexcept {return Fullground::get_length() + Background::get_length() + Style::get_length();}
 
+  inline const unsigned char get_fullground_integer_code() const noexcept {return Fullground::get_integer_code();}
+
+
   // Copy the pixel data to a buffer
   inline void to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept {
     Fullground::to_buffer(buffer, length_buffer);
@@ -147,4 +150,5 @@ extern "C" {
   void pixel_print(const Pixel * p) noexcept {p->print();}
   const wchar_t * pixel_get_wstring(const Pixel * c) noexcept {return wstring_to_cstring(c->get_wstring());}
   Pixel * pixel_copy(const Pixel * c) noexcept {return new Pixel(*c);}
+  unsigned char pixel_get_code(const Pixel * c) noexcept {return c->get_fullground_integer_code();}
 }

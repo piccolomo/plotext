@@ -7,11 +7,11 @@ from plotext._correct import correct_class as correct
 
 class legend_class:
     def __init__(self):
-        self.axes = axes_class()
-        self.clear_settings()
-        self.clear_signals()
-        self.clear_signals()
-        self.set_pixel() 
+        self.axes = axes_class() 
+        self.clear_settings() 
+        self.clear_signals() 
+        self.clear_signals() 
+        self.set_pixel()  
 
 
     # Reset legend to initial state
@@ -52,8 +52,9 @@ class legend_class:
 
     # Set pixel, default if none provided
     def set_pixel(self, pixel = None, default_pixel = None):
-        pixel = correct.pixel(pixel, default_line_pixel)
-        self.pixel = self.axes.pixel = pixel 
+        pixel = correct.pixel(pixel, default_legend_pixel)
+        self.pixel = pixel
+        self.axes.set_pixel(pixel) 
         return self
 
     # Set legend position (x, y) and whether position is relative
@@ -133,7 +134,7 @@ class legend_class:
     def add(self, marker, label):
         #marker = correct.marker(marker, default_)
         label = correct.legend_label(label, self.get_length()) 
-        label = correct.label(label, default_legend_pixel)
+        label = correct.label(label, self.pixel)
         self.markers.append(marker) 
         self.labels.append(label) 
         return self
@@ -149,6 +150,7 @@ class legend_class:
     def fix_background(self, pixel):
         self.pixel._fix_background(pixel)
         [label._fix_background(pixel) for label in self.labels]
+        [marker._fix(pixel) for marker in self.markers]
         return self
 
     # Construct and return the legend as a matrix_class object
@@ -187,15 +189,15 @@ class legend_class:
                 log._set_pixelled_character(col + c, row, char, axis.pixel)
 
         col, row = 2 * frame, 2 * frame
-        pixel = self.axes.get().pixel
+        pixel = self.axes.get().pixel 
 
         # Draw markers and labels inside the frame
-        for r in self.get_range():
-            m = self.markers[r]
-            log._set_pixelled_character(col, row + 2 * r, m.get_model(), m.get_pixel())
-            l = self.labels[r]
-            #l._fix(self.pixel)
-            log._insert_colorized_aligned(col + 2, row + 2 * r, l)
+        for r in self.get_range(): 
+            m = self.markers[r] 
+            log._set_pixelled_character(col, row + 2 * r, m.get_model(), m.get_pixel()) 
+            l = self.labels[r] 
+            #l._fix(self.pixel) 
+            log._insert_colorized_aligned(col + 2, row + 2 * r, l) 
 
         return log
 

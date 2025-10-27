@@ -20,7 +20,9 @@ from plotext._doc import pd as doc
 
 import plotext.prettydoc 
 
-from plotext._signal import signal_class as signal
+#from plotext._signal import signal_class as signal
+
+#from plotext._color_cycler import * 
 
 #from plotext._import import *
 

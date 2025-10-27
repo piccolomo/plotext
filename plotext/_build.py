@@ -1,7 +1,7 @@
 from plotext._matrix import matrix as matrix_class
 from plotext._dots import dots_class
 from plotext._rulers import rulers_class
-from plotext._points_map import points_map
+from plotext._map import points_map
 from plotext._points import points_class
 
 
@@ -13,7 +13,7 @@ class plot_build_class:
         self._start_event("initialize build")
 
         #Fix Signal Background
-        signals = self._signals.copy().fix_background(self._canvas_pixel)
+        signals = self._signals.copy()
 
         # Clone Rulers 
         irulers = rulers_class()
@@ -109,7 +109,6 @@ class plot_build_class:
         col_canvas, row_canvas = self._parts.canvas.get_position()
 
         self._stop_event("initialize build")
-
         
         # Build Matrix
         self._start_event("create matrix")
@@ -143,11 +142,15 @@ class plot_build_class:
                 signal.rescale_x(xlim, width_canvas, xdelta) 
                 signal.rescale_y(ylim, height_canvas, ydelta) 
 
+                #signal.log()
+
             self._stop_event("rescaling signals")
 
             self._start_event("plot")
             [signal.plot() for signal in signals if signal._plot] 
             self._stop_event("plot")
+
+            [signal.select_in_matrix(width_canvas, height_canvas) for signal in signals]
 
             self._start_event("squash")
             map = points_map(width_canvas, height_canvas)
@@ -156,6 +159,7 @@ class plot_build_class:
 
             self._start_event("adding points to canvas")
             [signal.add_offset(col_offset, row_offset) for signal in signals] 
+            signals.fix_background(self._canvas_pixel)
             [matrix._insert_signal(signal) for signal in signals] 
             self._stop_event("adding points to canvas")
 

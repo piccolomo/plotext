@@ -6,6 +6,8 @@
 #include <codecvt>
 #include <iomanip>
 #include <cstdint>
+#include <limits>
+
 
 #ifdef _WIN32
     #include <Windows.h>
@@ -39,9 +41,7 @@
 // Point modules
 #include "point/point_position.cpp"
 #include "point/point.cpp"
-
 #include "character/character_hd.cpp"
-
 #include "point/point_filled.cpp"
 #include "point/points_map.cpp"
 #include "point/points_filled.cpp"

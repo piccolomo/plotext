@@ -1,6 +1,6 @@
 from plotext._constants import r2
 from plotext._ruler import *
-from plotext._methods import *
+from plotext._methods.log import *
 
 
 class rulers_class:
@@ -17,38 +17,40 @@ class rulers_class:
         self.get(1, 1).clear()
         return self
 
-    def set(self, frequency = None, scale = None, alignment = None, direction = None, pixel = None, axis = 0, side = 0):
-        axes = correct.axes(axis)
-        sides = correct.sides(axis, side)
-        [self.get(axis, side).set(frequency = frequency, alignment = alignment, direction = direction, scale = scale, pixel = pixel) for axis in axes for side in sides]
-        return self
+    # def set(self, frequency = None, scale = None, alignment = None, direction = None, pixel = None, axis = 0, side = 0):
+    #     axes = correct.axes(axis)
+    #     sides = correct.sides(axis, side)
+    #     [self.get(axis, side).set(frequency = frequency, alignment = alignment, direction = direction, scale = scale, pixel = pixel) for axis in axes for side in sides]
+    #     return self
 
-    def set_ticks(self, ticks = None, labels = None, axis = 0, side = 0):
-        axis = correct.axis(axis)
-        sides = correct.sides(axis, side)
-        [self.get(axis, side).set_ticks(positions = ticks, labels = labels) for side in sides]
-        return self
+   #  def set_ticks(self, ticks = None, labels = None, axis = 0, side = 0):
+   #      axis = correct.axis(axis)
+   #      sides = correct.sides(axis, side)
+   #      [self.get(axis, side).set_ticks(positions = ticks, labels = labels) for side in sides]
+   #      return self
 
-   # Set default frequencies for x and y rulers
-    def set_xfrequency(self, frequency = None):
-        [el.set_frequency(frequency) for el in self.x]
-        return self
+   # # Set default frequencies for x and y rulers
+   #  def set_xfrequency(self, frequency = None):
+   #      [el.set_frequency(frequency) for el in self.x]
+   #      return self
 
-    # Set default frequencies for x and y rulers
-    def set_yfrequency(self, frequency = None):
-        [el.set_frequency(frequency) for el in self.y]
-        return self
+   #  # Set default frequencies for x and y rulers
+   #  def set_yfrequency(self, frequency = None):
+   #      [el.set_frequency(frequency) for el in self.y]
+   #      return self
 
-    # Set default frequencies for x and y rulers
-    def set_pixel(self, pixel = None):
-        [el.set_pixel(pixel) for el in self.x]
-        [el.set_pixel(pixel) for el in self.y]
-        return self
+   #  # Set default frequencies for x and y rulers
+   #  def set_pixel(self, pixel = None):
+   #      [el.set_pixel(pixel) for el in self.x]
+   #      [el.set_pixel(pixel) for el in self.y]
+   #      return self
 
     # Return ruler at specified axis and side (axis=0 for x, 1 for y)
     def get(self, axis = 0, side = 0):
+        axis = correct.axis(axis)
+        side = correct.side(axis, side)
         container = self.y if axis else self.x
-        return container[side]
+        return container[side] 
 
     # Add a line to the specified ruler with given properties
     def add_line(self, position, style = None, pixel = None, orientation = None, side = None):
@@ -63,7 +65,12 @@ class rulers_class:
 
     # Update ticks limits for all rulers based on signals limits
     def update_ticks_limits(self, signals):
-        [self.get(axis, side).update_ticks_limits(signals.get_limits(axis, side)) for axis in r2 for side in r2]
+        for axis in r2: 
+            for side in r2:
+                lim = self.get(int(not axis), side).get_limits()
+                lim = signals.get_limits(axis, side, *lim)
+                #print(axis, side, not axis, lim0, lim)
+                self.get(axis, side).update_ticks_limits(lim)
         return self
 
     # Update lines limits for all rulers
@@ -81,7 +88,7 @@ class rulers_class:
         log = ''
         for axis in r2:
             for side in r2:
-                log += log_methods.axis(axis, side) + ' ' + self.get(axis, side).get_log() + '\n'
+                log += log_axis(axis, side) + ' ' + self.get(axis, side).get_log() + '\n'
         return log
 
     # Print the log of all rulers

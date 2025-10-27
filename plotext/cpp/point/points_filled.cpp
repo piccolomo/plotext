@@ -20,13 +20,18 @@ public:
         Vector<PointFilled>::operator=(other);
         return *this;}
 
+        // Copy assignment
+    PointsFilled & operator=(const Vector<PointFilled> & other) {
+        Vector<PointFilled>::operator=(other);
+        return *this;}
+
     void clear() { Vector<PointFilled>::clear(); }
 
     // Add a filled point
     void add_point(const PointFilled & p) noexcept { this->append(p); }
 
     // Append another PointsFilled collection
-    void append(const Vector<PointFilled> & P) noexcept {for (size_t i = 0; i < P.get_length(); i++) append(P.at(i)); }
+    void append(const Vector<PointFilled> & P) noexcept {Vector<PointFilled>::reserve(get_length() + P.get_length()); Vector<PointFilled>::append(P);}
 
     //void append(const PointsFilled & P) noexcept { for (size_t i = 0; i < P.get_length(); i++) append(P.at(i)); }
 
@@ -53,25 +58,33 @@ public:
     const PointFilled & at(const size_t & i) const noexcept { return Vector<PointFilled>::at(i); }
 
     // Get minimum/maximum x and y across all points (including fills)
-    float get_xmin() const noexcept {
-        float xmin = std::numeric_limits<float>::max();
-        for (size_t i = 0; i < this->get_length(); i++) xmin = std::min(xmin, this->at(i).get_xmin());
-        return xmin; }
+    float get_xmin(const float & ymin = -inf, const float & ymax = inf) const noexcept {
+        float xmin = inf; 
+        for (size_t i = 0; i < this->get_length(); i++)
+            if (at(i).get_ymin() >= ymin && at(i).get_ymax() <= ymax)
+                xmin = std::min(xmin, at(i).get_xmin());
+        return xmin;} 
 
-    float get_xmax() const noexcept {
-        float xmax = std::numeric_limits<float>::lowest();
-        for (size_t i = 0; i < this->get_length(); i++) xmax = std::max(xmax, this->at(i).get_xmax());
-        return xmax; }
+    float get_xmax(const float & ymin = -inf, const float & ymax = inf) const noexcept {
+        float xmax = -inf; 
+        for (size_t i = 0; i < this->get_length(); i++)
+            if (at(i).get_ymin() >= ymin && at(i).get_ymax() <= ymax)
+                xmax = std::max(xmax, at(i).get_xmax());
+        return xmax;} 
 
-    float get_ymin() const noexcept {
-        float ymin = std::numeric_limits<float>::max();
-        for (size_t i = 0; i < this->get_length(); i++) ymin = std::min(ymin, this->at(i).get_ymin());
-        return ymin; }
+    float get_ymin(const float & xmin = -inf, const float & xmax = inf) const noexcept {
+        float ymin = inf; 
+        for (size_t i = 0; i < this->get_length(); i++)
+            if (at(i).get_xmin() >= xmin && at(i).get_xmax() <= xmax)
+                ymin = std::min(ymin, at(i).get_ymin());
+        return ymin;} 
 
-    float get_ymax() const noexcept {
-        float ymax = std::numeric_limits<float>::lowest();
-        for (size_t i = 0; i < this->get_length(); i++) ymax = std::max(ymax, this->at(i).get_ymax());
-        return ymax; }
+    float get_ymax(const float & xmin = -inf, const float & xmax = inf) const noexcept {
+        float ymax = -inf; 
+        for (size_t i = 0; i < this->get_length(); i++)
+            if (at(i).get_xmin() >= xmin && at(i).get_xmax() <= xmax)
+                ymax = std::max(ymax, at(i).get_ymax());
+        return ymax;} 
 
     // Transformations
     void log_x() { for (size_t i = 0; i < this->get_length(); i++) this->at(i).log_x(); }
@@ -80,6 +93,12 @@ public:
     void rescale_y(const std::pair<float, float>& ylim, const size_t& height, const float& delta) { for (size_t i = 0; i < this->get_length(); i++) this->at(i).rescale_y(ylim, height, delta); }
 
     void add_offset(const size_t & dx, const size_t & dy) {for (size_t i = 0; i < get_length(); i++) at(i).add_offset(dx, dy); }
+
+
+    void select_in_matrix(const size_t & width, const size_t & height) noexcept {
+        Vector<PointFilled> out(get_length());
+        for(PointFilled & pf: *this) {if (pf.in_matrix(width, height)) out.append(pf);}
+        *this = out;}
 
 
     // Create connected lines between multiple PointFilled
@@ -137,8 +156,7 @@ public:
                 size_t index = map.get_index(c, r);
                 PointFilled & previous = out.at(index);
                 bool close = pf.is_close(previous); 
-                if (pf.is_close(previous)) {previous.set_type(none);}
-            };    
+                if (pf.is_close(previous)) {previous.set_type(none);}};    
             
             map.set_index(c, r, out.get_length());
             out.append(pf);};

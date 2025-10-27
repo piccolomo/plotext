@@ -27,6 +27,9 @@ public:
     constexpr size_t get_col() const noexcept { return static_cast<size_t>(x); }
     constexpr size_t get_row() const noexcept { return static_cast<size_t>(y); }
 
+    constexpr bool in_matrix(const size_t & width, const size_t & height) const noexcept { return x >= 0 and y >= 0 and x < width and y < height; }
+
+
     // Inner position within a marker cell
     constexpr unsigned char get_inner_col(const size_t marker_cols) const noexcept {return static_cast<unsigned char>((x - get_col()) * marker_cols); }
 

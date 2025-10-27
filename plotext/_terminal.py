@@ -12,7 +12,7 @@ class terminal_class:
     def __init__(self):
         self.set_prompt_height()
         self.update_size()
-        self._create_master()
+        self._create_master() 
 
     # Clear entire terminal or specified number of lines
     def clear(self, lines = None):

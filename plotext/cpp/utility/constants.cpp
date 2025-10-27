@@ -18,3 +18,4 @@ const size_t marker_size_max = pixel_size_max + 6 + wcslen(ansi_end); // Max siz
 
 // Utility Variables
 size_t size_max = numeric_limits<size_t>::max(); // Max size possible for size_t
+float inf = numeric_limits<float>::infinity();

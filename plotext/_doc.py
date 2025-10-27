@@ -1,6 +1,8 @@
 from plotext.prettydoc import docs
 from plotext import *
 from plotext.prettydoc._doc import type, message
+from plotext._plot import plot_class
+
 
 pd = docs(1, ': ')
 #pd = docs()
@@ -12,9 +14,6 @@ spec = pd.add_parameter_spec
 past = pd.add_past_parameter
 out = pd.add_output
 past_out = pd.add_past_output
-
-
-
 
 
 add(pixel)
@@ -43,8 +42,6 @@ out("The updated source pixel", type.pixel)
 add(pixel.get_string) 
 doc("Generates a string representation of the pixel, incorporating its color and style attributes.") 
 out("A string representing the pixel's properties, including ASCII codes if applicable", type.string)
-
-
 
 
 add(colorize) 
@@ -178,16 +175,34 @@ par('adapt', "If True, allows insertion beyond matrix boundaries, trimming the o
 out("The updated source matrix with the inserted object", type.matrix)
 
 
-add(scatter) 
+add(plot_class.draw) 
 doc("Creates a scatter plot using the coordinates provided in the x and y lists.\n\n"
     "Multiple data sets can be plotted by calling consecutive plotting functions.")
 par("args", "The x and y coordinates of the data points to be plotted (or just y). String-formatted dates are also supported."); spec(type.data)
 par("marker", "The symbol used to represent each data point. It can be: a single character (e.g. 'x', '*'), a predefined marker code (e.g. 'hd'), available via the markers() method a marker object or a list of any of the above, one per data point."); spec(type.marker, "hd");
+par("plot", "Whenever to plot lines between data points"); spec(type.bool, False);
 par("fillx", "If True, draws a vertical line from each data point to the x-axis (y = 0). If a numeric value is provided, the line ends at that y-coordinate. If False, no vertical lines are drawn."); spec(type.bool, False)
 par("filly", "If True, draws a horizontal line from each data point to the y-axis (x = 0). If a numeric value is provided, the line ends at that x-coordinate. If False, no horizontal lines are drawn."); spec(type.bool, False)
 par("xside", "Specifies which x-axis to use: 'lower' or 'upper'."); spec(type.xside, 'lower')
 par("yside", "Specifies which y-axis to use: 'left' or 'right'."); spec(type.yside, 'left')
 par("label", "the label for the current data set. It appears in the legend menu in the top-left corner of the plot canvas. If None, no label is displayed."); spec(type.label, None)
+
+
+add(plot_class.ruler)
+doc("Controls the settings of the plot rulers, which display numerical values.")
+par("scale", "The ruler scale: linear or logarithmic (base 10)"); spec("'linear' or 'log'", 'linear')
+par("axis", "The axis (x or y) to select the ruler for"); spec(type.axis, 'x')
+par("side", "Specifies which axis to use: 'lower' or 'upper'."); spec(type.side, 0)
+
+add(plot_class.xruler)
+doc("Controls the settings of the plot rulers, which display numerical values, relative to the x axis.")
+past("scale", "plot_class.ruler")
+past("side", "plot_class.ruler")
+
+add(plot_class.yruler)
+doc("Controls the settings of the plot rulers, which display numerical values, relative to the y axis.")
+past("scale", "plot_class.ruler")
+past("side", "plot_class.ruler")
 
 
 add(colors)
@@ -196,16 +211,17 @@ doc("Displays the available color codes for use in plotext, including string nam
 add(styles)
 doc("Displays the available style codes for use in plotext, represented as string identifiers.")
 
-add(sin)
+add(sin, name = "sin")
 doc("Generates a sinusoidal signal, useful for testing plotting methods in libraries like plotext.")
 par("periods", "The number of complete sinusoidal cycles in the signal. Must be positive."); spec(type.float, 2)
 par("length", "The number of data points in the signal. Higher values produce smoother signals. Must be a positive integer."); spec(type.int, 200)
 par("amplitude", "The maximum height of the signal. Must be non-negative."); spec(type.float, 1)
 par("phase", "The phase shift of the signal in pi units. Use 0 for sine, 0.5 for cosine, or 1 for negative sine."); spec(type.float, 0)
 par("decay", "The exponential decay rate relative to length. Use 0 for no decay, positive values for amplitude reduction."); spec(type.float, 0)
+par("offset", "An offset added to the final signal."); spec(type.float, 0)
 out("A list of floats representing the sinusoidal signal.", type.floats)
 
-add(test, 'test')
+add(test, name = 'test')
 doc("It performs unit tests for the plotext package.")
 
 

@@ -4,10 +4,10 @@ class Marker : public Character, public MarkerType {
 public:
         // Constructors
     constexpr Marker() noexcept = default; // Default constructor
-    Marker(const wchar_t & c, const Pixel & p = Pixel()) noexcept 
-        : Character(c, p), MarkerType(normal) {}
-    Marker(const marker_type & t, const Pixel & p = Pixel()) noexcept 
-        : MarkerType(t), Character(space, p) {}
+    Marker(const wchar_t & c, const Pixel & p = Pixel()) noexcept : Character(c, p), MarkerType(normal) {}
+
+    Marker(const marker_type & t, const Pixel & p = Pixel()) noexcept : MarkerType(t), Character(space, p) {}
+
 
     // Copy & move constructors
     Marker(const Marker & m) noexcept = default;
@@ -76,6 +76,4 @@ extern "C" {
     wchar_t marker_get_model(Marker * cs) noexcept {return cs->get_model();}
     Pixel * marker_get_pixel(Marker * cs) noexcept {return new Pixel(cs->get_pixel());}
     void marker_fix(Marker * p, Pixel * pixel) noexcept {p->fix(*pixel);}
-
-
 }

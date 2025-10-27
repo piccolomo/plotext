@@ -183,13 +183,12 @@ public:
                 return static_cast<int>(col) + delta;}}
         return -1;}
 
+    inline void insert_point(const Point & p) noexcept  {get_character(p.get_col(), p.get_row()).update(p);}
 
-    void add_point(const Point & p) noexcept {get_character(p.get_col(), p.get_row()).update(p);}
-
-    void insert_signal(const Signal & signal) noexcept {
+    inline void insert_signal(const Signal & signal) noexcept {
         for (auto & pf : signal) 
-            if (pf.no_fill()) {add_point(pf);} 
-            else {for (Point & p : pf.get_filled_line()) add_point(p);}}
+            if (pf.no_fill()) {insert_point(pf);} 
+            else {for (Point & p : pf.get_filled_line()) insert_point(p);}}
 
     inline void to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept {
         const size_t total = width * height;
@@ -232,7 +231,8 @@ public:
         const size_t total = width * height;
         for (size_t i = 0; i < total; ++i) {
             data[i].stream();
-            if ((i + 1) % width == 0 && (i + 1) != total) wcout.put(L'\n');} // Add newline after each row (except the last one)
+            if (not data[i].same_pixel(data[i + 1])) {wcout.write(ansi_end, 4);}
+            if ((i + 1) % width == 0) {wcout.write(ansi_end, 4); if ((i + 1) != total) wcout.put(L'\n');}} // Add newline after each row (except the last one)
         wcout.flush();}
 
 

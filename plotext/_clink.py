@@ -133,6 +133,9 @@ clink.add('point', 'get', 'row').input(void).output(size)
 clink.add('point', 'get', 'x').input(void).output(float) 
 clink.add('point', 'get', 'y').input(void).output(float) 
 clink.add('point', 'get', 'marker').input(void).output(void) 
+clink.add('point', 'get', 'code').input(void).output(size)
+
+
 
 # Add points-related functions to link 
 clink.add('signal', 'new').input(size).output(void) 
@@ -151,10 +154,10 @@ clink.add('signal', 'get', 'wstring').input(void).output(cstring)
 clink.add('signal', 'get', 'length').input(void).output(size) 
 clink.add('signal', 'get', 'point').input(void, size).output(void) 
 clink.add('signal', 'get', 'fill', 'point').input(void, size).output(void) 
-clink.add('signal', 'get', 'xmin').input(void).output(float) 
-clink.add('signal', 'get', 'xmax').input(void).output(float) 
-clink.add('signal', 'get', 'ymin').input(void).output(float) 
-clink.add('signal', 'get', 'ymax').input(void).output(float) 
+clink.add('signal', 'get', 'xmin').input(void, float, float).output(float) 
+clink.add('signal', 'get', 'xmax').input(void, float, float).output(float) 
+clink.add('signal', 'get', 'ymin').input(void, float, float).output(float) 
+clink.add('signal', 'get', 'ymax').input(void, float, float).output(float) 
 clink.add('signal', 'copy').input(void).output(void) 
 clink.add('signal', 'assign').input(void, void).output(void) 
 clink.add('signal', 'get', 'label').input(void).output(cstring) 
@@ -166,6 +169,11 @@ clink.add('signal', 'plot').input(void).output(void)
 clink.add('signal', 'squash').input(void, void).output(void) 
 #clink.add('signal', 'get', 'filled', 'lines', 'length').input(void).output(size) 
 clink.add('signal', 'add', 'offset').input(void, size, size).output(void)
+clink.add('signal', 'select', 'in', 'matrix').input(void, size, size).output(void)
+clink.add('signal', 'append').input(void, void).output(void)
+clink.add('signal', 'set', 'marker').input(void, void).output(void)
+clink.add('signal', 'get', 'marker').input(void).output(void)
+
 
 # Add point-related functions to link
 clink.add('points', 'new').input(size).output(void)
@@ -173,6 +181,7 @@ clink.add('points', 'delete').input(void).output(void)
 clink.add('points', 'log').input(void).output(void)
 clink.add('points', 'get', 'length').input(void).output(size)
 clink.add('points', 'get', 'capacity').input(void).output(size)
+
 
 # Add point-related functions to link
 clink.add('points', 'map', 'new').input(size, size).output(void)

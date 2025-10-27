@@ -1,7 +1,7 @@
 # Internal library imports
 from plotext._pixel import pixel as pixel_class
 from plotext._correct import correct_class as correct
-from plotext._methods import *
+from plotext._methods.string import write
 from plotext._clink import clink, wchar, wstring
 # Standard and internal utility imports
 #from plotext._methods import object_methods #hash, write
@@ -124,7 +124,7 @@ class matrix:
     # Print the matrix to the terminal
     def print(self, colorless = False, end = '\n', flush = True):
         clink.matrix_print(self._pointer, colorless)
-        string_methods.write(end, flush)
+        #write(end, flush)
         return self
 
     # String representation of the matrix

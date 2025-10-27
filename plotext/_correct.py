@@ -1,11 +1,15 @@
 from re import sub
 
-from plotext._methods import *
+from plotext._methods.object import *
+from plotext._methods.list import repeat, replace_none, is_list_like
+from plotext._methods.string import only_spaces
+
 #from plotext._default import default_labels_pixel, default_axis_pixel, default_ruler_pixel
 from plotext._constants import *
 from plotext._colorize import colorize as colorize_class
-from plotext._marker import marker as marker_class
-from plotext._pixel import pixel
+from plotext._pixel import pixel as pixel_class
+from plotext._marker import marker as marker_class 
+
 
 
 class correct_class:
@@ -42,6 +46,13 @@ class correct_class:
         if key.stop is None:
             key = slice(key.start, bins)
         return key
+
+
+    @staticmethod
+    def orientation(orientation):
+        if orientation is None or orientation not in orientations + orientations_short:
+            return orientations[0]
+        return orientation
 
 
     # Correct horizontal alignment by checking against valid values
@@ -110,7 +121,7 @@ class correct_class:
     # Correct a single label, applying default pixel settings
     @staticmethod
     def label(label, default_pixel):
-        if label is None or string_methods.only_spaces(label):
+        if label is None or only_spaces(label):
             return None
         if isinstance(label, str): 
             label = colorize(label.strip()).set_pixel(default_pixel)
@@ -129,7 +140,7 @@ class correct_class:
     def axes(axis):
         if axis is None:
             side_list = r2
-        elif object_methods.is_list_like(axis):
+        elif is_list_like(axis):
             side_list = axis
         else:
             side_list = [axis]
@@ -163,8 +174,8 @@ class correct_class:
     @staticmethod
     def sides(axis, side):
         if side is None:
-            side_list = r2
-        elif object_methods.is_list_like(side):
+            side_list = [0]
+        elif is_list_like(side):
             side_list = side
         else:
             side_list = [side]
@@ -209,9 +220,9 @@ class correct_class:
         elif x is not None and y is None:
             y = x
             x = list(range(1, len(y) + 1))
-        elif object_methods.is_numerical(x) and not object_methods.is_numerical(y):
+        elif is_numerical(x) and not is_numerical(y):
             x = [x] * len(y)
-        elif object_methods.is_numerical(y) and not object_methods.is_numerical(x):
+        elif is_numerical(y) and not is_numerical(x):
             y = [y] * len(x)
         lx, ly = len(x), len(y)
         if lx != ly:
@@ -228,8 +239,8 @@ class correct_class:
             return default_marker
         if isinstance(marker, str):
             return marker_class(marker)._fix(default_marker)
-        if isinstance(marker, list):
-            return marker_class(*marker)._fix(default_marker)
+        # if isinstance(marker, list):
+        #     return marker_class(*marker)._fix(default_marker)
         return marker
 
     # Correct a list of markers, repeating them to match the specified length
@@ -238,13 +249,13 @@ class correct_class:
         if not isinstance(marker, list):
             marker = [marker]
         marker = [correct_class.marker(m, default_marker) for m in marker]
-        return list_methods.repeat(marker, length)
+        return repeat(marker, length)
 
     # Correct the limits by combining the current and new limits
     @staticmethod
     def limits(limits, new_limits):
         new_limits = limits if new_limits is None else new_limits
-        limits = list_methods.replace_none(limits, new_limits)
+        limits = replace_none(limits, new_limits)
         [a, b] = limits
         limits = [a - 1, b + 1] if a == b and a is not None else limits
         #minimum = min(limits[0], new_limits[0]) if new_limits[0] is not None else limits[0]
@@ -258,7 +269,7 @@ class correct_class:
 
     @staticmethod
     def label(label, default_pixel):
-        if label is None or string_methods.only_spaces(label):
+        if label is None or only_spaces(label):
             return None
         if isinstance(label, str): 
             label = colorize_class(label.strip()).set_pixel(default_pixel)

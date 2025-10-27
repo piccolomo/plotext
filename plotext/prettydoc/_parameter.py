@@ -1,7 +1,7 @@
 # Internal imports
 from plotext.prettydoc._text import text_class, labelled_text_class
 from plotext._constants import new_line, comma
-from plotext._methods import * 
+from plotext._methods.string import * 
 
 
 
@@ -48,15 +48,15 @@ class parameter_class:
     # Get combined docstring for type and default, with optional prefix
     def get_specs_docstring(self, prefix = None):
         docs = [self.type.get_docstring(), self.default.get_docstring(comma)]
-        doc = string_methods.connect_strings(docs)
-        return string_methods.add_prefix(doc, prefix)
+        doc = connect_strings(docs)
+        return add_prefix(doc, prefix)
 
 
     # Get full docstring including name and specs, with optional prefix
     def get_docstring(self, prefix = None):
         docs = [self.name.get_docstring(), self.get_specs_docstring(new_line)]
-        doc = string_methods.connect_strings(docs)
-        return string_methods.add_prefix(doc, prefix)
+        doc = connect_strings(docs)
+        return add_prefix(doc, prefix)
 
 
     # Return a deep copy of the parameter

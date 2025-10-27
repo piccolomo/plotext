@@ -14,7 +14,7 @@ public:
     Character(const Character & p) noexcept : Pixel(p), c(p.c) {}
     Character(Character && p) noexcept : Pixel(std::move(p)), c(move(p.c)) {}
 
-    // Assignment operator
+    // Assignment operator 
     Character & operator=(const Character& cn) noexcept {
         c = cn.c;
         Pixel::operator=(cn);

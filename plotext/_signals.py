@@ -1,13 +1,13 @@
-from plotext._methods import *  # For matrix operations
-from plotext._constants import r2  # Axis side constants
+from plotext._methods.list import transpose  # For matrix operations
+from plotext._constants import r2, inf  # Axis side constants
 from plotext._signal import signal_class#, get_scatter_points
-from plotext._derived import default_marker
+#from plotext._derived import default_marker
 
 
 class signals_class:
     def __init__(self):
         self.clear()
-        self.set_default_marker()
+        #self.set_default_marker()
 
     # Clear all stored signals
     def clear(self):
@@ -18,13 +18,13 @@ class signals_class:
         self.signal.append(signal)
         return self
 
-    def set_default_marker(self):
-        self.default_marker = default_marker
-        return self
+    # def set_default_marker(self):
+    #     self.default_marker = default_marker
+    #     return self
 
-    def update_default_marker(self, marker):
-        self.default_marker._fix(marker)
-        return self
+    # def update_default_marker(self, marker):
+    #     self.default_marker._fix(marker)
+    # return self
 
     # Get number of signals stored
     def get_length(self):
@@ -43,21 +43,26 @@ class signals_class:
         return sum(el.get_length() for el in self)
 
     # Get combined x-axis limits from all signals
-    def get_xlimits(self):
-        limits = [signal.get_xlimits() for signal in self.signal] 
-        limits = list_methods.transpose(limits, 2)
-        return [min(limits[0], default=None), max(limits[1], default=None)]
+    def get_xlimits(self, ymin = -inf, ymax = inf):
+        limits = [signal.get_xlimits(ymin, ymax) for signal in self.signal] 
+        limits = transpose(limits, 2)
+        return [min(limits[0], default = None), max(limits[1], default = None)]
 
     # Get combined y-axis limits from all signals
-    def get_ylimits(self):
-        limits = [signal.get_ylimits() for signal in self.signal]
-        limits = list_methods.transpose(limits, 2)
-        return [min(limits[0], default=None), max(limits[1], default=None)]
+    def get_ylimits(self, xmin = -inf, xmax = inf):
+        limits = [signal.get_ylimits(xmin, xmax) for signal in self.signal]
+        limits = transpose(limits, 2)
+        return [min(limits[0], default = None), max(limits[1], default = None)]
 
     # Get limits for specified axis and side
-    def get_limits(self, axis = 0, side = 0):
-        selection = self.select(yside=side) if axis else self.select(xside=side)
-        return selection.get_ylimits() if axis else selection.get_xlimits()
+    def get_limits(self, axis = 0, side = 0, min = -inf, max = inf):
+        selection = self.select(yside = side) if axis else self.select(xside = side)
+        return selection.get_ylimits(min, max) if axis else selection.get_xlimits(min, max)
+
+    def select_in_matrix(self, width, height):
+        [signal.select_in_matrix(width, height) for signal in self.signal]
+        return self
+
 
     # Fix background for all signals
     def fix_background(self, pixel):

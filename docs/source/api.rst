@@ -12,7 +12,6 @@ plotext
 The `plotext` module is the main package, offering various tools for creating visual representations in the terminal.
 
 
-
 .. autoclass:: plotext.pixel
    :members:
    :undoc-members:
@@ -30,12 +29,15 @@ The `plotext` module is the main package, offering various tools for creating vi
    :undoc-members:
    :show-inheritance:
 
-.. autofunction:: plotext.scatter
+.. autofunction:: plotext.draw 
+.. autofunction:: plotext.xruler
+.. autofunction:: plotext.yruler
+.. autofunction:: plotext.ruler
 
-.. autofunction:: plotext.colors
-.. autofunction:: plotext.styles
-.. autofunction:: plotext.test
-.. autofunction:: plotext.sin
+.. autofunction:: plotext.colors 
+.. autofunction:: plotext.styles 
+.. autofunction:: plotext.test 
+.. autofunction:: plotext.sin 
 
 
 .. _prettydoc_api:

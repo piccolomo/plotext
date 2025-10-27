@@ -35,12 +35,12 @@ class type:
 
     data = "one or two lists of numbers"
     marker = "a character, a marker code, a plotext.marker() object, or a list thereof"
-    yside = "'left' (0 in short) or 'right' (1 in short)"
-    xside = "'lower' (0 in short) or 'upper' (1 in short)"
+    axis = "'x' (0 in short) or 'y' (1 in short); a list of both axes can also be provided"
+    side = "0 (or 'lower' for x axis and 'left' for y axis) or 1 (or 'upper' for x axis and 'right' for y axis); a list of both sides can also be provided"
+    xside = "'lower' or 'upper' (0 or 1 in short); a list of both sides can also be provided"
+    yside = "'left' or 'right' (0 or 1 in short); a list of both sides can also be provided"
+
     label = 'a string or colorize object'
-
-
-
     docs = 'plotext.prettydoc.docs'  # PrettyDoc class
     function = 'a python function'  # Function type
 
@@ -68,7 +68,7 @@ doc("Lists the available docstring components that can be customized using the p
 
 add(docs.add_function)
 doc("Registers a function with the PrettyDoc object for docstring customization. All subsequent method calls will apply to the most recently added function until docs.update() is called to finalize and register the docstrings.") 
-par("function", "The function to which the customized docstring will be applied.")
+par("function", "The function to which the customized docstring will be applied or or list of functions, that should share the same docstring")
 par("name", "The name for the function. If not provided, defaults to the function’s __qualname__ attribute."); spec(type.function)
 past_out("docs.set_default_pixel")
 
@@ -119,7 +119,7 @@ add(docs.show)
 doc("Renders all registered docstrings with their color and style formatting.")
 past_out("docs.set_default_pixel")
 
-add(test, 'test')
+add(test, name = 'test')
 doc("Executes unit tests to validate the functionality of the PrettyDoc module.")
 
 pd.update()

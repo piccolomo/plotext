@@ -3,34 +3,35 @@ private:
     bool xside = false;
     bool yside = false;
     std::wstring label;
+    Marker marker; 
 
 public:
     using PointsFilled::squash;
 
-    Signal() = default;
+    Signal() {marker.set_type(none);};
 
-    Signal(const size_t& size) : PointsFilled(size) {}
+    Signal(const size_t& size) : PointsFilled(size) {marker.set_type(none);}
 
     // Copy constructor
-    Signal(const Signal& s)
-        : PointsFilled(s), xside(s.xside), yside(s.yside), label(s.label) {}
+    Signal(const Signal& s) : PointsFilled(s), xside(s.xside), yside(s.yside), label(s.label), marker(s.marker) {}
 
     // Constructor from PointsFilled
-    Signal(const PointsFilled& pf)
-        : PointsFilled(pf) {}
+    Signal(const PointsFilled & pf) : PointsFilled(pf) {}
 
     Signal& operator=(const Signal & other) {
         PointsFilled::operator=(other);
         xside = other.xside;
         yside = other.yside;
         label = other.label;
+        marker = other.marker;
         return *this;}
 
     void clear() {
         PointsFilled::clear();
         xside = false;
         yside = false;
-        label = L"";}
+        label = L"";
+        marker.set_type(none);}
 
     void set_details(const bool & xs, const bool & ys, const wstring & l) {
         xside = xs;
@@ -38,15 +39,21 @@ public:
         label = l;}
 
 
-    void add_point(const PointFilled& pf) noexcept {PointsFilled::add_point(pf);}
+    void add_point(const PointFilled & pf) noexcept {PointsFilled::add_point(pf); if (get_length() == 1) {marker = pf;}}
 
-    void add_point(const Point& main, const Point& fill) noexcept {PointFilled pf(main, fill); add_point(pf);}
+    //void append(const Signal & s) noexcept {PointsFilled::append(s);}
+
+    void add_point(const Point & main, const Point & fill) noexcept {PointFilled pf(main, fill); add_point(pf);}
 
     // Access main and fill points via PointFilled
-    Point get_point(const size_t& i) const noexcept { return at(i).get_main(); }
-    Point get_fill_point(const size_t& i) const noexcept { return at(i).get_fill(); }
+    Point get_point(const size_t & i) const noexcept { return at(i).get_main(); }
+    Point get_fill_point(const size_t & i) const noexcept { return at(i).get_fill(); }
 
     size_t get_length() const noexcept { return PointsFilled::get_length(); }
+
+    inline void set_marker(const Marker & m) noexcept { marker = m; }
+
+    const Marker & get_marker() const noexcept { return marker;}
 
     // float get_xmin() const noexcept { return PointsFilled::get_xmin(); }
     // float get_xmax() const noexcept { return PointsFilled::get_xmax(); }
@@ -68,7 +75,7 @@ public:
     std::wstring get_wstring(const bool fill) const {
         std::wostringstream woss;
         size_t length = this->get_length();
-        woss << L"Signal " << "xside" << " " << bool_to_wchar(xside) << ", yside" << " " << bool_to_wchar(yside) << ", ";
+        woss << L"Signal " << "xside" << " " << bool_to_wchar(xside) << ", yside" << " " << bool_to_wchar(yside) << ", marker " << marker.get_wstring() << ", label " << label << ", ";
         woss << PointsFilled::get_wstring(fill);
         return woss.str(); }
 
@@ -91,12 +98,17 @@ extern "C" {
 
     // Points
     void signal_add_point(Signal* s, const PointFilled* pf) noexcept { s->add_point(*pf); }
+    void signal_append(Signal* s, Signal* s2) noexcept {s->append(*s2); }
+
     void signal_set_point(Signal* s, size_t i, float xs, float ys, Marker* m) noexcept {s->set_point(i, xs, ys, *m);};
     void signal_set_fill_point(Signal* s, size_t i, float xs, float ys, Marker* m) noexcept {s->set_fill(i, xs, ys, *m);};
 
 
     PointFilled * signal_get_point(const Signal* s, size_t i) noexcept { return new PointFilled(s->get(i)); }
-    Point* signal_get_fill_point(const Signal* s, size_t i) noexcept { return new Point(s->get_fill_point(i)); }
+    Point * signal_get_fill_point(const Signal* s, size_t i) noexcept { return new Point(s->get_fill_point(i)); }
+    void  signal_set_marker(Signal * s, const Marker * m) noexcept {s->set_marker(*m);}
+    Marker * signal_get_marker(const Signal * m) noexcept {return new Marker(m->get_marker());}
+
 
     // Background
     void signal_fix_background(Signal* s, Pixel* p) noexcept { s->fix_background(*p); }
@@ -107,10 +119,17 @@ extern "C" {
     void signal_assign(Signal* s1, const Signal* s2) noexcept { *s1 = *s2; }
 
     // Range
-    float signal_get_xmin(Signal* s) noexcept { return s->get_xmin(); }
-    float signal_get_xmax(Signal* s) noexcept { return s->get_xmax(); }
-    float signal_get_ymin(Signal* s) noexcept { return s->get_ymin(); }
-    float signal_get_ymax(Signal* s) noexcept { return s->get_ymax(); }
+    // float signal_get_xmin(Signal* s) noexcept { return s->get_xmin(); }
+    // float signal_get_xmax(Signal* s) noexcept { return s->get_xmax(); }
+    // float signal_get_ymin(Signal* s) noexcept { return s->get_ymin(); }
+    // float signal_get_ymax(Signal* s) noexcept { return s->get_ymax(); }
+
+    float signal_get_xmin(Signal* s, float ymin = -inf, float ymax = inf) noexcept {return s->get_xmin(ymin, ymax);}
+    float signal_get_xmax(Signal* s, float ymin = -inf, float ymax = inf) noexcept {return s->get_xmax(ymin, ymax);}
+    float signal_get_ymin(Signal* s, float xmin = -inf, float xmax = inf) noexcept {return s->get_ymin(xmin, xmax);}
+    float signal_get_ymax(Signal* s, float xmin = -inf, float xmax = inf) noexcept {return s->get_ymax(xmin, xmax);}
+
+    void signal_select_in_matrix(Signal* s, size_t width, size_t height) noexcept {s->select_in_matrix(width, height);}
 
     // Transformations
     void signal_log_x(Signal* s) noexcept { s->log_x(); }

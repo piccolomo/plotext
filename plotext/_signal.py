@@ -1,26 +1,26 @@
 from plotext._clink import clink, wstring
 from plotext._point import point_class
-from plotext._correct import correct_class as correct
-from plotext._derived import default_marker
+from plotext._constants import inf  # Axis side constants
+from plotext._marker import marker
+from plotext._methods.list import unique
 
 
 class signal_class:
     # Initialize points with new or existing pointer
-    def __init__(self, *args, marker = None, xside = None, yside = None, plot = None, label = None, _pointer = None):
-        if _pointer is None: 
-            x, y = correct.data(*args) 
-            length = len(x) 
-            label = correct.signal_label(label) 
-            m = correct.markers(marker, default_marker, length) 
-            self._pointer = clink.signal_new(length)
-            self.set_points(x, y, m) 
-            #self.set_details(xside, yside, label)
-        else:
-            self._pointer = _pointer 
-        self._plot = correct.bool(plot) 
+    def __init__(self, length = None, _pointer = None): 
+        self._pointer = clink.signal_new(length) if _pointer is None else _pointer 
 
     # Clean up pointer on deletion
     def __del__(self): clink.signal_delete(self._pointer); self._pointer = None
+
+    # def set(self, *args, marker = None, xside = None, yside = None, plot = None, label = None):
+    #     x, y = correct.data(*args) 
+    #     #m = correct.markers(marker, default_marker, len(x)) 
+    #     self._pointer = clink.signal_new(length)
+    #     self.set_points(x, y, m) 
+    #     label = '' if label is None else label
+    #     self.set_details(xside, yside, label)
+    #     self._plot = correct.bool(plot) 
 
     # Clear all points 
     def clear(self): clink.signal_clear(self._pointer)
@@ -37,15 +37,40 @@ class signal_class:
     # Get range of valid indices 
     def get_range(self): return range(self.get_length())
 
+
     # Get min and max x-values 
-    def get_xmin(self): return clink.signal_get_xmin(self._pointer)
-    def get_xmax(self): return clink.signal_get_xmax(self._pointer)
-    def get_xlimits(self): return (self.get_xmin(), self.get_xmax())
+    def get_xmin(self, ymin=None, ymax=None):
+        ymin = -inf if ymin is None else ymin
+        ymax = inf if ymax is None else ymax
+        return clink.signal_get_xmin(self._pointer, ymin, ymax)
+
+    def get_xmax(self, ymin=None, ymax=None):
+        ymin = -inf if ymin is None else ymin
+        ymax = inf if ymax is None else ymax
+        return clink.signal_get_xmax(self._pointer, ymin, ymax)
+
+    def get_xlimits(self, ymin=None, ymax=None):
+        return (self.get_xmin(ymin, ymax), self.get_xmax(ymin, ymax))
+
 
     # Get min and max y-values 
-    def get_ymin(self): return clink.signal_get_ymin(self._pointer)
-    def get_ymax(self): return clink.signal_get_ymax(self._pointer)
-    def get_ylimits(self): return (self.get_ymin(), self.get_ymax())
+    def get_ymin(self, xmin=None, xmax=None):
+        xmin = -inf if xmin is None else xmin
+        xmax = inf if xmax is None else xmax
+        return clink.signal_get_ymin(self._pointer, xmin, xmax)
+
+    def get_ymax(self, xmin=None, xmax=None):
+        xmin = -inf if xmin is None else xmin
+        xmax = inf if xmax is None else xmax
+        return clink.signal_get_ymax(self._pointer, xmin, xmax)
+
+    def get_ylimits(self, xmin=None, xmax=None):
+        return (self.get_ymin(xmin, xmax), self.get_ymax(xmin, xmax))
+
+    def select_in_matrix(self, width, height):
+        clink.signal_select_in_matrix(self._pointer, width, height)
+        return self
+
 
     # Fix background pixel for points 
     def fix_background(self, pixel):
@@ -105,8 +130,16 @@ class signal_class:
     def get_yside(self):
         return clink.signal_get_side(self._pointer, True)
 
+    def set_marker(self, marker):
+        clink.signal_set_marker(self._pointer, marker._pointer)
+        return self
+
     def get_marker(self):
-        return self.get_point(0).get_marker()
+        return marker(_pointer = clink.signal_get_marker(self._pointer))
+
+    def get_foreground_unique_integer_colors(self):
+        #return self.get(0).get_foreground_integer_color()
+        return unique([el.get_foreground_integer_color() for el in self])
 
     def set_details(self, xside, yside, label):
         clink.signal_set_details(self._pointer, xside, yside, wstring(label)) 
@@ -117,10 +150,14 @@ class signal_class:
         clink.signal_add_point(self._pointer, point._pointer)
         return self
 
+    def append(self, signal):
+        clink.signal_append(self._pointer, signal._pointer)
+        return self
+
     # # Set a fill point at index
     # def set_fill(self, index, point):
     #     clink.signal_set_fill_point(self._pointer, index, point._pointer)
-    #     return self
+    #     return self 
 
     # Log x-values
     def log_x(self):
@@ -142,7 +179,9 @@ class signal_class:
 
     # Copy points instance 
     def copy(self): 
-        return signal_class(_pointer = clink.signal_copy(self._pointer), plot = self._plot)
+        out = signal_class(_pointer = clink.signal_copy(self._pointer))
+        out._plot = self._plot
+        return out
 
     # Copy data from another points instance
     def copy_from(self, points): 

@@ -33,8 +33,7 @@ public:
       else {wcscpy(code, ansi_background);}
       if (is_integer) {swprintf(code + 5, 7, L"5;%dm", r);} 
       else {swprintf(code + 5, 16, L"2;%d;%d;%dm", r, g, b);}
-      update_length();
-    }
+      update_length();}
 
     // Sets the color using a string color code (e.g., "red").
     void set(bool is_fullground, const string & color) {
@@ -42,6 +41,12 @@ public:
       if (color_code == 100) {code[0] = L'\0'; length = 0;} 
       else {set(is_fullground, true, color_code);}}
 
+    inline const unsigned char get_integer_code() const noexcept {
+        const wchar_t * p = wcsstr(code, L"5;");
+        if (p) {
+            unsigned char val = 0;
+            if (swscanf(p + 2, L"%dm", &val) == 1) {return val;}}
+        return 20;}
 
     size_t get_length() const { return length; }
     const wchar_t * get_code() const { return code; }

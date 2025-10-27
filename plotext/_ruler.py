@@ -6,16 +6,19 @@ from plotext._lines import lines_class  # Manages lines associated with the rule
 
 from plotext._correct import correct_class as correct
 from plotext._derived import *
-from plotext._methods import *
+from plotext._methods.list import linspace
+from plotext._methods.ruler import *
+from plotext._date import date_class
 
 
 class ruler_class:
-    def __init__(self):
+    def __init__(self): 
         self.ticks = ticks_class()
-        self.limits = limits_class()
-        self.lines = lines_class()
-        self.set_pixel()
-        self.set_frequency()
+        self.limits = limits_class() 
+        self.lines = lines_class() 
+        self.date = date_class() 
+        self.set_pixel() 
+        self.set_frequency() 
 
     # Reset ruler to defaults
     def clear(self):
@@ -24,6 +27,7 @@ class ruler_class:
         self.set_pixel()
         self.set_frequency()
         self.lines.clear()
+        self.date.clear()
         return self
 
     # Set alignment, direction, scale, and pixel
@@ -81,9 +85,13 @@ class ruler_class:
     # Set ticks positions and labels
     def set_ticks(self, positions = None, labels = None):
         positions = [] if positions is None else positions
-        labels = ruler_methods.get_labels(positions) if labels is None else labels
+        labels = labels if labels is not None else get_labels(positions) if not self.date._active else self.date.convert(positions, "string")
         labels = correct.labels(labels, self.pixel)
         self.ticks.set(positions, labels)
+        return self
+
+    def set_date_form(self, form = None, active = True):
+        self.date.set_form(form)._set_active(active)
         return self
 
 
@@ -140,9 +148,9 @@ class ruler_class:
     def get_auto_ticks(self):
         if not self.limits.is_active():
             return ticks_class().set([], [])
-        positions_scaled = list_methods.linspace(*self.get_limits(scaled = True), self.frequency)
-        positions_unscaled = ruler_methods.reverse_scale(positions_scaled, self.limits.scale)
-        labels = ruler_methods.get_labels(positions_unscaled)
+        positions_scaled = linspace(*self.get_limits(scaled = True), self.frequency)
+        pu = reverse_scale(positions_scaled, self.limits.scale) # positions_unscaled
+        labels = get_labels(pu) if not self.date._active else self.date.convert(pu, "string")
         labels = correct.labels(labels, self.pixel)
         return ticks_class().set(positions_scaled, labels)
 
@@ -154,7 +162,7 @@ class ruler_class:
 
     # Get a log string representing current state
     def get_log(self):
-        return f'Frequency {self.frequency}, Pixel {self.pixel}, {self.ticks.get_log()}, {self.limits.get_log()}, {self.lines.get_log()}'
+        return f'Frequency {self.frequency}, Pixel {self.pixel}, {self.ticks.get_log()}, {self.limits.get_log()}, {self.lines.get_log()}' + self.date._get_log()
 
     # Print the log string
     def log(self):
@@ -168,6 +176,7 @@ class ruler_class:
         self.pixel = ruler.pixel
         self.frequency = ruler.frequency
         self.lines.clone(ruler.lines)
+        self.date._clone(ruler.date)
         return self
 
 

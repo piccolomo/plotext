@@ -57,6 +57,9 @@ public:
     float get_ymin() const { return std::min(get_y(), fill.get_y()); }
     float get_ymax() const { return std::max(get_y(), fill.get_y()); }
 
+    constexpr bool in_matrix(const size_t & width, const size_t & height) const noexcept { return Point::in_matrix(width, height) and fill.in_matrix(width, height);}
+
+
     size_t get_two_lines_length(const PointFilled & p) const {return max(get_main().get_line_length(p.get_main()), get_fill().get_line_length(p.get_fill()));}
 
     Vector<PointFilled> get_two_lines(const PointFilled & p, const size_t & length, bool last = false) const {    
@@ -156,4 +159,6 @@ extern "C" {
   float point_get_x(PointFilled * c) noexcept {return c->get_x();}
   float point_get_y(PointFilled * c) noexcept {return c->get_y();}
   const wchar_t * point_get_wstring(PointFilled * c, bool fill) {return wstring_to_cstring(c->get_wstring(fill));}
+  unsigned char point_get_code(const PointFilled * c) noexcept {return c->get_fullground_integer_code();}
+
 }

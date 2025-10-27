@@ -31,7 +31,7 @@ default_canvas_background = "white"
 default_line_foreground = "orange"
 default_line_background = "white"
 
-default_legend_foreground = "black"
+default_legend_foreground = "blue"
 default_legend_background = "white"
 
 
@@ -48,10 +48,9 @@ default_legend_axis_style = 'default'
 
 
 # Plot default marker
-default_marker_character = "hd"
-default_marker_foreground = "blue+"
-default_marker_background = "default"
+default_marker_code = "hd"
+# default_marker_foreground = "blue+"
+# default_marker_background = "default"
 
 
-
-
+color_sequence = [12, 10, 9, 14, 13, 11, 0, 15, 8, 7, 1, 2, 3, 4, 5, 6]

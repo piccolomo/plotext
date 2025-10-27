@@ -14,4 +14,7 @@ default_legend_pixel = pixel(default_legend_foreground, default_legend_backgroun
 
 
 # Default Markers
-default_marker = marker(default_marker_character, default_marker_foreground, default_marker_background)
+#default_marker = marker(default_marker_character, default_marker_foreground, default_marker_background)
+#default_marker = marker(default_marker_character)
+
+#print(default_marker)

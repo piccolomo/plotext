@@ -1,5 +1,5 @@
 # Internal imports
-from plotext._methods import * 
+from plotext._methods.string import * 
 from plotext._constants import space
 
 
@@ -43,7 +43,7 @@ class text_class:
 
     # Get formatted docstring with optional prefix
     def get_docstring(self, prefix = None):
-        return string_methods.add_prefix(self.get_string(), prefix)
+        return add_prefix(self.get_string(), prefix)
 
     # Return a copy of the object
     def copy(self):
@@ -81,8 +81,8 @@ class labelled_text_class:
     # Get formatted docstring combining label and value
     def get_docstring(self, prefix = None):
         docs = [] if self.value.empty() else [self.label.get_docstring(), self.value.get_docstring()]
-        doc = string_methods.connect_strings(docs, self.separator)
-        return string_methods.add_prefix(doc, prefix)
+        doc = connect_strings(docs, self.separator)
+        return add_prefix(doc, prefix)
 
     # Return a copy of the object
     def copy(self):
@@ -103,4 +103,4 @@ class alias_class(text_class):
     # Return a docstring indicating alias nature
     def get_docstring(self, prefix = None):
         doc = None if self.empty() else "The " + self.get_string() + '() method is an alias.'
-        return string_methods.add_prefix(doc, prefix)
+        return add_prefix(doc, prefix)

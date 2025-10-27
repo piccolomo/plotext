@@ -21,8 +21,9 @@ period = '.'
 ansi_begin = '\x1b['
 
 # Marker types and default marker
-hd_markers = ["none", "hd", "fhd", "braille"]
-default_marker = "hd"
+hd_markers_codes = ["none", "hd", "fhd", "braille"]
+
+# Colors
 
 # Plot limit alignments and adjustment delta
 limit_alignments = ["center", "edge"]
@@ -48,10 +49,16 @@ ha = ['left', 'center', 'right']      # Horizontal alignments
 va = ['top', 'center', 'bottom']      # Vertical alignments
 ha_short = [-1, 0, 1]                  # Numeric codes for horizontal alignments
 
-
+# colors
 color_codes = ['black', 'white', 'gray', 'gray+', 'red', 'red+', 'green', 'green+', 'orange', 'orange+', 'blue', 'blue+', 'magenta', 'magenta+', 'cyan', 'cyan+']
+# color_sequence = ["blue+", "green+", "red+", "cyan+", "magenta+", "yellow"] # standard color sequence for multiple data plots
+# color_sequence += [el for el in color_codes if el not in color_sequence] 
+
+# styles
 style_codes = ['bold', 'dim', 'italic', 'underline', 'double-underline', 'strike', 'inverted', 'flash']
 
+# Floats
+inf = float('inf')
 
 # # Basic Pixels
 # empty_pixel = pixel_class()  # Create an empty pixel

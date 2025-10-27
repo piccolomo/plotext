@@ -1,6 +1,7 @@
 from plotext._correct import correct_class as correct 
 from plotext._constants import directions, scales
-from plotext._methods import *
+from plotext._methods.ruler import *
+from plotext._methods.log import *
 
 
 class limits_class:
@@ -17,7 +18,7 @@ class limits_class:
 
     # Set lower and upper limits
     def set(self, lower = None, upper = None):
-        self.limits = [lower, upper]
+        self.limits = [lower, upper] 
         return self
 
     # Update limits with corrections
@@ -52,7 +53,7 @@ class limits_class:
     # Get current limits, optionally scaled and/or reversed by direction
     def get(self, scaled = False, direction = False):
         limits = self.limits[::self.direction] if direction else self.limits
-        limits = ruler_methods.apply_scale(limits, self.scale) if scaled else limits
+        limits = apply_scale(limits, self.scale) if scaled else limits
         return limits
 
     # Get alignment
@@ -61,7 +62,7 @@ class limits_class:
 
     # Get alignment delta
     def get_delta(self):
-        return ruler_methods.get_limit_delta(self.alignment)
+        return get_limit_delta(self.alignment)
 
     # Get direction
     def get_direction(self):
@@ -86,7 +87,7 @@ class limits_class:
 
     # Return log string
     def get_log(self):
-        return 'Limits ' + log_methods.limits(self.limits) + ', Alignment ' + str(self.alignment) + ', Direction ' + str(self.direction) + ', Scale ' + str(self.scale)
+        return 'Limits ' + log_limits(self.limits) + ', Alignment ' + str(self.alignment) + ', Direction ' + str(self.direction) + ', Scale ' + str(self.scale)
 
     # Print log string
     def log(self):
@@ -95,8 +96,3 @@ class limits_class:
     # Return string representation
     def __repr__(self):
         return self.get_log()
-
-
-
-
-

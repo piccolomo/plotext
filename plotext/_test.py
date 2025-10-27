@@ -1,6 +1,6 @@
 import unittest
 from plotext import *
-from plotext._methods import object_methods
+from plotext._methods.object import *
 
 
 class sin_tests(unittest.TestCase):

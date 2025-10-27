@@ -2,7 +2,7 @@ from plotext.prettydoc._pixels import default_pixels
 from plotext._constants import space, new_line
 from plotext.prettydoc._function import function_class
 
-from plotext._methods import * 
+from plotext._methods.object import * 
 from plotext._colorize import colorize
 from plotext._correct import correct_class as correct
 
@@ -26,8 +26,8 @@ class docs:
         return self
 
     # Add a function wrapper to docs
-    def add_function(self, function, name = None):
-        self._functions.append(function_class(function, name))
+    def add_function(self, *function, name = None):
+        self._functions.append(function_class(*function, name = name))
         return self
 
     # Add documentation text for last function
@@ -66,9 +66,9 @@ class docs:
         return self
 
     # Add type and default specification to the last parameter
-    def add_parameter_spec(self, type=None, default=None):
-        type = self._colorize(type, "parameter.type")
-        default = self._colorize(default, "parameter.default")
+    def add_parameter_spec(self, type = None, default = None):
+        type = self._colorize(type, "parameter.type") 
+        default = self._colorize(repr(default), "parameter.default")
         self._last().last().set_spec(type, default)
 
     # Add a previously defined parameter from another function
@@ -101,14 +101,13 @@ class docs:
     # Update all functions' docstrings and add show methods as attributes
     def update(self):
         [el.update(self._colorless) for el in self._functions]
-        [object_methods.set_attribute(self, el.get_name(), el.show) for el in self._functions]
+        [set_attribute(self, el.get_name(), el.show) for el in self._functions]
         return self
 
     # Get full combined string of all functions with titles and docs
     def _get_string(self):
         return (string_methods.new_lines(3)).join(
-            [el.get_title(self._get_default_pixel("title")) + new_line + el.get_docstring() for el in self._functions]
-        )
+            [el.get_title(self._get_default_pixel("title")) + new_line + el.get_docstring() for el in self._functions])
 
     # Print all functions' docs
     def show(self):
@@ -150,4 +149,4 @@ class docs:
 
     # Hash of combined doc string
     def _hash(self):
-        return object_methods.hash(self._get_string())
+        return hash(self._get_string())

@@ -1,5 +1,5 @@
 from plotext._colorize import colorize
-from plotext._methods import *
+from plotext._methods.string import pad
 from plotext._constants import color_codes, style_codes
 from math import ceil
 
@@ -11,7 +11,6 @@ cols = 18
 rows = ceil(m / cols)
 color_index = lambda col, row: row * cols + col if row * cols + col < m else ''
 
-pad = string_methods.pad
 
 def colors():
     colors_no_plus = list_methods.unique([el.replace('+', '') for el in color_codes if el not in ['default', 'black', 'white']])
