@@ -42,8 +42,11 @@ inline void enable_special_characters() noexcept {
     setlocale(LC_ALL, "");}
 
 // Output a new line to the console.
-inline void nl() { wcout << endl; }
-
+inline void nl(size_t repeat = 1) {for (size_t i = 0; i < repeat; i++){wcout << endl;} }
+inline void sp(size_t repeat = 1) {for (size_t i = 0; i < repeat; i++){wcout << " ";} }
+inline void flush() { wcout << flush; }
+inline void write(const std::wstring & s, bool new_line = 1) noexcept {std::wcout << s; if(new_line) {nl();}}
+inline void write(const std::string & s, bool new_line = 1) noexcept {write(string_to_wstring(s), new_line);}
 
 // String Conversions
 

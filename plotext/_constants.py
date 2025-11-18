@@ -27,7 +27,7 @@ hd_markers_codes = ["none", "hd", "fhd", "braille"]
 
 # Plot limit alignments and adjustment delta
 limit_alignments = ["center", "edge"]
-delta = 10 ** (-5)
+delta = 10 ** (-4)
 limit_delta = [0.5, delta]
 
 # Directions for movement or orientation
@@ -59,6 +59,8 @@ style_codes = ['bold', 'dim', 'italic', 'underline', 'double-underline', 'strike
 
 # Floats
 inf = float('inf')
+
+line_methods = ["simple", "full"]
 
 # # Basic Pixels
 # empty_pixel = pixel_class()  # Create an empty pixel

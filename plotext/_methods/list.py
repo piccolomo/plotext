@@ -80,6 +80,12 @@ def log(data):
 def power10(data):
     return [10 ** el for el in data]
 
-
 def to_integers(data):
     return list(map(int, data))
+
+def insert_after_each(lst, element):
+    return [x for item in lst for x in (item, element)]
+
+
+def insert_before_each(lst, element):
+    return [x for item in lst for x in (element, item)]

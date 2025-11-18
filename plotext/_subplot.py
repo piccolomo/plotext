@@ -1,5 +1,5 @@
 from plotext._default import default_size_direction
-from plotext._methods import *
+from plotext._methods.subplot import *
 #from plotext._log import log_class
 
 
@@ -24,8 +24,8 @@ class subplot_class:
 
     # Set size with constraints based on parent and master status
     def _set_size(self, width = None, height = None):
-        width = None if width is None else max(0, width)
-        height = None if height is None else max(0, height)
+        width = None if width is None else max(0, round(width))
+        height = None if height is None else max(0, round(height))
 
         self._width = width if width is None or (self._is_master() or self._parent._width is None) else min(width, self._parent._width)
         self._height = height if height is None or (self._is_master() or self._parent._height is None) else min(height, self._parent._height)
@@ -55,8 +55,8 @@ class subplot_class:
     def _initialize_subplots_sizes(self):
         for pos in self._get_slots_range():
             self._get_subplot(*pos)._set_size(None, None)
-        widths = subplot_methods.set_none_sizes(self._get_widths(), self._width)
-        heights = subplot_methods.set_none_sizes(self._get_heights(), self._height)
+        widths = set_none_sizes(self._get_widths(), self._width)
+        heights = set_none_sizes(self._get_heights(), self._height)
         for row, col in self._get_slots_range():
             self._get_subplot(row, col)._set_size(widths[col - 1], heights[row - 1])
         for pos in self._get_slots_range():

@@ -22,7 +22,7 @@ public:
     Vector(std::initializer_list<T> init) : Vector(init.size()) {
         //reserve(init.size());
         for (const auto& elem : init)
-            push_back(elem);}
+            append(elem);}
 
     // destructor
     ~Vector() {destroy();}
@@ -64,7 +64,7 @@ public:
     void fill(const T & value) {for (size_t i = 0; i < length; ++i) {data[i] = value;}}
     void init(const T & value) {for (size_t i = 0; i < capacity; ++i) {data[i] = value;}}
 
-    void resize(const size_t & l) {length = l;}
+    void set_length(const size_t & l) {length = l;}
 
     // Reserve capacity
     void reserve(const size_t & new_capacity) {
@@ -75,12 +75,16 @@ public:
         data = new_data;
         capacity = new_capacity;}
 
+    void minimize() {reserve(length); }
+
     // Function to automatically grow the capacity if needed
     void grow() {
         if (length >= capacity) {
             wcout<<"---------- grow ------------"<< endl;
             size_t new_capacity = (capacity > 0) ? capacity * 2 : 1;
             reserve(new_capacity);}}
+
+    void pop() {if (length > 0) length--;}
 
     // Access element (non-const)
     T & at(size_t i) {return data[i];}
@@ -89,32 +93,53 @@ public:
     const T & at(size_t i) const {return data[i]; }
 
 
+    T & get_last() {return data[length - 1];}
+
+
     // Add a single element at the end
     void append(const T & value) {
-        //grow();
+        if (get_length() >= get_capacity()) {wcout<<"wdf! out of vector bounds " << endl;}
+
         data[length++] = value;}
+        // //grow();
+        // if (not if_new or (not is_in(value))) {}
 
     // Optionally, also support move semantics
     void move_back(T && value) {
         //grow();
         data[length++] = move(value);}
 
-
+    void move_back(Vector<T> && other) {
+        //reserve(length + other.length);
+        std::move(other.data, other.data + other.length, data + length);
+        length += other.length;}
+        //other.clear();
 
     // Append all elements from another Vector
     void append(const Vector<T> & other) {
-        for (size_t i = 0; i < other.length; ++i) {data[length++] = other.data[i];}}
+        for (size_t i = 0; i < other.length; ++i) {append(other.data[i]);}}
 
     // // Optionally, a move version to avoid copies
     // void append(Vector<T> && other) {
     //     for (size_t i = 0; i < other.length; ++i) {data[length++] = move(other.data[i]);} other.clear();}
 
-    void move_back(Vector<T> && other) {
-        //reserve(length + other.length);
-        std::move(other.data, other.data + other.length, data + length);
-        length += other.length;
-        //other.clear();
-        }
+
+
+  
+    void sort() {std::sort(data, data + length);}
+
+    bool is_in(const T & el) const {
+        for (size_t i = 0; i < length; ++i)
+            if (data[i] == el)
+                return true;
+        return false;}
+
+    Vector<T> get_unique() const {
+        Vector<T> unique(get_length());
+        for (size_t i = 0; i < length; ++i) if (not is_in(data[i])) {unique.append(data[i]);}
+        return unique;}
+
+    void reverse() {for (size_t i = 0; i < length / 2; ++i) std::swap(data[i], data[length - 1 - i]);}
 
 
     Vector<T> copy() const {
@@ -122,6 +147,26 @@ public:
         newVector.reserve(length);        // pre-allocate memory
         for (size_t i = 0; i < length; ++i) {newVector.emplace_back(data.at(i));}
         return newVector;}
+
+    void stretch(const size_t & size) {
+
+        size_t old_length = this->get_length();
+
+        if (old_length == 0 || size <= old_length) {return;} // avoid div by zero or trivial case
+
+        //wcout << "stretch from " <<  old_length << " to " << size;
+
+        Vector<T> temp(*this); 
+        set_length(size);
+
+        for (size_t i = 0; i < size; ++i) {
+            size_t idx = static_cast<size_t>(std::floor((float)i * old_length / size));
+            if (idx >= old_length) idx = old_length - 1;
+            at(i) = temp.at(idx);}
+
+        //wcout << " end size " << get_length() << endl;
+    }
+
 
     // Iterator begin
     T * begin() { return data; } 
@@ -157,6 +202,43 @@ public:
         return ss.str();}
 
     void log() const { std::wcout << get_wstring() << std::endl; }
+
+};
+
+
+template <typename T>
+class Numerical : public Vector<T> {
+public:
+    using Vector<T>::Vector; 
+    using Vector<T>::get_length;
+    using Vector<T>::at;
+
+    // multiply each element by a scalar
+    void multiply(const T& factor) {for (size_t i = 0; i < get_length(); ++i) this->data[i] *= factor;}
+
+    // add a scalar to each element
+    void add(const T& factor) {for (size_t i = 0; i < get_length(); ++i) this->data[i] += factor;}
+
+    // invert all elements (multiply by -1)
+    void invert() {this->multiply(-1);}
+
+
+    T get_closest(const T & value) const {
+        T best = at(0);
+        float min_diff = std::abs(best - value);
+
+        for (size_t i = 1; i < this->get_length(); ++i) {
+            float diff = abs(at(i) - value);
+            if (diff < min_diff) {
+                min_diff = diff;
+                best = at(i);}}
+        return best;}
+
+    bool is_sorted() const {
+        for (size_t i = 1; i < this->get_length(); ++i)
+            if (this->at(i) < this->at(i - 1))
+                return false;
+        return true;}
 
 };
 

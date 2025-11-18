@@ -86,6 +86,11 @@ class pixel:
         clink.pixel_fix_background(self._pointer, other._pointer)
         return self
 
+    # Fix pixel by copying from another pixel's pointer
+    def _fix(self, other):
+        clink.pixel_fix(self._pointer, other._pointer)
+        return self
+
     # Copy background from another pixel
     def _copy_background(self, other):
         clink.pixel_copy_background(self._pointer, other._pointer)

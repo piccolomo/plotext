@@ -61,32 +61,32 @@ public:
 
     // Resizes the matrix
     void resize(const size_t & w, const size_t & h) noexcept { 
-      Matrix temp(*this);
-      destroy(); 
-      create(w, h); 
-      copy_from(temp);} //???
+        Matrix temp(*this);
+        destroy(); 
+        create(w, h); 
+        copy_from(temp);} //???
 
 
     // Stacks two matrices vertically
     Matrix vstack(const Matrix & m, const bool & adapt = false) noexcept { 
-      size_t width; 
-      if (adapt) {width = max(get_width(), m.get_width());} 
-      else {width = get_width();} 
-      Matrix out(width, get_height() + m.get_height()); 
-      out.insert_matrix(0, 0, *this); 
-      out.insert_matrix(0, get_height(), m); 
-      return out;}
+        size_t width; 
+        if (adapt) {width = max(get_width(), m.get_width());} 
+        else {width = get_width();} 
+        Matrix out(width, get_height() + m.get_height()); 
+        out.insert_matrix(0, 0, *this); 
+        out.insert_matrix(0, get_height(), m); 
+        return out;}
 
     // Stacks two matrices horizontally
     Matrix hstack(const Matrix & m, const bool & adapt = false) noexcept { 
-      size_t height; 
-      if (adapt) { 
+        size_t height; 
+        if (adapt) { 
         height = max(get_height(), m.get_height());} 
-      else {height = get_height();} 
-      Matrix out(get_width() + m.get_width(), height); 
-      out.insert_matrix(0, 0, *this); 
-      out.insert_matrix(get_width(), 0, m); 
-      return out;}
+        else {height = get_height();} 
+        Matrix out(get_width() + m.get_width(), height); 
+        out.insert_matrix(0, 0, *this); 
+        out.insert_matrix(get_width(), 0, m); 
+        return out;}
 
     inline Matrix part(const size_t & col_start, const size_t & col_stop, const size_t & row_start, const size_t & row_stop) const noexcept {
         const size_t new_height = std::min(row_stop - row_start, height);
@@ -176,19 +176,16 @@ public:
         if (row >= height) return -1;
 
         const size_t w = s.get_length();
-        const std::vector<int> displacements = get_dynamic_displacements(w);
+        const Vector<int> displacements = get_dynamic_displacements(w);
 
         for (int delta : displacements) {
             if (insert_colorized_aligned(col + delta, row, s, 0, true, true)) {
                 return static_cast<int>(col) + delta;}}
         return -1;}
 
-    inline void insert_point(const Point & p) noexcept  {get_character(p.get_col(), p.get_row()).update(p);}
+    inline void insert_point(const Point & p) noexcept {get_character(p.get_col(), p.get_row()).update(p);}
 
-    inline void insert_signal(const Signal & signal) noexcept {
-        for (auto & pf : signal) 
-            if (pf.no_fill()) {insert_point(pf);} 
-            else {for (Point & p : pf.get_filled_line()) insert_point(p);}}
+    inline void insert_points(const Points & points) noexcept {for (const Point & p : points) {insert_point(p);}}
 
     inline void to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept {
         const size_t total = width * height;
@@ -234,8 +231,6 @@ public:
             if (not data[i].same_pixel(data[i + 1])) {wcout.write(ansi_end, 4);}
             if ((i + 1) % width == 0) {wcout.write(ansi_end, 4); if ((i + 1) != total) wcout.put(L'\n');}} // Add newline after each row (except the last one)
         wcout.flush();}
-
-
 };
 
 
@@ -284,7 +279,7 @@ extern "C" {
   bool matrix_insert_colorized_aligned(Matrix * m, size_t col, size_t row, Colorize * c, int ha, bool check_space, bool change_color) noexcept {return m->insert_colorized_aligned(col, row, *c, ha, check_space, change_color);} 
   int matrix_insert_colorized_dynamically(Matrix * m, size_t col, size_t row, const Colorize * c) noexcept {return m->insert_colorized_dynamically(col, row, *c);}
   //void matrix_insert_dots(Matrix * m, Dots * dots) noexcept {m->insert_dots(*dots);}
-  void matrix_insert_signal(Matrix * m, Signal * dots) noexcept {m->insert_signal(*dots);}
+  void matrix_insert_points(Matrix * m, Points * dots) noexcept {m->insert_points(*dots);}
 
   void matrix_print(Matrix * matrix, bool colorless) noexcept {matrix->print(colorless);}
 

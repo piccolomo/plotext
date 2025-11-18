@@ -2,7 +2,7 @@
 
 class Marker : public Character, public MarkerType {
 public:
-        // Constructors
+    // Constructors
     constexpr Marker() noexcept = default; // Default constructor
     Marker(const wchar_t & c, const Pixel & p = Pixel()) noexcept : Character(c, p), MarkerType(normal) {}
 
@@ -14,15 +14,18 @@ public:
     Marker(Marker && m) noexcept = default;
 
     // Assignment operators
-    Marker & operator=(const Marker & m) noexcept {
-        Character::operator=(m);
-        MarkerType::operator=(m);
+    Marker & operator=(const Marker & m) noexcept {clone(m);
         return *this;}
 
     Marker & operator=(const Character & m) noexcept {
         Character::operator=(m);
         MarkerType::set(normal);
         return *this;}
+
+    void clone(const Marker & m) noexcept {
+        Character::operator=(m);
+        MarkerType::operator=(m);
+    }
 
      // Equality operators
     bool operator==(const Marker & other) const noexcept {return Character::operator==(other) && MarkerType::operator==(other);}
@@ -36,7 +39,6 @@ public:
     void set_type(const marker_type & t = normal) noexcept { MarkerType::set(t); }
 
     bool same_type(const Marker & m) const noexcept { return MarkerType::operator==(m); }
-
 
     void set_wcharacter(const wchar_t & cs) noexcept {MarkerType::set(normal); Character::set_wcharacter(cs);}
 
@@ -75,5 +77,5 @@ extern "C" {
     const wchar_t * marker_get_wstring(Marker * c) noexcept {return wstring_to_cstring(c->get_wstring());}
     wchar_t marker_get_model(Marker * cs) noexcept {return cs->get_model();}
     Pixel * marker_get_pixel(Marker * cs) noexcept {return new Pixel(cs->get_pixel());}
-    void marker_fix(Marker * p, Pixel * pixel) noexcept {p->fix(*pixel);}
+    void marker_fix(Marker * p, Marker * pixel) noexcept {p->fix(*pixel);}
 }

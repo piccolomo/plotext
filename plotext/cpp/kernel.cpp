@@ -1,11 +1,16 @@
 using namespace std;
 
-#include "header.h"
+#include "00_header.h"
+
+
+
 
 int main() {
-   enable_special_characters();
+   // enable_special_characters();
 
-   Marker m(none);
-   m.log();
+   // Point t(1,2,'x');
+   // t.set_type(none);
+
+   // t.log();
 
    return 1; }

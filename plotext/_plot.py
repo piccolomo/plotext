@@ -21,6 +21,7 @@ from plotext._cycler import color_cycler
 from plotext._marker import marker as marker_class
 
 
+
 class plot_class(draw_class, plot_build_class, subplot_class):
 
     def __init__(self, parent):
@@ -31,8 +32,8 @@ class plot_class(draw_class, plot_build_class, subplot_class):
         self._signals = signals_class()   
         self._legend = legend_class()  
         self._timer = timer_class() 
-        self._cycler = color_cycler(color_sequence)   
-        
+        self._cycler = color_cycler(color_sequence) 
+                
         subplot_class.__init__(self, parent)
         plot_build_class.__init__(self)
 
@@ -49,7 +50,7 @@ class plot_class(draw_class, plot_build_class, subplot_class):
     def clear_size(self):
         self._parts.clear()
         subplot_class._clear(self)
-        self._set_size(*self.get_terminal()._size) if self._is_master() else None
+        self._set_size(*self.get_terminal().update_size()._size) if self._is_master() else None
         if self._has_subplots():
             [self._get_subplot(*pos).clear_size() for pos in self._get_slots_range()]
         return self
@@ -112,14 +113,14 @@ class plot_class(draw_class, plot_build_class, subplot_class):
         return marker_class(default_marker_code, self._cycler.next_color())#._fix(self._canvas_pixel)
 
 
-    def signal(self, *args, marker = None, xside = None, yside = None, plot = None, label = None):
+    def signal(self, *args, marker = None, xside = None, yside = None, lines = None, label = None):
         x, y = correct.data(*args) 
         signal = signal_class(len(x))
         m = correct.markers(marker, self.next_marker(), len(x)) 
         signal.set_points(x, y, m) 
         label = '' if label is None else label
-        signal.set_details(xside, yside, label)
-        signal._plot = correct.bool(plot) 
+        signal.set_xside(xside).set_yside(yside).set_label(label)
+        signal.set_lines(correct.bool(lines))
         return signal
 
 

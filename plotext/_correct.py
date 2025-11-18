@@ -235,18 +235,13 @@ class correct_class:
     # Correct a single marker, wrapping it into a marker object if needed
     @staticmethod
     def marker(marker, default_marker):
-        if marker is None:
-            return default_marker
-        if isinstance(marker, str):
-            return marker_class(marker)._fix(default_marker)
-        # if isinstance(marker, list):
-        #     return marker_class(*marker)._fix(default_marker)
-        return marker
+        marker = default_marker  if marker is None else marker_class(marker) if  isinstance(marker, str) else marker
+        return marker._fix(default_marker)
 
     # Correct a list of markers, repeating them to match the specified length
     @staticmethod
     def markers(marker, default_marker, length):
-        if not isinstance(marker, list):
+        if not is_list_like(marker):
             marker = [marker]
         marker = [correct_class.marker(m, default_marker) for m in marker]
         return repeat(marker, length)
@@ -295,3 +290,7 @@ class correct_class:
     @staticmethod
     def bool(element = None):
         return element if isinstance(element, bool) or element in r2 else False
+
+    @staticmethod
+    def line_method(method = None):
+        return method if method not in line_methods or method not in r2 else 0

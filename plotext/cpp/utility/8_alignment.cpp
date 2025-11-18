@@ -27,7 +27,7 @@ public:
 };
 
 // Function to generate dynamic displacements based on width
-vector<int> get_dynamic_displacements(const size_t & width) {
+Vector<int> get_dynamic_displacements(const size_t & width) {
     Alignment right(1), center(0); // Define right and center alignments
     auto unsorted = range(right.get_displacement(width), 1); // Generate unsorted range
     auto sorted = sort(unsorted, center.get_displacement(width)); // Sort based on center displacement

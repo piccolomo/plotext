@@ -28,9 +28,9 @@ public:
   //   else {bits &= ~mask;}}
 
 
-    void set(size_t col, size_t row, bool value) noexcept {
-        uint8_t mask = 1 << get_index(col, row);
-        bits = value ? (bits | mask) : (bits & ~mask);}
+  void set(size_t col, size_t row, bool value) noexcept {
+    uint8_t mask = 1 << get_index(col, row);
+    bits = value ? (bits | mask) : (bits & ~mask);}
 
   void enable(const size_t & col, const size_t & row) noexcept { set(col, row, true); }
   void disable(const size_t & col, const size_t & row) noexcept { set(col, row, false); }

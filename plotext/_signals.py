@@ -70,8 +70,6 @@ class signals_class:
             signal.fix_background(pixel)
         return self
 
-    #def get_
-
     def draw(self, signal):
         #signal = get_scatter_points(*args, marker = marker, xside = xside, yside = yside, label = label) 
 

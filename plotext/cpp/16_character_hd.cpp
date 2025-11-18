@@ -4,6 +4,7 @@ class CharacterHD : public Marker, public MatrixBool {
 public:
   using MatrixBool::set; 
   using MatrixBool::get; 
+  using MatrixBool::get_code; 
 
   // Constructor initializing with a Marker object (default or provided).
   CharacterHD(const Marker & m = Marker()) : MatrixBool(m.get_cols(), m.get_rows()), Marker(m) {}
@@ -36,7 +37,7 @@ public:
     if (!same_type(p)) {set_type(p.get_type());}
     if (!same_pixel(p)) {copy_pixel(p);}
     if (p.is_normal()) {set_wcharacter(p.get_wcharacter());}
-    if (p.is_high_definition()) {add_dot(p.get_inner_col(), p.get_inner_row()); update_wcharacter();}}
+    if (p.is_high_definition()) {add_dot(p.get_inner_col(), p.get_inner_row()); update_wcharacter();} }
 
   // Get the character representation based on type or code.
   //inline wchar_t get_wcharacter() const noexcept {return Marker::get_wcharacter();} 

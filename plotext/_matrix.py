@@ -87,10 +87,8 @@ class matrix:
     # def _insert_dots(self, dots):
     #     clink.matrix_insert_dots(self._pointer, dots._pointer)
 
-    def _insert_signal(self, signal):
-        clink.matrix_insert_signal(self._pointer, signal._pointer)
-
-
+    def _insert_points(self, points):
+        clink.matrix_insert_points(self._pointer, points._pointer)
 
     # # Vertically stack with another matrix-like object
     # def vstack(self, matrix, adapt = True):

@@ -113,14 +113,17 @@ class plot_build_class:
         # Build Matrix
         self._start_event("create matrix")
         matrix = matrix_class(self._parts.width, self._parts.height, self._canvas_pixel) 
+        self.map = map = points_map(width_canvas, height_canvas)
         self._stop_event("create matrix")
 
         # add points to canvas
         if self._parts.canvas.has_size():
-            self._start_event("rescaling signals")
+            
             col_offset, row_offset = self._parts.canvas.col, self._parts.canvas.row
 
             for signal in signals: 
+
+                self._start_event("rescaling signals")
                 xside = signal.get_xside()
                 yside = signal.get_yside()
 
@@ -141,27 +144,32 @@ class plot_build_class:
 
                 signal.rescale_x(xlim, width_canvas, xdelta) 
                 signal.rescale_y(ylim, height_canvas, ydelta) 
+                self._stop_event("rescaling signals")
 
-                #signal.log()
 
-            self._stop_event("rescaling signals")
+                self._start_event("plot")
+                signal.plot() if signal.get_lines() else None 
+                self._stop_event("plot") 
 
-            self._start_event("plot")
-            [signal.plot() for signal in signals if signal._plot] 
-            self._stop_event("plot")
 
-            [signal.select_in_matrix(width_canvas, height_canvas) for signal in signals]
+                self._start_event("getting points")
+                points = signal.get_filled_points()
+                #points.select_in_matrix(width_canvas, height_canvas)
+                #points.log()
+                #points.squash(map)
+                #points.log()
+                points.fix_background(self._canvas_pixel)
+                self._signal_temp = points.copy()
+                points.add_offset(col_offset, row_offset)
+                self._stop_event("getting points")
 
-            self._start_event("squash")
-            map = points_map(width_canvas, height_canvas)
-            [signal.squash(map) for signal in signals] # if signals.get_total_points() > 1000 else None
-            self._stop_event("squash")
 
-            self._start_event("adding points to canvas")
-            [signal.add_offset(col_offset, row_offset) for signal in signals] 
-            signals.fix_background(self._canvas_pixel)
-            [matrix._insert_signal(signal) for signal in signals] 
-            self._stop_event("adding points to canvas")
+                self._start_event("insert points")
+                matrix._insert_points(points) 
+                self._stop_event("insert points")
+
+
+                
 
               
         # Add upper bar labels and title  

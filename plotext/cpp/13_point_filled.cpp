@@ -6,7 +6,7 @@ public:
     // Constructors
     PointFilled() = default;
 
-    PointFilled(const float & xi, const float & yi, const Marker & m) : Point(xi, yi, m), fill(xi, yi, Marker(none)) {}
+    PointFilled(const float & xi, const float & yi, const Marker & m = Marker()) : Point(xi, yi, m), fill(xi, yi, Marker(none)) {}
 
     PointFilled(const float & xi, const float & yi, const wchar_t & c, const Pixel & p = Pixel()) : PointFilled(xi, yi, Marker(c, p)) {}
 
@@ -38,7 +38,7 @@ public:
     void set_main(const float & xi, const float & yi, const Marker & m) { Point::set(xi, yi, m);}
 
     void set_fill(const Point & p) { fill.set(p); }
-    void set_fill(const float & xi, const float & yi, const Marker & m) { fill.set(xi, yi, m); }
+    void set_fill(const float & xi, const float & yi, const Marker & m) {fill.set(xi, yi, m); fill.fix(*this);}
 
     // Drawing logic
     void fix_background(Pixel & pixel) { 
@@ -59,38 +59,51 @@ public:
 
     constexpr bool in_matrix(const size_t & width, const size_t & height) const noexcept { return Point::in_matrix(width, height) and fill.in_matrix(width, height);}
 
+    Vector<PointFilled> get_line(const PointFilled & p, bool last = false, bool method = 0) const {
+        //write("getting line");
 
-    size_t get_two_lines_length(const PointFilled & p) const {return max(get_main().get_line_length(p.get_main()), get_fill().get_line_length(p.get_fill()));}
+        const Point & m0 = get_main(); const Point & m1 = p.get_main(); 
+        const Point & f0 = get_fill(); const Point & f1 = p.get_fill(); 
 
-    Vector<PointFilled> get_two_lines(const PointFilled & p, const size_t & length, bool last = false) const {    
-        //wcout << "!" << endl;    
-        Vector<Point> main_line = get_main().get_line(p.get_main(), length, last);
-        Vector<Point> fill_line = get_fill().get_line(p.get_fill(), length, last);
+        Vector<Point> main_points = m0.get_line(m1, last, method); //main_points.log(); flush();
+        Vector<Point> fill_points = f0.get_line(f1, last, method); //fill_points.log();
 
-        //wcout << "sdasd" << length << flush << endl;
-        // main_line.log(); 
-        // fill_line.log(); nl(); 
+        // main_points.log(); flush(); nl();
+        // fill_points.log(); flush(); nl();
 
-        size_t size = main_line.get_length();
-        Vector<PointFilled> out(length); 
-        for (size_t i = 0; i < size; ++i) out.move_back(PointFilled(main_line.at(i), fill_line.at(i)));
+        //wcout << "fill points " << last; this->log(); p.log(); fill_points.log();
+        // get lengths
+        size_t n_main = main_points.get_length();
+        size_t n_fill = fill_points.get_length();
+
+        //wcout << n_main << " " << n_fill << endl;
+        
+        if (n_main > n_fill) {fill_points.reserve(n_main); fill_points.stretch(n_main);}
+        else if (n_main < n_fill) {main_points.reserve(n_fill); main_points.stretch(n_fill);}
+    
+        //wcout << main_points.get_length() << " " << fill_points.get_length() << endl;
+
+        // write("main");
+        // main_points.log(); nl();
+        // write("fill");
+        // fill_points.log(); nl();
+
+
+        // merge into PointFilled objects
+        size_t n = max(n_main, n_fill); 
+        Vector<PointFilled> out(n);
+
+        for (size_t i = 0; i < n; ++i) {out.append(PointFilled(main_points.at(i), fill_points.at(i)));}
+
+        //for (size_t i = 0; i < n; ++i) {out.at(i).log();nl();}   
 
         return out;}
 
-    Vector<PointFilled> get_two_lines(const PointFilled & p, bool last = false) const { return get_two_lines(p, get_two_lines_length(p), last);}
 
-    size_t get_filled_line_length() const {
+    inline Vector<Point> get_filled_line(bool method = 0) const noexcept {
+        //nl(); wcout << "filling point "; log(); nl();
         Point p1 = get_main(); Point p2 = get_fill();
-        size_t count = p1.get_line_length(p2);
-        return count;}
-
-
-    Vector<Point> get_filled_line() const {
-        Point p1 = get_main(); Point p2 = get_fill();
-        //size_t count = get_filled_line_length();
-        size_t count = p1.get_line_length(p2);
-        //wcout << "sdasd " << count << flush << end
-        return p1.get_line(p2, count, true);}
+        return p1.get_line(p2, true, method);}
 
 
     bool is_close(const PointFilled & p){return Point::is_close(p.get_main()) and fill.is_close(p.get_fill());} 
@@ -118,15 +131,6 @@ public:
     void add_offset(const size_t & dx, const size_t & dy) noexcept {Point::add_offset(dx, dy); fill.add_offset(dx, dy); }
 
 
-      // void update(const PointFilled & p) noexcept {
-      //       if (!same_type(p)) set_type(p.get_type());
-
-      //       if (!same_pixel(p)) {copy_pixel(p);}
-
-      //       if (p.is_normal()) {copy_wcharacter(p);} 
-
-      //       else {add_dot(p.get_x(), p.get_y());}}
-
     // Display
     wstring get_wstring(const bool & include_fill = true) const {
         std::wostringstream woss;
@@ -141,24 +145,22 @@ public:
     inline void log(const bool & fill = true) const {
         // Logs the point with optional full details to standard output
         wcout << get_wstring(fill);}
-
 };
 
 
 
 
 
-
 extern "C" {
-  Point * point_new(float x, float y, Marker * c) {return new PointFilled(x, y, *c);}
-  //void point_set_fill(Point * point, bool fill, float x, float y) {point->set_fill(fill, x, y);}
-  void point_delete(PointFilled * p) {delete p;}
-  Marker * point_get_marker(PointFilled * p) {return new Marker(p->get_marker());}
-  size_t point_get_col(PointFilled * c) noexcept {return c->get_col();}
-  size_t point_get_row(PointFilled * c) noexcept {return c->get_row();}
-  float point_get_x(PointFilled * c) noexcept {return c->get_x();}
-  float point_get_y(PointFilled * c) noexcept {return c->get_y();}
-  const wchar_t * point_get_wstring(PointFilled * c, bool fill) {return wstring_to_cstring(c->get_wstring(fill));}
-  unsigned char point_get_code(const PointFilled * c) noexcept {return c->get_fullground_integer_code();}
+  Point * point_filled_new(float x, float y, Marker * c) {return new PointFilled(x, y, *c);}
+  //void point_filled_set_fill(Point * point, bool fill, float x, float y) {point->set_fill(fill, x, y);}
+  void point_filled_delete(PointFilled * p) {delete p;}
+  Marker * point_filled_get_marker(PointFilled * p) {return new Marker(p->get_marker());}
+  size_t point_filled_get_col(PointFilled * c) noexcept {return c->get_col();}
+  size_t point_filled_get_row(PointFilled * c) noexcept {return c->get_row();}
+  float point_filled_get_x(PointFilled * c) noexcept {return c->get_x();}
+  float point_filled_get_y(PointFilled * c) noexcept {return c->get_y();}
+  const wchar_t * point_filled_get_wstring(PointFilled * c, bool fill) {return wstring_to_cstring(c->get_wstring(fill));}
+  unsigned char point_filled_get_code(const PointFilled * c) noexcept {return c->get_fullground_integer_code();}
 
 }

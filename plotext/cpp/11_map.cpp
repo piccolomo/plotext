@@ -17,12 +17,15 @@ public:
 
   size_t get_cols() const {return cols;}
   size_t get_rows() const {return rows;}
-
+  size_t get_size() const {return cols * rows;}
+  
   size_t get_length() const {return length;}
 
-  void resize(const size_t & cols, const size_t & rows) {this->cols = cols; this->rows = rows; Vector<size_t>::reserve(rows * cols); Vector<size_t>::resize(rows * cols); fill(0);}  
+  void resize(const size_t & cols, const size_t & rows) {this->cols = cols; this->rows = rows; Vector<size_t>::reserve(rows * cols); Vector<size_t>::set_length(rows * cols); fill(0);}  
   void set_index(const size_t & location, const size_t & index) {at(location) = index + 1; length += 1;}
   void set_index(const size_t & col, const size_t & row, const size_t & index) {set_index(get_location(col, row), index);}
+
+  //size_t at2(const size_t & col, const size_t & row) const {return at(get_location(col, row));} //temp
 
   size_t get_index(const size_t & location) const {return at(location) - 1;}
   size_t get_index(const size_t & col, const size_t & row) const {return get_index(get_location(col, row));}

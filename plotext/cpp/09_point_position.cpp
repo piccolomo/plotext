@@ -35,6 +35,8 @@ public:
 
     constexpr unsigned char get_inner_row(const size_t marker_rows) const noexcept {return static_cast<unsigned char>((y - get_row()) * marker_rows); }
 
+    inline constexpr PointPosition get_middle(const PointPosition & p) const noexcept {return PointPosition(0.5 * get_x() + 0.5 * p.get_x(), 0.5 * get_y() + 0.5 * p.get_y());}
+
     // Setters
     constexpr void set_x(float el) noexcept { x = el; }
     constexpr void set_y(float el) noexcept { y = el; }
@@ -57,8 +59,8 @@ public:
     // Fast string representation without stringstreams
     wstring get_wstring() const noexcept {
         wchar_t buffer[32]; // enough for two floats with precision
-        swprintf(buffer, sizeof(buffer)/sizeof(wchar_t), L"%.2f, %.2f", x, y);
+        swprintf(buffer, sizeof(buffer)/sizeof(wchar_t), L"%.4f, %.4f", x, y);
         return wstring(buffer);}
 
-    void log() const noexcept { wcout << get_wstring() << flush; }
+    void log() const noexcept { wcout << "(" << get_wstring() << ") " << flush; }
 };

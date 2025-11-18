@@ -67,7 +67,7 @@ inline const wchar_t* get_marker_label(const marker_type & type) noexcept {
 
 
 const unordered_map<marker_type, unsigned char> marker_rows = {
-  {none,    0},  
+  {none,    1},  
   {normal,  1},
   {hd,      2},
   {fhd,     3},
@@ -80,7 +80,7 @@ inline unsigned char get_marker_rows(const marker_type & type) {
 
 
  const unordered_map<marker_type, unsigned char> marker_cols = {
-  {none,    0},  
+  {none,    1},  
   {normal,  1},
   {hd,      2},
   {fhd,     2},
