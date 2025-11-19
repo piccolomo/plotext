@@ -1,67 +1,47 @@
+// Points - manages a collection of Point objects with utility methods and logging
+
 class Points : public Vector<Point> {
 public:
     using Vector<Point>::append;
+    using Vector<Point>::begin;
+    using Vector<Point>::end;
 
-    // Constructor with size reservation
+
+    // ------------ lifecycle ------------
     Points(const size_t & size) : Vector<Point>(size) {}
-
-    // Copy constructor 
     Points(const Points & p) : Vector<Point>(p) {}
-
-    // Move constructor 
     Points(Points && p) noexcept : Vector<Point>(std::move(p)) {}
+    ~Points() = default;
 
-    ~Points() {}
-
-    // Copy assignment
+    // ------------ assignment ------------
     Points & operator=(const Points & other) {
         Vector<Point>::operator=(other);
         return *this;}
 
-    // Assignment from a Vector<Point>
     Points & operator=(const Vector<Point> & other) {
         Vector<Point>::operator=(other);
         return *this;}
 
-    // Clear all points
-    void clear() { Vector<Point>::clear(); }
+    // ------------ basic operations ------------
+    void clear() noexcept { Vector<Point>::clear(); }
 
-    // Append a single Point
-    void append(const Point & p) noexcept { Vector<Point>::append(p); }
+    Points copy() const noexcept { return Points(*this); }
 
-    // Append another vector of Points
-    void append(const Vector<Point> & P) noexcept {
+    inline void append(const Point & p) noexcept { Vector<Point>::append(p); }
+
+    inline void append(const Vector<Point> & P) noexcept {
         Vector<Point>::reserve(get_length() + P.get_length());
         Vector<Point>::append(P);}
 
-    // // Append from initializer list
-    // void append(std::initializer_list<Point> list) noexcept {
-    //     for (const auto & p : list) append(p);}
+    void fix_background(Pixel & pixel) noexcept {
+        for (size_t i = 0; i < get_length(); i++)
+            at(i).fix_background(pixel);}
 
-    // // Set a point at a given index
-    // void set_point(const size_t & index, const Point & p) noexcept { this->at(index) = p; }
+    inline size_t get_length() const noexcept { return Vector<Point>::get_length(); }
 
-    // // Set directly with coordinates and marker
-    // void set_point(const size_t & index, const float & xi, const float & yi, const Marker & m) noexcept {
-    //     this->at(index).set_main(xi, yi, m);}
-
-    // Fix background of all points using a Pixel
-    void fix_background(Pixel & pixel) {
-        for (size_t i = 0; i < this->get_length(); i++)
-            this->at(i).fix_background(pixel);}
-
-    // Get the number of points
-    size_t get_length() const noexcept { return Vector<Point>::get_length(); }
-
-    // // Get point reference by index
-    // Point & at(const size_t & i) noexcept { return Vector<Point>::at(i); }
-    // const Point & at(const size_t & i) const noexcept { return Vector<Point>::at(i); }
-
-   
-     void add_offset(const size_t & dx, const size_t & dy) noexcept {
+    void add_offset(const size_t & dx, const size_t & dy) noexcept {
         for (size_t i = 0; i < get_length(); i++) at(i).add_offset(dx, dy);}
 
-    // Select points within matrix bounds
     void select_in_matrix(const size_t & width, const size_t & height) noexcept {
         Vector<Point> out(get_length());
         for (const Point & p : *this)
@@ -69,75 +49,46 @@ public:
                 out.append(p);
         *this = out;}
 
-    // // Create connected lines between multiple Points
-    // Vector<Point> get_lines(size_t method = 0) const {
-    //     size_t total = 0;
-    //     size_t length = get_length();
+    // ------------ squash / merge points ------------
+    void squash(PointsMap & map) noexcept {
+        Vector<Point> out(get_length());
 
-    //     Vector<Vector<Point>> segments(get_length());  // temporary storage
-
-    //     for (size_t i = 0; i < length - 1; ++i) {
-
-    //         const Point & p1 = at(i); 
-    //         const Point & p2 = at(i + 1); 
-    //         wprintf(L"getting line\n ", p1.get_wstring(), p2.get_wstring());
-    //         bool last = (i == length - 2); 
-    //         Vector<Point> seg = p1.get_line(p2, last, method);
-    //         total += seg.get_length();
-    //         segments.move_back(std::move(seg));}
-
-    //     Vector<Point> result(total);
-    //     for (Vector<Point> & seg : segments)
-    //         result.move_back(std::move(seg));
-
-    //     return result;}
-
-    // Add a Point to the collection, creating or updating a Dot
-    void squash(PointsMap & map) {
-        Vector<Point> out(get_length()); 
-
-        for (Point & current: *this) {
+        for (Point & current : *this) {
             size_t c = current.get_col(), r = current.get_row();
             bool is_present = map.is_present(c, r);
 
             if (is_present) {
                 size_t index = map.get_index(c, r);
-                Point & previous = out.at(index); 
-                //current.log(); previous.log(); nl(); flush();
-                bool close = current.is_close(previous); 
-                if (close) {previous.set_type(none);}
-            };    
+                Point & previous = out.at(index);
+                bool close = current.is_close(previous);
+                if (close) previous.set_type(none);}
 
-            map.set_index(c, r, out.get_length()); // set map to current
-            out.append(current);};
-
+            map.set_index(c, r, out.get_length());
+            out.append(current);}
 
         Vector<Point>::clear();
-        for (auto & el: out) if (not el.is_none()) {append(el);}}
+        for (auto & el : out)
+            if (!el.is_none()) append(el);}
 
-    // String representation
-    std::wstring get_wstring() const { 
-        std::wostringstream woss; 
-        size_t length = get_length(); 
-        woss << L" Points " << length << " ["; 
-        at(get_length() - 1).log();
-        for (size_t i = 0; i < length; i++){woss << at(i).get_wstring() ; if (i != length - 1) {woss << ", ";}} 
-        woss << "]";
+    // ------------ output / logging ------------
+    std::wstring get_wstring() const noexcept {
+        std::wostringstream woss;
+        size_t length = get_length();
+        woss << L"Points " << length << L" [";
+        for (size_t i = 0; i < length; i++) {
+            woss << at(i).get_wstring();
+            if (i != length - 1) woss << L", ";}
+        woss << L"]";
         return woss.str();}
 
-    // Log points to output
-    void log() const { std::wcout << get_wstring() << std::endl; }
+    inline std::string get_string() const noexcept { return wstring_to_string(get_wstring()); }
 
-    // Iterators
-    const Point * begin() const { return Vector<Point>::begin(); }
-    Point * begin() { return Vector<Point>::begin(); }
+    inline void log() const noexcept { std::wcout << get_wstring() << std::endl; }
 
-    const Point * end() const { return Vector<Point>::end(); }
-    Point * end() { return Vector<Point>::end(); }
-
-    // Copy container
-    Points copy() const { Points newPoints(*this); return newPoints; }
+    friend wostream & operator<<(wostream & os, const Points & c) noexcept {os << c.get_wstring(); return os;}
+    friend ostream & operator<<(ostream & os, const Points & c) noexcept {os << c.get_string(); return os;}
 };
+
 
 
 
@@ -158,17 +109,26 @@ extern "C" {
 
     void points_fix_background(Points* s, Pixel* p) noexcept { s->fix_background(*p); }
     void points_add_offset(Points * p, size_t dx, size_t dy) noexcept { p->add_offset(dx, dy); }
-
     void points_select_in_matrix(Points * p, size_t width, size_t height) noexcept { p->select_in_matrix(width, height); }
 
     // --- Derived Data ---
-    void points_squash(Points * s, PointsMap * map) noexcept {s->squash(*map); }
+    void points_squash(Points * s, PointsMap * map) noexcept { s->squash(*map); }
 
-
+    // --- Logging / Output ---
     void points_log(const Points * p) noexcept { p->log(); }
+
+    const wchar_t * points_get_wstring(const Points * p) noexcept {
+        static std::wstring wstr; 
+        wstr = p->get_wstring(); 
+        return wstr.c_str();}
+
+    const char * points_get_string(const Points * p) noexcept {
+        static std::string str;
+        str = p->get_string();
+        return str.c_str();}
 
     // --- Copying ---
     Points * points_copy(const Points * p) noexcept { return new Points(p->copy()); }
-
 }
+
 

@@ -1,84 +1,65 @@
-// Style class for managing multiple text styles (e.g., bold, underlined).
-
+// Style Management: Handles multiple text styles (bold, underline, etc.)
 
 class Style {
 private:
-  wchar_t code[19]; // Buffer to store the style code.
-  size_t length;
+    wchar_t code[19]; // Buffer to store ANSI style code
+    size_t length;    // Cached length
 
 public:
-  // Default constructor: Clears the style code.
-  constexpr Style() noexcept : code{L'\0'}, length(0) {}
+    constexpr Style() noexcept : code{L'\0'}, length(0) {} // Default constructor
+    Style(const string & style) { clear(); set(style); }   // String constructor
+    Style(const Style & st) = default;                    // Copy constructor
+    Style(Style && st) = default;                         // Move constructor
 
-  // Constructor that sets the style based on a string.
-  Style(const string & style) {clear(); set(style);}
+    inline bool operator==(const Style & st) const noexcept { return length == st.length and same_cstrings(code, st.get_code(), length); } // Compare
 
-  // Copy constructor (defaulted).
-  Style(const Style & st) = default;
+    inline Style & operator=(const Style & st) noexcept { length = st.length; copy_cstring(st.get_code(), code, length); return *this; } // Assign
 
-  // Move constructor (defaulted).
-  Style(Style && st) = default;
+    inline void clear() noexcept { code[0] = L'\0'; length = 0; } // Clear style
 
-  // Equality operator: Compares style codes for equality.
-  bool operator==(const Style& st) const {return length == st.length and same_cstrings(code, st.get_code(), length);}
+    // Set style from string (e.g., "bold underline")
+    inline void set(const string & style) {
+        vector<string> styles = split_string(style); // Split input
+        vector<unsigned char> style_codes; 
+        style_codes.reserve(styles.size());
 
-  // Assignment operator: Copies the style code from another Style object.
-  Style & operator=(const Style& st) {
-    length = st.length;
-    copy_cstring(st.get_code(), code, length);
-    return *this;} 
+        for (const string & s : styles) {
+            unsigned char style_code = get_style_code(s); 
+            if (style_code != 100) { style_codes.push_back(style_code); }} // Only valid codes
 
-  // Clears the style code.
-  void clear() {code[0] = L'\0'; length = 0;}
+        if (!style_codes.empty()) { wcscpy(code, ansi_start); } // Start sequence
+        for (const unsigned char & sc : style_codes) { swprintf(code + wcslen(code), 3, L"%d;", sc); } // Append codes
+        if (!style_codes.empty()) { code[wcslen(code) - 1] = L'm'; code[wcslen(code)] = L'\0'; } // Terminate
+        length = wcslen(code); }
 
-  // Sets the style based on a string (e.g., "bold", "underline").
-  inline void set(const string & style) {
+    constexpr size_t get_length() const noexcept { return length; }  // Cached length
+    constexpr const wchar_t * get_code() const noexcept { return code; } // Access code
+    constexpr bool no_style() const noexcept { return length == 0; } // Empty
+    constexpr bool has_style() const noexcept { return length != 0; } // Set
 
-    // Split the input style string into individual styles (e.g., "bold underline").
-    vector<string> styles = split_string(style);
-    vector<unsigned char> style_codes; 
-    style_codes.reserve(styles.size());
+    // Write style to buffer
+    inline void to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept {
+        if (has_style()) { cstring_to_buffer(code, length, buffer, length_buffer); } }
 
-     for (const string & style : styles) {
-        unsigned char style_code = get_style_code(style); // Get the ANSI code for the style.
-        if (style_code != 100){style_codes.push_back(style_code);}} 
+    // Get wide string representation
+    inline wstring get_wstring() const {
+        wchar_t buffer[30] = { L'\0' };
+        size_t len = 0;
+        to_buffer(buffer, len);
+        cstring_to_buffer(L"Style", 5, buffer, len);
+        if (has_style()) { cstring_to_buffer(ansi_end, buffer, len); }
+        return wstring(buffer);}
 
-    // If there are any styles, start the ANSI escape code sequence.
-    if (style_codes.size() != 0) {wcscpy(code, ansi_start);} // Initialize with the ANSI escape start sequence.
-    
-    // Iterate through the styles and append the corresponding style code to the buffer.
-    for (const unsigned char & style_code : style_codes) {swprintf(code + wcslen(code), 3, L"%d;", style_code);} // Append the code with a semicolon.
-    
-    // If any styles were added, finalize the ANSI escape sequence by replacing the last semicolon with 'm'.
-    if (style_codes.size() != 0) {
-        size_t len = wcslen(code);   // Find the length of the current code.
-        code[len - 1] = L'm';        // Replace the last char with 'm'.
-        code[len] = L'\0'; } // Null-terminate the string.
+    // Get std::string version
+    inline string get_string() const { return wstring_to_string(get_wstring()); }
 
-    length = wcslen(code);}
+    // Show style code in console
+    inline void show() const noexcept { show_ansi_wstring(code); }
 
-  // Returns the length of the style code.
-  size_t get_length() const {return length;}
+    inline void log() const { wcout << get_wstring () << endl; } // Log
+    inline void stream() const { wcout.write(code, length); }                   // Stream raw ANSI
 
-  // Returns the current style code.
-  const wchar_t * get_code() const {return code;}
-
-  void show_code() const {show_ansi_wstring(get_code());}
-
-  // Checks if no style is set (empty code).
-  bool no_style() const {return length == 0;}
-  bool has_style() const { return length != 0; }
-
-  inline void to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept {
-      if (has_style()) {  // only copy if style is set
-          cstring_to_buffer(code, length, buffer, length_buffer);}}
-        
-  // Logs the current style code.
-  void log() const {wcout << code << L"style" << ansi_end << endl;}
-
-  inline void stream() const {wcout.write(code, length);} 
+    friend wostream & operator<<(wostream & os, const Style & c) noexcept {os << c.get_wstring(); return os;}
+    friend ostream & operator<<(ostream & os, const Style & c) noexcept {os << c.get_string(); return os;}
 
 };
-
-
-

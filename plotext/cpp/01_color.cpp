@@ -1,144 +1,120 @@
-// Color Management Class: Handles color representation for foreground and background using ANSI escape codes.
+// Color Management: Handles ANSI foreground/background color codes.
 
 class Color {
 private:
-    wchar_t code[color_size_max]; // Stores the ANSI color code
-    size_t length = 0;       // Cache the length of the color code
+    wchar_t code[color_size_max]; // ANSI color code storage
+    size_t length = 0;            // Cache length
 
 public:
-    constexpr Color() noexcept : code{}, length(0) {}
+    constexpr Color() noexcept : code{}, length(0) {} // Default constructor
 
-    Color(bool is_fullground, const string & color) { clear(); set(is_fullground, color); }
+    Color(bool is_fullground, const string & color) { clear(); set(is_fullground, color); } // String constructor
 
     Color(bool is_fullground, bool is_integer, const unsigned char & r = 0, const unsigned char & g = 0, const unsigned char & b = 0) {
-        clear();
-        set(is_fullground, is_integer, r, g, b);}
+        clear(); set(is_fullground, is_integer, r, g, b);} // RGB or integer constructor
 
-    Color(const Color & c) = default;
-    Color(Color && c) = default;
+    Color(const Color & c) = default; // Copy constructor
+    Color(Color && c) = default;      // Move constructor
 
-    bool same(const Color & c) const { return length == c.length and same_cstrings(code, c.get_code(), c.length); }
+    constexpr inline bool same(const Color & c) const noexcept { return length == c.length and same_cstrings(code, c.get_code(), c.length); } // Compare colors
 
-    void copy(const Color & c) { 
-        copy_cstring(c.get_code(), code, c.length);
-        length = c.length; }
+    inline void copy(const Color & c) noexcept { copy_cstring(c.get_code(), code, c.length); length = c.length; } // Copy color
 
-    void clear() { code[0] = L'\0'; length = 0; }
+    inline void clear() noexcept { code[0] = L'\0'; length = 0; } // Clear color
 
-    void update_length() {length = wcslen(code);}
+    inline void update_length() noexcept { length = wcslen(code); } // Update cached length
 
-     // Sets the color using fullground flag, integer flag, and RGB values.
-    void set(bool is_fullground, bool is_integer, const unsigned char r = 0, const unsigned char g = 0, const unsigned char b = 0) {
-      if (is_fullground) {wcscpy(code, ansi_fullground);} 
-      else {wcscpy(code, ansi_background);}
-      if (is_integer) {swprintf(code + 5, 7, L"5;%dm", r);} 
-      else {swprintf(code + 5, 16, L"2;%d;%d;%dm", r, g, b);}
-      update_length();}
+    // Set color using fullground flag, integer flag, and RGB values
+    inline void set(bool is_fullground, bool is_integer, const unsigned char r = 0, const unsigned char g = 0, const unsigned char b = 0) {
+        if (is_fullground) { wcscpy(code, ansi_fullground); } 
+        else { wcscpy(code, ansi_background); }
+        if (is_integer) { swprintf(code + 5, 7, L"5;%dm", r); } 
+        else { swprintf(code + 5, 16, L"2;%d;%d;%dm", r, g, b); }
+        update_length(); }
 
-    // Sets the color using a string color code (e.g., "red").
-    void set(bool is_fullground, const string & color) {
-      unsigned char color_code = get_color_code(color);
-      if (color_code == 100) {code[0] = L'\0'; length = 0;} 
-      else {set(is_fullground, true, color_code);}}
+    // Set color using string name
+    inline void set(bool is_fullground, const string & color) {
+        unsigned char color_code = get_color_code(color);
+        if (color_code == 100) { clear(); } 
+        else { set(is_fullground, true, color_code); } }
 
     inline const unsigned char get_integer_code() const noexcept {
         const wchar_t * p = wcsstr(code, L"5;");
-        if (p) {
-            unsigned char val = 0;
-            if (swscanf(p + 2, L"%dm", &val) == 1) {return val;}}
-        return 20;}
+        if (p) { unsigned char val = 0; if (swscanf(p + 2, L"%dm", &val) == 1) return val; }
+        return 20; } // Default if not found
 
-    size_t get_length() const { return length; }
-    const wchar_t * get_code() const { return code; }
-    bool no_color() const { return length == 0; }
-    bool has_color() const { return length != 0; }
+    constexpr size_t get_length() const noexcept { return length; } // Cached length
+    constexpr const wchar_t * get_code() const noexcept { return code; } // Access code
+    constexpr bool no_color() const noexcept { return length == 0; } // No color
+    constexpr bool has_color() const noexcept { return length != 0; } // Has color
 
-    // Optimized to_buffer
+    // Write code to buffer
     inline void to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept {
-        if (has_color()) {cstring_to_buffer(code, length, buffer, length_buffer); }}
+        if (has_color()) { cstring_to_buffer(code, length, buffer, length_buffer); } }
 
-    void log() const { wcout << code << L"color" << ansi_end << endl; }
+    // Write name to buffer (virtual)
+    virtual inline void name_to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept { cstring_to_buffer(L"Color", 5, buffer, length_buffer); }
 
-    inline void stream() const {wcout.write(code, length);} 
+    // Get wide string for display
+    inline wstring get_wstring() const {
+        wchar_t buffer[color_size_max + 10] = {L'\0'}; 
+        size_t len = 0;
+        to_buffer(buffer, len);
+        name_to_buffer(buffer, len);
+        if (has_color()) { cstring_to_buffer(ansi_end, buffer, len); }
+        return wstring(buffer); }
+
+    // Get standard string for display
+    inline string get_string() const { return wstring_to_string(get_wstring()); }
+
+    inline void log() const { wcout << get_wstring() << endl; } // Log to console
+    inline void show() const { show_ansi_wstring(code); }       // Show code
+
+    inline void stream() const { wcout.write(code, length); } // Stream raw ANSI
+
+    friend wostream & operator<<(wostream & os, const Color & c) noexcept {os << c.get_wstring(); return os;}
+    friend ostream & operator<<(ostream & os, const Color & c) noexcept {os << c.get_string(); return os;}
+
 };
 
 
-// Fullground class: Represents foreground colors.
+// Fullground: Foreground color
 class Fullground : public Color {
 public:
-  // Default constructor
-  constexpr Fullground() = default;
+    constexpr Fullground() = default; // Default constructor
+    Fullground(const string & color) : Color(true, color) {} // String constructor
+    Fullground(const unsigned char & r) : Color(true, true, r) {} // Integer constructor
+    Fullground(const unsigned char & r, const unsigned char & g, const unsigned char & b) : Color(true, false, r, g, b) {} // RGB constructor
+    Fullground(const Fullground & c) = default; // Copy
+    Fullground(Fullground && c) = default;      // Move
 
-  // Constructor to set color using a string code.
-  Fullground(const string & color) : Color(true, color) {}
+    constexpr inline bool operator==(const Fullground & fg) const noexcept { return Color::same(fg); } // Compare
+    inline Fullground & operator=(const Fullground & fg) noexcept { Color::copy(fg); return *this; } // Assign
 
-  // Constructor to set color using a single RGB value.
-  Fullground(const unsigned char & r) : Color(true, true, r) {}
+    inline void set(const unsigned char & r, const unsigned char & g, const unsigned char & b) { Color::set(true, false, r, g, b); } // RGB
+    inline void set(const unsigned char & r) { Color::set(true, true, r); } // Single int
+    inline void set(const string & color) { Color::set(true, color); } // Name
 
-  // Constructor to set color using RGB values.
-  Fullground(const unsigned char & r, const unsigned char & g, const unsigned char & b) : Color(true, false, r, g, b) {}
-
-  // Copy constructor (default).
-  Fullground(const Fullground & c) = default;
-
-  // Move constructor (default).
-  Fullground(Fullground && c) = default;
-
-  // Equality operator to compare two Fullground colors.
-  bool operator==(const Fullground & fg) const {return Color::same(fg);}
-
-  // Assignment operator to copy code from another Fullground color.
-  Fullground & operator=(const Fullground & fg) {
-    Color::copy(fg); 
-    return *this;}
-
-  // Set color using RGB values.
-  void set(const unsigned char & r, const unsigned char & g, const unsigned char & b) {Color::set(true, false, r, g, b);}
-
-  // Set color using a single integer value.
-  void set(const unsigned char & r) {Color::set(true, true, r);}
-
-  // Set color using a string color code.
-  void set(const std::string & color) {Color::set(true, color);}
+    inline void name_to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept { cstring_to_buffer(L"Fullground", 10, buffer, length_buffer); } // Override name
 };
 
 
-
-// Background class: Represents background colors.
+// Background: Background color
 class Background : public Color {
 public:
-  // Default constructor
-  constexpr Background() = default;
+    constexpr Background() = default; // Default constructor
+    Background(const string & color) : Color(false, color) {} // String
+    Background(const unsigned char & r) : Color(false, true, r) {} // Integer
+    Background(const unsigned char & r, const unsigned char & g, const unsigned char & b) : Color(false, false, r, g, b) {} // RGB
+    Background(const Background & c) = default; // Copy
+    Background(Background && c) = default;      // Move
 
-  // Constructor to set color using a string code.
-  Background(const string & color) : Color(false, color) {}
+    inline bool operator==(const Background & bg) const noexcept { return Color::same(bg); } // Compare
+    inline Background & operator=(const Background & bg) noexcept { Color::copy(bg); return *this; } // Assign
 
-  // Constructor to set color using a single RGB value.
-  Background(const unsigned char & r) : Color(false, true, r) {} 
+    inline void set(const unsigned char & r, const unsigned char & g, const unsigned char & b) { Color::set(false, false, r, g, b); } // RGB
+    inline void set(const unsigned char & r) { Color::set(false, true, r); } // Single int
+    inline void set(const string & color) { Color::set(false, color); } // Name
 
-  // Constructor to set color using RGB values. 
-  Background(const unsigned char & r, const unsigned char & g, const unsigned char & b) : Color(false, false, r, g, b) {}
-
-  // Copy constructor (default).
-  Background(const Background & c) = default;
-
-  // Move constructor (default).
-  Background(Background && c) = default;
-
-  // Equality operator to compare two Background colors.
-  bool operator==(const Background & bg) const {return Color::same(bg);}
-
-  // Assignment operator to copy code from another Background color.
-  Background& operator=(const Background & bg) {
-    Color::copy(bg); 
-    return *this;}
-
-  // Set color using RGB values.
-  void set(const unsigned char & r, const unsigned char & g, const unsigned char & b) {Color::set(false, false, r, g, b);}
-
-  // Set color using a single integer value.
-  void set(const unsigned char & r) {Color::set(false, true, r);}
-
-  // Set color using a string color code.
-  void set(const string & color) {Color::set(false, color);}
+    inline void name_to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept { cstring_to_buffer(L"Background", 10, buffer, length_buffer); } // Override name
 };

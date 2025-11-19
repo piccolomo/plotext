@@ -113,7 +113,7 @@ class pixel:
         return clink.pixel_get_code(self._pointer)
 
     # Log pixel information (for debugging)
-    def _show(self):
+    def _log(self):
         clink.pixel_log(self._pointer)
         return self
 

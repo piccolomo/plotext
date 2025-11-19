@@ -60,7 +60,7 @@ clink.add('pixel', 'set', 'background', 'rgb').input(void, size, size, size).out
 clink.add('pixel', 'set', 'background', 'code').input(void, string).output(void)
 clink.add('pixel', 'set', 'style', 'code').input(void, string).output(void)
 clink.add('pixel', 'get', 'wstring').input(void).output(cstring) 
-clink.add('pixel', 'print').input(void).output(void)
+clink.add('pixel', 'log').input(void).output(void)
 clink.add('pixel', 'copy').input(void).output(void)
 clink.add('pixel', 'no', 'background').input(void).output(bool)
 clink.add('pixel', 'copy', 'background').input(void, void).output(void)

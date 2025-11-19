@@ -507,7 +507,6 @@ constexpr wchar_t braille_lookup[256] = {
 constexpr inline wchar_t get_braille_marker(unsigned char code) noexcept {return braille_lookup[code];}
 
 
-
 // Map of marker types to their respective character conversion functions.
 const unordered_map<marker_type, function<wchar_t(const unsigned char&)>> marker_converters = {
   {hd, get_hd_marker},        // High-definition marker.

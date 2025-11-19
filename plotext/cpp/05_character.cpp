@@ -1,78 +1,68 @@
-// Character class - Represents a single character with associated Pixel styling
+// Character - single wchar_t with inherited Pixel styling (foreground/background/attributes)
 
 class Character : public Pixel {
 private:
-    wchar_t c = L' '; // The character value, defaulting to a space
+    wchar_t c = L' ';                   // displayed character (default space)
 
 public:
-    // Constructors
-    constexpr Character() = default;
-    Character(const wchar_t & cn) noexcept : c(cn) {}
-    Character(const wchar_t & cn, const Pixel & p) noexcept : c(cn), Pixel(p) {}
+    // -------------------- lifecycle --------------------
+    constexpr Character() noexcept = default;
+    constexpr Character(wchar_t ch) noexcept : c(ch) {}
+    constexpr Character(wchar_t ch, const Pixel& p) noexcept : Pixel(p), c(ch) {}
 
-    // Copy and Move constructors
-    Character(const Character & p) noexcept : Pixel(p), c(p.c) {}
-    Character(Character && p) noexcept : Pixel(std::move(p)), c(move(p.c)) {}
+    Character(const Character&) noexcept = default;
+    Character(Character&&) noexcept = default;
 
-    // Assignment operator 
-    Character & operator=(const Character& cn) noexcept {
-        c = cn.c;
-        Pixel::operator=(cn);
-        return *this;}
+    Character& operator=(const Character&) noexcept = default;
 
-    // Equality operators
-    bool operator==(const Character & other) const noexcept {return c == other.c and Pixel::operator==(other);}
+    // -------------------- comparison --------------------
+    inline constexpr bool operator==(const Character& o) const noexcept { return c == o.c && Pixel::operator==(o); }
+    inline constexpr bool operator!=(const Character& o) const noexcept { return !(*this == o); }
 
-    bool operator!=(const Character & other) const noexcept {return not operator==(other);}
+    inline constexpr bool same(const Character& o) const noexcept      { return c == o.c && Pixel::operator==(o); }
+    inline constexpr bool same_pixel(const Character& o) const noexcept{ return Pixel::operator==(o); }
+    inline constexpr bool different(const Character& o) const noexcept { return !Pixel::operator==(o); }
 
-    // Clear the character and its Pixel data
-    void clear() noexcept {
-        c = L' ';
-        Pixel::clear();}
+    // -------------------- state --------------------
+    inline constexpr bool is_empty() const noexcept { return c == L' '; }
+    inline void clear() noexcept { c = L' '; Pixel::clear(); }
 
-    // Setters
-    void set_wcharacter(const wchar_t & cs) noexcept {c = cs;}
-    void set_pixel(const Pixel & p) noexcept {Pixel::operator=(p);}
-    void copy_wcharacter(const Character & p) noexcept {c = p.c;}
+    // -------------------- setters/getters --------------------
+    inline constexpr void set_wcharacter(wchar_t ch) noexcept { c = ch; }
+    inline wchar_t get_wcharacter() const noexcept           { return c; }
 
-    // Getters
-    wchar_t get_wcharacter() const noexcept {return c;}
-    bool is_empty() const noexcept {return c == L' ';}
+    inline void set_pixel(const Pixel& p) noexcept { Pixel::operator=(p); }
+    inline void copy_wcharacter(const Character& o) noexcept { c = o.c; }
 
-    // Compare Pixel attributes with another Character
-    bool same_pixel(const Character & cn) const noexcept {return Pixel::operator==(cn);}
-    bool same(const Character & cn) const noexcept {return Pixel::operator==(cn) and c == cn.c;}
-    bool different(const Character & cn) const noexcept {return !Pixel::operator==(cn);}
+    // -------------------- output --------------------
+    // Append styled character + reset to wchar_t buffer
+    inline void to_buffer(wchar_t* buf, size_t& pos) const noexcept {
+        Pixel::to_buffer(buf, pos);                 // apply foreground/bg/attrs
+        wchar_to_buffer(c, buf, pos);               // write character itself
+        cstring_to_buffer(ansi_end, buf, pos);}      // reset ANSI codes
 
-    // // Convert Pixel and character to buffer
-    // void pixel_to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept {
-    //     Pixel::to_buffer(buffer, length_buffer);}
+    // Same as to_buffer but guarantees final reset (some callers prefer explicit double-reset)
+    inline void to_buffer_full(wchar_t* buf, size_t& pos) const noexcept {
+        to_buffer(buf, pos);
+        cstring_to_buffer(ansi_end, buf, pos);}
 
-    // void character_to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept {
-    //     wchar_to_buffer(c, buffer, length_buffer);}
+    // Get wide string for display
+    inline wstring get_wstring() const {
+        wchar_t buf[character_size_max + 1] = {};
+        size_t pos = 0;
+        to_buffer_full(buf, pos);
+        return wstring(buf);}
 
-    // void to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept {
-    //     pixel_to_buffer(buffer, length_buffer);
-    //     character_to_buffer(buffer, length_buffer);
-    //     cstring_to_buffer(ansi_end, buffer, length_buffer);}
+    // Get standard string for display
+    inline string get_string() const { return wstring_to_string(get_wstring()); }
 
-    // Buffer conversion: use noexcept, remove extra function call
-    void to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept {
-        Pixel::to_buffer(buffer, length_buffer);
-        wchar_to_buffer(c, buffer, length_buffer);
-        cstring_to_buffer(ansi_end, buffer, length_buffer);}
+    inline void log() const { wcout << get_wstring() << endl; } // Log to console
 
-    void to_buffer_full(wchar_t * buffer, size_t & length_buffer) const noexcept {
-        to_buffer(buffer, length_buffer);
-        cstring_to_buffer(ansi_end, buffer, length_buffer);}
+    // Stream directly (faster, no buffer)
+    inline void stream() const noexcept {
+        Pixel::stream();
+        wcout.put(c);}
 
-    // Log the character with Pixel styling
-    void print() const noexcept {
-        wchar_t buffer[character_size_max + 1] = L""; // Initialize buffer
-        size_t length = 0;
-        to_buffer_full(buffer, length);
-        wcout.write(buffer, length);}
-
-  inline void stream() const {Pixel::stream(); wcout.put(c);} 
-
+    friend wostream & operator<<(wostream & os, const Character & c) noexcept {os << c.get_wstring(); return os;}
+    friend ostream & operator<<(ostream & os, const Character & c) noexcept {os << c.get_string(); return os;}
 };
