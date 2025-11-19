@@ -96,7 +96,7 @@ class matrix:
     # Print the matrix to terminal
     def print(self, colorless = False, end = '\n', flush = True):
         clink.matrix_print(self._pointer, colorless)
-        # write(end, flush)
+        write(end, flush)
         return self
 
     # String representations

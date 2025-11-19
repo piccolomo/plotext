@@ -2,6 +2,7 @@ from plotext.prettydoc._pixels import default_pixels
 from plotext._constants import space, new_line
 from plotext.prettydoc._function import function_class
 from plotext._methods.object import *
+from plotext._methods.string import new_lines
 from plotext._colorize import colorize
 from plotext._correct import correct_class as correct
 
@@ -103,7 +104,7 @@ class docs:
 
     # Get full combined string of all functions
     def _get_string(self):
-        return (string_methods.new_lines(3)).join(
+        return (new_lines(3)).join(
             [el.get_title(self._get_default_pixel("title")) + new_line + el.get_docstring()
              for el in self._functions]
         )

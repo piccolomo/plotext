@@ -1,13 +1,14 @@
 import math
 from plotext._constants import limit_delta, limit_alignments
+from plotext._methods.list import log, power10
 
 def apply_scale(data, scale):
-    return list_methods.log(data) if scale == "log" else data
+    return log(data) if scale == "log" else data
 
 # Reverse scaling of data; supports "log" scale
 
 def reverse_scale(data, scale):
-    return list_methods.power10(data) if scale == "log" else data
+    return power10(data) if scale == "log" else data
 
 # Generate string labels for ticks with appropriate decimal precision
 

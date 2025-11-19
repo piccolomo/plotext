@@ -1,6 +1,7 @@
 from plotext._methods import *
 from plotext._clink import clink, wstring
 from plotext._pixel import pixel
+from plotext._methods.string import write
 
 
 class colorize:
@@ -51,7 +52,7 @@ class colorize:
     # Print colorized string with optional colorless mode
     def print(self, colorless = False, end = '\n', flush = True):
         clink.colorize_print(self._pointer, colorless)
-        string_methods.write(end, flush)
+        write(end, flush)
         return self
 
     # Create a copy of this colorize object

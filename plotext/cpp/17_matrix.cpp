@@ -117,7 +117,7 @@ public:
     inline int insert_colorized_dynamically(const size_t & col, const size_t & row, const Colorize & s) noexcept {
         if (row >= height) return -1;
         for (int delta : get_dynamic_displacements(s.get_length()))
-            if (insert_colorized_aligned(col + delta, row, s)) return static_cast<int>(col) + delta;
+            if (insert_colorized_aligned(col + delta, row, s, 0, true, true)) return static_cast<int>(col) + delta;
         return -1;}
 
     inline void insert_point(const Point & p) noexcept { get_character(p.get_col(), p.get_row()).update(p); }
@@ -155,7 +155,8 @@ public:
         const size_t total = width * height;
         for (size_t i = 0; i < total; ++i) {
             data[i].stream();
-            if ((i + 1) % width == 0 && (i + 1) != total) wcout.put(L'\n');}
+            if (not data[i].same_pixel(data[i + 1])) {wcout.write(ansi_end, 4);}
+            if ((i + 1) % width == 0) {wcout.write(ansi_end, 4); if ((i + 1) != total) wcout.put(L'\n');}} // Add newline after each row (except the last one)
         wcout.flush();}
 
     friend wostream & operator<<(wostream & os, const Matrix & c) noexcept {os << c.get_wstring(); return os;}

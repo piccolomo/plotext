@@ -2,7 +2,7 @@ from math import ceil
 from plotext._colorize import colorize
 from plotext._methods.string import pad
 from plotext._constants import color_codes, style_codes
-
+from plotext._methods.list import unique
 
 # Background and layout defaults
 bg = 'default'
@@ -16,7 +16,7 @@ color_index = lambda col, row: row * cols + col if row * cols + col < m else ''
 # Display color codes
 def colors():
     # Prepare color codes with and without '+'
-    colors_no_plus = list_methods.unique([el.replace('+', '') for el in color_codes if el not in ['default', 'black', 'white']])
+    colors_no_plus = unique([el.replace('+', '') for el in color_codes if el not in ['default', 'black', 'white']])
     colors_plus = [el + '+' for el in colors_no_plus]
 
     # Colorize strings

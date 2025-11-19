@@ -95,6 +95,13 @@ class signal_class:
         clink.signal_set_fill_point(self._pointer, index, x, y, m._pointer)
         return self
 
+    def set_fill(self, signal):
+        for i in signal.get_range():
+            point = signal.get_point(i)
+            x, y, m = point.get_x(), point.get_y(), point.get_marker()
+            self.set_fill_point(i, x, y, m)
+        return self
+
     def get_point(self, index):
         return point_filled_class(_pointer = clink.signal_get_point(self._pointer, index))
 
