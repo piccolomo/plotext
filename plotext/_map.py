@@ -1,5 +1,6 @@
 from plotext._clink import clink
 
+
 class points_map:
     def __init__(self, cols, rows):
         self._pointer = clink.points_map_new(cols, rows)

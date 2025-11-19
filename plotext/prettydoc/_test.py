@@ -1,12 +1,11 @@
 import unittest
-
 from plotext.prettydoc._docs import docs
 from plotext._methods import *
-
 
 # Test class for prettydoc module
 class test_class(unittest.TestCase):
 
+    # Test the combined docstring hash
     def test_get_string(self):
         pd = docs()
         pd.add_function(object_methods.hash)
@@ -17,7 +16,7 @@ class test_class(unittest.TestCase):
         pd.add_parameter_spec('float', 1)
 
         pd.add_parameter("par2", "the second parameter")
-        pd.add_parameter_spec('float', 2) 
+        pd.add_parameter_spec('float', 2)
 
         pd.add_output('the mean of the input parameters', 'float')
 
@@ -27,7 +26,7 @@ class test_class(unittest.TestCase):
         self.assertEqual(pd._hash(), expected)
 
 
-# Function to run the test suite
+# Run the prettydoc test suite
 def run_tests():
     import plotext
 

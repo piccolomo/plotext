@@ -2,7 +2,6 @@ from plotext._correct import correct_class as correct
 from plotext._constants import space, new_line
 from plotext._colorize import colorize
 
-
 # Documentation for PrettyDoc components
 components_doc = {
     "title": "The function name, which appears in doc().show()",
@@ -20,13 +19,13 @@ components_doc = {
     "output.type.label": "The \"type\" header introducing the output type",
     "output.doc": "The main description of the function output"}
 
-
 # Display PrettyDoc components documentation
 def components():
-    colorize_class("PrettyDoc Components", style = 'bold').print()
-    out = [colorize(el + space, 'cyan+', style = 'default') +
-           colorize(correct.docstring(components_doc[el], 0), style = "italic")
-           for el in components_doc]
+    colorize_class("PrettyDoc Components", style='bold').print()
+    out = [
+        colorize(el + space, 'cyan+', style='default') +
+        colorize(correct.docstring(components_doc[el], 0), style="italic")
+        for el in components_doc]
     out = [el.get_string() for el in out]
     out = new_line.join(out)
     print(out)

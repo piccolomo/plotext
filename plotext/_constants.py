@@ -1,7 +1,4 @@
-# from plotext._pixel import pixel_class
-# from plotext._marker import marker_class
-
-# Binary choices range
+# Binary choices
 r2 = [0, 1]
 
 # Axis names
@@ -12,18 +9,20 @@ xsides = ['lower', 'upper']
 ysides = ['left', 'right']
 
 # Common text symbols
-space = ' '
-new_line = '\n'
-comma = ', '
-colon = ': '
-empty = ''
-period = '.'
-ansi_begin = '\x1b['
+space = ' '                 # Single space
+new_line = '\n'             # New line character
+comma = ', '                # Comma with space
+colon = ': '                # Colon with space
+empty = ''                  # Empty string
+period = '.'                # Period
+ansi_begin = '\x1b['        # ANSI escape sequence start
 
 # Marker types and default marker
 hd_markers_codes = ["none", "hd", "fhd", "braille"]
 
-# Colors
+# Colors (basic palette)
+color_codes = ['black', 'white', 'gray', 'gray+', 'red', 'red+', 'green', 'green+', 
+'orange', 'orange+', 'blue', 'blue+', 'magenta', 'magenta+', 'cyan', 'cyan+']
 
 # Plot limit alignments and adjustment delta
 limit_alignments = ["center", "edge"]
@@ -36,7 +35,7 @@ directions = [-1, 1]
 # Available scale types
 scales = ["linear", "log"]
 
-# Orientations and their shorthand forms
+# Orientations and shorthand
 orientations = ["vertical", "horizontal"]
 orientations_short = ["v", "h"]
 
@@ -45,29 +44,15 @@ axis_styles = ["default", "double", "dotted", "rounded"]
 line_styles = axis_styles[:-2]
 
 # Alignment constants for text
-ha = ['left', 'center', 'right']      # Horizontal alignments
-va = ['top', 'center', 'bottom']      # Vertical alignments
-ha_short = [-1, 0, 1]                  # Numeric codes for horizontal alignments
+ha = ['left', 'center', 'right']   # Horizontal alignments
+va = ['top', 'center', 'bottom']   # Vertical alignments
+ha_short = [-1, 0, 1]              # Numeric codes for horizontal alignments
 
-# colors
-color_codes = ['black', 'white', 'gray', 'gray+', 'red', 'red+', 'green', 'green+', 'orange', 'orange+', 'blue', 'blue+', 'magenta', 'magenta+', 'cyan', 'cyan+']
-# color_sequence = ["blue+", "green+", "red+", "cyan+", "magenta+", "yellow"] # standard color sequence for multiple data plots
-# color_sequence += [el for el in color_codes if el not in color_sequence] 
-
-# styles
+# Styles
 style_codes = ['bold', 'dim', 'italic', 'underline', 'double-underline', 'strike', 'inverted', 'flash']
 
 # Floats
 inf = float('inf')
 
+# Line drawing methods
 line_methods = ["simple", "full"]
-
-# # Basic Pixels
-# empty_pixel = pixel_class()  # Create an empty pixel
-# white_pixel = pixel_class("", "white")  # Create an empty pixel
-
-# # Default marker instance with default attributes
-# default_marker = marker_class()
-
-
-

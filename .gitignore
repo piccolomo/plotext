@@ -1,14 +1,17 @@
-plotext/__pycache__/
-plotext.egg-info/
-plotext/prettydoc/__pycache__/
+# Python compiled files
+__pycache__/
+*.pyc
+
+# Build artifacts
 build/
 dist/
-bin/
-test.py
-plotext/.*
+plotext.egg-info/
 
+# Temporary or editor files
 *~
 plotext/#*
 #*
 .#*
 plotext/cpp/#*
+plotext/.*
+test.py

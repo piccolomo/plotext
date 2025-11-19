@@ -1,12 +1,10 @@
 # Internal imports
-from plotext._methods.string import * 
+from plotext._methods.string import *
 from plotext._constants import space
-
 
 
 # Class for managing text and its properties
 class text_class:
-
     def __init__(self, text = None):
         self.set(text)
 
@@ -55,10 +53,8 @@ class text_class:
         return "PrettyText: " + self.get_string()
 
 
-
 # Class for managing labeled text (label + value)
 class labelled_text_class:
-
     def __init__(self, label = None, text = None):
         self.label = text_class(label)
         self.value = text_class(text)
@@ -93,10 +89,8 @@ class labelled_text_class:
         return out
 
 
-
 # Class for managing aliases of text
 class alias_class(text_class):
-
     def __init__(self, alias = None):
         text_class.__init__(self, alias)
 

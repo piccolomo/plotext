@@ -1,7 +1,7 @@
 from plotext._clink import clink, wstring, wchar
 from plotext._pixel import pixel as pixel_class
 from plotext._constants import hd_markers_codes
-from plotext._default import default_marker_code 
+from plotext._default import default_marker_code
 
 
 class marker:
@@ -9,18 +9,17 @@ class marker:
     def __init__(self, marker = None, foreground = 'default', background = 'default', style = 'default', _pointer = None):
         if _pointer is not None:
             self._pointer = _pointer
-
         else:
             marker = default_marker_code if marker is None else marker
             marker = hd_markers_codes.index(marker) + 1 if marker in hd_markers_codes else str(marker)[0]
-    
-            px = pixel_class(foreground, background, style)
+
+            px = pixel_class(foreground = foreground, background = background, style = style)
             p = px._pointer
+
             if isinstance(marker, str):
                 self._pointer = clink.marker_new_normal(wchar(marker), p)
-            else: # if integer
+            else:  # if integer
                 self._pointer = clink.marker_new_type(marker, p)
-
 
     # Delete underlying marker pointer
     def __del__(self):

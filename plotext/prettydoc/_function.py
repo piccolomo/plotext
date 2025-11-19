@@ -1,12 +1,12 @@
 from plotext.prettydoc._text import text_class, alias_class
 from plotext.prettydoc._parameter import parameter_class
 from plotext._constants import space, empty
-from plotext._methods.string import * 
+from plotext._methods.string import *
 from plotext._colorize import colorize
 
 
 class function_class:
-    def __init__(self, *function, name = None):
+    def __init__(self, *function, name=None):
         self.function = list(function)
         self.name = self.function[0].__qualname__.lower() if name is None else name
         self.doc = text_class()
@@ -61,7 +61,7 @@ class function_class:
         print(self.get_docstring(colorless))
 
     # Update the function's __doc__ attribute
-    def update(self, colorless = False):
+    def update(self, colorless=False):
         for function in self.function:
             function.__doc__ = self.get_docstring(colorless)
         return self
@@ -76,13 +76,14 @@ class function_class:
 
     # Get parameter by name
     def get_parameter(self, name):
-        names = [el.get_name() for el in self.parameters] 
-        index = names.index(name) if name in names else None 
-        return self.parameters[index] if name in names else None 
+        names = [el.get_name() for el in self.parameters]
+        index = names.index(name) if name in names else None
+        return self.parameters[index] if name in names else None
 
     # Return colored function name string
     def get_title(self, pixel):
         return colorize(self.get_name()).set_pixel(pixel).get_string()
 
+    # Represent PrettyFunctionDoc
     def __repr__(self):
         return "PrettyFunctionDoc(" + self.get_name() + ")"

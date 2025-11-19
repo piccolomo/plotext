@@ -1,6 +1,5 @@
 from plotext._pixel import pixel
 
-
 # Default pixel configurations for docstring components
 default_pixels = {
     "title": pixel(foreground = 'green+', style = 'bold'),

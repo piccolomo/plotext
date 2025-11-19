@@ -14,69 +14,67 @@ class ticks_class:
         return self
 
     # Set ticks from positions and labels
-    def set(self, positions = [], labels = []):
-        self.ticks = [tick_class(t, l) for t, l in zip(positions, labels)]
+    def set(self, positions=[], labels=[]):
+        self.ticks = [tick_class(p, l) for p, l in zip(positions, labels)]
         return self
 
-    # Set only the tick positions
+    # Set only tick positions
     def set_positions(self, positions):
         [t.set_position(p) for t, p in zip(self.ticks, positions)]
         return self
 
-
-    # Return all (position, label) pairs
+    # Get all (position, label) pairs
     def get(self):
-        return [el.get() for el in self.ticks]
+        return [t.get() for t in self.ticks]
 
-    # Return only tick positions
-    def get_positions(self, limits = None):
-        return [el.get_position() for el in self.ticks]
+    # Get only tick positions
+    def get_positions(self, limits=None):
+        return [t.get_position() for t in self.ticks]
 
-    # Return only tick labels
+    # Get only tick labels
     def get_labels(self):
-        return [el.get_label() for el in self.ticks]
+        return [t.get_label() for t in self.ticks]
 
-    # Return the maximum width of tick labels
+    # Get maximum width of tick labels
     def get_labels_width(self):
-        return max([len(label) for label in self.get_labels()], default = 0)
+        return max([len(l) for l in self.get_labels()], default=0)
 
-    # Return number of ticks
+    # Get number of ticks
     def get_length(self):
         return len(self.ticks)
 
-    # Check if ticks are active (non-empty)
+    # Check if ticks are active
     def is_active(self):
         return self.get_length() > 0
 
-    # Return a new ticks object with ticks within limits
+    # Return new ticks object within limits
     def select(self, limits):
         new = ticks_class()
-        new.ticks = [el.copy() for el in self.ticks if el.is_within_limits(limits)]
+        new.ticks = [t.copy() for t in self.ticks if t.is_within_limits(limits)]
         return new
 
     # Rescale tick positions within limits
     def rescale(self, limits, bins, delta):
         positions = self.get_positions()
-        positions = [rescale(el, *limits, bins, delta) for el in positions]
+        positions = [rescale(p, *limits, bins, delta) for p in positions]
         positions = to_integers(positions)
         self.set_positions(positions)
         return self
 
-    # Clone ticks from another ticks object
+    # Clone another ticks object
     def clone(self, ticks):
-        self.ticks = [el.copy() for el in ticks.ticks]
+        self.ticks = [t.copy() for t in ticks.ticks]
         return self
 
-
-    # Return a short log string
+    # Short log string
     def get_log(self):
         return 'Ticks ' + str(self.get_length())
 
-    # Print the log string
+    # Print log
     def log(self):
         print(self.get_log())
+        return self
 
     # String representation
     def __repr__(self):
         return self.get_log()
-

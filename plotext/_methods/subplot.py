@@ -1,3 +1,6 @@
+# Utilities for fitting and distributing sizes
+
+# Set None entries in a list of sizes proportionally so the total does not exceed size_max
 def set_none_sizes(sizes, size_max):
     bins = len(sizes)
     for s in range(bins):
@@ -7,9 +10,8 @@ def set_none_sizes(sizes, size_max):
         sizes[s] = available // to_set if sizes[s] is None else sizes[s]
     return sizes
 
-# Fit sizes so they do not exceed size_max, respecting direction
-
-def fit_sizes(sizes, size_max, direction = 1):
+# Fit sizes in a list so their cumulative sum does not exceed size_max, respecting a direction
+def fit_sizes(sizes, size_max, direction=1):
     sizes = sizes[::direction]
     l = len(sizes)
     for i in range(l):

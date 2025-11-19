@@ -5,12 +5,11 @@ class part_class:
         self.name = name
         self.clear()
 
-
     # Reset position and size
     def clear(self):
         self.set_position()
         self.set_size()
-
+        return self
 
     # Set column and row position
     def set_position(self, col = None, row = None):
@@ -18,14 +17,13 @@ class part_class:
         self.row = None if row is None else int(row)
         return self
 
-
     # Set width
-    def set_width(self, width):
+    def set_width(self, width = None):
         self.width = None if width is None else int(width)
         return self
 
     # Set height
-    def set_height(self, height):
+    def set_height(self, height = None):
         self.height = None if height is None else int(height)
         return self
 
@@ -35,32 +33,29 @@ class part_class:
         self.set_height(height)
         return self
 
-
-    # Check if both width and height are set (non-zero)
+    # Check if both width and height are set
     def has_size(self):
         return self.has_width() and self.has_height()
 
-    # Check if height is non-zero
-    def has_height(self):
-        return self.height != 0
-
-    # Check if width is non-zero
+    # Check if width is set
     def has_width(self):
-        return self.width != 0
+        return self.width not in (None, 0)
 
+    # Check if height is set
+    def has_height(self):
+        return self.height not in (None, 0)
 
-    # Get column considering side offset
+    # Get column considering optional side offset
     def get_col(self, side = 0):
         return self.col + (self.width if side else 0)
 
-    # Get row considering side offset
+    # Get row considering optional side offset
     def get_row(self, side = 0):
         return self.row + (self.height if side else 0)
 
     # Get position (col, row) considering offsets
     def get_position(self, xside = 0, yside = 0):
         return self.get_col(xside), self.get_row(yside)
-
 
     # Get width
     def get_width(self):
@@ -70,10 +65,9 @@ class part_class:
     def get_height(self):
         return self.height
 
-    # Get size (width, height)
+    # Get size as a tuple (width, height)
     def get_size(self):
         return self.width, self.height
-
 
     # Return a log string describing the part
     def get_log(self):
@@ -84,4 +78,3 @@ class part_class:
 
     def __repr__(self):
         return str(self)
-

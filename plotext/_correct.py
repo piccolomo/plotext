@@ -3,18 +3,15 @@ from re import sub
 from plotext._methods.object import *
 from plotext._methods.list import repeat, replace_none, is_list_like
 from plotext._methods.string import only_spaces
-
-#from plotext._default import default_labels_pixel, default_axis_pixel, default_ruler_pixel
 from plotext._constants import *
 from plotext._colorize import colorize as colorize_class
 from plotext._pixel import pixel as pixel_class
-from plotext._marker import marker as marker_class 
-
+from plotext._marker import marker as marker_class
 
 
 class correct_class:
 
-    # Correct the pixel object, filling missing properties with defaults
+    # Correct pixel object using defaults
     @staticmethod
     def pixel(pixel, default_pixel):
         if pixel is None:
@@ -25,8 +22,7 @@ class correct_class:
             return pixel_class(*pixel)
         return pixel
 
-
-    # Correct matrix object by checking its type and converting if necessary
+    # Convert string or colorize object to matrix
     @staticmethod
     def matrix(obj):
         if isinstance(obj, colorize_class):
@@ -35,8 +31,7 @@ class correct_class:
             return colorize_class(obj).get_matrix()
         return obj
 
-
-    # Adjust slice depending on key type and slice boundaries
+    # Adjust slice boundaries
     @staticmethod
     def slice(key, bins):
         if isinstance(key, int):
@@ -47,15 +42,12 @@ class correct_class:
             key = slice(key.start, bins)
         return key
 
-
+    # Correct orientation
     @staticmethod
     def orientation(orientation):
-        if orientation is None or orientation not in orientations + orientations_short:
-            return orientations[0]
-        return orientation
+        return orientation if orientation in orientations + orientations_short else orientations[0]
 
-
-    # Correct horizontal alignment by checking against valid values
+    # Horizontal alignment correction
     @staticmethod
     def ha(alignement):
         if alignement in ha:
@@ -64,8 +56,7 @@ class correct_class:
             return alignement
         return -1
 
-
-    # Correct vertical alignment by checking against valid values
+    # Vertical alignment correction
     @staticmethod
     def va(alignement):
         if alignement in va:
@@ -74,68 +65,46 @@ class correct_class:
             return alignement
         return 1
 
-
-    # Corrects the docstring by formatting and capitalizing if needed
+    # Clean and capitalize doc string
     @staticmethod
-    def doc(doc, capitalize = 1):
+    def doc(doc, capitalize=1):
         doc = doc.strip()
-        if len(doc) > 0 and doc[-1] != '.':
+        if doc and doc[-1] != '.':
             doc += '.'
         doc = sub(r'\s+', ' ', doc)
-        if capitalize:
-            doc = doc[0].upper() + doc[1:]
-        else:
-            doc = doc[0].lower() + doc[1:]
-        return doc
+        return doc[0].upper() + doc[1:] if capitalize else doc[0].lower() + doc[1:]
 
-
-    # Correct the alignment of limits to ensure it is valid
+    # Validate limits alignment
     @staticmethod
     def limits_alignment(alignment):
-        if alignment is None or alignment not in limit_alignments:
-            return limit_alignments[0]
-        return alignment
+        return alignment if alignment in limit_alignments else limit_alignments[0]
 
-
-    # Correct the direction to ensure it is valid
+    # Validate direction
     @staticmethod
     def limits_direction(direction):
-        direction = directions[1] if direction is None or direction not in directions else bool(direction)
-        return direction
+        return bool(direction) if direction in directions else directions[1]
 
-
-    # Correct the scale to ensure it is valid
+    # Validate scale
     @staticmethod
     def scale(scale):
-        if scale is None or scale not in scales:
-            return scales[0]
-        return scale
+        return scale if scale in scales else scales[0]
 
-
-    # # Correct the pixel for rulers
-    # @staticmethod
-    # def ruler_pixel(pixel):
-    #     return correct_class.pixel(pixel, default_ruler_pixel)
-
-
-    # Correct a single label, applying default pixel settings
+    # Correct single label
     @staticmethod
     def label(label, default_pixel):
         if label is None or only_spaces(label):
             return None
-        if isinstance(label, str): 
-            label = colorize(label.strip()).set_pixel(default_pixel)
-        #and label._no_background():
+        if isinstance(label, str):
+            label = colorize_class(label.strip()).set_pixel(default_pixel)
         label._fix_background(default_pixel)
         return label
 
-
-    # Correct a list of labels
+    # Correct list of labels
     @staticmethod
     def labels(labels, default_pixel):
         return [correct_class.label(label, default_pixel) for label in labels]
 
-    # Correct side input to a list of valid side values
+    # Correct side(s) input
     @staticmethod
     def axes(axis):
         if axis is None:
@@ -146,31 +115,18 @@ class correct_class:
             side_list = [axis]
         return [correct_class.axis(a) for a in side_list]
 
-
-    # Correct a single axis string or boolean
+    # Correct single axis
     @staticmethod
     def axis(axis):
         return correct_class.boolean_string(axis, axis_names)
 
-    # Correct the side of an axis to ensure it is valid
+    # Correct axis side
     @staticmethod
     def side(axis, side):
         sides = ysides if axis else xsides
         return correct_class.boolean_string(side, sides)
 
-    # # Correct axis input to a list of valid axis values
-    # @staticmethod
-    # def axis(axis = None):
-    #     if axis is None:
-    #         axis_list = r2
-    #     elif object_methods.is_list_like(axis):
-    #         axis_list = axis
-    #     else:
-    #         axis_list = [axis]
-    #     return [correct_class.single_axis(a) for a in axis_list]
-
-
-    # Correct side input to a list of valid side values
+    # Correct sides list
     @staticmethod
     def sides(axis, side):
         if side is None:
@@ -181,64 +137,52 @@ class correct_class:
             side_list = [side]
         return [correct_class.side(axis, s) for s in side_list]
 
-
+    # Validate status
     @staticmethod
     def status(value, default):
         return value if value is not None else default
 
-    # Correct the axis style to ensure it is valid
+    # Validate axis style
     @staticmethod
     def axis_style(style):
         return style if style in axis_styles else axis_styles[0]
 
-
-    # # Correct axis pixel with default axis pixel
-    # axis_pixel = staticmethod(lambda pixel = None: correct_class.pixel(pixel, default_axis_pixel))
-
-
-    # Correct a boolean or string side to ensure it is valid
+    # Correct boolean/string side
     @staticmethod
-    def boolean_string(side, sides, sides_short = None):
+    def boolean_string(side, sides, sides_short=None):
         if side is None:
             side = sides[0]
         elif isinstance(side, str):
             side = side.strip()
         if side in sides:
             side = sides.index(side)
-        if sides_short is not None and side in sides_short:
+        if sides_short and side in sides_short:
             side = sides_short.index(side)
         if not (isinstance(side, int) and side in range(2)):
             side = 0
         return side
 
-
-    # Format x and y data lists properly
+    # Format x and y data lists
     @staticmethod
-    def data(x = None, y = None):
+    def data(x=None, y=None):
         if x is None and y is None:
             x, y = [], []
         elif x is not None and y is None:
-            y = x
-            x = list(range(1, len(y) + 1))
+            y, x = x, list(range(1, len(x) + 1))
         elif is_numerical(x) and not is_numerical(y):
             x = [x] * len(y)
         elif is_numerical(y) and not is_numerical(x):
             y = [y] * len(x)
-        lx, ly = len(x), len(y)
-        if lx != ly:
-            l = min(lx, ly)
-            x = x[:l]
-            y = y[:l]
-        return [list(x), list(y)]
+        l = min(len(x), len(y))
+        return [list(x[:l]), list(y[:l])]
 
-
-    # Correct a single marker, wrapping it into a marker object if needed
+    # Correct single marker
     @staticmethod
     def marker(marker, default_marker):
-        marker = default_marker  if marker is None else marker_class(marker) if  isinstance(marker, str) else marker
+        marker = default_marker if marker is None else marker_class(marker) if isinstance(marker, str) else marker
         return marker._fix(default_marker)
 
-    # Correct a list of markers, repeating them to match the specified length
+    # Correct list of markers
     @staticmethod
     def markers(marker, default_marker, length):
         if not is_list_like(marker):
@@ -246,51 +190,35 @@ class correct_class:
         marker = [correct_class.marker(m, default_marker) for m in marker]
         return repeat(marker, length)
 
-    # Correct the limits by combining the current and new limits
+    # Correct limits
     @staticmethod
     def limits(limits, new_limits):
         new_limits = limits if new_limits is None else new_limits
         limits = replace_none(limits, new_limits)
-        [a, b] = limits
-        limits = [a - 1, b + 1] if a == b and a is not None else limits
-        #minimum = min(limits[0], new_limits[0]) if new_limits[0] is not None else limits[0]
-        #maximum = max(limits[1], new_limits[1]) if new_limits[1] is not None else limits[1]
-        return limits
+        a, b = limits
+        return [a - 1, b + 1] if a == b and a is not None else limits
 
-    # Correct the line style to ensure it is valid
+    # Correct line style
     @staticmethod
     def line_style(style):
         return style if style in line_styles else line_styles[0]
 
+    # Signal label default
     @staticmethod
-    def label(label, default_pixel):
-        if label is None or only_spaces(label):
-            return None
-        if isinstance(label, str): 
-            label = colorize_class(label.strip()).set_pixel(default_pixel)
-        #and label._no_background():
-        label._fix_background(default_pixel)
-        return label
+    def signal_label(label):
+        return "xxxxxx" if label is None else label.strip()
 
-
+    # Legend label default
     @staticmethod
-    def signal_label(label): 
-        return "xxxxxx" if label is None else label.strip() 
-
-    # @staticmethod
-    # def signal_label(label, length):
-    #     return f"signal[{length}]" if label is None else label
-
-    # Create signal label, defaulting to 'signal(length)' if label is None 
-    @staticmethod
-    def legend_label(label, length): 
+    def legend_label(label, length):
         return f'signal[{length}]' if len(label) == 0 else label
 
-
+    # Validate boolean
     @staticmethod
-    def bool(element = None):
+    def bool(element=None):
         return element if isinstance(element, bool) or element in r2 else False
 
+    # Validate line method
     @staticmethod
-    def line_method(method = None):
+    def line_method(method=None):
         return method if method not in line_methods or method not in r2 else 0

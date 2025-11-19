@@ -18,21 +18,27 @@ class axes_class:
         self.get(1, 1).clear_settings()
         return self
 
+    # Set axis status, style, and pixel
     def set(self, status = None, style = None, pixel = None, axis = 0, side = 0):
         axis = correct.axis(axis)
         sides = correct.sides(axis, side)
-        [self.get(axis, side).set(status, style, pixel) for side in sides]
+        for s in sides:
+            self.get(axis, s).set(status, style, pixel)
         return self
 
     # Set frame status, style, and pixel for all axes
     def frame(self, frame = True, style = None, pixel = None):
-        [self.get(axis, side).set_status(frame).set_style(style).set_pixel(pixel) for axis in r2 for side in r2]
+        for axis in r2:
+            for side in r2:
+                self.get(axis, side).set_status(frame).set_style(style).set_pixel(pixel)
         return self
 
-    # Set default frequencies for x and y rulers
+    # Set default pixel for all axes
     def set_pixel(self, pixel = None):
-        [el.set_pixel(pixel) for el in self.xaxis]
-        [el.set_pixel(pixel) for el in self.yaxis]
+        for el in self.xaxis:
+            el.set_pixel(pixel)
+        for el in self.yaxis:
+            el.set_pixel(pixel)
         return self
 
     # Get axis object based on axis and side
@@ -42,7 +48,9 @@ class axes_class:
 
     # Clone all axes properties from another axes_class instance
     def clone(self, axes):
-        [self.get(axis, side).clone(axes.get(axis, side)) for axis in r2 for side in r2]
+        for axis in r2:
+            for side in r2:
+                self.get(axis, side).clone(axes.get(axis, side))
         return self
 
     # Get string representation of a specific axis
@@ -62,4 +70,5 @@ class axes_class:
         print(self.get_log())
 
     # String representation returns combined log
-    def __repr__(self): return self.get_log()
+    def __repr__(self):
+        return self.get_log()

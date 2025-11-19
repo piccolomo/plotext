@@ -1,21 +1,17 @@
-
-# Default terminal size in characters (width, height)
+# Terminal defaults
 default_terminal_width = 211 * 2 // 3
 default_terminal_height = 53 * 2 // 3
 default_terminal_prompt_height = 3
 
-
-#Axis 
+# Axis defaults
 default_axis_status = True
 default_axis_style = 'default'
 
-
-# Frequencies for grid lines on axes
+# Grid line frequencies
 default_xfrequency = 7
 default_yfrequency = 5
 
-
-# Default pixel colors for plot elements
+# Pixel defaults
 default_label_foreground = "blue+"
 default_label_background = "white"
 
@@ -34,11 +30,10 @@ default_line_background = "white"
 default_legend_foreground = "blue"
 default_legend_background = "white"
 
-
-# Subplots default size direction
+# Subplot defaults
 default_size_direction = 1
 
-# Legend
+# Legend defaults
 default_legend_status = False
 default_legend_relative = False
 default_legend_x_position = 0
@@ -46,11 +41,8 @@ default_legend_y_position = 0
 default_legend_axis_status = True
 default_legend_axis_style = 'default'
 
-
-# Plot default marker
+# Marker defaults
 default_marker_code = "hd"
-# default_marker_foreground = "blue+"
-# default_marker_background = "default"
 
-
+# Color sequence for plotting
 color_sequence = [12, 10, 9, 14, 13, 11, 0, 15, 8, 7, 1, 2, 3, 4, 5, 6]

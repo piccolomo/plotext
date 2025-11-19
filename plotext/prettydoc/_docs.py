@@ -1,8 +1,7 @@
 from plotext.prettydoc._pixels import default_pixels
 from plotext._constants import space, new_line
 from plotext.prettydoc._function import function_class
-
-from plotext._methods.object import * 
+from plotext._methods.object import *
 from plotext._colorize import colorize
 from plotext._correct import correct_class as correct
 
@@ -26,8 +25,8 @@ class docs:
         return self
 
     # Add a function wrapper to docs
-    def add_function(self, *function, name = None):
-        self._functions.append(function_class(*function, name = name))
+    def add_function(self, *function, name=None):
+        self._functions.append(function_class(*function, name=name))
         return self
 
     # Add documentation text for last function
@@ -43,13 +42,14 @@ class docs:
         self._last().set_alias(alias)
         return self
 
-    # Set introductory text for parameters based on their count
+    # Set introductory text for parameters based on count
     def _set_parameters_intro(self):
         fun = self._last()
         pixel = fun.doc.get_pixel()
-        if fun.get_parameters() == 1:
+        count = fun.get_parameters()
+        if count == 1:
             fun.parameters_intro.set(colorize('This is its parameter:').set_pixel(pixel))
-        elif fun.get_parameters() == 2:
+        elif count == 2:
             fun.parameters_intro.set(colorize('These are its parameters:').set_pixel(pixel))
         return self
 
@@ -65,21 +65,21 @@ class docs:
         self._set_parameters_intro()
         return self
 
-    # Add type and default specification to the last parameter
-    def add_parameter_spec(self, type = None, default = None):
-        type = self._colorize(type, "parameter.type") 
+    # Add type and default specification to last parameter
+    def add_parameter_spec(self, type=None, default=None):
+        type = self._colorize(type, "parameter.type")
         default = self._colorize(repr(default), "parameter.default")
         self._last().last().set_spec(type, default)
 
-    # Add a previously defined parameter from another function
+    # Copy a parameter from another function
     def add_past_parameter(self, name, function):
         parameter = self._get_function(function).get_parameter(name)
         self._last().parameters.append(parameter.copy())
         self._set_parameters_intro()
         return self
 
-    # Add output specification for the last function
-    def add_output(self, doc = None, type = None):
+    # Add output specification for last function
+    def add_output(self, doc=None, type=None):
         name = self._colorize("Returns", "output.name")
         doc = self._colorize(doc, "output.doc")
         doc.set_string(correct.doc(doc.get_string(1), 0))
@@ -89,32 +89,31 @@ class docs:
         out.set_separator(self._separator)
         return self
 
-    # def add_output_type(self, type = None):
-
-
-    # Add previously defined output from another function
+    # Copy output from another function
     def add_past_output(self, function):
         output = self._get_function(function).output
         self._last().output = output.copy()
         return self
 
-    # Update all functions' docstrings and add show methods as attributes
+    # Update all functions' docstrings and show methods
     def update(self):
         [el.update(self._colorless) for el in self._functions]
         [set_attribute(self, el.get_name(), el.show) for el in self._functions]
         return self
 
-    # Get full combined string of all functions with titles and docs
+    # Get full combined string of all functions
     def _get_string(self):
         return (string_methods.new_lines(3)).join(
-            [el.get_title(self._get_default_pixel("title")) + new_line + el.get_docstring() for el in self._functions])
+            [el.get_title(self._get_default_pixel("title")) + new_line + el.get_docstring()
+             for el in self._functions]
+        )
 
     # Print all functions' docs
     def show(self):
         print(self._get_string())
         return self
 
-    # Colorize text if not already colorized or None
+    # Colorize text if not already colorized
     def _colorize(self, text, component):
         if text is None:
             return None
@@ -126,8 +125,8 @@ class docs:
     def _get_default_pixel(self, component):
         return self._pixels[component]
 
-    # Retrieve function by name (lowercase qualified name)
-    def _get_function(self, name): 
+    # Retrieve function by name
+    def _get_function(self, name):
         names = [el.get_name() for el in self._functions]
         index = names.index(name) if name in names else None
         return self._functions[index] if name in names else None
@@ -140,10 +139,11 @@ class docs:
     def _get_length(self):
         return len(self._functions)
 
+    # Represent PrettyDoc with function count
     def __repr__(self):
         return "PrettyDoc(" + str(self._get_length()) + " functions)"
 
-    # Concatenate another docs_class's functions to self
+    # Concatenate another docs_class's functions
     def __add__(self, doc):
         self._functions = self._functions + doc._functions
 

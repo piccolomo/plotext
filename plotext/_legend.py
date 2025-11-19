@@ -7,15 +7,13 @@ from plotext._correct import correct_class as correct
 
 class legend_class:
     def __init__(self):
-        self.axes = axes_class() 
-        self.clear_settings() 
-        self.clear_signals() 
-        self.clear_signals() 
-        self.set_pixel()  
-
+        self.axes = axes_class()
+        self.clear_settings()
+        self.clear_signals()
+        self.set_pixel()
 
     # Reset legend to initial state
-    def clear_settings(self,):
+    def clear_settings(self):
         self.axes.clear_settings()
         self.set_active()
         self.frame()
@@ -54,7 +52,7 @@ class legend_class:
     def set_pixel(self, pixel = None, default_pixel = None):
         pixel = correct.pixel(pixel, default_legend_pixel)
         self.pixel = pixel
-        self.axes.set_pixel(pixel) 
+        self.axes.set_pixel(pixel)
         return self
 
     # Set legend position (x, y) and whether position is relative
@@ -68,8 +66,8 @@ class legend_class:
     def set_alignment(self, ha = -1, va = 1):
         ha = correct.ha(ha)
         va = correct.va(va)
-        self.ha = ha  # horizontal alignment
-        self.va = va  # vertical alignment
+        self.ha = ha
+        self.va = va
         return self
 
     # Set axes sides for x and y
@@ -91,21 +89,17 @@ class legend_class:
     # Compute absolute position along an axis using scaler and bin count
     def get_absolute_position(self, axis, ruler, bins):
         col = self.x if axis == 0 else self.y
-        #col = bins - 1 if col is None else col
         side = self.xside if axis == 0 else self.yside
-        #direction = ruler.get_direction()
 
         if self.relative:
             lim = ruler.get_limits(scaled = True, direction = 1)
             delta = ruler.get_delta()
             col = int(list_methods.rescale(col, *lim, bins, delta))
-
-        #col = bins - 1 - col if direction == -1 else col
         
         return col
 
     # Set frame style for legend axes
-    def frame(self, frame=True, style=None, pixel=None):
+    def frame(self, frame = True, style = None, pixel = None):
         return self.axes.frame(frame, style, pixel)
 
     # Number of markers/labels in the legend
@@ -132,20 +126,19 @@ class legend_class:
 
     # Add a marker-label pair to legend
     def add(self, marker, label):
-        #marker = correct.marker(marker, default_)
-        label = correct.legend_label(label, self.get_length()) 
+        label = correct.legend_label(label, self.get_length())
         label = correct.label(label, self.pixel)
-        self.markers.append(marker) 
-        self.labels.append(label) 
+        self.markers.append(marker)
+        self.labels.append(label)
         return self
 
     # Update legend with markers and labels from signals
     def update(self, signals):
         self.clear_signals()
         for signal in signals:
-            marker = signal.get_marker() 
-            label = signal.get_label() 
-            self.add(marker, label) 
+            marker = signal.get_marker()
+            label = signal.get_label()
+            self.add(marker, label)
 
     def fix_background(self, pixel):
         self.pixel._fix_background(pixel)
@@ -189,15 +182,14 @@ class legend_class:
                 log._set_pixelled_character(col + c, row, char, axis.pixel)
 
         col, row = 2 * frame, 2 * frame
-        pixel = self.axes.get().pixel 
+        pixel = self.axes.get().pixel
 
         # Draw markers and labels inside the frame
-        for r in self.get_range(): 
-            m = self.markers[r] 
-            log._set_pixelled_character(col, row + 2 * r, m.get_model(), m.get_pixel()) 
-            l = self.labels[r] 
-            #l._fix(self.pixel) 
-            log._insert_colorized_aligned(col + 2, row + 2 * r, l) 
+        for r in self.get_range():
+            m = self.markers[r]
+            log._set_pixelled_character(col, row + 2 * r, m.get_model(), m.get_pixel())
+            l = self.labels[r]
+            log._insert_colorized_aligned(col + 2, row + 2 * r, l)
 
         return log
 
@@ -212,8 +204,7 @@ class legend_class:
         self.axes.clone(legend.axes)
         self.x, self.y = legend.get_position()
         self.ha, self.va = legend.get_alignments()
-        self.xside, self.yside = legend.xside, legend.yside
-        return
+        return self
 
     def __repr__(self):
         state = "active" if self.active else "inactive"
@@ -221,7 +212,7 @@ class legend_class:
         align = f"ha = {self.ha}, va = {self.va}"
         axes = f"xside = {self.xside}, yside = {self.yside}"
         count = self.get_length()
-        out = f"Legend {state}, length {count}, pos = {pos}, {align}, {axes}, {self.pixel},  axis status {self.axes.get(0).status}, axes style {self.axes.get(0).style}"
+        out = f"Legend {state}, length {count}, pos = {pos}, {align}, {axes}, {self.pixel}, axis status {self.axes.get(0).status}, axes style {self.axes.get(0).style}"
         for i in self.get_range():
             out += f"\n {self.markers[i]} {self.labels[i]}"
         return out

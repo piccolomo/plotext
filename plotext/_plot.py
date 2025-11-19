@@ -21,45 +21,50 @@ from plotext._cycler import color_cycler
 from plotext._marker import marker as marker_class
 
 
-
 class plot_class(draw_class, plot_build_class, subplot_class):
 
     def __init__(self, parent):
-        self._parts = parts_class()     
-        self._labels = labels_class()   
-        self._rulers = rulers_class()   
-        self._axes = axes_class()       
-        self._signals = signals_class()   
-        self._legend = legend_class()  
-        self._timer = timer_class() 
-        self._cycler = color_cycler(color_sequence) 
-                
+        self._parts = parts_class()
+        self._labels = labels_class()
+        self._rulers = rulers_class()
+        self._axes = axes_class()
+        self._signals = signals_class()
+        self._legend = legend_class()
+        self._timer = timer_class()
+        self._cycler = color_cycler(color_sequence)
+
         subplot_class.__init__(self, parent)
         plot_build_class.__init__(self)
 
         self.clear()
 
-    # Subplot handling methods
+    def _for_each_subplot(self, method_name, *args, **kwargs):
+        if self._has_subplots():
+            for pos in self._get_slots_range():
+                getattr(self._get_subplot(*pos), method_name)(*args, **kwargs)
 
+    # -------------------------
+    # Subplot handling
+    # -------------------------
     def subplots(self, rows = None, cols = None):
         subplot_class._subplots(self, rows, cols)
-        if self._has_subplots():
-            [self._get_subplot(*pos)._clone(self) for pos in self._get_slots_range()]
+        self._for_each_subplot("_clone", self)
         return self
 
+    # -------------------------
+    # Clear methods
+    # -------------------------
     def clear_size(self):
         self._parts.clear()
         subplot_class._clear(self)
         self._set_size(*self.get_terminal().update_size()._size) if self._is_master() else None
-        if self._has_subplots():
-            [self._get_subplot(*pos).clear_size() for pos in self._get_slots_range()]
+        self._for_each_subplot("clear_size")
         return self
 
     def clear_data(self):
         self._signals.clear()
         self._legend.clear_signals()
-        if self._has_subplots():
-            [self._get_subplot(*pos).clear_data() for pos in self._get_slots_range()]
+        self._for_each_subplot("clear_data")
         return self
 
     def clear_settings(self):
@@ -68,8 +73,7 @@ class plot_class(draw_class, plot_build_class, subplot_class):
         self._labels.clear()
         self._legend.clear_settings()
         [self._get_ruler(a, s).set_frequency() for a in r2 for s in r2]
-        if self._has_subplots():
-            [self._get_subplot(*pos).clear_settings() for pos in self._get_slots_range()]
+        self._for_each_subplot("clear_settings")
         return self
 
     def clear_pixels(self):
@@ -79,9 +83,7 @@ class plot_class(draw_class, plot_build_class, subplot_class):
         self._legend.set_pixel()
         self.canvas_pixel()
         self._cycler.reset()
-        #self._signals.set_default_marker().update_default_marker(self._canvas_pixel)
-        if self._has_subplots():
-            [self._get_subplot(*pos).clear_size() for pos in self._get_slots_range()]
+        self._for_each_subplot("clear_pixels")
         return self
 
     def clear(self):
@@ -91,7 +93,7 @@ class plot_class(draw_class, plot_build_class, subplot_class):
         self.clear_pixels()
         return self
 
-    clf = clear;
+    clf = clear
 
     def _clone(self, plot):
         self._labels.clone(plot._labels)
@@ -101,43 +103,39 @@ class plot_class(draw_class, plot_build_class, subplot_class):
         self._legend.clone(plot._legend)
         return self
 
-
+    # -------------------------
     # Size and label setters
-
-    def _set_size(self, width = None, height = None): 
-        subplot_class._set_size(self, width, height) 
+    # -------------------------
+    def _set_size(self, width = None, height = None):
+        subplot_class._set_size(self, width, height)
         self._parts.set_size(*self.get_size())
         return self
 
     def next_marker(self):
-        return marker_class(default_marker_code, self._cycler.next_color())#._fix(self._canvas_pixel)
-
+        return marker_class(default_marker_code, self._cycler.next_color())
 
     def signal(self, *args, marker = None, xside = None, yside = None, lines = None, label = None):
-        x, y = correct.data(*args) 
+        x, y = correct.data(*args)
         signal = signal_class(len(x))
-        m = correct.markers(marker, self.next_marker(), len(x)) 
-        signal.set_points(x, y, m) 
+        m = correct.markers(marker, self.next_marker(), len(x))
+        signal.set_points(x, y, m)
         label = '' if label is None else label
         signal.set_xside(xside).set_yside(yside).set_label(label)
         signal.set_lines(correct.bool(lines))
         return signal
 
-
-    # Additional setters
-
+    # -------------------------
+    # Labels
+    # -------------------------
     def title(self, title = None):
         self._labels.set_title(title)
-        if self._has_subplots():
-            [self._get_subplot(*pos).title(title) for pos in self._get_slots_range()]
+        self._for_each_subplot("title", title)
         return self
 
     def _set_label(self, label = None, axis = 0, side = 0):
-        self._labels.set_label(axis, side, label) 
-        if self._has_subplots():
-            [self._get_subplot(*pos).xlabel(label, side) for pos in self._get_slots_range()]
+        self._labels.set_label(axis, side, label)
+        self._for_each_subplot("xlabel", axis, side)
         return self
-
 
     def xlabel(self, label = None, side = 0):
         return self._set_label(label = label, axis = 0, side = side)
@@ -145,15 +143,15 @@ class plot_class(draw_class, plot_build_class, subplot_class):
     def ylabel(self, label = None, side = 0):
         return self._set_label(label = label, axis = 1, side = side)
 
-
-
+    # -------------------------
+    # Rulers
+    # -------------------------
     def _get_ruler(self, axis = 0, side = 0):
-        return self._rulers.get(axis, side) 
+        return self._rulers.get(axis, side)
 
     def _set_lim(self, left = None, right = None, axis = 0, side = 0):
         self._get_ruler(axis, side).set_limits(left, right)
-        if self._has_subplots():
-            [self._get_subplot(*pos).xlim(left, right) for pos in self._get_slots_range()]
+        self._for_each_subplot("xlim", left, right)
         return self
 
     def xlim(self, left = None, right = None, side = 0):
@@ -164,8 +162,7 @@ class plot_class(draw_class, plot_build_class, subplot_class):
 
     def ruler(self, axis = None, side = None, frequency = None, scale = None, alignment = None, direction = None, pixel = None):
         self._get_ruler(axis, side).set(frequency = frequency, alignment = alignment, direction = direction, scale = scale, pixel = pixel)
-        if self._has_subplots():
-            [self._get_subplot(*pos)._set_ruler(frequency = frequency, axis = axis, side = side, alignment = alignment, direction = direction, scale = scale, pixel = pixel) for pos in self._get_slots_range()]
+        self._for_each_subplot("_set_ruler", axis, side, frequency, scale, alignment, direction, pixel)
         return self
 
     def xruler(self, frequency = None, scale = None, alignment = None, direction = None, pixel = None, side = None):
@@ -174,23 +171,22 @@ class plot_class(draw_class, plot_build_class, subplot_class):
     def yruler(self, frequency = None, scale = None, alignment = None, direction = None, pixel = None, side = None):
         return self.ruler(frequency = frequency, alignment = alignment, direction = direction, scale = scale, pixel = pixel, axis = 1, side = side)
 
-
     def convert(self, time, output = "timestamp", axis = None, side = None):
         return self._get_date(axis, side).convert(time, output)
 
     def date(self, form = None, active = True, axis = None, side = None):
         self._get_date(axis, side).set_form(form)._set_active(active)
-        return self 
+        return self
 
     def _get_date(self, axis = None, side = None):
         return self._get_ruler(axis, side).date
 
-
-
+    # -------------------------
+    # Ticks
+    # -------------------------
     def _set_ticks(self, ticks = None, labels = None, axis = 0, side = 0):
         self._get_ruler(axis, side).set_ticks(positions = ticks, labels = labels)
-        if self._has_subplots():
-            [self._get_subplot(*pos)._set_ticks(ticks = ticks, labels = labels, axis = axis, side = side) for pos in self._get_slots_range()]
+        self._for_each_subplot("_set_ticks", ticks, labels, axis, side )
         return self
 
     def xticks(self, ticks = None, labels = None, side = 0):
@@ -199,10 +195,12 @@ class plot_class(draw_class, plot_build_class, subplot_class):
     def yticks(self, ticks = None, labels = None, side = 0):
         return self._set_ticks(ticks = ticks, labels = labels, axis = 1, side = side)
 
+    # -------------------------
+    # Axes
+    # -------------------------
     def _set_axis(self, status = None, style = None, pixel = None, axis = 0, side = 0):
         self._axes.set(axis = axis, side = side, status = status, style = style, pixel = pixel)
-        if self._has_subplots():
-            [self._get_subplot(*pos)._set_axis(axis = axis, side = side, status = status, style = style, pixel = pixel) for pos in self._get_slots_range()]
+        self._for_each_subplot("_set_axis", status, style, pixel, axis, side)
         return self
 
     def xaxis(self, status = None, style = None, pixel = None, side = 0):
@@ -216,31 +214,36 @@ class plot_class(draw_class, plot_build_class, subplot_class):
         self.yaxis(frame, style = style, pixel = pixel, side = r2)
         return self
 
+    # -------------------------
+    # Canvas pixel
+    # -------------------------
     def canvas_pixel(self, pixel = None):
         self._canvas_pixel = correct.pixel(pixel, default_canvas_pixel)
-        if self._has_subplots():
-            [self._get_subplot(*pos).canvas_pixel(pixel) for pos in self._get_slots_range()]
+        self._for_each_subplot("canvas_pixel", pixel)
         return self
 
-
-    # Add a line to the specified ruler with given properties
+    # -------------------------
+    # Lines
+    # -------------------------
     def _add_line(self, position, style = None, pixel = None, axis = 0, side = 0):
         self._rulers.add_line(position, style, pixel, axis, side)
-        if self._has_subplots():
-            [self._get_subplot(*pos)._add_line(axis = axis, position = position, side = side, status = status, style = style, pixel = pixel) for pos in self._get_slots_range()]
+        self._for_each_subplot("_add_line", position, style, pixel, axis, side)
         return self
 
     def xline(self, position, style = None, pixel = None, side = 0):
         return self._add_line(position = position, style = style, axis = 0, side = side)
 
-
+    # -------------------------
+    # Legend
+    # -------------------------
     def legend(self, x = 0, y = 0, relative = False, status = True, ha = None, va = None, pixel = None, xside = None, yside = None):
         self._legend.set(x, y, relative, status, ha, va, pixel, xside, yside)
-        if self._has_subplots():
-            [self._get_subplot(*pos).legend(x = x, y = y, relative = relative, status = status, ha = ha, va = va, pixel = pixel, xside = xside, yside = yside) for pos in self._get_slots_range()]
+        self._for_each_subplot("legend", x, y, relative, status, ha, va, pixel, xside, yside)
         return self
 
-
+    # -------------------------
+    # Timer
+    # -------------------------
     def _start_event(self, event):
         self._timer.start(event)
         return self
@@ -253,12 +256,14 @@ class plot_class(draw_class, plot_build_class, subplot_class):
         self._timer.report(full)
         return self
 
+    # -------------------------
+    # Show / Build
+    # -------------------------
     def show(self):
         out = self.build()
         self._start_event("print")
         out.print()
         self._stop_event("print")
-
 
     def build(self):
         self._timer.clear()
@@ -271,5 +276,4 @@ class plot_class(draw_class, plot_build_class, subplot_class):
             self._start_event("join matrices")
             out = join_matrices(matrices)
             self._stop_event("join matrices")
-
         return out

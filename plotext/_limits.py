@@ -1,7 +1,7 @@
-from plotext._correct import correct_class as correct 
+from plotext._correct import correct_class as correct
 from plotext._constants import directions, scales
 from plotext._methods.ruler import *
-from plotext._methods.log import *
+from plotext._methods.string import *
 
 
 class limits_class:
@@ -18,14 +18,13 @@ class limits_class:
 
     # Set lower and upper limits
     def set(self, lower = None, upper = None):
-        self.limits = [lower, upper] 
+        self.limits = [lower, upper]
         return self
 
     # Update limits with corrections
     def update(self, limits = None):
         self.limits = correct.limits(self.limits, limits)
         return self
-
 
     # Set alignment for limits
     def set_alignment(self, alignment = "center"):
@@ -48,7 +47,6 @@ class limits_class:
         scale = correct.scale(scale)
         self.scale = scale
         return self
-
 
     # Get current limits, optionally scaled and/or reversed by direction
     def get(self, scaled = False, direction = False):
@@ -83,7 +81,6 @@ class limits_class:
         self.direction = limits.direction
         self.scale = limits.scale
         return self
-
 
     # Return log string
     def get_log(self):

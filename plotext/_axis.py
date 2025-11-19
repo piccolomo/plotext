@@ -3,6 +3,7 @@ from plotext._symbols import *
 from plotext._correct import correct_class as correct
 from plotext._derived import *
 
+
 class axis_class:
     # Initialize axis with axis and side
     def __init__(self, axis = 0, side = 0):
@@ -12,8 +13,6 @@ class axis_class:
 
     # Set axis and side attributes
     def set_axis(self, axis = 0, side = 0):
-        # axis = correct.axis(axis)
-        # side = correct.single_side(axis, side)
         self.axis = axis
         self.side = side
         return self
@@ -25,6 +24,7 @@ class axis_class:
         self.set_pixel(pixel)
         return self
 
+    # Clear status and style
     def clear_settings(self):
         self.set_status()
         self.set_style()
@@ -85,4 +85,5 @@ class axis_class:
         print(self.get_log())
 
     # Representation returns the log string
-    def __repr__(self): return self.get_log()
+    def __repr__(self):
+        return self.get_log()

@@ -1,14 +1,17 @@
+# subplot_class: manages subplot grid, sizes, positions and active subplot
+
 from plotext._default import default_size_direction
 from plotext._methods.subplot import *
-#from plotext._log import log_class
+from plotext._methods.list import get_extreme
 
 
 class subplot_class:
+    # initialize with parent and clear settings
     def __init__(self, parent):
         self._set_parent(parent)
         self._clear()
 
-    # Reset all settings and initialize subplots
+    # reset internal subplot state
     def _clear(self):
         self._set_size()
         self._set_position()
@@ -17,12 +20,12 @@ class subplot_class:
         self._subplots()
         self._set_active(self)
 
-    # Set parent subplot (None for master)
+    # set parent object (None for top-level)
     def _set_parent(self, parent = None):
         self._parent = parent
         return self
 
-    # Set size with constraints based on parent and master status
+    # set width and height, clamped by parent when needed
     def _set_size(self, width = None, height = None):
         width = None if width is None else max(0, round(width))
         height = None if height is None else max(0, round(height))
@@ -33,7 +36,7 @@ class subplot_class:
         self._size = [self._width, self._height]
         return self
 
-    # Set plot size and harmonize subplots sizes
+    # set plot size and harmonize child sizes when needed
     def plot_size(self, width = None, height = None):
         self._set_size(width, height)
         if self._has_subplots() and self._has_size():
@@ -44,14 +47,14 @@ class subplot_class:
             self._initialize_subplots_sizes()
         return self
 
-    # Harmonize widths and heights of subplots according to size direction
+    # harmonize widths and heights for child panels
     def _harmonize_sizes(self):
         widths = fit_sizes(self._get_widths(), self._width, self._size_direction)
         heights = fit_sizes(self._get_heights(), self._height, self._size_direction)
         for row, col in self._get_slots_range():
             self._get_subplot(row, col)._set_size(widths[col - 1], heights[row - 1])
 
-    # Initialize subplots sizes recursively
+    # initialize sizes for children recursively
     def _initialize_subplots_sizes(self):
         for pos in self._get_slots_range():
             self._get_subplot(*pos)._set_size(None, None)
@@ -63,28 +66,28 @@ class subplot_class:
             self._get_subplot(*pos)._initialize_subplots_sizes()
         return self
 
-    # Set position (row, col)
+    # set row and column for this subplot
     def _set_position(self, row = None, col = None):
         self._row = row
         self._col = col
         return self
 
-    # Set size direction (+1 or -1)
+    # set size direction (+1 or -1)
     def _set_size_direction(self, direction = None):
         self._size_direction = default_size_direction if direction is None else 1 if int(direction) > 0 else -1
         return self
 
-    # Take maximum sizes when harmonizing
+    # prefer taking maximum sizes when harmonizing
     def _take_maximum_size(self):
         self._take_max = True
         return self
 
-    # Take minimum sizes when harmonizing
+    # prefer taking minimum sizes when harmonizing
     def _take_minimum_size(self):
         self._take_max = False
         return self
 
-    # Setup subplots grid and update
+    # create/update subplots structure and initialize sizes when needed
     def _subplots(self, rows = None, cols = None):
         self._set_slots(rows, cols)
         self._create_subplots()
@@ -93,7 +96,7 @@ class subplot_class:
         self._set_active(self)
         return self
 
-    # Access a specific subplot and set it active
+    # activate and return a specific subplot
     def subplot(self, row = None, col = None):
         row = 1 if row is None else int(abs(row))
         col = 1 if col is None else int(abs(col))
@@ -101,7 +104,7 @@ class subplot_class:
         self._set_active(plot)
         return plot
 
-    # Set rows and columns with constraints
+    # set the number of rows and columns (with constraints)
     def _set_slots(self, rows = None, cols = None):
         rows = None if rows is None or self._height is None else min(rows, self._height // 3)
         cols = None if cols is None or self._width is None else min(cols, self._width // 3)
@@ -111,7 +114,7 @@ class subplot_class:
         self._slots = [rows, cols]
         return self
 
-    # Set active subplot (master holds active)
+    # set the active subplot (master stores the active)
     def _set_active(self, plot = None):
         if self._is_master():
             self._active = plot
@@ -119,11 +122,11 @@ class subplot_class:
             self.get_master()._set_active(plot)
         return self
 
-    # Get active subplot
+    # return the active subplot
     def get_active(self):
         return self._active if self._is_master() else self.get_master()._active
 
-    # Update subplot panels grid
+    # create the nested panels structure
     def _create_subplots(self):
         if self._no_subplots():
             self._panels = None
@@ -131,21 +134,19 @@ class subplot_class:
             self._panels = [[self._create_subplot(row, col) for col in self._get_cols_range()] for row in self._get_rows_range()]
         return self
 
-    # Get parent at given level (0=self, 1=parent, etc.)
+    # get parent at a given level (0 = self, 1 = immediate parent)
     def get_parent(self, level = 1):
         if level == 0:
             return self
         if level == 1:
             return self._parent
         parent = self.get_parent(1)
-        #print("--", self, parent)
         if parent is None:
             return self
         else:
             return parent.get_parent(level - 1)
-            
 
-    # Get master subplot (top-level parent)
+    # find the master (top) subplot by walking parents
     def get_master(self):
         current = self
         for i in range(100):
@@ -154,110 +155,116 @@ class subplot_class:
                 return current
             current = parent
 
+    # return terminal (the master parent's parent)
     def get_terminal(self):
         return self.get_master().get_parent(1)
 
-
-    # Get nesting level (0 for master)
+    # get nesting level (0 for master)
     def _get_nest_level(self):
         return 1 if self._is_master() else self._get_parent()._get_nest_level() + 1
 
-    # Get (row, col) position
+    # set position indices
+    def _set_position(self, row = None, col = None):
+        self._row = row
+        self._col = col
+        return self
+
+    # get (row, col) position
     def get_position(self):
         return self._row, self._col
 
-    # Get (width, height) size
+    # get (width, height) size
     def get_size(self):
         return self._width, self._height
 
-    # Get range of rows
+    # range of rows
     def _get_rows_range(self):
         rows = 0 if self._rows is None else self._rows
         return range(1, rows + 1)
 
-    # Get range of columns
+    # range of columns
     def _get_cols_range(self):
         cols = 0 if self._cols is None else self._cols
         return range(1, cols + 1)
 
-    # Get list of all subplot positions (row, col)
+    # list of all (row, col) slots
     def _get_slots_range(self):
         return [(row, col) for row in self._get_rows_range() for col in self._get_cols_range()]
 
-    # Check if no subplots exist
+    # true when there are no subplots configured
     def _no_subplots(self):
         return self._rows is None or self._cols is None or self._rows * self._cols == 0
 
-    # Check if subplots exist
+    # true when subplots exist
     def _has_subplots(self):
         return not self._no_subplots()
 
-    # Check if position is not set
+    # check if position is unset
     def _no_position(self):
         return self._row is None or self._col is None
 
-    # Check if size is not set
+    # check if size is unset
     def _no_size(self):
         return self._width is None or self._height is None
 
-    # Check if size is set
+    # check if size is set
     def _has_size(self):
         return not self._no_size()
 
-    # Check if this is master subplot
+    # placeholder: whether this is terminal (override in terminal subclass)
     def _is_terminal(self):
         return False
 
-    # Check if this is master subplot
+    # check if this is master (parent is terminal)
     def _is_master(self):
         return self._parent._is_terminal()
 
-    # Check if not master
+    # check if this is a sub-master (neither terminal nor master)
     def _is_sub_master(self):
         return not self._is_terminal() and not self._is_master()
 
-    # Create a new subplot instance
+    # create a new subplot instance (row/col provided)
     def _create_subplot(self, row = None, col = None):
         plot = self.__class__(parent = self)
         plot._set_position(row, col)
         return plot
 
-    # Get subplot at (row, col)
+    # return subplot at given (row, col)
     def _get_subplot(self, row, col):
         return self._panels[row - 1][col - 1]
 
-    # Get widths of columns
+    # get column widths for all columns
     def _get_widths(self):
         return [self._get_column_width(col) for col in self._get_cols_range()]
 
-    # Get width of a specific column
+    # get width for a specific column
     def _get_column_width(self, col):
         if col in self._get_cols_range():
-            return list_methods.get_extreme([self._get_subplot(row, col)._width for row in self._get_rows_range()], self._take_max)
+            return get_extreme([self._get_subplot(row, col)._width for row in self._get_rows_range()], self._take_max)
         return None
 
-    # Get heights of rows
+    # get heights for all rows
     def _get_heights(self):
         return [self._get_row_height(row) for row in self._get_rows_range()]
 
-    # Get height of a specific row
+    # get height for a specific row
     def _get_row_height(self, row):
         if row in self._get_rows_range():
-            return list_methods.get_extreme([self._get_subplot(row, col)._height for col in self._get_cols_range()], self._take_max)
+            return get_extreme([self._get_subplot(row, col)._height for col in self._get_cols_range()], self._take_max)
         return None
 
-    # Get sizes as nested list by rows and cols
+    # get sizes as nested (rows x cols) list of (width, height)
     def _get_sizes(self):
         widths = self._get_widths()
         heights = self._get_heights()
         return [[(widths[col - 1], heights[row - 1]) for col in self._get_cols_range()] for row in self._get_rows_range()]
 
-    # Get unique ID string for this subplot
+    # return a short unique id for this subplot
     def _get_id(self, digits = None):
         digits = 100 if digits is None else digits
         return hex(id(self))[-digits:]
 
-    # Get log string representing this subplot and subplots recursively
+    # get a log string including nested subplots
     def _get_log(self, pad = None):
         out = str(self)
         current_level = self._get_nest_level()
@@ -267,11 +274,12 @@ class subplot_class:
                 out += '\n' + '  ' * current_level + '└─' + panel.get_log()
         return out
 
-    # Print the log string
+    # print the log string
     def _log(self):
         print(self._get_log())
         return self
 
+    # readable representation of the subplot
     def __repr__(self):
         title = 'Master' if self._is_master() else 'Subplot'
         pos = None if self._no_position() else f'row {self._row}, col {self._col}'

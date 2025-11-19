@@ -1,5 +1,4 @@
 from plotext._matrix import matrix as matrix_class
-from plotext._dots import dots_class
 from plotext._rulers import rulers_class
 from plotext._map import points_map
 from plotext._points import points_class
@@ -154,12 +153,10 @@ class plot_build_class:
 
                 self._start_event("getting points")
                 points = signal.get_filled_points()
-                #points.select_in_matrix(width_canvas, height_canvas)
-                #points.log()
-                #points.squash(map)
-                #points.log()
+                points.select_in_matrix(width_canvas, height_canvas)
+                points.squash(map)
                 points.fix_background(self._canvas_pixel)
-                self._signal_temp = points.copy()
+                #self._signal_temp = points.copy()
                 points.add_offset(col_offset, row_offset)
                 self._stop_event("getting points")
 
@@ -167,9 +164,6 @@ class plot_build_class:
                 self._start_event("insert points")
                 matrix._insert_points(points) 
                 self._stop_event("insert points")
-
-
-                
 
               
         # Add upper bar labels and title  
@@ -290,8 +284,6 @@ class plot_build_class:
             self._stop_event("right axis")
 
         # Legend
-
-
         if self._legend.active: 
             self._start_event("legend") 
 

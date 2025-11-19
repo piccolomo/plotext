@@ -1,6 +1,4 @@
-"""
-prettydoc creates beautiful docstrings
-"""
+# Prettydoc: utilities for generating beautiful docstrings
 
 # Import internal modules for documentation, demo components, and testing
 from plotext.prettydoc._docs import docs
