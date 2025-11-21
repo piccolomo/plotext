@@ -57,15 +57,14 @@ class draw_class:
         return signal
 
     def polygon(self, x = 0, y = 0, radius = 1, sides = 3, up = False, marker = None, lines = True, fill = False, xside = None, yside = None, label = None):
+        sides = 3 if sides is None else max(3, sides)
         alpha = 2 * math.pi / sides
         init = alpha / 2 + math.pi / 2 if sides % 2 == 0 else alpha / 4 * ((-1) ** (sides // 2))
         extra = ((alpha / 2) * up if sides % 2 == 0 else alpha / 2 * (1 + up))
         get_point = lambda i: [x + math.cos(alpha * i + init + extra) * radius, y + math.sin(alpha * i + init + extra) * radius]
-
         points = [get_point(i) for i in range(sides + lines)]
         xl, yl = transpose(points)
         signal = self.signal(xl, yl, marker = marker, xside = xside, yside = yside, lines = lines)
-        [signal.set_fill_point(i, x, y, signal.get_marker()) for i in range(sides + lines)] if fill else None
+        [signal.set_fill_point(i, x, 0 * y, signal.get_marker()) for i in range(sides + lines)] if fill else None
         self.draw_signal(signal)
-        
         return signal

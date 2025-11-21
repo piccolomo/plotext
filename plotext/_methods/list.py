@@ -81,6 +81,10 @@ def power10(data):
 def to_integers(data):
     return list(map(int, data))
 
+# Compare two floats using relative tolerance based on specified precision
+def almost_equal(a, b, relative = 3):
+    return abs(a - b) <= 10 ** (-relative) * (abs(a + b)) / 2
+
 # ------------------------
 # Data generation
 # ------------------------

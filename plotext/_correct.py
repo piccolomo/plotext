@@ -7,6 +7,7 @@ from plotext._constants import *
 from plotext._colorize import colorize as colorize_class
 from plotext._pixel import pixel as pixel_class
 from plotext._marker import marker as marker_class
+from plotext._methods.list import almost_equal
 
 
 class correct_class:
@@ -196,7 +197,7 @@ class correct_class:
         new_limits = limits if new_limits is None else new_limits
         limits = replace_none(limits, new_limits)
         a, b = limits
-        return [a - 1, b + 1] if a == b and a is not None else limits
+        return [a - 1, b + 1] if a is not None and almost_equal(a, b, 5) else limits
 
     # Correct line style
     @staticmethod
