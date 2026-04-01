@@ -421,18 +421,20 @@ class monitor_class(build_class):
 
         firstbar = min([b for b in range(len(x)) if ybar[b][1] != 0], default = 0) # finds the position of the first non zero bar
 
+        first_drawn = True
         for b in range(len(x)):
             xb = xbar[b]; yb = ybar[b]
-            plot_label = label if b == firstbar else None
-            plot_color = color if b == 0 else self.color[-1]
             nobar = (yb[1] == 0 and orientation[0] == 'v') or (xb[1] == 0 and orientation[0] == 'h')
-            plot_marker = " " if nobar else marker
-            plot_color = color if b == 0 else self.color[-1][-1]
+            if nobar:
+                continue
+            plot_label = label if b == firstbar else None
+            plot_color = color if first_drawn else self.color[-1][-1]
+            first_drawn = False
             self.draw_rectangle(xb, yb,
-                                xside = xside, 
+                                xside = xside,
                                 yside = yside,
                                 lines = True,
-                                marker = plot_marker,
+                                marker = marker,
                                 color = plot_color,
                                 fill = fill,
                                 label = plot_label)
