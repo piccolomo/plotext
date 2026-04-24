@@ -1,37 +1,78 @@
 Installation
 ============
 
-Here are the terminal commands to install `plotext` on your machine:
-
-- **Normal Installation**: ``pip install plotext`` or ``pip install plotext --upgrade`` to upgrade to the latest `PyPi version <https://pypi.org/project/plotext>`_
-
-- **GitHub Installation**: ``pip install git+https://github.com/piccolomo/plotext`` for the latest `GitHub version <https://github.com/piccolomo/plotext>`_, and if you feel courageous. 
+``plotext`` is a pure Python package backed by a small C++ kernel loaded
+via ``ctypes``. The kernel is compiled automatically during installation,
+so a single ``pip`` command is usually all you need.
 
 
-The ``plotext`` package has been **created and tested** using Ubuntu 22.04 and Python 3.10. Add windows
+From PyPI
+---------
+
+Install the stable version::
+
+   pip install plotext
+
+Upgrade an existing installation::
+
+   pip install plotext --upgrade
 
 
-.. - **Image plotting dependencies**: Use ``pip install "plotext[image]"`` to install the optional dependency necessary for **image plotting** (including GIFs).
+From GitHub
+-----------
 
-.. - **Video rendering dependencies**: Use ``pip install "plotext[video]"`` to install the optional dependencies necessary for **video rendering**, which also allows image plotting.
+Install the latest development version directly from the repository::
 
-.. - **TAB completion for command line tool**: Use ``pip install "plotext[completion]"`` to enable TAB completion in the `command line tool <https://github.com/piccolomo/plotext/blob/master/readme/utilities.md#command-line-tool>`_.
+   pip install git+https://github.com/piccolomo/plotext
 
-.. - **Optional packages**: The optional packages are:
-..   - ``pillow`` for **image plotting**,
-..   - ``opencv-python`` for **video rendering**,
-..   - ``ffpyplayer`` for **audio streaming**,
-..   - ``pafy`` and ``youtube-dl`` for **YouTube streaming**,
-..   - ``shtab`` for **TAB completion**.
 
-.. - **GitHub version installation**: To install the latest version from GitHub:
+Optional extras
+---------------
 
-..   - Use ``pip install git+https://github.com/piccolomo/plotext`` for the latest `GitHub version <https://github.com/piccolomo/plotext>`_,
-..   - Use ``pip install "plotext[image] @ git+https://github.com/piccolomo/plotext.git"`` to include **image plotting** dependencies,
-..   - Use ``pip install "plotext[video] @ git+https://github.com/piccolomo/plotext.git"`` to include **video rendering** dependencies,
-..   - Use ``pip install "plotext[completion] @ git+https://github.com/piccolomo/plotext.git"`` to include **TAB completion** dependency.
+``plotext`` ships a handful of optional feature sets: ``image`` for image
+plotting (Pillow), ``video`` for video rendering (Pillow, OpenCV,
+ffpyplayer, pafy, youtube-dl), and ``completion`` for shell TAB
+completion (shtab). Install any combination with the usual extras
+syntax, e.g.::
 
-.. - **Test your installation**: Use the ``test()`` method to quickly test (up to image rendering) your newly installed version of `plotext`. This function will download and remove a `test image <https://raw.githubusercontent.com/piccolomo/plotext/master/data/cat.jpg>`_ into your home folder.
+   pip install "plotext[image]"
+   pip install "plotext[video]"
+   pip install "plotext[completion]"
 
-.. - **Contribute**: Any relevant `Issue Report <https://github.com/piccolomo/plotext/issues>`_ or `Pull Request <https://github.com/piccolomo/plotext/pulls>`_ is welcome.
 
+C++ kernel
+----------
+
+``plotext`` includes a small C++ kernel that is compiled during source
+installs. You need a working C++ compiler: ``g++`` on Linux or macOS
+(``sudo apt install build-essential`` on Debian/Ubuntu,
+``xcode-select --install`` on macOS), or the MinGW-w64 toolchain on
+Windows (easiest via `MSYS2 <https://www.msys2.org/>`_).
+
+If no compiler is found the install still completes with a warning;
+you can build the kernel later by running ``python build_cpp.py`` from
+a cloned repository.
+
+PyPI wheels ship a pre-built kernel, so no compiler is needed in that
+case.
+
+
+Testing
+-------
+
+Verify the installation by running the built-in test function::
+
+   import plotext as plt
+   plt.test()
+
+It exercises the public API up to image rendering (a test image is
+downloaded to your home folder and removed afterwards).
+
+
+Contributing
+------------
+
+Bug reports and pull requests are welcome:
+
+- `Issue tracker <https://github.com/piccolomo/plotext/issues>`_
+- `Pull requests <https://github.com/piccolomo/plotext/pulls>`_

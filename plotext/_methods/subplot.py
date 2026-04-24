@@ -1,6 +1,6 @@
-# Utilities for fitting and distributing sizes
+# Utilities for fitting and distributing subplot sizes within constraints
 
-# Set None entries in a list of sizes proportionally so the total does not exceed size_max
+# Distribute None values proportionally so total does not exceed max size
 def set_none_sizes(sizes, size_max):
     bins = len(sizes)
     for s in range(bins):
@@ -10,7 +10,8 @@ def set_none_sizes(sizes, size_max):
         sizes[s] = available // to_set if sizes[s] is None else sizes[s]
     return sizes
 
-# Fit sizes in a list so their cumulative sum does not exceed size_max, respecting a direction
+
+# Fit sizes so cumulative sum does not exceed max, with optional direction
 def fit_sizes(sizes, size_max, direction=1):
     sizes = sizes[::direction]
     l = len(sizes)

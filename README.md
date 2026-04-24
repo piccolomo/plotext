@@ -6,13 +6,14 @@
 
 ![logo](https://raw.githubusercontent.com/piccolomo/plotext/master/data/logo.png)
 
+**plotext** — plotting on the terminal, with no dependencies. It also provides simple utilities to color strings and to create colorful docstrings.
 
-**plotting on terminal**
+## Installation
 
-- it provides simple utilities to [color strings](https://github.com/piccolomo/plotext6/blob/new-code/docs/source/colorize.rst)
+```bash
+pip install plotext
+```
 
-- it can create [colorful docstrings](https://github.com/piccolomo/plotext6/blob/new-code/docs/source/prettydoc.rst)
+## Documentation
 
-- it has [no dependencies](https://github.com/piccolomo/plotext6/blob/a7cca1de5e5fbc77b1ba2952368bdf591ff31982/setup.py#L24) (only optional ones).
-
-Its official documentation is [here](https://github.com/piccolomo/plotext6/blob/new-code/docs/source/index.rst).
+Full documentation is available at **https://plotext.readthedocs.io/**.

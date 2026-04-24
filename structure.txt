@@ -1,30 +1,145 @@
-init
-	system
-	pixel 
-		clink
-	colorize
-		clink, colorize
-	matrix
-		clink, pixel
-	marker
-	core
-		terminal
-		
-	demo
-		methods
-	
-	test
-	doc
-		init (no circular issue)
-	
-	preetydoc
-		docs
-			pixels
-			functions
-				test
-				parameter
-		demo
-		test
-		doc
-			docs (no circular issue)
-		
+plotext/ — source tree map
+===========================
+
+Python
+------
+
+plotext/
+    __init__.py                    package entry point: exposes public primitives and plot API
+
+    _settings/                     configuration, constants, platform info
+        system.py                  platform detection and package metadata
+        defaults.py                default terminal size, axes, colors, pixels, subplots, legend, markers
+        constants/
+            borders.py             border characters grouped by type and style
+            enums.py               named sets of allowed values (axes, alignment, scales, styles, colors, markers)
+            numerical.py           discrete sets, deltas, tolerances and bounds
+            text.py                single-character and short string literals used in rendering
+
+    _correct/                      input validation and normalization per concept
+        axis.py                    axis validation and normalization
+        bool.py                    boolean and status validation
+        data.py                    x/y input and list normalization
+        label.py                   label normalization and formatting
+        limits.py                  limits validation and normalization
+        line.py                    line style validation
+        marker.py                  single marker and repeated marker list normalization
+        matrix.py                  alignment, orientation, slice and matrix normalization
+        pixel.py                   pixel normalization
+        signal.py                  signal validation
+
+    _methods/                      stateless helper functions
+        borders.py                 retrieve and resolve border characters by style/axis/orientation
+        colors.py                  color-related helpers backed by the C kernel
+        matrix.py                  join and compose matrix instances into larger matrices
+        object.py                  hashing, type checks, attribute handling
+        ruler.py                   tick formatting, scaling, numeric precision
+        sequence.py                list operations and basic numerical generation
+        string.py                  stdout helpers for rendering and formatting
+        subplot.py                 fit and distribute subplot sizes within constraints
+
+    _kernel/                       ctypes bridge to the C++ shared library
+        tools.py                   loads kernel.so/.dll; registers ctypes signatures
+        clink.py                   input/output type declarations for every exported C function
+        api.py                     public API bindings: terminal, master canvas, plot methods
+        terminal.py                owns the master plot; tracks terminal size and prompt height
+        cpp/                       C++ source tree (see below)
+
+    _primitives/                   Python wrappers over C++ kernel primitives
+        pixel.py                   pixel handling via clink bindings
+        colorize.py                colorized string with pixel styling and matrix operations
+        marker.py                  wraps a C++ marker pointer (normal/typed)
+        matrix.py                  wraps a C++ matrix pointer (pixels, insertion, stacking, slicing)
+
+    _signal/                       plot data container and helpers
+        signal.py                  wraps the C++ signal pointer (points, fill, axes, label, plot)
+        signals.py                 container of signals with aggregated limits
+        points.py                  container of data points (append, offset, select, squash)
+        point_filled.py            a point with marker and foreground color
+        map.py                     fixed-size cols x rows backing map used by points.squash
+
+    _plotter/                      high-level plot composition
+        plot.py                    main subplot container (signals, axes, legend, rulers, labels, canvas)
+        draw.py                    drawing mixin for signal, candlestick, polygon primitives
+        build.py                   render the final matrix from signals/rulers/axes/labels/ticks/legend/corners
+        components/
+            subplot.py             subplot grid, sizes, positions, active subplot
+            parts.py               named regions (bars, corners, axes, ticks, canvas, legend)
+            part.py                a single named region with position and size
+            legend.py              legend: markers, labels, pixel, position, frame
+            cycler.py              cycles through a predefined color sequence
+            timer.py               lightweight event timer for profiling build steps
+        frame/
+            corner.py              one of the four frame corners, with tick symbol
+            labels.py              title plus x/y labels with pixel styling
+            axis/
+                axis.py            single frame axis (one side) with status, style, pixel
+                axes.py            2x2 container of frame axes (x lower/upper, y left/right)
+            ruler/
+                ruler.py           one axis/side ruler (ticks, limits, lines, grid, date, scale)
+                rulers.py          2x2 X/Y rulers with selection, clearing, cloning, updates
+                tick.py            single ruler tick (position + label)
+                ticks.py           batch operations over tick objects
+                line.py            ruler line primitive (style, pixel, position)
+                lines.py           container of ruler lines (add, rescale, filter)
+                limits.py          ruler bounds with alignment and direction
+                date.py            string/datetime/timestamp conversions with configurable origin
+
+    _doc/                          docstring construction for the public API
+        doc.py                     public API docstrings, grouped via prettydoc
+        tools.py                   short aliases for the prettydoc API + shared data type registration
+
+    _examples/                     top-level demos and tests
+        demo.py                    reference tables of colors and styles
+        test.py                    public API test suite with deterministic build hashes
+
+    prettydoc/                     standalone docstring-building sub-library
+        __init__.py                prettydoc entry point
+        _primitives/
+            docs.py                docstring manager + attribute-accessible output container
+            function.py            wraps callables with a prettydoc docstring
+            parameter.py           parameter or output with name, type, default
+            text.py                text/alias/labelled-text components
+            types.py               registry of type names and human-readable explanations
+        _settings/
+            pixels.py              default pixel configs for every docstring component
+        _examples/
+            demo.py                reference table of PrettyDoc components
+            test.py                prettydoc test suite
+
+
+C++ (under plotext/_kernel/cpp/)
+--------------------------------
+
+kernel.cpp                         entry point; pulls in everything via 00_header.h
+00_header.h                        aggregator: stdlib includes + concatenates all kernel sources in dependency order
+
+utility/                           foundational containers and helpers
+    0_array.cpp                    owning dynamic-length buffer
+    1_array2d.cpp                  2D wrapper around Array<T> with (col,row) access
+    2_vector.cpp                   dynamic container on Array (capacity vs logical length)
+    3_numerical.cpp                Vector<T> + scalar arithmetic, sorting, nearest-value lookup
+    4_constants.cpp                ANSI escape sequences and upper-bound buffer sizes
+    5_maps.cpp                     color/style/marker/HD/FHD/Braille character lookups
+    6_strings.cpp                  string manipulation, encoding conversion, console output
+    7_cstrings.cpp                 raw wchar_t* operations and append-to-buffer helpers
+    8_data.cpp                     range/linspace/sin_wave/sort/rescale + bit manipulation
+    9_alignment.cpp                left/center/right anchoring for text in fixed-width cells
+
+01_color.cpp                       ANSI foreground/background color; base for Fullground and Background
+02_style.cpp                       ANSI text styles (bold, underline, italic, ...)
+03_pixel.cpp                       Fullground + Background + Style carrier used across the kernel
+04_colorize.cpp                    wide string + Pixel, with slicing, buffered rendering and printing
+05_character.cpp                   single wchar_t with Pixel styling
+06_marker_type.cpp                 marker classification (none/normal/hd/fhd/braille) + sizes/labels
+07_marker.cpp                      Character + MarkerType (resolution mode)
+08_matrix_bool.cpp                 compact boolean matrix (max 3x3 -> 9 bits in 1 byte)
+09_point_position.cpp              lightweight 2D float position with int conversion and cell helpers
+10_point.cpp                       2D position + Marker, with geometric helpers and line generation
+11_map.cpp                         2D (col,row) -> point-index grid, backed by Vector<size_t>
+12_points.cpp                      collection of Point on Vector<Point>: offset, select, squash-merge
+13_point_filled.cpp                Point + optional fill point (stem plots, filled regions)
+14_points_filled.cpp               collection of PointFilled: bounds, transforms, line generation
+15_signal.cpp                      PointsFilled + plotting metadata (sides, label, marker, fill, line)
+16_character_hd.cpp                Marker + MatrixBool for hd/fhd/braille glyph rendering
+17_matrix.cpp                      2D grid of CharacterHD cells; insert/stack/buffered rendering

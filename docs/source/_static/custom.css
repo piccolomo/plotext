@@ -1,0 +1,18 @@
+/* -----------------------------------------------------------------------
+   Improved list spacing for sphinx_rtd_theme
+   Keeps readability while removing excessive gaps
+   ----------------------------------------------------------------------- */
+
+
+/* Remove extra gap when a list follows a paragraph */
+.rst-content p + ul,
+.rst-content p + ol {
+    margin-top: -1em;
+}
+
+
+/* Optional: reduce left padding slightly (less indentation) */
+.rst-content ul,
+.rst-content ol {
+    padding-left: 1.2em;
+}

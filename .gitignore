@@ -1,17 +1,21 @@
-# Python compiled files
+# Python
 __pycache__/
 *.pyc
 
-# Build artifacts
+# Packaging artifacts
 build/
 dist/
-plotext.egg-info/
+*.egg-info/
 
-# Temporary or editor files
+# Compiled C++ kernel (built at install time by build_cpp.py)
+*.so
+*.dll
+
+# Editor files (Emacs)
 *~
-plotext/#*
-#*
+\#*\#
 .#*
-plotext/cpp/#*
-plotext/.*
+
+# Local scratch
 test.py
+tests/

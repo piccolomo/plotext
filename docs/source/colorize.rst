@@ -1,161 +1,139 @@
 Colorful Text
-==============
+=============
 
-There are different tools to handle and generate colorful content in ``plotext``. 
+``plotext`` provides a few related tools for handling colored text in the terminal.
 
-.. note:: 
+.. note::
 
-  In `plotext`, the term *coloring* refers to both *foreground* and *background* colors, as well as *style*. A color setting is encapsulated by the :ref:`pixel <pixel>` container.
+   In ``plotext``, *coloring* refers to foreground colour, background colour, and text style together. A color setting is encapsulated by the :ref:`pixel` container.
 
 
 .. _colorize:
 
 Colored Text
 ------------
-Use the ``colorize(string, foreground, background, style)`` class to apply the specified coloring to a string.
 
-Below are a few examples:
+Use the :class:`~plotext.colorize` class with its ``string``, ``foreground``, ``background`` and ``style`` parameters to apply the specified coloring to a string:
 
 .. literalinclude:: code/colorize.py
-    :language: python
+   :language: python
 
 .. image:: images/colorize.png
 
-.. note::
-    As shown, the `colorize` object can be **printed** using its ``print()`` method or using the built-in `print()` function. 
+.. seealso:: The available :ref:`colors` and :ref:`styles` are listed in their own sections.
 
-.. tip::
-    To obtain the corresponding Python string instead, use its ``get_string()`` method, or the native ``str()`` method. 
+.. note:: A :class:`~plotext.colorize` object can be printed with its own :meth:`~plotext.colorize.print` method or with the built-in ``print()``.
 
-.. tip::
-    When the string is colored, it includes ANSI escape codes, which can be later removed, if needed, using the ``plotext.uncolorize()`` function.
+.. tip:: To obtain the underlying Python string, call :meth:`~plotext.colorize.get_string` or the native ``str()``.
 
-.. seealso::
-    The available :ref:`colors <colors>` and :ref:`styles <styles>` are presented in the  correspondent sections.
+.. tip:: The generated string contains ANSI escape codes, which can be stripped later with :func:`plotext.uncolorize`.
 
-.. seealso::
-   More details can be found in the :class:`plotext.colorize` API or by using the ``plotext.doc.colorize()`` method.
+.. seealso:: More details are in the :class:`plotext.colorize` API or via ``plotext.doc.colorize()``.
 
 
 Multi-Colored Text
 ------------------
-A ``colorize`` object can only apply one pixel to a string. For string of multiple colors, combine multiple ``colorize`` objects in two ways:
 
-- using the ``+`` operator, to stack objects **horizontally** (or alternativelly its ``hstack()`` method)
+A :class:`~plotext.colorize` object can only apply one pixel to a string. For multi-coloured output, combine several :class:`~plotext.colorize` objects:
 
-- with the ``/`` operator, to stack objects **vertically** (or alternativelly its ``vstack()`` method)
-
-
-Here is an example: 
+- with ``+`` to stack horizontally (or the :meth:`~plotext.colorize.hstack` method)
+- with ``/`` to stack vertically (or the :meth:`~plotext.colorize.vstack` method)
 
 .. literalinclude:: code/colorize2.py
-    :language: python
+   :language: python
 
 .. image:: images/colorize2.png
 
 
-.. rubric:: Multiple Lines
+.. rubric:: Multiple lines
 
-When a colorized string contains multiple lines, the ``colorize`` class accurately detects and handles them. This ensures that when stacked with other colored strings, the result is correctly represented. Here is an example:
+When a colorized string already contains newlines, :class:`~plotext.colorize` handles them correctly and stacks cleanly alongside other colored strings:
 
 .. literalinclude:: code/colorize3.py
-    :language: python
+   :language: python
 
 .. image:: images/colorize3.png
 
+.. note:: Combining multiple colorized strings produces a :class:`~plotext.matrix` object, not a :class:`~plotext.colorize`. The two have similar methods and are usually interchangeable.
 
-.. note::
-   The result of combining multiple colorized strings is no longer a ``colorize`` object but a ``matrix`` one, which behaves very similarly nevertheless and many of its methods are the same.
-
-.. note::
-    Strictly speaking, when combining matrices or colorized strings, their dimensions must be compatible. For example, for horizontal stacking, the two objects must have the same height. To relax this requirement, an ``adapt`` parameter has been introduced in both the ``hstack`` and ``vstack`` methods. By default, ``adapt`` is set to ``True``. It is to ``True`` when using the ``+`` and ``/`` operators.
-
+.. note:: Strictly speaking, stacking requires matching dimensions (same height for :meth:`~plotext.colorize.hstack`, same width for :meth:`~plotext.colorize.vstack`). The ``adapt`` parameter relaxes this requirement and is ``True`` by default; the ``+`` and ``/`` operators also pass ``adapt = True``.
 
 
 .. _matrix:
 
 Colored Matrix
 --------------
-You can think of a ``matrix`` as a two dimensional canvas of colored characters, while a ``colorize`` object is a simple string of one coloring (or :ref:`pixel <pixel>`). 
 
-A matrix object is initialized with its ``width`` and ``height`` (in units of terminal character size):
+A :class:`~plotext.matrix` is a two-dimensional canvas of colored characters, while a :class:`~plotext.colorize` object is a one-dimensional string with a single :ref:`pixel`.
 
-.. code-block:: python
-
-    import plotext as plt
-    
-    matrix = plt.matrix(100, 30) # width = 100, height = 30
-
-By default the matrix if filled with a white :ref:`pixel <pixel>`, but a different one can be provided:
+Initialize a matrix with its ``width`` and ``height`` (in terminal character units):
 
 .. code-block:: python
 
-    import plotext as plt
+   import plotext as plt
+   matrix = plt.matrix(100, 30)                # white pixel by default
 
-    pixel = plt.pixel(background = "blue+")
-    matrix = plt.matrix(100, 30, pixel)
+To fill with a specific pixel instead:
+
+.. code-block:: python
+
+   import plotext as plt
+   pixel  = plt.pixel(background = "blue+")
+   matrix = plt.matrix(100, 30, pixel)
 
 
-.. rubric:: Combining Matrices
+.. rubric:: Combining matrices
 
-Different matrices  can be combined using the ``matrix.insert()`` method:
+Different matrices can be combined with the :meth:`~plotext.matrix.insert` method:
 
 .. literalinclude:: code/matrix.py
-    :language: python
+   :language: python
 
 .. image:: images/matrix.png
 
-.. note::
-    The ``insert()`` method accepts matrices, as well as raw strings and ``colorize`` objects.
+.. note:: :meth:`~plotext.matrix.insert` accepts matrices, raw strings, and :class:`~plotext.colorize` objects.
 
 .. note::
-    The ``insert()`` method includes the ``ha`` parameter to select the horizontal alignment, as well as the ``va`` parameter to select the vertical one. The possible horizontal alignments are ``"left"``, ``"center"`` and ``"right"``, while the possible vertical alignments are ``"left"``, ``"center"`` and ``"right"``. In short, ``-1``, ``0`` and ``1`` can be used for both horizontal and vertical alignment. The default value is ``"left"``.
 
-.. note::
-    An ``adapt`` parameter has also been introduced for the ``insert()`` method, with a default value of ``True``. This allows objects to be inserted outside the matrix border without causing an error. The inserted object may be trimmed in size to ensure it does not extend beyond the matrix boundaries.
+   :meth:`~plotext.matrix.insert` takes two alignment parameters:
 
-.. tip::
-    While a ``colorize`` object doesn't have a native ``insert()`` method, it can easily be converted to a matrix using its ``get_matrix()`` method. Once converted, the full range of matrix manipulation methods, including ``insert()``, becomes available for flexible object placement and alignment.
+   - ``ha`` — horizontal alignment: ``"left"``, ``"center"`` or ``"right"`` (or ``-1`` / ``0`` / ``1``). Default is ``"left"``.
+   - ``va`` — vertical alignment: ``"top"``, ``"center"`` or ``"bottom"`` (or ``-1`` / ``0`` / ``1``). Default is ``"top"``.
 
-.. seealso::
-   More details can be found in the :class:`plotext.matrix` API or by using the ``plotext.doc.matrix()`` method.
+.. note:: The ``adapt`` parameter of :meth:`~plotext.matrix.insert` (default ``True``) silently trims an inserted object if it extends beyond the matrix boundary, instead of raising an error.
 
+.. tip:: :class:`~plotext.colorize` itself has no :meth:`~plotext.matrix.insert`, but its :meth:`~plotext.colorize.get_matrix` method converts it to a matrix, unlocking the full set of matrix operations.
 
-
+.. seealso:: More details in the :class:`plotext.matrix` API or via ``plotext.doc.matrix()``.
 
 
 .. _colors:
 
 Colors
 ------
-A `plotext` color can be either **foreground** or **background**. The correspondent `foreground` and `background` parameters accept the following color types:
 
-- **Color String Codes**: you can use predefined color string codes. Refer to the image below for available color codes:
+A plotext color is either a **foreground** or a **background** value. The corresponding parameters accept three input forms:
+
+- **Color string codes.** Predefined short names (see the reference image below).
 
   .. image:: images/color-codes.png
-     :alt: Color String Codes
+     :alt: color string codes
 
-  .. note::
-    The `default` code will use the terminal’s default color. Any invalid color code will also default to the terminal's standard color.
+  .. note:: ``"default"`` uses the terminal's own default color. Any unrecognised code falls back to the same.
 
-- **Integer Codes**: you can specify colors using integers ranging from 0 to 255 (included). The image below shows the corresponding color codes:
+- **Integer codes** from 0 to 255.
 
   .. image:: images/integer-codes.png
-     :alt: Integer Color Codes
+     :alt: integer color codes
 
-  .. note::
-    The first 16 integer values correspond to standard string color codes.
+  .. note:: The first 16 integers correspond to the string color codes above.
 
- .. |rgb| image:: images/rgb-color.png
-    :width: 110
+.. |rgb| image:: images/rgb-color.png
+   :width: 110
 
-- **RGB Tuples**: you can define RGB colors using a tuple of three integers, such as |rgb|.
+- **RGB tuples**: three integers for the red, green and blue channels, e.g. |rgb|. Each component must be 0–255.
 
-  .. note::
-     The three integers represent the red, green, and blue components of the color. Ensure each component is within the range of 0 to 255 (included).
-
-.. seealso::
-  For a comprehensive list of all **available color codes**, access the ``plotext.colors()`` function.
+.. seealso:: The :func:`plotext.colors` function prints the full live reference of available color codes.
 
 
 .. _styles:
@@ -163,20 +141,17 @@ A `plotext` color can be either **foreground** or **background**. The correspond
 Styles
 ------
 
-The `style` parameter accepts various style codes. Refer to the image below for available style codes:
+The ``style`` parameter accepts one or more style codes (see below).
 
 .. image:: images/styles.png
-   :alt: Style Codes
+   :alt: style codes
    :align: left
 
-.. note::
-   Using the ``"flash"`` style will result in an actual white flashing marker.
+.. note:: The ``"flash"`` style renders as an actual flashing white marker.
 
-.. note::
-    You can apply multiple styles simultaneously by separating them with a space. For example, ``"bold italic"`` will apply both **bold** and *italic* styles o the text.
+.. note:: Multiple styles can be combined by separating them with a space: ``"bold italic"`` applies both **bold** and *italic* to the text.
 
-.. seealso::
-    To view the complete list of available style codes, use the ``plotext.styles()`` function.
+.. seealso:: The :func:`plotext.styles` function prints the full live reference of available style codes.
 
 
 .. _pixel:
@@ -184,43 +159,43 @@ The `style` parameter accepts various style codes. Refer to the image below for 
 Pixel
 -----
 
-The ``pixel()`` object represents a single color configuration, combining both foreground and background colors, along with text style.
+A :class:`~plotext.pixel` object bundles a foreground colour, a background colour, and a style into one configuration.
 
-You can initialize a ``pixel()`` object by specifying its ``foreground``, ``background``, and ``style`` parameters:
-
-.. code-block:: python
-
-    import plotext as plt
-    px = plt.pixel(foreground = 'red', background = 'blue', style = 'bold')
-
-Once created, you can update its coloring using the ``set()`` method. For example:
+Construct one with any combination of its three parameters:
 
 .. code-block:: python
 
-    px.set('green', 'yellow', 'italic')
+   import plotext as plt
+   px = plt.pixel(foreground = 'red', background = 'blue', style = 'bold')
 
-.. rubric:: Use Cases:
+Update it later with :meth:`~plotext.pixel.set`:
 
-1. **Update a colorized object**: You can easily modify the coloring of a colorized object after it has been created:
+.. code-block:: python
+
+   px.set('green', 'yellow', 'italic')
+
+
+.. rubric:: Common uses
+
+1. **Recolor a colorize object** after creation:
 
    .. code-block:: python
       :emphasize-lines: 4
 
       import plotext as plt
       string = plt.colorize("Colorless String")
-      px = plt.pixel(foreground = 'red')
+      px     = plt.pixel(foreground = 'red')
       string.set_pixel(px)
 
-2. **Create a colorful** :ref:`matrix <matrix>`: 
+2. **Fill a** :ref:`matrix` **with a uniform pixel**:
 
    .. code-block:: python
 
       import plotext as plt
-
-      pixel = plt.pixel(background = "blue+")
+      pixel  = plt.pixel(background = "blue+")
       matrix = plt.matrix(100, 30, pixel)
 
-2. **Change prettydoc colors**: You can use the ``pixel()`` objects to change the coloring of any `prettydoc` component, as described in :ref:`this section <doc_color>`.
+3. **Style a prettydoc component** — pass a pixel to change the coloring of any prettydoc element (see :ref:`doc_color`).
 
 
 .. _slices:
@@ -228,92 +203,108 @@ Once created, you can update its coloring using the ``set()`` method. For exampl
 Slices
 ------
 
-.. rubric:: Colorized Strings
+.. rubric:: Colorized strings
 
-You can slice a ``colorize`` object in the same way you would slice a regular Python string. For example:
+A :class:`~plotext.colorize` object can be sliced like a Python string:
 
 .. code-block:: python
 
-    import plotext as plt
-    plt.colorize("Hello there!", "blue+")[:5].print()
+   import plotext as plt
+   plt.colorize("Hello there!", "blue+")[:5].print()
 
 .. image:: images/slice1.png
 
-.. tip::
-    When slicing a colorized string that contains multiple lines, the slicing operation remains one-dimensional. To achieve two-dimensional slicing, convert it to a matrix using its ``get_matrix()`` method.
+.. tip:: Slicing a multi-line colorized string is one-dimensional. For 2D slicing, convert to a matrix first with :meth:`~plotext.colorize.get_matrix`.
 
 
-.. rubric:: Colorized Matrices
+.. rubric:: Colorized matrices
 
+A :class:`~plotext.matrix` object can be sliced like a two-dimensional NumPy array: the first index selects rows, the second selects columns.
 
-A ``matrix`` object can be sliced similarly to a two-dimensional ``numpy`` array: the first slicing argument refers to rows, and the second to columns. 
-
-As an example, if we start with the following initial matrix:
+Starting from this matrix:
 
 .. code-block:: python
 
-    import plotext as plt
+   import plotext as plt
 
-    # Create an 11x3 matrix filled with default pixel values
-    matrix = plt.matrix(11, 3, plt.pixel())
+   matrix = plt.matrix(11, 3, plt.pixel())       # 11 x 3 filled with default pixel
 
-    # Insert strings into the first row of the matrix
-    matrix.insert(0, 0, "First Line")
-    matrix.insert(0, 1, "Second Line")
-    matrix.insert(0, 2, "Third Line")
+   matrix.insert(0, 0, "First Line")
+   matrix.insert(0, 1, "Second Line")
+   matrix.insert(0, 2, "Third Line")
+
+.. code-block:: python
+
+   print(matrix)
 
 .. code-block:: console
 
-   >>> print(matrix)
-   First Line 
+   First Line
    Second Line
-   Third Line 
+   Third Line
 
-Here are some slicing options:
+the available slicing forms are:
 
-- **by specific row number**: extract a complete row by its index.
+- **single row** — ``matrix[0]`` extracts a complete row.
 
-    .. code-block:: console
+  .. code-block:: python
 
-       >>> print(matrix[0])
-       First Line 
+     print(matrix[0])
 
-- **by row range**: slice multiple rows without specifying columns, extracting entire rows.
+  .. code-block:: console
 
-    .. code-block:: console
+     First Line
 
-       >>> print(matrix[0:2])
-       First Line
-       Second Line
+- **row range** — ``matrix[0:2]`` slices multiple rows (all columns).
 
-- **by row range and specific column**: slice multiple rows but only select elements from a single column.
+  .. code-block:: python
 
-    .. code-block:: console
+     print(matrix[0:2])
 
-       >>> print(matrix[0:3, 0])
-       F
-       S
-       T
+  .. code-block:: console
 
-- **by specific row and column number**: extract a specific element from the matrix using both row and column indices.
+     First Line
+     Second Line
 
-    .. code-block:: console
+- **row range, single column** — ``matrix[0:3, 0]`` picks one column across several rows.
 
-       >>> print(matrix[0, 0])
-       F
+  .. code-block:: python
 
+     print(matrix[0:3, 0])
 
-- **by specific row and column range**: slice a portion of a row by specifying a range of columns.
+  .. code-block:: console
 
-    .. code-block:: console
+     F
+     S
+     T
 
-       >>> print(matrix[0, 0:5])
-       First
+- **single cell** — ``matrix[0, 0]`` extracts one character.
 
-- **by row range and column range**: extract a sub-matrix by specifying both row and column ranges.
+  .. code-block:: python
 
-    .. code-block:: console
+     print(matrix[0, 0])
 
-       >>> print(matrix[0:2, 0:6])
-       First
-       Second
+  .. code-block:: console
+
+     F
+
+- **single row, column range** — ``matrix[0, 0:5]`` slices a portion of a single row.
+
+  .. code-block:: python
+
+     print(matrix[0, 0:5])
+
+  .. code-block:: console
+
+     First
+
+- **row range, column range** — ``matrix[0:2, 0:6]`` extracts a sub-matrix.
+
+  .. code-block:: python
+
+     print(matrix[0:2, 0:6])
+
+  .. code-block:: console
+
+     First
+     Second

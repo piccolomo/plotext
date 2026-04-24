@@ -1,205 +1,102 @@
 Basic Plots
 ===========
 
-
 Scatter Plot
 ------------
 
-Here is a simple scatter plot, using the :func:`plotext.scatter` function:
+To create a basic plot, build a signal with :func:`plotext.signal` and pass it to :func:`plotext.draw`:
 
 .. code-block:: python
 
-    import plotext as plt
-    y = plt.sin()  # sinusoidal test signal
-    plt.scatter(y)
-    plt.title("Scatter Plot")  # to apply a title
-    plt.show()  # to finally plot
+   import plotext as plt
 
-Or directly on terminal:
+   y = plt.sin()              # sinusoidal test signal
+   signal = plt.signal(y)
 
-.. code-block:: console
-
-    python3 -c "import plotext as plt; y = plt.sin(); plt.scatter(y); plt.title('Scatter Plot'); plt.show()"
+   plt.draw(signal)
+   plt.title("Scatter Plot")
+   plt.show()
 
 .. image:: https://raw.githubusercontent.com/piccolomo/plotext/master/data/scatter.png
-    :alt: scatter
+   :alt: scatter
 
-More documentation can be accessed with ``plotext.doc.scatter()``.
+.. note:: The plot is built and rendered only when :func:`plotext.show` is called.
 
+.. note:: More documentation is available via :code:`plotext.doc.signal()`.
 
 
 Line Plot
 ---------
 
-For a line plot, use the :func:`plotext.plot` function instead:
+For a line plot, chain :meth:`.lines() <plotext._signal.signal.signal_class.lines>` onto the signal returned by :func:`plotext.signal`:
 
 .. code-block:: python
 
    import plotext as plt
+
    y = plt.sin()
-   plt.plot(y)
+   signal = plt.signal(y).lines()
+
+   plt.draw(signal)
    plt.title("Line Plot")
    plt.show()
 
-or directly on terminal:
-
-.. code-block:: console
-
-   python3 -c "import plotext as plt; y = plt.sin(); plt.plot(y); plt.title('Line Plot'); plt.show()"
-
 .. image:: https://raw.githubusercontent.com/piccolomo/plotext/master/data/plot.png
-   :alt: plot
+   :alt: line plot
 
-More documentation can be accessed with :func:`plotext.doc.plot`.
+.. note::
 
+   Plotext offers two line drawing methods:
+      - ``simple`` (the default) — draws evenly-spaced points along the line, similar to ``linspace``. Light and fast, but may leave small gaps on steep segments.
+      - ``full`` — fills every cell crossed by the line, producing a denser, visually continuous result.
 
-Logarithmic Plot
-----------------
-
-For a logarithmic plot, use the :func:`plotext.xruler` (or func:`plotext.yruler`) method, which accepts the parameter ``scale = "log"``  .
-
-
-Example
--------
-
-.. code-block:: python
-
-    import plotext as plt
-
-    l = 10 ** 4
-    y = plt.sin(periods = 2, length = l)
-
-    plt.plot(y)
-
-    plt.xruler(scale = "log", frequency = 5)    # for logarithmic x scale
-    plt.yruler(scale = "linear", frequency = 7) # for linear y scale, redundant but shown for completion 
-    #plt.grid(0, 1)       # to add vertical grid lines
-
-    plt.title("Logarithmic Plot")
-    plt.xlabel("logarithmic scale")
-    plt.ylabel("linear scale")
-
-    plt.show()
-
-Or directly on the terminal:
-
-.. code-block:: console
-
-    python3 -c "import plotext as plt; l = 10 ** 4; y = plt.sin(periods=2, length=l); plt.plot(y); plt.xscale('log'); plt.yscale('linear'); plt.grid(0, 1); plt.title('Logarithmic Plot'); plt.xlabel('logarithmic scale'); plt.ylabel('linear scale'); plt.show();"
-
-.. image:: https://raw.githubusercontent.com/piccolomo/plotext/master/data/log.png
-   :alt: log
-
-.. note:: The logarithmic function used is ``log10``.
-
+   Switch with :meth:`~plotext._signal.signal.signal_class.line_method`, e.g. ``signal.line_method("full")``.
 
 
 Stem Plot
 ---------
 
-For a `stem plot <https://matplotlib.org/stable/gallery/lines_bars_and_markers/stem_plot.html>`_, use either the ``fillx`` or ``filly`` parameters (available for most plotting functions) to fill the canvas with data points up to the ``y = 0`` or ``x = 0`` level, respectively.
+A *stem plot* draws a line from each data point down to an axis baseline (typically ``y = 0`` for a vertical stem, or ``x = 0`` for a horizontal one). It is useful for emphasising discrete values — impulse responses, sampled signals, simple bar-like displays — rather than a smooth curve.
 
-Example
--------
+In plotext, any signal becomes a stem plot by chaining :meth:`.fillx() <plotext._signal.signal.signal_class.fillx>` (vertical stems to the x axis) or :meth:`.filly() <plotext._signal.signal.signal_class.filly>` (horizontal stems to the y axis) onto it before drawing:
 
 .. code-block:: python
 
-    import plotext as plt
-    y = plt.sin(length = 50)
-    plt.plot(y, fillx = True)
-    plt.title("Stem Plot")
-    plt.show()
+   import plotext as plt
 
-Or directly on the terminal:
+   y = plt.sin(length = 50)
+   signal = plt.signal(y).fillx()
 
-.. code-block:: console
-
-    python3 -c "import plotext as plt; y = plt.sin(); plt.plot(y, fillx=True); plt.title('Stem Plot'); plt.show()"
+   plt.draw(signal)
+   plt.title("Stem Plot")
+   plt.show()
 
 .. image:: images/stem.png
    :alt: stem
 
 
-
 Elaborate Stem Plot
 ~~~~~~~~~~~~~~~~~~~
-.. toctree::
-   :hidden:
 
-To create more complex stem plots with customized filling levels, use the :func:`plotext.signal` and :func:`plotext.draw` methods, as shown in the following example:
+By default the stem baseline is the axis (``0``). For a varying baseline, build a second signal describing the fill level and pass it to the main signal's :meth:`.fill() <plotext._signal.signal.signal_class.fill>` method:
 
 .. code-block:: python
 
-    import plotext as plt
+   import plotext as plt
 
-    l = 1000
-    signal = plt.signal(plt.sin(length=l, periods=2))
-    fill = plt.signal(plt.sin(length=l, periods=2, amplitude=0.3))
+   l      = 1000
+   y      = plt.sin(length = l, periods = 2)
+   y_fill = plt.sin(length = l, periods = 2, amplitude = 0.3)
 
-    signal.set_fill(fill)
+   signal = plt.signal(y)                                            # base stems
+   fill   = plt.signal(y_fill, marker = plt.marker("hd", "blue+"))   # fill level
 
-    plt.draw(signal)
-    plt.show()
+   signal.fill(fill)                                                 # link base and fill
+
+   plt.draw(signal)
+   plt.show()
 
 .. image:: images/stem2.png
-   :alt: Elaborate Stem Plot
+   :alt: elaborate stem plot
 
-
-Datetime Plot
--------------
-
-To plot dates and/or times, use the :func:`plt.draw` function directly.  
-Before doing so, notify ``plotext`` that you intend to use date values along a specific axis using the :func:`plt.date` function.  
-Plotext automatically interprets date and time values from strings, ``datetime`` objects, timestamps (in seconds) or ``pandas.DatetimeIndex``.
-
-
-Here is an example, which requires the ``yfinance`` package:
-
-.. code-block:: python
-
-    import plotext as plt
-    import yfinance as yf
-
-    plt.date(); # or explicitally p.date(axis = 0, side = 0, form = "%d/%m/%Y", active = True); 
-
-    start = plt.convert('11/04/2022', "datetime"); end = plt.convert('22/10/2025', "datetime")
-    data = yf.download('GOOG', start = start, end = end, auto_adjust = False, progress = False)
-
-    prices = data[('Close', 'GOOG')]
-    dates = data.index # or plt.convert(data.index, "string")
-
-    plt.draw(dates, prices, marker = "fhd", plot = 1)
-
-    plt.title("Google Stock Price")
-    plt.xlabel("Date")
-    plt.ylabel("Stock Price $")
-    plt.show()
-
-.. image:: images/date.png
-   :alt: Date and Time Plot
-
-Alternatively, you can run this example directly from the terminal:
-
-.. code-block:: console
-
-   python3 -c "import plotext as plt, yfinance as yf; plt.clf(); plt.date(); start=plt.convert('11/04/2022','datetime'); end=plt.convert('22/10/2025','datetime'); data=yf.download('GOOG', start=start, end=end, auto_adjust=False, progress=False); prices=list(data[('Close','GOOG')]); dates=plt.convert(data.index,'string'); plt.draw(dates, prices, marker='hd', plot=1, fillx=0); plt.title('Google Stock Price'); plt.xlabel('Date'); plt.ylabel('Stock Price ($)'); plt.show()"
-
-
-.. note::
-   By default, ``plotext`` assumes the date format ``"%d/%m/%Y"``.  
-   To change this, use the ``form`` parameter within the :func:`plt.date` function.
-
-.. note::
-   You can also convert between strings, ``datetime`` objects, and timestamps manually using :func:`plt.convert`.  
-   This function automatically detects the input type and allows you to specify the desired output format using the ``output`` parameter.
-
-.. note::
-   Functions such as :func:`plt.xticks` and :func:`plt.xlim` can use directly date/time values in whatever form allowed.  
-   ``plotext`` will automatically convert them internally to timestamps.
-
-
-
-
-
-
-
+.. note:: The base signal and the fill signal should have the same number of points. If they differ, filling is applied only up to the shorter of the two.

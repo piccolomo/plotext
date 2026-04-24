@@ -1,49 +1,50 @@
 # Configuration file for the Sphinx documentation builder.
-#
-# For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+import os
+import sys
+
+
+# -- Path setup --------------------------------------------------------------
+# Make the plotext package importable so autodoc can pick it up.
+
+_here = os.path.dirname(os.path.abspath(__file__))
+_git_root = os.path.dirname(os.path.dirname(_here))  # docs/source -> docs -> git/
+sys.path.insert(0, _git_root)
+
+
 # -- Project information -----------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'plotext'
-copyright = '2024, Savino Piccolomo'
 author = 'Savino Piccolomo'
+copyright = '2024, Savino Piccolomo'
 release = '6.0.0 beta'
 
+
 # -- General configuration ---------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.doctest',
+    'sphinx.ext.duration',
+    'sphinx.ext.viewcode',
+    'myst_parser',
+    'sphinx_copybutton',
+]
 
+source_suffix = ['.rst', '.md']
 templates_path = ['_templates']
 exclude_patterns = []
 
+# Document class/module members in the order they appear in the source file,
+# rather than alphabetically. Keeps related methods (e.g. hstack/vstack) next
+# to each other and follows the deliberate layout of the source.
+autodoc_member_order = 'bysource'
 
 
-# -- Options for HTML output -------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
+# -- HTML output -------------------------------------------------------------
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
-
-
-import sys, os
-source = os.path.dirname(os.path.abspath(__file__))
-docs = os.path.dirname(source)
-git = os.path.dirname(docs)
-plotext = os.path.join(git, 'plotext')
-sys.path.insert(0, git)
-
-
-extensions = [
-    'sphinx.ext.duration',
-    'sphinx.ext.doctest',
-    'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
-    'myst_parser',
-    'sphinx.ext.viewcode',
-    'sphinx_copybutton'
-    ]
-
-source_suffix = ['.rst', '.md']
+html_css_files = ['custom.css']

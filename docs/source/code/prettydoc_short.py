@@ -1,10 +1,12 @@
 from plotext.prettydoc import docs
 
+# Dummy arithmetic mean of two numbers (used to showcase prettydoc)
 def mean(par1 = 1, par2 = 2):
-	return (par1 + par2) / 2 
+	return (par1 + par2) / 2
 
 average = mean
 
+# Dummy harmonic-mean-like function of two numbers (used to showcase prettydoc)
 def harmonic_mean(par1 = 1, par2 = 3):
 	return (par1 * par2) ** 0.5
 
