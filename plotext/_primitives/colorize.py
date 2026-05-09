@@ -93,6 +93,11 @@ class colorize:
         clink.colorize_fix_background(self._pointer, object._pointer)
         return self
 
+    # Fix both unset foreground and background from another pixel/colorize
+    def _fix(self, object):
+        clink.colorize_fix(self._pointer, object._pointer)
+        return self
+
     # String representation
     def __repr__(self):
         return self.get_string()
@@ -133,6 +138,12 @@ class colorize:
         return object_methods.hash(self.get_string())
 
 
-# Ensure input is a colorize object (kept local to _primitives/colorize.py to avoid a circular import with _correct)
-def correct_colorized(colorized):
-    return colorize(colorized) if isinstance(colorized, str) else colorized
+# Ensure input is a colorize object (kept local to _primitives/colorize.py to avoid a circular import with _correct).
+# When default_pixel is provided and the input is a bare string, the resulting colorize gets that pixel applied.
+def correct_colorized(colorized, default_pixel = None):
+    if isinstance(colorized, str):
+        c = colorize(colorized)
+        if default_pixel is not None:
+            c.set_pixel(default_pixel)
+        return c
+    return colorized

@@ -1,6 +1,6 @@
 # Axis validation and normalization utilities
 
-from plotext._settings.constants.enums import axis_styles, axis_names, xsides, ysides
+from plotext._constants.enums import axis_styles, axis_names, xsides, ysides
 from plotext._methods.object import is_list_like
 from plotext._methods.sequence import unique
 

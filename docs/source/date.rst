@@ -4,9 +4,9 @@ Datetime Plot
 Basic Plot
 ----------
 
-To plot datetime objects just notify ``plotext`` that you intend to do so along a specific axis using the :func:`plotext.date` function.  
+To plot datetime objects just notify ``plotext`` that you intend to do so along a specific axis using the ``date`` method.
 
-.. note:: Once notified via :func:`plotext.date`, ``plotext`` automatically recognises the input type and interprets date and time values from strings, ``datetime`` objects (including ``pandas.DatetimeIndex``), or timestamps (seconds from the origin of time).
+.. note:: Once notified via ``date``, ``plotext`` automatically recognises the input type and interprets date and time values from strings, ``datetime`` objects (including ``pandas.DatetimeIndex``), or timestamps (seconds from the origin of time).
 
 
 Here is an example, which requires the ``yfinance`` package:
@@ -16,33 +16,35 @@ Here is an example, which requires the ``yfinance`` package:
    import plotext as plt
    import yfinance as yf
 
-   plt.date(axis = 'x') # plt.date() would also work in this case
+   fig = plt.figure
+   fig.clear()
 
-   start = plt.convert('11/04/2024', "datetime");
-   end = plt.convert('22/10/2025', "datetime")
-   data = yf.download('GOOG', start = start, end = end, auto_adjust = False, progress = False)
+   fig.date(axis = 'x') # fig.date() would also work in this case
+
+   start = fig.convert('11/04/2024', "datetime")
+   end   = fig.convert('22/10/2025', "datetime")
+   data  = yf.download('GOOG', start = start, end = end, auto_adjust = False, progress = False)
 
    prices = data[('Close', 'GOOG')]
-   dates = data.index # or plt.convert(data.index, "string")
+   dates  = data.index # or fig.convert(data.index, "string")
 
-   signal = plt.signal(dates, prices, marker = "fhd").lines()
+   signal = fig.signal(dates, prices, marker = "fhd").lines(True)
+   fig.draw(signal)
 
-   plt.draw(signal)
-
-   plt.title("Google Stock Price")
-   plt.label("Date", 0)
-   plt.label("Stock Price $", 1)
-   plt.show()
+   fig.title("Google Stock Price")
+   fig.label("Date", 0)
+   fig.label("Stock Price $", 1)
+   fig.show()
 
 
 .. image:: images/date.png
    :alt: Date and Time Plot
 
 .. note::
-   By default, ``plotext`` assumes the date format to be ``"%d/%m/%Y"``. To change this, use the ``form`` parameter of :func:`plotext.date`.
+   By default, ``plotext`` assumes the date format to be ``"%d/%m/%Y"``. To change this, use the ``form`` parameter of ``date``.
 
 .. note::
-   The :func:`plotext.convert` function can be used to explicitly convert between strings, ``datetime`` objects, and timestamps (i.e. floats).
+   The ``convert`` method can be used to explicitly convert between strings, ``datetime`` objects, and timestamps (i.e. floats).
    The input type is detected automatically, while the desired output type is specified with the ``output`` parameter.
    Valid output values are ``"datetime"``, ``"timestamp"``, and ``"string"``.
 
@@ -50,9 +52,9 @@ Here is an example, which requires the ``yfinance`` package:
 Candlestick Plot
 ----------------
 
-To plot a candlestick chart, use :func:`plotext.candlestick`. It takes a single dictionary with string keys date, open, close, high, low, where each value is a sequence. 
+To plot a candlestick chart, use ``candlestick``. It takes a single dictionary with string keys date, open, close, high, low, where each value is a sequence.
 
-The function returns a signal that can be further configured (for example with :meth:`.label() <plotext._signal.signal.signal_class.label>`) and then passed to :func:`plotext.draw`.
+The method returns a signal that can be further configured (for example with :meth:`.label() <plotext._signal.signal.signal_class.label>`) and then passed to ``draw``.
 
 Here is an example, which requires the ``yfinance`` package:
 
@@ -61,32 +63,31 @@ Here is an example, which requires the ``yfinance`` package:
    import yfinance as yf
    import plotext as plt
 
-   plt.date(axis = "x")                              # treat x as a date axis (default format "%d/%m/%Y")
+   fig = plt.figure
+   fig.clear()
 
-   start = plt.convert("11/04/2022", "datetime")
-   end   = plt.convert("11/06/2022", "datetime")
+   fig.date(axis = "x")                              # treat x as a date axis (default format "%d/%m/%Y")
+
+   start = fig.convert("11/04/2022", "datetime")
+   end   = fig.convert("11/06/2022", "datetime")
    data  = yf.download("GOOG", start = start, end = end,
                        auto_adjust = False, progress = False)
 
    ohlc = {
-       "date":  plt.convert(data.index, "string"),
+       "date":  fig.convert(data.index, "string"),
        "open":  data[("Open",  "GOOG")],
        "close": data[("Close", "GOOG")],
        "high":  data[("High",  "GOOG")],
        "low":   data[("Low",   "GOOG")],
    }
 
-   signal = plt.candlestick(ohlc).label("GOOG")
-   plt.draw(signal)
+   signal = fig.candlestick(ohlc).label("GOOG")
+   fig.draw(signal)
 
-   plt.title("Google Stock Price Candlesticks")
-   plt.label("Date", "x")
-   plt.label("Stock Price $", "y")
-   plt.legend(True)
-   plt.show()
+   fig.title("Google Stock Price Candlesticks")
+   fig.label("Date", "x")
+   fig.label("Stock Price $", "y")
+   fig.legend()
+   fig.show()
 
 .. note:: More documentation is available via :code:`plotext.doc.candlestick()`.
-
-
-
-

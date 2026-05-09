@@ -38,9 +38,16 @@ class point_filled_class:
     def get_marker(self):
         return marker_class(_pointer=clink.point_filled_get_marker(self._pointer))
 
-    # Get integer foreground color
-    def get_foreground_integer_color(self):
-        return clink.point_filled_get_code(self._pointer)
+    # Whether the point has an explicit fill marker
+    def has_fill(self):
+        return clink.point_filled_has_fill(self._pointer)
+
+    # Foreground palette indices: main marker always, fill marker only when the point has one
+    def get_foreground_integer_codes(self):
+        codes = [clink.point_filled_get_main_foreground_integer_code(self._pointer)]
+        if self.has_fill():
+            codes.append(clink.point_filled_get_fill_foreground_integer_code(self._pointer))
+        return codes
 
     # Get string representation (delegated to C)
     def get_string(self, fill=True):

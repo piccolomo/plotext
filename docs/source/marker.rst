@@ -3,15 +3,56 @@
 Markers
 =======
 
-Most plotting functions in ``plotext`` accept a ``marker`` parameter that controls the symbol drawn at each data point. For example::
+A *marker* is the visual unit that represents a single data point — a symbol with optional colour and style. To change the marker of a plot, you have two options: pass a *string code* for quick selection (see :ref:`string_codes`), or a :class:`plotext.marker` object for full control over colour and style (see :ref:`marker_objects`).
 
-   signal = plt.signal(x, y, marker = "x")
 
-The ``marker`` parameter accepts three input forms:
+Usage
+-----
 
-- **A single character** — any printable character. A space character makes the point invisible.
-- **A list of characters or codes** — one per data point; the list automatically adapts to match the length of the data.
-- **A marker code** — either a named character code (``"dot"``, ``"heart"``, ``"star"``, ...) or one of the resolution codes listed below.
+Every drawable method's ``marker`` parameter accepts:
+
+- a :ref:`string code <string_codes>` — the simplest form.
+- a :ref:`marker object <marker_objects>` — for full control over colour and style.
+- a list of either — one entry per internal point, repeated to match the data length when shorter. For :meth:`~plotext._plotter.plot.plot_class.signal` and :meth:`~plotext._plotter.plot.plot_class.candlestick` the list maps to user data points; for shape primitives like :meth:`~plotext._plotter.plot.plot_class.rectangle` and :meth:`~plotext._plotter.plot.plot_class.polygon` it maps to vertex points instead.
+
+A bare string code or marker object:
+
+.. code-block:: python
+
+   fig.signal(x, y, marker = "x")                                            # shorthand
+   fig.signal(x, y, marker = plt.marker("x"))                                # explicit
+   fig.signal(x, y, marker = plt.marker("x", plt.pixel(foreground="red")))   # styled
+
+A list of string codes or marker objects (one per data point):
+
+.. code-block:: python
+
+   fig.signal(x, y, marker = ["x", "heart", "star"])                  # list of string codes
+   fig.signal(x, y, marker = [plt.marker("x",     plt.pixel(foreground="red")),
+                              plt.marker("heart", plt.pixel(foreground="blue")),
+                              plt.marker("star",  plt.pixel(foreground="green"))])  # list of marker objects
+
+
+.. _string_codes:
+
+String codes
+------------
+
+A string code is one of three things:
+
+- **A single printable character** — any character. A space makes the point invisible.
+- **A named character code** — one of the entries in the table below.
+- **A resolution code** — one of *sd*, *hd*, *fhd*, or *braille* (described after the table).
+
+.. code-block:: python
+
+   fig.signal(x, y, marker = "x")          # single character
+   fig.signal(x, y, marker = "heart")      # named character code
+   fig.signal(x, y, marker = "braille")    # resolution code
+
+
+Named character codes
+~~~~~~~~~~~~~~~~~~~~~
 
 .. list-table::
    :header-rows: 1
@@ -44,7 +85,7 @@ The ``marker`` parameter accepts three input forms:
    * - ``gclef``
      - 𝄞
      - ``note``
-     - 𝅘𝅥
+     - 𝅘𝅥
      - ``shamrock``
      - ☘
      - ``atom``
@@ -90,10 +131,15 @@ The ``marker`` parameter accepts three input forms:
      - ``nine``
      - 🯹
 
+.. note:: Run :func:`plotext.markers` to print the live reference of every available code alongside its rendered symbol.
 
-.. note:: Run :func:`plotext.markers` to print the live reference of every available code alongside its rendered glyph.
 
-Four additional resolution codes control the character grid used to place a point. Some may not be available on every terminal or operating system.
+.. _resolutions:
+
+Resolution codes
+~~~~~~~~~~~~~~~~
+
+Four codes control the character grid used to place a point. Some may not be available on every terminal or operating system.
 
 - ``sd`` — *standard definition*: one full-width block (``█``) per data point.
 - ``hd`` — *high definition* (default): 2 × 2 Unicode block characters (``▞``, ``▘``, ...), so each terminal cell can hold up to four sub-points.
@@ -102,6 +148,20 @@ Four additional resolution codes control the character grid used to place a poin
 
 .. note:: Markers of different resolutions can coexist in the same plot across different signals. Within a single signal, mixing resolutions is safe for scatter plots but discouraged for line plots — the intermediate grid positions between consecutive points may not line up.
 
-A marker also accepts ``foreground``, ``background`` and ``style`` parameters to set its colour and text style. See :ref:`colors` and :ref:`styles` for the available values.
 
-The underlying :class:`~plotext.marker` class is documented in the API reference.
+.. _marker_objects:
+
+Marker objects
+--------------
+
+For full control over colour and style, construct a marker with :class:`plotext.marker` and an explicit :class:`plotext.pixel`:
+
+.. code-block:: python
+
+   import plotext as plt
+   m = plt.marker("heart", plt.pixel("red", "white", "bold"))
+
+Parameters:
+
+- ``code`` — the symbol to draw. Accepts any :ref:`string code <string_codes>`.
+- ``pixel`` — a :class:`plotext.pixel` carrying the colour + style. Defaults to a blank pixel. See :ref:`pixel`.

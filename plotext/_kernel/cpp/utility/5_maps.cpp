@@ -55,63 +55,6 @@ inline unsigned char get_style_code(const string & style) {
     else {return 100;}}
 
 
-// Marker
-
-enum marker_type {normal, none, hd, fhd, braille};
-
-const std::unordered_map<marker_type, const wchar_t*> marker_labels = {
-    {none,    L"none"},
-    {normal,  L"normal"},
-    {hd,      L"hd"},
-    {fhd,     L"fhd"},
-    {braille, L"braille"}
-};
-
-// Retrieves the marker label for a given marker type
-inline const wchar_t* get_marker_label(const marker_type & type) noexcept {
-    auto it = marker_labels.find(type);
-    return (it != marker_labels.end()) ? it->second : L"normal";}
-
-
-const unordered_map<marker_type, unsigned char> marker_rows = {
-  {none,    1},  
-  {normal,  1},
-  {hd,      2},
-  {fhd,     3},
-  {braille, 4}};
-
-// Retrieves the number of rows for a given marker type
-inline unsigned char get_marker_rows(const marker_type & type) {
-    auto it = marker_rows.find(type);
-    if (it != marker_rows.end()) {return it->second;} else {return 0;}}
-
-
-const unordered_map<marker_type, unsigned char> marker_cols = {
-  {none,    1},  
-  {normal,  1},
-  {hd,      2},
-  {fhd,     2},
-  {braille, 2}};
-
-// Retrieves the number of cols for a given marker type
-inline unsigned char get_marker_cols(const marker_type & type) {
-    auto it = marker_cols.find(type);
-    if (it != marker_cols.end()) {return it->second;} else {return 0;}}
-
-
-const unordered_map<marker_type, wchar_t> marker_model = {
-  {none,  L'?'},
-  {normal,  L'?'},
-  {hd,      L'▚'},
-  {fhd,     L'🬗'},
-  {braille, L'⢕'}};
-
-
-// Retrieves the representative model character for a given marker type
-inline wchar_t get_marker_model(const marker_type & type) {
-    auto it = marker_model.find(type);
-    if (it != marker_model.end()) {return it->second;} else {return 0;}}
-
 // Normal Marker Codes
 
 const unordered_map<string, wchar_t> marker_codes = {
@@ -178,6 +121,11 @@ constexpr wchar_t hd_lookup[16] = {
 
 // Retrieve the HD character for a given 4-bit code
 constexpr inline wchar_t get_hd_marker(unsigned char code) noexcept {return hd_lookup[code];}
+
+// Single-bit mask for a sub-cell at (col, row) in a (cols x rows) high-def grid.
+// Top-left occupies the highest bit (cols*rows - 1); bottom-right occupies bit 0.
+// Used by HDCharacter (2x2), FHDCharacter (2x3), BrailleCharacter (2x4).
+inline constexpr uint8_t get_dot_bit(uint8_t col, uint8_t row, uint8_t cols, uint8_t rows) noexcept { return 1u << (cols * rows - 1 - row * cols - col); }
 
 
 // FHD codes// FHD characters mapped by 6-bit code (0..63)
@@ -518,16 +466,154 @@ constexpr wchar_t braille_lookup[256] = {
 constexpr inline wchar_t get_braille_marker(unsigned char code) noexcept {return braille_lookup[code];}
 
 
-// Map of marker types to their respective character conversion functions.
-const unordered_map<marker_type, function<wchar_t(const unsigned char&)>> marker_converters = {
-  {hd, get_hd_marker},        // High-definition marker.
-  {fhd, get_fhd_marker},      // Full high-definition marker.
-  {braille, get_braille_marker}}; // Braille marker.
+// Cell-kind tags: identify which marker kind produced a Matrix cell. marker_none = 0 so default-constructed cells (kind = 0) read as "no kind" naturally; real kinds start from 1.
+constexpr uint8_t marker_none    = 0;
+constexpr uint8_t marker_normal  = 1;
+constexpr uint8_t marker_hd      = 2;
+constexpr uint8_t marker_fhd     = 3;
+constexpr uint8_t marker_braille = 4;
+constexpr uint8_t marker_box    = 5;
 
+// Representative model glyph per kind — used by Python's marker preview / docs.
+const unordered_map<uint8_t, wchar_t> marker_model = {
+    {marker_normal,  L'?'},
+    {marker_hd,      L'▚'},
+    {marker_fhd,     L'🬗'},
+    {marker_braille, L'⢕'},
+    {marker_box,    L'┼'}};
 
-// Retrieve the conversion function for a given marker type.
-function<wchar_t(const unsigned char&)> get_marker_converter(const marker_type& type) {
-  auto it = marker_converters.find(type); // Search for the marker type in the map.
-  if (it != marker_converters.end()) {return it->second;} // Return the corresponding conversion function if found.
-  else {return [](const unsigned char&) { return L'N'; };}} // Default conversion to 'N' if not found.
-  
+inline wchar_t get_marker_model(uint8_t type) noexcept {
+    auto it = marker_model.find(type);
+    return it != marker_model.end() ? it->second : L'?'; }
+
+// Box-drawing line lookups: one 16-entry table per style. 4-bit arm code (N/E/S/W = bits 3/2/1/0) indexes each table. Style is selected externally by the caller (e.g. BoxCharacter::style_bits).
+constexpr uint8_t box_n = 0b1000;   // bit 3
+constexpr uint8_t box_e = 0b0100;   // bit 2
+constexpr uint8_t box_s = 0b0010;   // bit 1
+constexpr uint8_t box_w = 0b0001;   // bit 0
+
+// Style indices (used to pick which lookup table; not encoded in the bit pattern)
+constexpr uint8_t box_normal  = 0;
+constexpr uint8_t box_double  = 1;
+constexpr uint8_t box_heavy   = 2;
+constexpr uint8_t box_dotted  = 3;
+constexpr uint8_t box_rounded = 4;
+
+// Normal style: edges, corners, T-junctions, cross + 4 half-arm stubs
+constexpr wchar_t box_normal_lookup[16] = {
+    0,        // 0b0000  0
+    L'╴',     // 0b0001  1
+    L'╷',     // 0b0010  2
+    L'┐',     // 0b0011  3
+    L'╶',     // 0b0100  4
+    L'─',     // 0b0101  5
+    L'┌',     // 0b0110  6
+    L'┬',     // 0b0111  7
+    L'╵',     // 0b1000  8
+    L'┘',     // 0b1001  9
+    L'│',     // 0b1010 10
+    L'┤',     // 0b1011 11
+    L'└',     // 0b1100 12
+    L'┴',     // 0b1101 13
+    L'├',     // 0b1110 14
+    L'┼',     // 0b1111 15
+};
+
+// Double style: edges, corners, T-junctions, cross. No half-arm stubs in Unicode.
+constexpr wchar_t box_double_lookup[16] = {
+    0,        // 0b0000  0
+    0,        // 0b0001  1
+    0,        // 0b0010  2
+    L'╗',     // 0b0011  3
+    0,        // 0b0100  4
+    L'═',     // 0b0101  5
+    L'╔',     // 0b0110  6
+    L'╦',     // 0b0111  7
+    0,        // 0b1000  8
+    L'╝',     // 0b1001  9
+    L'║',     // 0b1010 10
+    L'╣',     // 0b1011 11
+    L'╚',     // 0b1100 12
+    L'╩',     // 0b1101 13
+    L'╠',     // 0b1110 14
+    L'╬',     // 0b1111 15
+};
+
+// Heavy (thick) style: edges, corners, T-junctions, cross + 4 half-arm stubs.
+constexpr wchar_t box_heavy_lookup[16] = {
+    0,        // 0b0000  0
+    L'╸',     // 0b0001  1
+    L'╻',     // 0b0010  2
+    L'┓',     // 0b0011  3
+    L'╺',     // 0b0100  4
+    L'━',     // 0b0101  5
+    L'┏',     // 0b0110  6
+    L'┳',     // 0b0111  7
+    L'╹',     // 0b1000  8
+    L'┛',     // 0b1001  9
+    L'┃',     // 0b1010 10
+    L'┫',     // 0b1011 11
+    L'┗',     // 0b1100 12
+    L'┻',     // 0b1101 13
+    L'┣',     // 0b1110 14
+    L'╋',     // 0b1111 15
+};
+
+// Dotted style: only the two plain edges exist in Unicode (no dotted corners or junctions).
+constexpr wchar_t box_dotted_lookup[16] = {
+    0,        // 0b0000  0
+    0,        // 0b0001  1
+    0,        // 0b0010  2
+    0,        // 0b0011  3
+    0,        // 0b0100  4
+    L'┈',     // 0b0101  5
+    0,        // 0b0110  6
+    0,        // 0b0111  7
+    0,        // 0b1000  8
+    0,        // 0b1001  9
+    L'┊',     // 0b1010 10
+    0,        // 0b1011 11
+    0,        // 0b1100 12
+    0,        // 0b1101 13
+    0,        // 0b1110 14
+    0,        // 0b1111 15
+};
+
+// Rounded style: only the four corners exist in Unicode (no rounded edges, T-junctions or cross).
+constexpr wchar_t box_rounded_lookup[16] = {
+    0,        // 0b0000  0
+    0,        // 0b0001  1
+    0,        // 0b0010  2
+    L'╮',     // 0b0011  3
+    0,        // 0b0100  4
+    0,        // 0b0101  5
+    L'╭',     // 0b0110  6
+    0,        // 0b0111  7
+    0,        // 0b1000  8
+    L'╯',     // 0b1001  9
+    0,        // 0b1010 10
+    0,        // 0b1011 11
+    L'╰',     // 0b1100 12
+    0,        // 0b1101 13
+    0,        // 0b1110 14
+    0,        // 0b1111 15
+};
+
+// Pack / unpack helpers for BoxCharacter's single-byte line code.
+// Layout:
+//   bits 0..3 (low 4 bits)  = arms (N=0b1000, E=0b0100, S=0b0010, W=0b0001)
+//   bits 4..6 (next 3 bits) = style index (0..4)
+//   bit  7                  = unused
+inline constexpr uint8_t get_box_code (uint8_t arms, uint8_t style) noexcept { return (arms & 0b00001111) | ((style & 0b00000111) << 4); }
+inline constexpr uint8_t get_box_arms (uint8_t code) noexcept { return  code       & 0b00001111; }
+inline constexpr uint8_t get_box_style(uint8_t code) noexcept { return (code >> 4) & 0b00000111; }
+
+// Retrieves the glyph for a packed line code. Returns 0 when no glyph exists for this combo.
+inline wchar_t get_box_glyph(uint8_t code) noexcept {
+    const uint8_t arms  = get_box_arms (code);
+    const uint8_t style = get_box_style(code);
+    if (style == box_double)  return box_double_lookup [arms];
+    if (style == box_heavy)   return box_heavy_lookup  [arms];
+    if (style == box_dotted)  return box_dotted_lookup [arms];
+    if (style == box_rounded) return box_rounded_lookup[arms];
+    return box_normal_lookup[arms];}

@@ -8,6 +8,7 @@ from plotext._primitives.pixel import pixel
 from plotext._primitives.colorize import colorize
 from plotext._primitives.matrix import matrix
 from plotext._primitives.marker import marker
+from plotext._primitives.box    import line
 
 # Signal types (exposed under distinct names to avoid clashing with api.signal).
 # signal_class itself is NOT re-exported: users must create signals through

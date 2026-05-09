@@ -73,8 +73,9 @@ public:
         result.copy_from(begin(), get_length());
         return result;}
 
-    // Resize the capacity, preserving as many elements as fit
+    // Resize the capacity, preserving as many elements as fit. Empty case (length==0) skips the copy round-trip — saves work AND silences a GCC bounds-analysis warning when reserving on a freshly-empty vector.
     void set_capacity(const size_t & new_capacity) {
+        if (length == 0) { Array<T>::reallocate(new_capacity); return; }
         Vector<T> temp(*this);                      // copy the data
         Array<T>::reallocate(new_capacity);          // allocate new array
         set_length(min(new_capacity, length));
@@ -169,6 +170,7 @@ public:
         size_t old_length = this->get_length();
         if (old_length == 0 || size <= old_length) return;
         Vector<T> temp(*this);
+        this->reserve(size);
         this->set_length(size);
         for (size_t i = 0; i < size; ++i) {
             size_t idx = i * old_length / size;

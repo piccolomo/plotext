@@ -38,20 +38,27 @@ class matrix:
     def get_size(self):
         return self.get_width(), self.get_height()
 
-    # Write a single character at (col, row)
-    def _set_character(self, col, row, char):
-        clink.matrix_set_wcharacter(self._pointer, col, row, wchar(char))
-        return self
-
     # Apply a pixel to the cell at (col, row)
     def _set_pixel(self, col, row, pixel):
         clink.matrix_set_pixel(self._pointer, col, row, pixel._pointer)
         return self
 
-    # Set both pixel (color) and character at (col, row)
+    # Set both pixel (color) and character at (col, row) in a single call (cell becomes a normal-kind MatrixCharacter holding the wchar + pixel).
     def _set_pixelled_character(self, col, row, char, pixel):
-        self._set_pixel(col, row, pixel)
-        self._set_character(col, row, char)
+        clink.matrix_set_normal_character(self._pointer, col, row, wchar(char), pixel._pointer)
+        return self
+
+    # Stamp a single box marker at (col, row). Caller is responsible for keeping (col, row) in bounds.
+    def add_box_marker(self, col, row, box):
+        clink.matrix_add_box_marker(self._pointer, col, row, box._pointer)
+        return self
+
+    # Stamp a line spanning [start, end) along the variable axis. coord is the FIXED axis (row for horizontal lines, col for vertical). start/end default to the matrix bounds. Single FFI call — the loop runs in C++.
+    def add_line(self, coord, line, start=None, end=None):
+        vertical = line.get_orientation() == 1
+        s = 0 if start is None else start
+        e = (self.get_height() if vertical else self.get_width()) if end is None else end
+        clink.matrix_add_line(self._pointer, coord, line._pointer, s, e, vertical)
         return self
 
     # Insert a matrix, colorize, or raw string at (col, row) with horizontal/vertical alignment
@@ -63,7 +70,7 @@ class matrix:
 
     # Insert another matrix with explicit alignment ints (delegates to clink)
     def _insert_matrix_aligned(self, col, row, obj, ha=-1, va=-1):
-        return clink.matrix_insert_matrix_aligned(
+        return clink.matrix_insert_matrix(
             self._pointer, col, row, obj._pointer, ha, -va)
 
     # Insert a points object into the matrix
@@ -71,18 +78,17 @@ class matrix:
         clink.matrix_insert_points(self._pointer, points._pointer)
         return self
 
-    # Insert another matrix into this matrix at (col, row)
+    # Insert another matrix into this matrix at (col, row) with default left/top alignment
     def _insert_matrix(self, col, row, obj):
-        clink.matrix_insert_matrix(self._pointer, col, row, obj._pointer)
+        clink.matrix_insert_matrix(self._pointer, col, row, obj._pointer, -1, -1)
         return self
 
-    # Insert a colorized object into the matrix with horizontal alignment
-    def _insert_colorized_aligned(self, col, row, colorized, ha = -1, check_space = False):
-        return clink.matrix_insert_colorized_aligned(self._pointer, col, row, colorized._pointer, ha, check_space)
-
-    # Insert a colorized object dynamically at (col, row); returns an integer status
-    def _insert_colorized_dynamically(self, col, row, colorized):
-        return clink.matrix_insert_colorized_dynamically(self._pointer, col, row, colorized._pointer)
+    # Insert a Text into the matrix at its own (x, y), respecting its alignment and orientation.
+    # check_space defaults to True so overflow strings are skipped instead of
+    # writing past matrix bounds (which segfaults the C++ kernel). Pass
+    # check_space=False to opt into the unchecked write.
+    def _insert_text(self, text, check_space = True, change_color = True):
+        return clink.matrix_insert_text(self._pointer, text._pointer, check_space, change_color)
 
     # Stack this matrix next to another
     def hstack(self, other, adapt=False):

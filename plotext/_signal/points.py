@@ -20,13 +20,8 @@ class points_class:
         clink.points_clear(self._pointer)
         return self
 
-    # Append a single point
-    def append(self, point):
-        clink.points_append_point(self._pointer, point._pointer)
-        return self
-
     # Append another points container
-    def append_points(self, other):
+    def append(self, other):
         clink.points_append_points(self._pointer, other._pointer)
         return self
 
@@ -45,9 +40,9 @@ class points_class:
         clink.points_select_in_matrix(self._pointer, w, h)
         return self
 
-    # Squash points through the given map
-    def squash(self, map):
-        return clink.points_squash(self._pointer, map._pointer)
+    # Squash points through the given grid
+    def squash(self, grid):
+        return clink.points_squash(self._pointer, grid._pointer)
 
     # Get number of points
     def get_length(self):
@@ -56,10 +51,6 @@ class points_class:
     # Get range for iteration
     def get_range(self):
         return range(self.get_length())
-
-    # Get rendered wstring
-    def get_wstring(self):
-        return clink.points_get_wstring(self._pointer)
 
     # Log to stdout via the C kernel
     def log(self):

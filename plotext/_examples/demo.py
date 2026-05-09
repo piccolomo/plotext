@@ -4,7 +4,7 @@ from math import ceil
 from plotext._primitives.colorize import colorize
 from plotext._primitives.marker import marker as marker_class
 from plotext._methods.string import pad
-from plotext._settings.constants.enums import color_codes, style_codes, marker_codes, hd_markers_codes
+from plotext._constants.enums import color_codes, style_codes, marker_codes, hd_markers_codes
 from plotext._methods.sequence import unique
 
 

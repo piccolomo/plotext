@@ -19,3 +19,6 @@ const size_t marker_size_max    = pixel_size_max + 6 + wcslen(ansi_end);      //
 
 // --- Numeric limits ---
 const float inf = numeric_limits<float>::infinity();
+
+// --- Sentinel codes ---
+const size_t no_color = static_cast<size_t>(-1);   // "no color" sentinel for foreground integer codes — outside the unsigned char range, can never collide with any palette index

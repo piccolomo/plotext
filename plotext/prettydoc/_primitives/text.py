@@ -1,7 +1,7 @@
 # Text primitives: text_class, alias_class and labelled_text_class used to build docstring components
 
 from plotext._methods.string import add_prefix, connect_strings
-from plotext._settings.constants.text import space
+from plotext._constants.text import space
 
 
 # Wrapper around a colorize (or None) value used as a docstring text fragment

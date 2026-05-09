@@ -3,7 +3,7 @@
 from plotext.prettydoc._settings.pixels import default_pixels
 from plotext.prettydoc._primitives.function import function_class
 from plotext.prettydoc._primitives.types import types_class
-from plotext._settings.constants.text import space, new_line
+from plotext._constants.text import space, new_line
 from plotext._methods import object as object_methods
 from plotext._methods.string import new_lines
 from plotext._primitives.colorize import colorize

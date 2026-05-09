@@ -7,14 +7,14 @@ Python
 plotext/
     __init__.py                    package entry point: exposes public primitives and plot API
 
-    _settings/                     configuration, constants, platform info
+    _settings/                     configuration and platform info
         system.py                  platform detection and package metadata
         defaults.py                default terminal size, axes, colors, pixels, subplots, legend, markers
-        constants/
-            borders.py             border characters grouped by type and style
-            enums.py               named sets of allowed values (axes, alignment, scales, styles, colors, markers)
-            numerical.py           discrete sets, deltas, tolerances and bounds
-            text.py                single-character and short string literals used in rendering
+
+    _constants/                    fixed constant tables shared across the codebase
+        enums.py                   named sets of allowed values (axes, alignment, scales, styles, colors, markers)
+        numerical.py               discrete sets, deltas, tolerances and bounds
+        text.py                    single-character and short string literals used in rendering
 
     _correct/                      input validation and normalization per concept
         axis.py                    axis validation and normalization
@@ -26,6 +26,7 @@ plotext/
         marker.py                  single marker and repeated marker list normalization
         matrix.py                  alignment, orientation, slice and matrix normalization
         pixel.py                   pixel normalization
+        placement.py               orientation/alignment placement normalization
         signal.py                  signal validation
 
     _methods/                      stateless helper functions
@@ -49,41 +50,48 @@ plotext/
         pixel.py                   pixel handling via clink bindings
         colorize.py                colorized string with pixel styling and matrix operations
         marker.py                  wraps a C++ marker pointer (normal/typed)
-        matrix.py                  wraps a C++ matrix pointer (pixels, insertion, stacking, slicing)
+        matrix.py                  wraps a C++ matrix pointer (pixels, insertion, stacking, slicing, line stamping)
+        text.py                    wraps a C++ text pointer (position, alignment, orientation, side, rescale)
+        box_style.py               style + pixel pair shared by box markers and ruler grid lines
+        box.py                     box marker primitive (arms + style + pixel) and the line shorthand
 
     _signal/                       plot data container and helpers
-        signal.py                  wraps the C++ signal pointer (points, fill, axes, label, plot)
-        signals.py                 container of signals with aggregated limits
+        signal.py                  wraps the C++ signal pointer (points, fill, axes, label, plot, draw)
+        signals.py                 container of signals with aggregated limits and bulk draw
         points.py                  container of data points (append, offset, select, squash)
         point_filled.py            a point with marker and foreground color
-        map.py                     fixed-size cols x rows backing map used by points.squash
+        grid.py                    fixed-size cols x rows backing grid used by points.squash
 
     _plotter/                      high-level plot composition
         plot.py                    main subplot container (signals, axes, legend, rulers, labels, canvas)
-        draw.py                    drawing mixin for signal, candlestick, polygon primitives
+        draw.py                    drawing mixin for signal, segment, line, rectangle, polygon, bar, candlestick
         build.py                   render the final matrix from signals/rulers/axes/labels/ticks/legend/corners
-        components/
-            subplot.py             subplot grid, sizes, positions, active subplot
+        subplot.py                 subplot grid, sizes, positions, active subplot
+
+        frame/                     structural frame elements drawn around the canvas
+            corner.py              one of the four frame corners, with tick symbol and self-render
+            labels.py              title plus x/y labels with pixel styling and bar rendering
+            axis.py                single frame axis (one side) with status, style, pixel, self-render
+            axes.py                2x2 container of frame axes (x lower/upper, y left/right)
+            ruler.py               one axis/side ruler (ticks, limits, lines, grid, date, scale, draw)
+            rulers.py              2x2 X/Y rulers with selection, clearing, cloning, updates
+            tick.py                single ruler tick (position + label)
+            ticks.py               batch operations over tick objects
+            line_signal.py         a registered ruler line (coord, orientation, relative, label, self-render)
+            lines.py               container of registered ruler lines (add, copy, rescale)
+            grid_line.py           grid style + pixel + active flag (extends box_style)
+            limits.py              ruler bounds with alignment and direction
+            date.py                string/datetime/timestamp conversions with configurable origin
+
+        canvas/                    user-facing renderables drawn on the canvas
+            legend.py              legend: markers, labels, pixel, position, frame, self-render
+            texts.py               container of registered text drawables with bulk draw
+
+        utils/                     internal layout primitives + helpers
             parts.py               named regions (bars, corners, axes, ticks, canvas, legend)
             part.py                a single named region with position and size
-            legend.py              legend: markers, labels, pixel, position, frame
             cycler.py              cycles through a predefined color sequence
             timer.py               lightweight event timer for profiling build steps
-        frame/
-            corner.py              one of the four frame corners, with tick symbol
-            labels.py              title plus x/y labels with pixel styling
-            axis/
-                axis.py            single frame axis (one side) with status, style, pixel
-                axes.py            2x2 container of frame axes (x lower/upper, y left/right)
-            ruler/
-                ruler.py           one axis/side ruler (ticks, limits, lines, grid, date, scale)
-                rulers.py          2x2 X/Y rulers with selection, clearing, cloning, updates
-                tick.py            single ruler tick (position + label)
-                ticks.py           batch operations over tick objects
-                line.py            ruler line primitive (style, pixel, position)
-                lines.py           container of ruler lines (add, rescale, filter)
-                limits.py          ruler bounds with alignment and direction
-                date.py            string/datetime/timestamp conversions with configurable origin
 
     _doc/                          docstring construction for the public API
         doc.py                     public API docstrings, grouped via prettydoc
@@ -125,21 +133,21 @@ utility/                           foundational containers and helpers
     7_cstrings.cpp                 raw wchar_t* operations and append-to-buffer helpers
     8_data.cpp                     range/linspace/sin_wave/sort/rescale + bit manipulation
     9_alignment.cpp                left/center/right anchoring for text in fixed-width cells
+    10_orientation.cpp             horizontal/vertical orientation flag with helpers
 
 01_color.cpp                       ANSI foreground/background color; base for Fullground and Background
 02_style.cpp                       ANSI text styles (bold, underline, italic, ...)
 03_pixel.cpp                       Fullground + Background + Style carrier used across the kernel
 04_colorize.cpp                    wide string + Pixel, with slicing, buffered rendering and printing
-05_character.cpp                   single wchar_t with Pixel styling
-06_marker_type.cpp                 marker classification (none/normal/hd/fhd/braille) + sizes/labels
-07_marker.cpp                      Character + MarkerType (resolution mode)
-08_matrix_bool.cpp                 compact boolean matrix (max 3x3 -> 9 bits in 1 byte)
-09_point_position.cpp              lightweight 2D float position with int conversion and cell helpers
-10_point.cpp                       2D position + Marker, with geometric helpers and line generation
-11_map.cpp                         2D (col,row) -> point-index grid, backed by Vector<size_t>
-12_points.cpp                      collection of Point on Vector<Point>: offset, select, squash-merge
-13_point_filled.cpp                Point + optional fill point (stem plots, filled regions)
+05_matrix_bool.cpp                 compact boolean matrix (max 3x3 -> 9 bits in 1 byte)
+06_character.cpp                   NormalCharacter / BoxStyle / BoxCharacter / MatrixCharacter cell types
+07_marker.cpp                      Marker base + NormalMarker / HDMarker / FHDMarker / BrailleMarker / BoxMarker
+08_point_position.cpp              lightweight 2D float position with int conversion and cell helpers
+09_point.cpp                       2D position + Marker, with geometric helpers and line generation
+10_points.cpp                      collection of Point on Vector<Point>: offset, select, squash-merge
+11_matrix.cpp                      2D grid of MatrixCharacter cells; insert/stack/buffered rendering, line stamping
+12_text.cpp                        wide-string text with position, alignment, orientation, side, rescale
+13_point_filled.cpp                Point + optional fill point (stem plots, filled regions); per-point bounds
 14_points_filled.cpp               collection of PointFilled: bounds, transforms, line generation
-15_signal.cpp                      PointsFilled + plotting metadata (sides, label, marker, fill, line)
-16_character_hd.cpp                Marker + MatrixBool for hd/fhd/braille glyph rendering
-17_matrix.cpp                      2D grid of CharacterHD cells; insert/stack/buffered rendering
+15_points_grid.cpp                 2D (col,row) -> point-index grid, backed by Vector<size_t>
+16_signal.cpp                      PointsFilled + plotting metadata (sides, label, marker, fill, line, bounds with orthogonal-axis filter)

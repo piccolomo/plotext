@@ -153,8 +153,9 @@ public:
 
     // --- Utilities ---
 
-    // Copy source_length elements from a raw pointer into this array at offset
+    // Copy source_length elements from a raw pointer into this array at offset. Early return on empty source — keeps the compiler from warning when source happens to be a freshly-constructed (empty, possibly-null) buffer.
     void copy_from(const T* source, size_t source_length, size_t offset = 0) {
+        if (source_length == 0) return;
         for (size_t i = 0; i < source_length; ++i)
             data[offset + i] = source[i];}
 

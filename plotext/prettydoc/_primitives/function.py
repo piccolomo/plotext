@@ -2,7 +2,7 @@
 
 from plotext.prettydoc._primitives.text import text_class, alias_class
 from plotext.prettydoc._primitives.parameter import parameter_class
-from plotext._settings.constants.text import space, empty, new_line
+from plotext._constants.text import space, empty, new_line
 from plotext._methods.string import connect_strings, new_lines, uncolorize
 from plotext._primitives.colorize import colorize
 

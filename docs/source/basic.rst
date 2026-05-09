@@ -1,48 +1,64 @@
 Basic Plots
 ===========
 
+.. _scatter:
+
 Scatter Plot
 ------------
 
-To create a basic plot, build a signal with :func:`plotext.signal` and pass it to :func:`plotext.draw`:
+To create a basic plot, build a signal with ``signal`` and pass it to ``draw`` on the master figure:
 
 .. code-block:: python
 
    import plotext as plt
+   fig = plt.figure
+   fig.clear()
 
-   y = plt.sin()              # sinusoidal test signal
-   signal = plt.signal(y)
+   y = plt.sin()                     # sinusoidal test signal
+   signal = fig.signal(y)
 
-   plt.draw(signal)
-   plt.title("Scatter Plot")
-   plt.show()
+   fig.draw(signal)
+   fig.title("Scatter Plot")
+   fig.show()
 
-.. image:: https://raw.githubusercontent.com/piccolomo/plotext/master/data/scatter.png
+.. image:: images/scatter.png
    :alt: scatter
 
-.. note:: The plot is built and rendered only when :func:`plotext.show` is called.
+.. note:: The plot is built and rendered only when ``show`` is called.
 
 .. note:: More documentation is available via :code:`plotext.doc.signal()`.
 
+.. note::
+
+   Inspect a signal's current point count via :meth:`.get_length() <plotext._signal.signal.signal_class.get_length>`. Useful when programmatically building signals (e.g. via ``_append``) before deciding on the number of ticks or grid divisions.
+
+
+.. _line:
 
 Line Plot
 ---------
 
-For a line plot, chain :meth:`.lines() <plotext._signal.signal.signal_class.lines>` onto the signal returned by :func:`plotext.signal`:
+For a line plot, chain :meth:`.lines() <plotext._signal.signal.signal_class.lines>` onto a signal — it connects every point and switches the signal from a scatter into a continuous line:
 
 .. code-block:: python
 
    import plotext as plt
+   fig = plt.figure
+   fig.clear()
 
    y = plt.sin()
-   signal = plt.signal(y).lines()
+   signal = fig.signal(y).lines(True)
 
-   plt.draw(signal)
-   plt.title("Line Plot")
-   plt.show()
+   fig.draw(signal)
+   fig.title("Line Plot")
+   fig.show()
 
-.. image:: https://raw.githubusercontent.com/piccolomo/plotext/master/data/plot.png
+.. image:: images/line.png
    :alt: line plot
+
+.. note::
+
+   :meth:`.lines() <plotext._signal.signal.signal_class.lines>` toggles every segment uniformly. To turn a single segment on or off without touching the rest, use :meth:`.point_lines() <plotext._signal.signal.signal_class.point_lines>` with the index of the point whose incoming segment you want to change (effective range ``1..N-1``).
 
 .. note::
 
@@ -50,8 +66,10 @@ For a line plot, chain :meth:`.lines() <plotext._signal.signal.signal_class.line
       - ``simple`` (the default) — draws evenly-spaced points along the line, similar to ``linspace``. Light and fast, but may leave small gaps on steep segments.
       - ``full`` — fills every cell crossed by the line, producing a denser, visually continuous result.
 
-   Switch with :meth:`~plotext._signal.signal.signal_class.line_method`, e.g. ``signal.line_method("full")``.
+   Switch via the ``line_method`` parameter on ``signal()`` at construction, or fluently afterwards with :meth:`.line_method() <plotext._signal.signal.signal_class.line_method>` on the returned signal — e.g. ``fig.signal(y).line_method("full").lines(True)``.
 
+
+.. _stem:
 
 Stem Plot
 ---------
@@ -63,17 +81,25 @@ In plotext, any signal becomes a stem plot by chaining :meth:`.fillx() <plotext.
 .. code-block:: python
 
    import plotext as plt
+   fig = plt.figure
+   fig.clear()
 
    y = plt.sin(length = 50)
-   signal = plt.signal(y).fillx()
+   signal = fig.signal(y).fillx()
 
-   plt.draw(signal)
-   plt.title("Stem Plot")
-   plt.show()
+   fig.draw(signal)
+   fig.title("Stem Plot")
+   fig.show()
 
 .. image:: images/stem.png
    :alt: stem
 
+.. note::
+
+   Stem fills follow the same densification choice as lines. ``simple`` draws evenly-spaced points along each stem; ``full`` fills every cell crossed. Switch via the ``fill_method`` parameter on ``signal()`` at construction, or fluently afterwards with :meth:`.fill_method() <plotext._signal.signal.signal_class.fill_method>` on the returned signal — e.g. ``fig.signal(y).fill_method("full").fillx()``.
+
+
+.. _stem2:
 
 Elaborate Stem Plot
 ~~~~~~~~~~~~~~~~~~~
@@ -83,18 +109,20 @@ By default the stem baseline is the axis (``0``). For a varying baseline, build 
 .. code-block:: python
 
    import plotext as plt
+   fig = plt.figure
+   fig.clear()
 
    l      = 1000
    y      = plt.sin(length = l, periods = 2)
    y_fill = plt.sin(length = l, periods = 2, amplitude = 0.3)
 
-   signal = plt.signal(y)                                            # base stems
-   fill   = plt.signal(y_fill, marker = plt.marker("hd", "blue+"))   # fill level
+   signal = fig.signal(y)                                            # base stems
+   fill   = fig.signal(y_fill, marker = plt.marker("hd", plt.pixel(foreground="blue+")))   # fill level
 
    signal.fill(fill)                                                 # link base and fill
 
-   plt.draw(signal)
-   plt.show()
+   fig.draw(signal)
+   fig.show()
 
 .. image:: images/stem2.png
    :alt: elaborate stem plot

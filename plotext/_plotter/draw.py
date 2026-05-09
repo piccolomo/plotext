@@ -1,41 +1,229 @@
-# Draw mixin: high-level drawing primitives (signal, candlestick, polygon) on top of plot_class
+# Draw mixin: high-level drawing primitives on top of plot_class. Methods are grouped:
+#   1. Registration       — draw
+#   2. Annotation         — text
+#   3. Geometric shapes   — line, rectangle, polygon                   (built directly from signal)
+#   4. Bar family         — bar, multiple_bar, stacked_bar              (bar uses rectangle; the other two use bar)
+#   5. Specialized        — candlestick                                 (uses line + rectangle)
 
 import math
 
 from plotext._correct import matrix as correct_matrix
+from plotext._correct import data as correct_data
+from plotext._correct import axis as correct_axis
+from plotext._correct import bool as correct_bool
+from plotext._correct import placement as correct_placement
+from plotext._correct import pixel as correct_pixel
+from plotext._correct import line as correct_line
+from plotext._correct import label as correct_label
 from plotext._primitives.marker import marker
+from plotext._primitives.colorize import correct_colorized
+from plotext._primitives.text import text as text_class
+from plotext._settings import defaults
 from plotext._methods import sequence
+from plotext._methods.bar import bar_edges, is_vertical
 
 
-# Drawing mixin providing signal, candlestick and polygon methods
 class draw_class:
 
-    # Draw a pre-built signal on the plot and propagate to subplots
-    def draw(self, signal):
-        self._signals._add(signal)
-        self._cycler.remove_colors(signal._get_foreground_unique_integer_colors())
+    # ---- 1. Registration ----------------------------------------------------
 
-        self._for_each_subplot("draw", signal)
+    # Register a pre-built drawable (signal or text) on the plot and propagate to subplots
+    def draw(self, drawable):
+        if isinstance(drawable, text_class):
+            self._texts.add(drawable)
+        else:
+            self._signals._add(drawable)
+            self._cycler.remove_colors(drawable._get_foreground_unique_integer_colors())
+        self._for_each_subplot("draw", drawable)
         return self
 
-    # Build (but do not draw) an OHLC candlestick signal from a dict with keys
-    # 'date', 'open', 'close', 'high', 'low'. Pass the returned signal to draw().
-    def candlestick(self, data, colors = None, orientation = None, xside = None, yside = None):
-        # Orientation: vertical = dates on x and prices on y (the usual case);
-        # horizontal = dates on y and prices on x.
-        orientation = correct_matrix.orientation(orientation)
-        is_vertical = orientation in ['v', 'vertical']
+    # ---- 2. Annotation ------------------------------------------------------
 
-        # Up / down candle colors (up = close > open).
-        # Dojis (open == close) use the down color.
+    # Build a text annotation at (x, y); caller passes the result to draw() to register it
+    def text(self, x, y, label, alignment = None, orientation = None, xside = None, yside = None, relative = None):
+        label = correct_colorized(label, defaults.pixels["label"])
+        orientation = correct_placement.orientation(orientation)
+        alignment = correct_placement.alignment(alignment, orientation = orientation)
+        xside = correct_axis.side(0, xside)
+        yside = correct_axis.side(1, yside)
+        relative = correct_bool.boolean(relative, False)
+        return text_class(x, y, label, alignment = alignment, orientation = orientation, xside = xside, yside = yside, relative = relative)
+
+    # ---- 3. Geometric shapes ------------------------------------------------
+
+    # Build a straight line segment between two endpoints (x = (x1, x2), y = (y1, y2)). Free 2-point line for arbitrary diagonals or axis-aligned segments.
+    def segment(self, x = (0, 1), y = (0, 1), marker = None, xside = None, yside = None):
+        return self.signal(list(x)[:2], list(y)[:2], marker = marker, xside = xside, yside = yside).lines(True)
+
+    # Add a line at coord. orientation 0 = horizontal (on y-ruler), 1 = vertical (on x-ruler). Registered on the ruler; rendered at build time.
+    def line(self, coord, orientation = 0, relative = False, pixel = None, style = None, label = None, xside = None, yside = None):
+        orientation = correct_placement.orientation(orientation)
+        relative    = correct_bool.boolean(relative, False)
+        pixel       = correct_pixel.pixel(pixel, defaults.pixels["line"])
+        style       = correct_line.line_style(style)
+        label       = correct_label.label(label, pixel)
+
+        if orientation == 1:
+            xside = correct_axis.side(0, xside)
+            ruler = self._rulers.get(axis = 0, side = xside)
+        else:
+            yside = correct_axis.side(1, yside)
+            ruler = self._rulers.get(axis = 1, side = yside)
+
+        ruler.add_line(coord, relative, pixel, style, label)
+        self._for_each_subplot("line", coord, orientation, relative, pixel, style, label, xside, yside)
+        return self
+
+    # Build a rectangle signal spanning given x/y ranges; lines = outline, fill = body.
+    def rectangle(self, x = (0, 1), y = (0, 1), marker = None, lines = True, fill = True,
+                  xside = None, yside = None):
+        x0, x1 = min(x), max(x)
+        y0, y1 = min(y), max(y)
+        if fill:
+            upper = self.signal([x0, x1], [y1, y1], marker = marker, xside = xside, yside = yside).fill_method("full")
+            if lines: upper.line_method("full")
+            lower = self.signal([x0, x1], [y0, y0], marker = marker)
+            upper.fill(lower)
+            upper.lines(lines)
+            return upper
+        xs = [x0, x1, x1, x0, x0]
+        ys = [y0, y0, y1, y1, y0]
+        sig = self.signal(xs, ys, marker = marker, xside = xside, yside = yside)
+        if lines: sig.line_method("full")
+        sig.lines(lines)
+        return sig
+
+    # Build a regular polygon signal centred at (x, y) with given radius and sides.
+    def polygon(self, x = 0, y = 0, radius = 1, sides = 3, up = False, marker = None,
+                lines = True, fill = False, xside = None, yside = None):
+        sides = 3 if sides is None else max(3, sides)
+        alpha = 2 * math.pi / sides
+        init = alpha / 2 + math.pi / 2 if sides % 2 == 0 else alpha / 4 * ((-1) ** (sides // 2))
+        extra = (alpha / 2) * up if sides % 2 == 0 else alpha / 2 * (1 + up)
+        get_point = lambda i: [x + math.cos(alpha * i + init + extra) * radius,
+                               y + math.sin(alpha * i + init + extra) * radius]
+        points = [get_point(i) for i in range(sides + 1)]   # +1 closes the path
+        xl, yl = sequence.transpose(points)
+        signal = self.signal(xl, yl, marker = marker, xside = xside, yside = yside)
+        if lines: signal.line_method("full")
+        if fill:
+            signal.fill_method("full")
+            for i, p in enumerate(signal):
+                signal._set_fill_point(i, x, y, p.get_marker())
+        signal.lines(lines)
+        return signal
+
+    # ---- 4. Bar family ------------------------------------------------------
+
+    # Build a bar plot signal; args: bar(y_max), bar(x, y_max), or bar(x, y_min, y_max).
+    def bar(self, *args, marker = None, width = 4/5, orientation = None,
+            offset = 0, _reset_ticks = True, lines = True, fill = True,
+            xside = None, yside = None):
+        x, y_min, y_max = correct_data.bar_data(*args)
+
+        # String x → integer positions; remember original strings as labels
+        string_x = any(isinstance(el, str) for el in x)
+        if string_x:
+            positions = list(range(1, len(x) + 1))
+            labels = list(map(str, x))
+            x = positions
+
+        # Apply x offset
+        x = [el + offset for el in x]
+
+        # Numeric x: bar centres (post-offset) become tick positions, their string version the labels
+        if not string_x:
+            positions = list(x)
+            labels = list(map(str, x))
+
+        # Bar geometry
+        xe, ye = bar_edges(x, y_min, y_max, width)
+
+        vertical = is_vertical(correct_matrix.orientation(orientation))
+
+        # Pick the marker once so every bar shares the same colour from the cycler
+        bar_marker = marker if marker is not None else self._next_marker()
+
+        # Start empty and append one rectangle per bar; disconnect at joins keeps outlines isolated
+        sig = self.signal([], [], marker = bar_marker, xside = xside, yside = yside)
+        for i in range(len(x)):
+            rx, ry = (xe[i], ye[i]) if vertical else (ye[i], xe[i])
+            rect = self.rectangle(rx, ry, marker = bar_marker,
+                                  lines = lines, fill = fill,
+                                  xside = xside, yside = yside)
+            join = sig.get_length()
+            sig._append(rect)
+            # Break the line from the previous bar's last point to this bar's first (harmless when join=0)
+            sig._set_connected(join, False)
+
+        # Auto-set ticks at bar centres (string version of value as label)
+        if _reset_ticks:
+            if vertical:
+                self.ticks(positions, labels = labels, axis = "x", side = xside)
+            else:
+                self.ticks(positions, labels = labels, axis = "y", side = yside)
+
+        return sig
+
+    # Build a grouped bar plot from (x, Y) where Y is a list of height-sequences; sub-bars are merged into one signal via _append, per-rectangle markers preserve cycler colours.
+    def multiple_bar(self, *args, marker = None, width = 4/5, orientation = None, _reset_ticks = True, lines = True, fill = True, xside = None, yside = None):
+        x, Y = correct_data.multiple_bar_data(*args)
+        n = len(Y)
+        sub_width = width / n if n else 0
+        offsets = [(-1/2 + 1/(2 * n)) + i / n for i in range(n)]
+        markers = marker if isinstance(marker, list) else [marker] * n
+
+        # Start empty and append one sub-bar per Y row (mirrors bar()'s own start-empty-then-append pattern).
+        main = self.signal([], [], xside = xside, yside = yside)
+        for i in range(n):
+            # _reset_ticks=False on sub-bars: each bar() shifts x by its offset, ticks would land off-centre — we re-set them ourselves below at group centres.
+            sub = self.bar(x, Y[i], marker = markers[i], width = sub_width, orientation = orientation, offset = offsets[i], _reset_ticks = False, lines = lines, fill = fill, xside = xside, yside = yside)
+            # Mark this bar's colour as used so the next sub-bar's _next_marker() picks a different one (draw() normally does this — we trigger it inline).
+            self._cycler.remove_colors(sub._get_foreground_unique_integer_colors())
+            main._append(sub)
+
+        if _reset_ticks and n:
+            string_x = any(isinstance(el, str) for el in x)
+            positions = list(range(1, len(x) + 1)) if string_x else list(x)
+            labels = list(map(str, x))
+            axis = "x" if is_vertical(correct_matrix.orientation(orientation)) else "y"
+            self.ticks(positions, labels = labels, axis = axis, side = xside if axis == "x" else yside)
+
+        return main
+
+    # Build a stacked bar plot from (x, Y) where Y is a list of height-sequences; each group's bar starts at the previous group's cumulative top via the 3-arg bar(x, y_min, y_max) form.
+    def stacked_bar(self, *args, marker = None, width = 4/5, orientation = None, _reset_ticks = True, lines = True, fill = True, xside = None, yside = None):
+        x, Y = correct_data.multiple_bar_data(*args)
+        n = len(Y)
+        markers = marker if isinstance(marker, list) else [marker] * n
+
+        # Cumulative running sum per x slot; each group becomes a 3-arg bar from previous_cum to new_cum.
+        cum = [0] * len(x)
+        main = self.signal([], [], xside = xside, yside = yside)
+        for i in range(n):
+            y_min = list(cum)
+            cum = [cum[k] + Y[i][k] for k in range(len(x))]
+            sub = self.bar(x, y_min, list(cum), marker = markers[i], width = width, orientation = orientation, _reset_ticks = _reset_ticks if i == 0 else False, lines = lines, fill = fill, xside = xside, yside = yside)
+            self._cycler.remove_colors(sub._get_foreground_unique_integer_colors())
+            main._append(sub)
+        return main
+
+    # ---- 5. Specialized -----------------------------------------------------
+
+    # Build an OHLC candlestick signal from a dict with date/open/close/high/low keys.
+    def candlestick(self, data, colors = None, orientation = None, xside = None, yside = None):
+        # Orientation: vertical = dates on x; horizontal = dates on y.
+        vertical = is_vertical(correct_matrix.orientation(orientation))
+
+        # Up/down candle colors (up = close > open; dojis use down).
         colors = ["green", "red"] if colors is None else colors
         up_color, down_color = colors[0], colors[1]
 
-        # Characters for the thin wick and the filled body.
-        wick = '│' if is_vertical else '─'
-        body = '█'
+        # Characters for the thin wick and the filled body
+        wick_ch = '│' if vertical else '─'
+        body_ch = '█'
 
-        # Unpack the OHLC dict (empty fallback so an empty chart still renders).
+        # Unpack the OHLC dict (empty fallback so an empty chart still renders)
         data = {"date": [], "open": [], "close": [], "high": [], "low": []} if not data else data
         date = list(data["date"])
         op   = list(data["open"])          # 'open' would shadow the builtin
@@ -44,48 +232,21 @@ class draw_class:
         low  = list(data["low"])
         n    = len(date)
 
-        # Body limits per candle: bottom = min(open, close), top = max(open, close).
-        body_bot = [min(op[i], cl[i]) for i in range(n)]
-        body_top = [max(op[i], cl[i]) for i in range(n)]
+        # One master signal; per candle, append a wick (line) and a body (rectangle). Disconnect at every join so consecutive sub-signals do not get line-connected. Single legend entry uses a 4-arm box marker (┼) — set explicitly because the master signal starts with no data points (which means Signal::append never gets a chance to remember a default marker).
+        from plotext._primitives.box import box_class
+        from plotext._primitives.pixel import pixel as pixel_class
+        sig = self.signal([], [], xside = xside, yside = yside)
+        sig._set_marker(box_class(up = True, down = True, left = True, right = True, pixel = pixel_class(foreground = up_color)))
+        for i in range(n):
+            col = up_color if op[i] < cl[i] else down_color
+            body_lo, body_hi = min(op[i], cl[i]), max(op[i], cl[i])
+            wick = (self.segment((date[i], date[i]), (low[i], high[i]), marker = marker(wick_ch, col), xside = xside, yside = yside) if vertical
+                    else self.segment((low[i], high[i]), (date[i], date[i]), marker = marker(wick_ch, col), xside = xside, yside = yside))
+            rx, ry = ((date[i], date[i]), (body_lo, body_hi)) if vertical else ((body_lo, body_hi), (date[i], date[i]))
+            body = self.rectangle(rx, ry, marker = marker(body_ch, col), xside = xside, yside = yside)
+            for sub in (wick, body):
+                join = sig.get_length()
+                sig._append(sub)
+                sig._set_connected(join, False)
 
-        # Per-candle color and the two sets of markers (wick line / body block).
-        candle_color = [up_color if op[i] < cl[i] else down_color for i in range(n)]
-        wick_marker  = [marker(wick, candle_color[i]) for i in range(n)]
-        body_marker  = [marker(body, candle_color[i]) for i in range(n)]
-
-        # Helper: build a signal where (top_values) are the main points and
-        # (bot_values) are attached as fill points. Orientation swaps x/y.
-        def make(top_values, bot_values, mk):
-            if is_vertical:
-                x_top, y_top = date, top_values
-                x_bot, y_bot = date, bot_values
-            else:
-                x_top, y_top = top_values, date
-                x_bot, y_bot = bot_values, date
-            s = self.signal(x_top, y_top, marker = mk, xside = xside, yside = yside)
-            s.fill(self.signal(x_bot, y_bot, marker = mk))
-            return s
-
-        wick_signal = make(high,     low,      wick_marker)     # thin high-to-low line
-        body_signal = make(body_top, body_bot, body_marker)     # filled body rectangle
-
-        # Merge the body points into the wick signal so label / legend / cycler
-        # treat the pair as a single entity. "┿" is the representative legend marker.
-        wick_signal._append(body_signal)
-        wick_signal._set_marker(marker("┿", up_color))
-
-        return wick_signal
-
-    # Draw a regular polygon centered at (x, y) with the given radius and number of sides
-    def polygon(self, x = 0, y = 0, radius = 1, sides = 3, up = False, marker = None, lines = True, fill = False, xside = None, yside = None, label = None):
-        sides = 3 if sides is None else max(3, sides)
-        alpha = 2 * math.pi / sides
-        init = alpha / 2 + math.pi / 2 if sides % 2 == 0 else alpha / 4 * ((-1) ** (sides // 2))
-        extra = ((alpha / 2) * up if sides % 2 == 0 else alpha / 2 * (1 + up))
-        get_point = lambda i: [x + math.cos(alpha * i + init + extra) * radius, y + math.sin(alpha * i + init + extra) * radius]
-        points = [get_point(i) for i in range(sides + lines)]
-        xl, yl = sequence.transpose(points)
-        signal = self.signal(xl, yl, marker = marker, xside = xside, yside = yside).lines(lines)
-        [signal._set_fill_point(i, x, 0 * y, signal.get_marker()) for i in range(sides + lines)] if fill else None
-        self._draw_signal(signal)
-        return signal
+        return sig

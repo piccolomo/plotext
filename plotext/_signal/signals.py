@@ -1,7 +1,8 @@
 # Signals container: holds a list of signal objects, with aggregated limits and selection
 
 from plotext._methods import sequence
-from plotext._settings.constants.numerical import binary, infinity
+from plotext._constants.numerical import binary, infinity
+from plotext._signal.points import points_class
 
 
 # Container for multiple signal objects with aggregated limits and side-based selection
@@ -35,19 +36,19 @@ class signals_class:
     def _get_total_points(self):
         return sum(el._get_length() for el in self._signal)
 
-    # Get X limits across all signals
+    # Get X limits across all signals (optionally filtered by y-range)
     def _get_xlimits(self, ymin = -infinity, ymax = infinity):
         limits = [s._get_xlimits(ymin, ymax) for s in self._signal]
         lo, hi = sequence.transpose(limits, 2)
         return [min(lo, default = None), max(hi, default = None)]
 
-    # Get Y limits across all signals
+    # Get Y limits across all signals (optionally filtered by x-range)
     def _get_ylimits(self, xmin = -infinity, xmax = infinity):
         limits = [s._get_ylimits(xmin, xmax) for s in self._signal]
         lo, hi = sequence.transpose(limits, 2)
         return [min(lo, default = None), max(hi, default = None)]
 
-    # Get axis/side limits
+    # Get axis/side limits (optionally filtered by orthogonal-axis range)
     def _get_limits(self, axis = 0, side = 0, min = -infinity, max = infinity):
         selection = self._select(yside = side) if axis else self._select(xside = side)
         return selection._get_ylimits(min, max) if axis else selection._get_xlimits(min, max)
@@ -79,15 +80,36 @@ class signals_class:
         return self
 
     # Get log string for all signals
-    def _get_log(self, fill = False):
+    def _get_log(self, full = False):
         out = ""
         for i in self._get_range():
-            out += str(i + 1) + "th " + self.get(i)._get_log(fill) + ('\n' * 2 if i != self._get_length() - 1 else '')
+            out += str(i + 1) + "th " + self.get(i)._get_log(full) + ('\n' * 2 if i != self._get_length() - 1 else '')
         return out
 
     # Print log
-    def log(self, fill = False):
-        print(self._get_log(fill))
+    def log(self, full = False):
+        print(self._get_log(full))
+        return self
+
+    # Run rescale/plot/select on every signal; return list of canvas-space points (one per signal).
+    def _prepare_all(self, irulers, canvas_width, canvas_height):
+        return [signal._prepare_points(irulers._get(0, signal._get_xside()),
+                                       irulers._get(1, signal._get_yside()),
+                                       canvas_width, canvas_height) for signal in self]
+
+    # Render every signal onto the canvas region of matrix; per-signal x/y rulers are looked up via irulers using the signal's xside/yside.
+    # Points from each signal are accumulated, then squashed once globally so the shared grid sees a single coherent index space.
+    def draw(self, matrix, irulers, canvas_part, canvas_pixel, grid):
+        canvas_col, canvas_row = canvas_part.get_position()
+        canvas_width, canvas_height = canvas_part.get_size()
+        prepared = self._prepare_all(irulers, canvas_width, canvas_height)
+        all_points = points_class(sum(p.get_length() for p in prepared))
+        for p in prepared:
+            all_points.append(p)
+        all_points.squash(grid)
+        all_points.fix_background(canvas_pixel)
+        all_points.add_offset(canvas_col, canvas_row)
+        matrix._insert_points(all_points)
         return self
 
     # Iterator over signals

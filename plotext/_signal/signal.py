@@ -5,10 +5,9 @@ from plotext._primitives.marker import marker as marker_class
 from plotext._kernel.clink import clink
 from plotext._kernel.tools import wstring
 
-from plotext._settings.constants.numerical import infinity
+from plotext._constants.numerical import infinity
 from plotext._methods.sequence import unique
 
-from plotext._correct import signal as correct
 from plotext._correct import bool as correct_bool
 from plotext._signal.points import points_class
 
@@ -18,7 +17,6 @@ class signal_class:
     # Initialize signal with length or existing pointer
     def __init__(self, length = None, _pointer = None):
         self._pointer = clink.signal_new(length) if _pointer is None else _pointer
-        self._set_lines()
 
     # Release the C pointer on deletion
     def __del__(self):
@@ -32,18 +30,24 @@ class signal_class:
         return self
 
 
-    # =====================================================================
-    # Public fluent methods: return self so they can be chained after
-    # plt.signal(...) to configure the signal before plt.draw().
-    # =====================================================================
-
-    # Toggle line drawing between consecutive points
-    def lines(self, value = True):
-        return self._set_lines(correct_bool.boolean(value))
+    # === Public fluent methods (chainable) ===
 
     # Set the signal label shown on the legend
     def label(self, label = None):
         return self._set_label(label)
+
+    # Connect every point uniformly (True = lines drawn between all points, False = scatter)
+    def lines(self, value = True):
+        v = bool(value)
+        for i in range(self.get_length()):
+            self._set_connected(i, v)
+        return self
+
+    # Connect a single point at index (effective range 1..N-1; out-of-range indices ignored)
+    def point_lines(self, index, value = True):
+        if 0 <= index < self.get_length():
+            self._set_connected(index, bool(value))
+        return self
 
     # Fill a vertical stem from each point down to the x axis
     def fillx(self, active = True):
@@ -59,24 +63,19 @@ class signal_class:
                 self._set_fill_point(i, 0, p.get_y(), p.get_marker())
         return self
 
-    # Set the line drawing method ('simple' or 'full'; 0 or 1)
+
+    # === Internal setters (used by plot_class.signal and by drawables) ===
+
+    # Set the line drawing method ('simple' or 'full'; 0 or 1) — fluent.
     def line_method(self, method = None):
-        clink.signal_set_line_method(self._pointer, correct.line_method(method))
+        method = correct_bool.line_method(method)
+        clink.signal_set_line_method(self._pointer, method)
         return self
 
-    # Set the fill drawing method ('simple' or 'full'; 0 or 1)
+    # Set the fill drawing method ('simple' or 'full'; 0 or 1) — fluent.
     def fill_method(self, method = None):
-        clink.signal_set_fill_method(self._pointer, correct.line_method(method))
-        return self
-
-
-    # =====================================================================
-    # Internal setters (used by plot_class.signal and by fluent methods above)
-    # =====================================================================
-
-    # Set whether lines are drawn
-    def _set_lines(self, lines = False):
-        self._lines = lines
+        method = correct_bool.line_method(method)
+        clink.signal_set_fill_method(self._pointer, method)
         return self
 
     # Set signal label
@@ -104,6 +103,15 @@ class signal_class:
     def _set_fill_point(self, index, x, y, m):
         clink.signal_set_fill_point(self._pointer, index, x, y, m._pointer)
         return self
+
+    # Mark whether a line should be drawn from the previous point to the one at index (False starts a new segment)
+    def _set_connected(self, index, connected = True):
+        clink.signal_set_connected(self._pointer, index, bool(connected))
+        return self
+
+    # Read the connected flag at the given index
+    def _is_connected(self, index):
+        return clink.signal_is_connected(self._pointer, index)
 
     # Copy fill from another signal
     def fill(self, signal):
@@ -157,10 +165,6 @@ class signal_class:
     def _rescale_y(self, limits, height, delta):
         clink.signal_rescale_y(self._pointer, limits[0], limits[1], height, delta)
         return self
-
-    # Get lines flag
-    def _get_lines(self):
-        return self._lines
 
     # Get X side
     def _get_xside(self):
@@ -219,33 +223,36 @@ class signal_class:
     def _get_range(self):
         return range(self.get_length())
 
-    # Get minimum X
+    # Get minimum X (optionally filtered by y-range)
     def _get_xmin(self, ymin = None, ymax = None):
         return clink.signal_get_xmin(self._pointer, -infinity if ymin is None else ymin, infinity if ymax is None else ymax)
 
-    # Get maximum X
+    # Get maximum X (optionally filtered by y-range)
     def _get_xmax(self, ymin = None, ymax = None):
         return clink.signal_get_xmax(self._pointer, -infinity if ymin is None else ymin, infinity if ymax is None else ymax)
 
-    # Get X limits
+    # Get X limits (optionally filtered by y-range)
     def _get_xlimits(self, ymin = None, ymax = None):
         return self._get_xmin(ymin, ymax), self._get_xmax(ymin, ymax)
 
-    # Get minimum Y
+    # Get minimum Y (optionally filtered by x-range)
     def _get_ymin(self, xmin = None, xmax = None):
         return clink.signal_get_ymin(self._pointer, -infinity if xmin is None else xmin, infinity if xmax is None else xmax)
 
-    # Get maximum Y
+    # Get maximum Y (optionally filtered by x-range)
     def _get_ymax(self, xmin = None, xmax = None):
         return clink.signal_get_ymax(self._pointer, -infinity if xmin is None else xmin, infinity if xmax is None else xmax)
 
-    # Get Y limits
+    # Get Y limits (optionally filtered by x-range)
     def _get_ylimits(self, xmin = None, xmax = None):
         return self._get_ymin(xmin, xmax), self._get_ymax(xmin, xmax)
 
-    # Get unique integer foreground colors
+    # Get unique integer foreground colors across every point's main and (when present) fill markers — drops the no_color sentinel (anything outside the unsigned-byte range)
     def _get_foreground_unique_integer_colors(self):
-        return unique([p.get_foreground_integer_color() for p in self])
+        codes = []
+        for p in self:
+            codes.extend(p.get_foreground_integer_codes())
+        return unique(c for c in codes if c <= 255)
 
     # Get filled points object
     def _get_points(self):
@@ -253,9 +260,7 @@ class signal_class:
 
     # Copy signal
     def copy(self):
-        out = signal_class(_pointer = clink.signal_copy(self._pointer))
-        out._lines = self._lines
-        return out
+        return signal_class(_pointer = clink.signal_copy(self._pointer))
 
     # Copy from another points object
     def clone(self, signal):
@@ -263,20 +268,34 @@ class signal_class:
         return self
 
     # Get log string of signal
-    def _get_log(self, fill = False):
-        p = clink.signal_get_wstring(self._pointer, fill)
+    def _get_log(self, full = False):
+        p = clink.signal_get_wstring(self._pointer, full)
         out = wstring.from_buffer(p).value
         clink.wstring_delete(p)
         return out
 
     # Print log
-    def log(self, fill = False):
-        print(self._get_log(fill))
+    def log(self, full = False):
+        print(self._get_log(full))
         return self
+
+    # Rescale, plot and densify into canvas-space Points (no squash, no offset, no background fix).
+    # The post-processing steps (squash, fix_background, add_offset, matrix insert) run once over the merged signals in signals_class.draw.
+    def _prepare_points(self, xruler, yruler, canvas_width, canvas_height):
+        xlim, ylim = xruler._get_limits(direction = True), yruler._get_limits(direction = True)
+        xdelta, ydelta = xruler._get_delta(), yruler._get_delta()
+        if xruler._get_scale() == "log": self._log_x()
+        if yruler._get_scale() == "log": self._log_y()
+        self._rescale_x(xlim, canvas_width, xdelta)
+        self._rescale_y(ylim, canvas_height, ydelta)
+        self._plot()
+        points = self._get_points()
+        points.select_in_matrix(canvas_width, canvas_height)
+        return points
 
     # Represent signal
     def __repr__(self):
-        return f"Plotext Signal: length {self.get_length()}, lines: {self._get_lines()}"
+        return f"Plotext Signal: length {self.get_length()}"
 
     # Iterator over points
     def __iter__(self):

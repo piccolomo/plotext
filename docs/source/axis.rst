@@ -3,13 +3,13 @@ Axes
 
 The *frame axes* are the four lines drawn at the edges of the plot canvas: the lower and upper x axes and the left and right y axes. They control the visible borders or frame of the plot itself, and can optionally carry ticks corresponding to the numerical ones placed by the :doc:`rulers`.
 
-Two functions manage their appearance: :func:`plotext.axis` for a single axis side, and :func:`plotext.frame` as a batch shortcut for all four at once.
+Two methods manage their appearance: ``axis`` for a single axis side, and ``frame`` as a batch shortcut for all four at once.
 
 
 Single axis
 -----------
 
-:func:`plotext.axis` controls the visibility (``status``), line style, and colour (via ``pixel``) of one frame side.
+``axis`` controls the visibility (``status``), line style, and colour (via ``pixel``) of one frame side.
 
 .. _line_styles:
 
@@ -20,45 +20,49 @@ The ``style`` parameter is a string accepting one of four values:
 - ``dotted`` — dashed/dotted line
 - ``rounded`` — solid line with rounded corners at the frame intersections
 
-For :func:`plotext.grid`, only ``default`` and ``double`` are supported.
+For ``grid``, only ``default`` and ``double`` are supported.
 
 See :ref:`pixel` for details on the ``pixel`` parameter.
 
 .. code-block:: python
 
    import plotext as plt
+   fig = plt.figure
+   fig.clear()
 
    y = plt.sin()
-   signal = plt.signal(y)
-   plt.draw(signal)
+   signal = fig.signal(y)
+   fig.draw(signal)
 
-   plt.axis(status = False, axis = "x", side = "upper")   # hide the upper x axis
-   plt.axis(style = "dotted",                              # red dotted left y axis
+   fig.axis(status = False, axis = "x", side = "upper")   # hide the upper x axis
+   fig.axis(style = "dotted",                              # red dotted left y axis
             pixel = plt.pixel(foreground = "red"),
             axis = "y", side = "left")
 
-   plt.title("Axis")
-   plt.show()
+   fig.title("Axis")
+   fig.show()
 
 
 All four sides at once
 ----------------------
 
-:func:`plotext.frame` applies the same ``status``, ``style`` and ``pixel`` to every frame side in one call — useful when you want a uniform frame.
+``frame`` applies the same ``status``, ``style`` and ``pixel`` to every frame side in one call — useful when you want a uniform frame.
 
 .. code-block:: python
 
    import plotext as plt
+   fig = plt.figure
+   fig.clear()
 
    y = plt.sin()
-   signal = plt.signal(y)
-   plt.draw(signal)
+   signal = fig.signal(y)
+   fig.draw(signal)
 
-   plt.frame(status = False)        # hide the whole frame
-   # plt.frame(style = "dashed")    # or set a common line style
+   fig.frame(status = False)        # hide the whole frame
+   # fig.frame(style = "dashed")    # or set a common line style
 
-   plt.title("Frame")
-   plt.show()
+   fig.title("Frame")
+   fig.show()
 
 
 .. _axis:
@@ -66,7 +70,7 @@ All four sides at once
 Selecting an axis
 -----------------
 
-Many plotext functions take an ``axis`` parameter — and, when the choice is ambiguous, a ``side`` parameter — to choose which axis they apply to.
+Many plotext methods take an ``axis`` parameter — and, when the choice is ambiguous, a ``side`` parameter — to choose which axis they apply to.
 
 The ``axis`` parameter accepts:
 

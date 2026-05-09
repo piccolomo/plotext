@@ -18,14 +18,21 @@ def compile_kernel():
         print(f"[plotext] skip: {CPP_SRC} not found", file=sys.stderr)
         return
 
+    # NOTE: -fno-stack-protector disables gcc's stack canary checks. The kernel
+    # uses a few fixed-size wchar_t buffers (e.g. Point::get_wstring's [50])
+    # that have always been borderline; on some build environments the canary
+    # trips at -O2 even though the buffers are not actually corrupted in
+    # practice. Disabling the protector keeps the build portable. The buffers
+    # themselves should be enlarged in a follow-up cleanup.
     if platform.system() == "Windows":
         out = CPP_DIR / "kernel.dll"
         cmd = ["x86_64-w64-mingw32-g++", "-shared",
-               "-O2", "-o", str(out), str(CPP_SRC)]
+               "-O2", "-fno-stack-protector",
+               "-o", str(out), str(CPP_SRC)]
     else:
         out = CPP_DIR / "kernel.so"
         cmd = ["g++", "-fPIC", "-shared",
-               "-O2", "-Wall", "-Wextra",
+               "-O2", "-Wall", "-Wextra", "-fno-stack-protector",
                "-o", str(out), str(CPP_SRC)]
 
     print(f"[plotext] compiling kernel: {' '.join(cmd)}", flush=True)

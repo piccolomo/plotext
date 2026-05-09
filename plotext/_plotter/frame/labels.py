@@ -1,7 +1,9 @@
 # Labels container: title plus x/y labels with pixel styling
 
 from plotext._primitives.colorize import colorize
-from plotext._settings.constants.numerical import binary
+from plotext._primitives.matrix import matrix as matrix_class
+from plotext._primitives.text import text as text_class
+from plotext._constants.numerical import binary
 from plotext._correct import label as correct_label
 from plotext._correct import pixel as correct_pixel
 from plotext._correct import axis as correct_axis
@@ -81,6 +83,30 @@ class labels_class:
     # Check if lower region is present
     def lower_present(self):
         return self._x[0] is not None or self._y[0] is not None or self._y[1] is not None
+
+    # Paint title + upper x-label onto the matrix at (bar_col, bar_row), spanning bar_width.
+    def draw_upper_bar(self, matrix, bar_col, bar_row, bar_width):
+        part = matrix_class(bar_width, 1, self._pixel)
+        t = text_class(bar_width // 2, 0, self.get(0, 1), alignment = 0) if self.get(0, 1) is not None else None
+        part._insert_text(t) if t is not None else None
+        t = text_class(bar_width // 2, 0, self._title, alignment = 0) if self._title is not None else None
+        title_centered = part._insert_text(t) if t is not None else False
+        t = text_class(0, 0, self._title, alignment = -1) if self._title is not None and not title_centered else None
+        part._insert_text(t) if t is not None else None
+        matrix._insert_matrix(bar_col, bar_row, part)
+        return self
+
+    # Paint y-labels (corners) + lower x-label onto the matrix at (bar_col, bar_row), spanning bar_width.
+    def draw_lower_bar(self, matrix, bar_col, bar_row, bar_width):
+        part = matrix_class(bar_width, 1, self._pixel)
+        t = text_class(0, 0, self.get_y(0), alignment = -1) if self.get(1, 0) is not None else None
+        part._insert_text(t) if t is not None else None
+        t = text_class(bar_width // 2, 0, self.get(0, 0), alignment = 0) if self.get_x(0) is not None else None
+        part._insert_text(t) if t is not None else None
+        t = text_class(bar_width - 1, 0, self.get(1, 1), alignment = 1) if self.get_y(1) is not None else None
+        part._insert_text(t) if t is not None else None
+        matrix._insert_matrix(bar_col, bar_row, part)
+        return self
 
     # Clone label values from another labels_class
     def clone(self, labels):

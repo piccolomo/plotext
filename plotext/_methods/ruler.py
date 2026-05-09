@@ -2,8 +2,8 @@
 
 import math
 from plotext._kernel.clink import clink 
-from plotext._settings.constants.numerical import limit_deltas
-from plotext._settings.constants.enums import limit_alignments
+from plotext._constants.numerical import limit_deltas
+from plotext._constants.enums import limit_alignments
 
 
 # Apply log base 10 to a value

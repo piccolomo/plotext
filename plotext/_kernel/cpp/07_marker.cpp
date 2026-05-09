@@ -1,142 +1,149 @@
-// Marker: combines Character (wchar + styling) with MarkerType (resolution mode: normal / hd / fhd / braille)
+// Marker: abstract polymorphic base for things you can plot at a position. Each subclass owns its own MatrixCharacter construction via get_matrix_character.
 
-class Marker : public Character, public MarkerType {
+class Marker {
 public:
-    // -------------------- lifecycle --------------------
+    virtual ~Marker() noexcept = default;
+    virtual uint8_t         get_type()    const noexcept = 0;                                                              // marker_normal / marker_hd / marker_fhd / marker_braille / marker_box
+    // (orientation virtual: meaningful only for BoxMarker — pure h/v subset)
+    virtual wstring         get_wstring() const = 0;                                                                       // single-line representation (no newline)
+    virtual size_t          get_cols()    const noexcept { return 1; }                                                      // sub-cell grid width
+    virtual size_t          get_rows()    const noexcept { return 1; }                                                      // sub-cell grid height
+    virtual MatrixCharacter get_matrix_character(uint8_t dot_col = 0, uint8_t dot_row = 0) const = 0;                       // produce the cell contribution this marker draws at the given sub-cell coords
+    virtual const Pixel &   get_pixel()   const noexcept = 0;                                                               // every Marker subclass IS-A Pixel; expose it
+    virtual void            fix(const Pixel & p) noexcept = 0;                                                              // forward to Pixel::fix
+    virtual void            fix_background(const Pixel & p) noexcept = 0;                                                   // forward to Pixel::fix_background
+    virtual Marker *        copy()        const = 0;                                                                        // polymorphic deep copy
+    virtual bool            get_orientation() const noexcept { return false; }                                              // only meaningful for BoxMarker — default false for the others
+    virtual wchar_t         get_model_character() const noexcept { return get_marker_model(get_type()); }                   // glyph used to represent this marker in the legend; subclasses can override (NormalMarker exposes its actual character; others use the type-based lookup glyph)
+    inline  size_t          get_foreground_integer_code() const noexcept { return get_pixel().get_fullground_integer_code(); }  // palette index of the marker's foreground; dispatches once through get_pixel
+    inline  void            log() const { wcout << get_wstring() << endl; }
+};
 
-    // Default constructor
-    constexpr Marker() noexcept = default;
 
-    // Construct from a character and optional pixel (normal marker type)
-    constexpr Marker(wchar_t ch, const Pixel & p = Pixel()) noexcept : Character(ch, p), MarkerType(normal) {}
+// NormalMarker: inherits NormalCharacter (gets wchar + pixel) and the polymorphic Marker interface.
+class NormalMarker : public NormalCharacter, public Marker {
+public:
+    NormalMarker() noexcept = default;
+    NormalMarker(wchar_t ch, const Pixel& p = {}) noexcept : NormalCharacter(ch, p) {}
 
-    // Construct from a marker type and optional pixel (character defaults to space)
-    constexpr Marker(marker_type t, const Pixel & p = Pixel()) noexcept : Character(L' ', p), MarkerType(t) {}
+    uint8_t         get_type()             const noexcept override { return marker_normal; }
+    wchar_t         get_model_character()  const noexcept override { return get_wcharacter(); }
+    wstring         get_wstring() const override { wstring s = L"Normal Marker("; s.push_back(get_wcharacter()); s.push_back(L')'); return s; }
+    MatrixCharacter get_matrix_character(uint8_t, uint8_t) const override { return MatrixCharacter(marker_normal, *this, get_wcharacter()); }
+    const Pixel &   get_pixel()   const noexcept override { return *this; }
+    void            fix(const Pixel & p) noexcept override { Pixel::fix(p); }
+    void            fix_background(const Pixel & p) noexcept override { Pixel::fix_background(p); }
+    Marker *        copy()        const override { return new NormalMarker(*this); }
+};
 
-    // Construct from a pixel only (type defaults to none)
-    constexpr Marker(const Pixel & p) noexcept : Marker(none, p) {}
 
-    // Copy constructor
-    Marker(const Marker&) noexcept = default;
+// HDMarker: 2×2 sub-cell point. Pixel only — sub-cell position comes from the Point.
+class HDMarker : public Pixel, public Marker {
+public:
+    HDMarker() noexcept = default;
+    HDMarker(const Pixel& p) noexcept : Pixel(p) {}
 
-    // Move constructor
-    Marker(Marker&&) noexcept = default;
+    uint8_t         get_type()    const noexcept override { return marker_hd; }
+    wstring         get_wstring() const override { return L"HD Marker()"; }
+    size_t          get_cols()    const noexcept override { return 2; }
+    size_t          get_rows()    const noexcept override { return 2; }
+    MatrixCharacter get_matrix_character(uint8_t dc, uint8_t dr) const override {
+        MatrixCharacter mc(marker_hd, *this);
+        mc.set_bits(get_dot_bit(dc, dr, 2, 2));
+        return mc; }
+    const Pixel &   get_pixel()   const noexcept override { return *this; }
+    void            fix(const Pixel & p) noexcept override { Pixel::fix(p); }
+    void            fix_background(const Pixel & p) noexcept override { Pixel::fix_background(p); }
+    Marker *        copy()        const override { return new HDMarker(*this); }
+};
 
-    // Destructor
-    ~Marker() noexcept {}
 
-    // -------------------- assignment --------------------
+// FHDMarker: 2×3 sub-cell point.
+class FHDMarker : public Pixel, public Marker {
+public:
+    FHDMarker() noexcept = default;
+    FHDMarker(const Pixel& p) noexcept : Pixel(p) {}
 
-    // Copy assignment (self-assignment safe)
-    Marker& operator=(const Marker& m) noexcept {
-        if (this == &m) return *this;
-        Character::operator=(m);
-        MarkerType::operator=(m);
-        return *this;}
+    uint8_t         get_type()    const noexcept override { return marker_fhd; }
+    wstring         get_wstring() const override { return L"FHD Marker()"; }
+    size_t          get_cols()    const noexcept override { return 2; }
+    size_t          get_rows()    const noexcept override { return 3; }
+    MatrixCharacter get_matrix_character(uint8_t dc, uint8_t dr) const override {
+        MatrixCharacter mc(marker_fhd, *this);
+        mc.set_bits(get_dot_bit(dc, dr, 2, 3));
+        return mc; }
+    const Pixel &   get_pixel()   const noexcept override { return *this; }
+    void            fix(const Pixel & p) noexcept override { Pixel::fix(p); }
+    void            fix_background(const Pixel & p) noexcept override { Pixel::fix_background(p); }
+    Marker *        copy()        const override { return new FHDMarker(*this); }
+};
 
-    // Move assignment
-    Marker& operator=(Marker&& m) noexcept {
-        if (this == &m) return *this;
-        Character::operator=(std::move(m));
-        MarkerType::operator=(std::move(m));
-        return *this;}
 
-    // Assign from a plain Character (forces normal mode)
-    Marker& operator=(const Character& ch) noexcept {
-        Character::operator=(ch);
-        MarkerType::set(normal);
-        return *this;}
+// BrailleMarker: 2×4 sub-cell point.
+class BrailleMarker : public Pixel, public Marker {
+public:
+    BrailleMarker() noexcept = default;
+    BrailleMarker(const Pixel& p) noexcept : Pixel(p) {}
 
-    // -------------------- comparison --------------------
+    uint8_t         get_type()    const noexcept override { return marker_braille; }
+    wstring         get_wstring() const override { return L"Braille Marker()"; }
+    size_t          get_cols()    const noexcept override { return 2; }
+    size_t          get_rows()    const noexcept override { return 4; }
+    MatrixCharacter get_matrix_character(uint8_t dc, uint8_t dr) const override {
+        MatrixCharacter mc(marker_braille, *this);
+        mc.set_bits(get_dot_bit(dc, dr, 2, 4));
+        return mc; }
+    const Pixel &   get_pixel()   const noexcept override { return *this; }
+    void            fix(const Pixel & p) noexcept override { Pixel::fix(p); }
+    void            fix_background(const Pixel & p) noexcept override { Pixel::fix_background(p); }
+    Marker *        copy()        const override { return new BrailleMarker(*this); }
+};
 
-    // Equality comparison
-    constexpr bool operator==(const Marker& o) const noexcept {
-        return Character::operator==(o) && MarkerType::operator==(o);}
 
-    // Inequality comparison
-    constexpr bool operator!=(const Marker& o) const noexcept { return !(*this == o); }
+// BoxMarker: a BoxCharacter (packed arms + style + Pixel) wearing the polymorphic Marker interface. State lives entirely in the BoxCharacter base — no duplicate fields.
+class BoxMarker : public BoxCharacter, public Marker {
+public:
+    BoxMarker() noexcept = default;
 
-    // True if markers share the same type
-    constexpr bool same_type(const Marker& o) const noexcept { return MarkerType::operator==(o); }
+    // Simple orientation ctor: 0 = horizontal (left+right arms), 1 = vertical (up+down arms).
+    BoxMarker(bool orientation, uint8_t style = box_normal, const Pixel & p = {}) noexcept
+        : BoxCharacter(orientation, orientation, !orientation, !orientation, style, p) {}
 
-    // -------------------- state --------------------
+    // Full-arms ctor: each bool toggles the corresponding arm. Used internally for ticks/corners/grid intersections.
+    BoxMarker(bool up, bool down, bool left, bool right, uint8_t style, const Pixel & p) noexcept
+        : BoxCharacter(up, down, left, right, style, p) {}
 
-    // Reset character, pixel and marker type
-    void clear() noexcept { Character::clear(); MarkerType::clear(); }
+    // Heuristic — meaningful only for pure h/v markers. Any N or S arm reports as vertical.
+    bool get_orientation() const noexcept override { return (get_arms() & (box_n | box_s)) != 0; }
 
-    // Set the marker type
-    void set_type(marker_type t = normal) noexcept { MarkerType::set(t); }
-
-    // Set the displayed character (switches the marker type to normal)
-    void set_wcharacter(wchar_t ch) noexcept {
-        MarkerType::set(normal);
-        Character::set_wcharacter(ch);}
-
-    // Representative character: the actual char in normal mode, or a model glyph otherwise
-    wchar_t get_model() const noexcept {
-        return is_normal() ? Character::get_wcharacter() : get_marker_model(get());}
-
-    // Return the pixel (color + style) as a detached copy
-    Pixel get_pixel() const noexcept { return static_cast<Pixel>(*this); }
-
-    // -------------------- rendering --------------------
-
-    // Append styled character (or marker label in HD modes) to buffer
-    void to_buffer(wchar_t* buf, size_t& pos) const noexcept {
-        Pixel::to_buffer(buf, pos);                          // apply styling
-        if (is_normal()) wchar_to_buffer(get_wcharacter(), buf, pos);        // single char
-        else MarkerType::to_buffer(buf, pos);                    // e.g. "HD", "FHD"
-        if (pos > 0) cstring_to_buffer(ansi_end, buf, pos); }    // reset ANSI
-
-    // Get wide string for display
-    wstring get_wstring() const {
-        wchar_t buf[marker_size_max + 1] = {};
-        size_t pos = 0;
-        to_buffer(buf, pos);
-        return wstring(buf, pos);}
-
-    // Get narrow string for display
-    inline string get_string() const { return wstring_to_string(get_wstring()); }
-
-    // Log to wcout
-    void log() const noexcept {wcout << get_wstring() << endl;}
-
-    // Wide-stream output
-    friend wostream& operator<<(wostream & os, const Marker & m) noexcept {os << m.get_wstring(); return os; }
-
-    // Narrow-stream output
-    friend ostream& operator<<(ostream & os, const Marker & m) noexcept {os << m.get_string(); return os; }
-
+    uint8_t         get_type()    const noexcept override { return marker_box; }
+    wstring         get_wstring() const override { return get_orientation() ? L"Box Marker(vertical)" : L"Box Marker(horizontal)"; }
+    MatrixCharacter get_matrix_character(uint8_t, uint8_t) const override {
+        MatrixCharacter mc(marker_box, *this);
+        mc.set_bits(get_code());
+        return mc; }
+    const Pixel &   get_pixel()                     const noexcept override { return *this; }
+    void            fix(const Pixel & p)                  noexcept override { Pixel::fix(p); }
+    void            fix_background(const Pixel & p)       noexcept override { Pixel::fix_background(p); }
+    Marker *        copy()                          const          override { return new BoxMarker(*this); }
 };
 
 
 extern "C" {
-    // Create a new normal marker from a character and pixel
-    Marker* marker_new_normal(wchar_t c, const Pixel* p) noexcept { return new Marker(c, *p); }
+    Marker * marker_new_normal (wchar_t c, Pixel * p) noexcept { return new NormalMarker (c, *p); }
+    Marker * marker_new_hd     (Pixel * p) noexcept { return new HDMarker     (*p); }
+    Marker * marker_new_fhd    (Pixel * p) noexcept { return new FHDMarker    (*p); }
+    Marker * marker_new_braille(Pixel * p) noexcept { return new BrailleMarker(*p); }
+    Marker * marker_new_box      (bool up, bool down, bool left, bool right, uint8_t style, Pixel * p) noexcept { return new BoxMarker(up, down, left, right, style, *p); }
+    Marker * marker_new_code   (const char * code, Pixel * p) noexcept { return new NormalMarker(get_marker(string(code)), *p); }
+    void     marker_delete     (Marker * m) noexcept { delete m; }
 
-    // Create a new HD/FHD/braille marker from a type and pixel
-    Marker* marker_new_hd(marker_type t, const Pixel* p) noexcept { return new Marker(t, *p); }
-
-    // Create a new normal marker from a named character code (e.g. "dot"),
-    // resolved to a wchar_t via get_marker() from utility/5_maps.cpp.
-    Marker* marker_new_code(const char* code, const Pixel* p) noexcept {
-        return new Marker(get_marker(string(code)), *p); }
-
-    // Delete a marker
-    void marker_delete(Marker* m) noexcept { delete m; }
-
-    // Deep copy of a marker
-    Marker* marker_copy(const Marker* m) noexcept { return new Marker(*m); }
-
-    // Return the rendered wide string (caller owns the buffer, free with wstring_delete)
-    const wchar_t* marker_get_wstring(const Marker* m) noexcept { return wstring_to_cstring(m->get_wstring()); }
-
-    // Return the representative model character
-    wchar_t        marker_get_model(const Marker* m) noexcept { return m->get_model(); }
-
-    // Return a heap-allocated copy of the marker's pixel
-    Pixel*         marker_get_pixel(const Marker* m) noexcept { return new Pixel(m->get_pixel()); }
-
-    // Fix this marker's colors against another marker's pixel
-    void marker_fix(Marker * p, Marker * pixel) noexcept {p->fix(*pixel);}
+    const wchar_t * marker_get_wstring(Marker * m) noexcept { return wstring_to_cstring(m->get_wstring()); }
+    const wchar_t * marker_get_model  (Marker * m) noexcept { return wstring_to_cstring(wstring(1, m->get_model_character())); }
+    Pixel  *        marker_get_pixel  (Marker * m) noexcept { return new Pixel(m->get_pixel()); }
+    void            marker_fix        (Marker * m, Pixel * p) noexcept { m->fix(*p); }
+    Marker *        marker_copy       (Marker * m) noexcept { return m->copy(); }
+    bool            marker_get_orientation(Marker * m) noexcept { return m->get_orientation(); }
+    // Returns the line style (0 = normal, 1 = double, 2 = heavy, 3 = dotted, 4 = rounded). Only meaningful for BoxMarker; other kinds return 0.
+    uint8_t         marker_get_style(Marker * m) noexcept { return m->get_type() == marker_box ? static_cast<BoxMarker*>(m)->get_style() : 0; }
 }

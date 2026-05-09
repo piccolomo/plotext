@@ -4,25 +4,23 @@ from plotext._kernel.clink import clink
 from plotext._kernel.tools import wstring, wchar
 from plotext._primitives.pixel import pixel as pixel_class
 from plotext._settings import defaults
-from plotext._settings.constants import enums
+from plotext._constants import enums
+from plotext._correct import pixel as correct_pixel
 
 
 # Marker: one glyph (or HD marker type) with its pixel styling, backed by the C kernel
 class marker:
     # Initialize marker from a normal character, a named character code, or an HD marker code.
-    # Named-code → glyph resolution is performed on the C side via get_marker().
-    def __init__(self, marker=None, foreground='default', background='default', style='default', _pointer=None):
-        if _pointer is not None:
-            self._pointer = _pointer
-            return
-        m = defaults.marker if marker is None else marker
-        px = pixel_class(foreground = foreground, background = background, style = style)
-        if m in enums.hd_markers_codes:
-            self._pointer = clink.marker_new_hd(enums.hd_markers_codes.index(m) + 1, px._pointer)
-        elif m in enums.marker_codes:
-            self._pointer = clink.marker_new_code(m.encode('utf-8'), px._pointer)
-        else:
-            self._pointer = clink.marker_new_normal(wchar(str(m)[0]), px._pointer)
+    # Named-code → symbol resolution is performed on the C side via get_marker().
+    def __init__(self, code=None, pixel=None, _pointer=None):
+        self._pointer = None
+        if _pointer is not None: self._pointer = _pointer; return
+        m  = defaults.marker if code is None else code
+        px = correct_pixel.pixel(pixel, pixel_class())
+        hd_factories = {'hd': clink.marker_new_hd, 'fhd': clink.marker_new_fhd, 'braille': clink.marker_new_braille}
+        self._pointer = hd_factories[m](px._pointer)                          if m in hd_factories       else \
+                        clink.marker_new_code(m.encode('utf-8'), px._pointer) if m in enums.marker_codes else \
+                        clink.marker_new_normal(wchar(str(m)[0]), px._pointer)
 
     # Release the C marker pointer on deletion
     def __del__(self):
@@ -37,7 +35,7 @@ class marker:
 
     # Get the character used as the model of the marker
     def _get_model(self):
-        return wchar.from_buffer(clink.marker_get_model(self._pointer)).value
+        return clink.marker_get_model(self._pointer)[0]
 
     # Get the pixel associated with the marker
     def get_pixel(self):

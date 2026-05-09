@@ -1,7 +1,7 @@
 # Parameter primitive: a function parameter or output with name, type and default fields
 
 from plotext.prettydoc._primitives.text import text_class, labelled_text_class
-from plotext._settings.constants.text import new_line, comma
+from plotext._constants.text import new_line, comma
 from plotext._methods.string import add_prefix, connect_strings
 
 

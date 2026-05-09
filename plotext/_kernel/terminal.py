@@ -18,10 +18,10 @@ class terminal:
         if lines is None:
             write('\033c')
         else:
-            for _ in range(lines + self._prompt):
-                write("\033[A")
-                write("\033[2K")
+            write("\033[A" * (lines + self._prompt))
         return self
+
+    clt = clean
 
     # Reset prompt, limit and size to defaults
     def clear(self):

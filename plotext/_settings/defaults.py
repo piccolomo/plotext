@@ -30,7 +30,7 @@ colors = {
     "label":   ("blue+",   "white"),
     "axis":    ("black",   "white"),
     "grid":    ("blue",    "white"),
-    "ruler":   ("blue",    "white"),
+    "ruler":   ("blue+",   "white"),
     "canvas":  ("default", "white"),
     "line":    ("orange",  "white"),
     "legend":  ("black",   "white")}
@@ -42,10 +42,11 @@ pixels = {k: pixel(*v) for k, v in colors.items()}
 
 # Subplot
 size_direction = 1
+size_policy = "maximum"
 
 # Legend
 legend = {
-    "status": True,
+    "status": False,
     "relative": False,
     "x position": 0,
     "y position": 0,

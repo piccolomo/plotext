@@ -27,32 +27,22 @@
 #include "utility/7_cstrings.cpp"
 #include "utility/8_data.cpp"
 #include "utility/9_alignment.cpp"
+#include "utility/10_orientation.cpp"
 
-// --- Pixel Modules ---
-// Color, style, pixel representation, colorization, character handling
+// --- Kernel Modules ---
 #include "01_color.cpp"
 #include "02_style.cpp"
 #include "03_pixel.cpp"
 #include "04_colorize.cpp"
-#include "05_character.cpp"
-
-// --- Marker / Point Modules ---
-// Marker types, marker class, boolean matrix for points
-#include "06_marker_type.cpp"
+#include "05_matrix_bool.cpp"
+#include "06_character.cpp"
 #include "07_marker.cpp"
-#include "08_matrix_bool.cpp"
-
-// --- Point Modules ---
-// Point position, point class, point maps, collections, filled points, signal handling
-#include "09_point_position.cpp"
-#include "10_point.cpp"
-#include "11_map.cpp"
-#include "12_points.cpp"
+#include "08_point_position.cpp"
+#include "09_point.cpp"
+#include "15_points_grid.cpp"
+#include "10_points.cpp"
 #include "13_point_filled.cpp"
 #include "14_points_filled.cpp"
-#include "15_signal.cpp"
-
-// --- Matrix Modules ---
-// Character handling in HD matrix, general matrix operations
-#include "16_character_hd.cpp"
-#include "17_matrix.cpp"
+#include "16_signal.cpp"
+#include "12_text.cpp"
+#include "11_matrix.cpp"

@@ -33,9 +33,13 @@ Documentation
    install
    basic
    date
+   shape
+   bar
    colorize
    marker
    settings
+   subplot
+   inspection
    api
    prettydoc
 

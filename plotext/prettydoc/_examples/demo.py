@@ -1,7 +1,7 @@
 # Demo: reference table of PrettyDoc components and what each one styles
 
 from plotext._correct import label as correct_label
-from plotext._settings.constants.text import space, new_line
+from plotext._constants.text import space, new_line
 from plotext._primitives.colorize import colorize
 
 

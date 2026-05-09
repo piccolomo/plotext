@@ -1,7 +1,7 @@
 # String utilities and stdout helpers for rendering and formatting
 
 import sys
-from plotext._settings.constants.text import space, new_line, empty, ansi_begin
+from plotext._constants.text import space, new_line, empty, ansi_begin
 
 
 # Write string to stdout with optional flush

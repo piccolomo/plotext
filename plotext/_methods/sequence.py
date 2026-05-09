@@ -45,3 +45,14 @@ def repeat(data, length):
 # Replace None elements in a list with values from a fallback list at matching positions
 def replace_none(data, new_data):
     return [new_data[i] if el is None else el for i, el in enumerate(data)]
+
+
+def remove_none(data):
+    return [el for el in data if el is not None]
+
+def safe_min(data):
+    return min(remove_none(data), default = None)
+
+def safe_max(data):
+    return max(remove_none(data), default = None)
+

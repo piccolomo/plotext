@@ -11,8 +11,8 @@ def label(label, default_pixel):
     if label is None or only_spaces(label):
         return None
     if isinstance(label, str):
-        label = colorize_class(label.strip()).set_pixel(default_pixel)
-    label._fix_background(default_pixel)
+        label = colorize_class(label).set_pixel(default_pixel)
+    label._fix(default_pixel)
     return label
 
 

@@ -97,8 +97,8 @@ Different matrices can be combined with the :meth:`~plotext.matrix.insert` metho
 
    :meth:`~plotext.matrix.insert` takes two alignment parameters:
 
-   - ``ha`` — horizontal alignment: ``"left"``, ``"center"`` or ``"right"`` (or ``-1`` / ``0`` / ``1``). Default is ``"left"``.
-   - ``va`` — vertical alignment: ``"top"``, ``"center"`` or ``"bottom"`` (or ``-1`` / ``0`` / ``1``). Default is ``"top"``.
+   - ``ha`` — horizontal alignment: ``"left"``, ``"center"`` or ``"right"`` (short ``"l"``, ``"c"``, ``"r"``; or ``-1`` / ``0`` / ``1``). Default is ``"left"``.
+   - ``va`` — vertical alignment: ``"top"``, ``"center"`` or ``"bottom"`` (short ``"t"``, ``"c"``, ``"b"``; or ``-1`` / ``0`` / ``1``). Default is ``"top"``.
 
 .. note:: The ``adapt`` parameter of :meth:`~plotext.matrix.insert` (default ``True``) silently trims an inserted object if it extends beyond the matrix boundary, instead of raising an error.
 
@@ -308,3 +308,39 @@ the available slicing forms are:
 
      First
      Second
+
+
+.. _text:
+
+Text Annotations
+----------------
+
+A colorized string can be drawn directly on a plot at given data coordinates with :meth:`~plotext._plotter.plot.plot_class.text`. Like other drawables, the method returns a text object that the caller passes to :meth:`~plotext._plotter.plot.plot_class.draw`.
+
+.. code-block:: python
+
+   import plotext as plt
+   fig = plt.figure
+   fig.clear()
+
+   y = plt.sin()
+   fig.draw(fig.signal(y))
+
+   fig.draw(fig.text(100, 0, "middle", alignment = "center"))
+   fig.draw(fig.text(20, 0.5, plt.colorize("left", "green")))
+   fig.draw(fig.text(180, -0.5, plt.colorize("right", "blue"), alignment = "right"))
+   fig.draw(fig.text(100, 0.8, "vertical", orientation = "vertical", alignment = "top"))
+
+   fig.title("Text Annotations")
+   fig.show()
+
+Parameters:
+
+- ``x``, ``y`` — anchor coordinates of the text in data space.
+- ``label`` — text content. A plain string is rendered with the default label coloring; a :class:`~plotext.colorize` keeps its own foreground, background and style.
+- ``alignment`` — anchor placement along the writing direction. For horizontal text use *left*, *center* or *right* (short *l*, *c*, *r*); for vertical text use *top*, *center* or *bottom* (short *t*, *c*, *b*). Both naming sets map to the same -1, 0 or 1 internally.
+- ``orientation`` — *horizontal* (default, short *h*) lays characters across columns; *vertical* (short *v*) lays them across rows.
+- ``xside``, ``yside`` — which axis pair the text is anchored to (see :ref:`axis`).
+- ``relative`` — when *true*, x and y are interpreted as absolute canvas-cell coordinates and skip the data-to-canvas rescaling.
+
+.. note:: Text annotations contribute to the plot's autoscale: a figure that contains only texts (no signals) still produces sensible axis limits.

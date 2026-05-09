@@ -58,7 +58,7 @@ clink.add('colorize', 'get', 'wstring').input("void", "bool").output("wchar poin
 clink.add('colorize', 'get', 'matrix').input("void").output("void")
 clink.add('colorize', 'get', 'pixel').input("void").output("void")
 
-clink.add('colorize', 'set', 'pixel').input("void").output("void")
+clink.add('colorize', 'set', 'pixel').input("void", "void").output("void")
 
 clink.add('colorize', 'part').input("void", "size", "size").output("void")
 clink.add('colorize', 'print').input("void", "bool", "bool").output("void")
@@ -72,6 +72,7 @@ clink.add('colorize', 'no', 'background').input("void").output("bool")
 
 clink.add('colorize', 'copy', 'background').input("void", "void").output("void")
 clink.add('colorize', 'fix', 'background').input("void", "void").output("void")
+clink.add('colorize', 'fix').input("void", "void").output("void")
 
 
 # =========================
@@ -80,7 +81,7 @@ clink.add('colorize', 'fix', 'background').input("void", "void").output("void")
 
 clink.add('matrix', 'new').input("size", "size").output("void")
 clink.add('matrix', 'clear').input("void").output("void")
-clink.add('matrix', 'delete').input("void")
+clink.add('matrix', 'delete').input("void").output("void")
 
 clink.add('matrix', 'get', 'width').input("void").output("size")
 clink.add('matrix', 'get', 'height').input("void").output("size")
@@ -91,21 +92,21 @@ clink.add('matrix', 'hstack').input("void", "void", "bool").output("void")
 clink.add('matrix', 'get', 'wstring').input("void", "bool").output("wchar pointer")
 
 clink.add('matrix', 'part').input("void", "size", "size", "size", "size").output("void")
-clink.add('matrix', 'is', 'empty').input("void", "size", "size", "size", "size").output("bool")
+# clink.add('matrix', 'is', 'empty').input("void", "size", "size", "size", "size").output("bool")   # disabled: no Python callers
 
 clink.add('matrix', 'print').input("void", "bool", "bool").output("void")
 clink.add('matrix', 'copy').input("void").output("void")
 
-clink.add('matrix', 'insert', 'matrix').input("void", "size", "size", "void").output("void")
-clink.add('matrix', 'insert', 'matrix', 'aligned').input("void", "size", "size", "void", "integer", "integer").output("void")
+clink.add('matrix', 'insert', 'matrix').input("void", "size", "size", "void", "integer", "integer").output("void")
+# clink.add('matrix', 'insert', 'matrix', 'aligned')  # merged into matrix_insert_matrix (alignment args appended)
 
-clink.add('matrix', 'insert', 'colorized', 'aligned').input("void", "size", "size", "void", "integer", "bool").output("bool")
-clink.add('matrix', 'insert', 'colorized', 'dynamically').input("void", "size", "size", "void").output("integer")
+clink.add('matrix', 'insert', 'text').input("void", "void", "bool", "bool").output("bool")
 
-clink.add('matrix', 'insert', 'wstring').input("void", "size", "size", "wstring").output("void")
-clink.add('matrix', 'set', 'wcharacter').input("void", "size", "size", "wchar").output("void")
 
 clink.add('matrix', 'set', 'pixel').input("void", "size", "size", "void").output("void")
+clink.add('matrix', 'set', 'normal', 'character').input("void", "size", "size", "wchar", "void").output("void")
+clink.add('matrix', 'add', 'box', 'marker').input("void", "size", "size", "void").output("void")
+clink.add('matrix', 'add', 'line').input("void", "size", "void", "size", "size", "bool").output("void")
 
 
 # =========================
@@ -113,17 +114,61 @@ clink.add('matrix', 'set', 'pixel').input("void", "size", "size", "void").output
 # =========================
 
 clink.add('marker', 'new', 'normal').input("wchar", "void").output("void")
-clink.add('marker', 'new', 'hd').input("size", "void").output("void")
+clink.add('marker', 'new', 'hd').input("void").output("void")
+clink.add('marker', 'new', 'fhd').input("void").output("void")
+clink.add('marker', 'new', 'braille').input("void").output("void")
+clink.add('marker', 'new', 'box').input("bool", "bool", "bool", "bool", "size", "void").output("void")
 clink.add('marker', 'new', 'code').input("string", "void").output("void")
 
-clink.add('marker', 'delete').input().output("void")
+clink.add('marker', 'delete').input("void").output("void")
 clink.add('marker', 'copy').input("void").output("void")
 
 clink.add('marker', 'get', 'wstring').input("void").output("wchar pointer")
-clink.add('marker', 'get', 'model').input("void").output("wchar pointer")
+clink.add('marker', 'get', 'model').input("void").output("wstring")
 clink.add('marker', 'get', 'pixel').input("void").output("void")
 
 clink.add('marker', 'fix').input("void", "void").output("void")
+clink.add('marker', 'get', 'orientation').input("void").output("bool")
+clink.add('marker', 'get', 'style').input("void").output("size")
+
+
+# =========================
+# Box Style
+# =========================
+
+clink.add('box', 'style', 'new').input("size", "void").output("void")
+clink.add('box', 'style', 'delete').input("void").output("void")
+
+clink.add('box', 'style', 'get', 'style').input("void").output("size")
+clink.add('box', 'style', 'set', 'style').input("void", "size").output("void")
+
+clink.add('box', 'style', 'get', 'pixel').input("void").output("void")
+clink.add('box', 'style', 'set', 'pixel').input("void", "void").output("void")
+
+
+# =========================
+# Text
+# =========================
+
+clink.add('text', 'new').input("float", "float", "void", "integer", "integer").output("void")
+clink.add('text', 'copy').input("void").output("void")
+clink.add('text', 'delete').input("void").output("void")
+
+clink.add('text', 'set', 'position').input("void", "float", "float").output("void")
+clink.add('text', 'set', 'alignment').input("void", "integer").output("void")
+clink.add('text', 'set', 'orientation').input("void", "integer").output("void")
+
+clink.add('text', 'get', 'x').input("void").output("float")
+clink.add('text', 'get', 'y').input("void").output("float")
+clink.add('text', 'get', 'alignment').input("void").output("integer")
+clink.add('text', 'get', 'orientation').input("void").output("integer")
+
+clink.add('text', 'rescale', 'x').input("void", "float", "float", "size", "float").output("void")
+clink.add('text', 'rescale', 'y').input("void", "float", "float", "size", "float").output("void")
+
+clink.add('text', 'fix', 'background').input("void", "void").output("void")
+
+clink.add('text', 'get', 'wstring').input("void").output("wchar pointer")
 
 
 # =========================
@@ -132,13 +177,15 @@ clink.add('marker', 'fix').input("void", "void").output("void")
 
 clink.add('point', 'filled', 'new').input("float", "float", "void").output("void")
 clink.add('point', 'filled', 'get', 'marker').input("void").output("void")
-clink.add('point', 'filled', 'delete').input().output("void")
+clink.add('point', 'filled', 'delete').input("void").output("void")
 clink.add('point', 'filled', 'get', 'wstring').input("void", "bool").output("wchar pointer")
 clink.add('point', 'filled', 'get', 'col').input("void").output("size")
 clink.add('point', 'filled', 'get', 'row').input("void").output("size")
 clink.add('point', 'filled', 'get', 'x').input("void").output("float")
 clink.add('point', 'filled', 'get', 'y').input("void").output("float")
-clink.add('point', 'filled', 'get', 'code').input("void").output("size")
+clink.add('point', 'filled', 'get', 'main', 'foreground', 'integer', 'code').input("void").output("size")
+clink.add('point', 'filled', 'get', 'fill', 'foreground', 'integer', 'code').input("void").output("size")
+clink.add('point', 'filled', 'has', 'fill').input("void").output("bool")
 
 clink.add('points', 'new').input("size").output("void")
 clink.add('points', 'delete').input("void").output("void")
@@ -161,11 +208,11 @@ clink.add('points', 'squash').input("void", "void").output("void")
 clink.add('points', 'log').input("void").output("void")
 clink.add('points', 'copy').input("void").output("void")
 
-clink.add('points', 'map', 'new').input("size", "size").output("void")
-clink.add('points', 'map', 'delete').input("void").output("void")
-clink.add('points', 'map', 'log').input("void").output("void")
-clink.add('points', 'map', 'clear').input("void").output("void")
-clink.add('points', 'map', 'get', 'length').input("void").output("size")
+clink.add('points', 'grid', 'new').input("size", "size").output("void")
+clink.add('points', 'grid', 'delete').input("void").output("void")
+clink.add('points', 'grid', 'log').input("void").output("void")
+clink.add('points', 'grid', 'clear').input("void").output("void")
+clink.add('points', 'grid', 'get', 'length').input("void").output("size")
 
 
 # =========================
@@ -187,7 +234,7 @@ clink.add('point', 'log').input("void").output("void")
 # =========================
 
 clink.add('signal', 'new').input("size").output("void")
-clink.add('signal', 'delete').input("void")
+clink.add('signal', 'delete').input("void").output("void")
 
 clink.add('signal', 'copy').input("void").output("void")
 clink.add('signal', 'clear').input("void").output("void")
@@ -214,14 +261,17 @@ clink.add('signal', 'append').input("void", "void").output("void")
 clink.add('signal', 'set', 'point').input("void", "size", "float", "float", "void").output("void")
 clink.add('signal', 'set', 'fill', 'point').input("void", "size", "float", "float", "void").output("void")
 
+clink.add('signal', 'set', 'connected').input("void", "size", "bool").output("void")
+clink.add('signal', 'is', 'connected').input("void", "size").output("bool")
+
 clink.add('signal', 'get', 'point').input("void", "size").output("void")
 clink.add('signal', 'get', 'fill', 'point').input("void", "size").output("void")
 
 clink.add('signal', 'log', 'x').input("void").output("void")
 clink.add('signal', 'log', 'y').input("void").output("void")
 
-clink.add('signal', 'rescale', 'x').input("void", "float", "float", "size", "float").output("float")
-clink.add('signal', 'rescale', 'y').input("void", "float", "float", "size", "float").output("float")
+clink.add('signal', 'rescale', 'x').input("void", "float", "float", "size", "float").output("void")
+clink.add('signal', 'rescale', 'y').input("void", "float", "float", "size", "float").output("void")
 
 clink.add('signal', 'add', 'offset').input("void", "size", "size").output("void")
 clink.add('signal', 'select', 'in', 'matrix').input("void", "size", "size").output("void")

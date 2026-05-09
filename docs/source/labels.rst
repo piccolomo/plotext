@@ -7,17 +7,20 @@ Plot labels — title and axis labels — describe the content of your plot. The
 Plot Title
 ----------
 
-Use :func:`plotext.title` to set the plot title:
+Use ``title`` to set the plot title:
 
 .. code-block:: python
 
-   plotext.title("Temperature Over Time")
+   import plotext as plt
+   fig = plt.figure
+
+   fig.title("Temperature Over Time")
 
 The title accepts a colorized string as well:
 
 .. code-block:: python
 
-   plotext.title(plotext.colorize("Temperature Over Time", foreground = "cyan"))
+   fig.title(plt.colorize("Temperature Over Time", foreground = "cyan"))
 
 .. note:: By default the title sits at the top centre. If the upper x-axis has its own label, the title shifts to the top left.
 
@@ -25,12 +28,12 @@ The title accepts a colorized string as well:
 Axis Labels
 -----------
 
-Use :func:`plotext.label` to set the x and y axis labels:
+Use ``label`` to set the x and y axis labels:
 
 .. code-block:: python
 
-   plotext.label("Time (days)", axis = "x")
-   plotext.label("Amplitude",  axis = "y")
+   fig.label("Time (days)", axis = "x")
+   fig.label("Amplitude",   axis = "y")
 
 Like the title, each label accepts either a plain or colorized string.
 

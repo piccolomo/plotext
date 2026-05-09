@@ -138,5 +138,6 @@ extern "C" {
 
     // Fix Background of Colorize using a Pixel if not set
     void colorize_fix_background(Colorize * c, Pixel * p) noexcept { c->fix_background(*p); }
+    void colorize_fix(Colorize * c, Pixel * p) noexcept { c->fix(*p); }
 
 }

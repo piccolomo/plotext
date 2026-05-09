@@ -8,7 +8,7 @@ from plotext._methods.sequence import repeat
 # Correct a single marker
 def marker(marker, default_marker):
     marker = default_marker if marker is None else marker_class(marker) if isinstance(marker, str) else marker
-    return marker._fix(default_marker)
+    return marker._fix(default_marker.get_pixel())                                    # _fix expects a pixel_class, not a marker_class
 
 
 # Correct a list of markers and repeat to match length
