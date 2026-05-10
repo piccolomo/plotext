@@ -32,6 +32,10 @@ To create a basic plot, build a signal with ``signal`` and pass it to ``draw`` o
 
    Inspect a signal's current point count via :meth:`.get_length() <plotext._signal.signal.signal_class.get_length>`. Useful when programmatically building signals (e.g. via ``_append``) before deciding on the number of ticks or grid divisions.
 
+.. note::
+
+   A signal can be deep-copied with :meth:`.copy() <plotext._signal.signal.signal_class.copy>`, or have its points overwritten in place from another signal with :meth:`.clone(other) <plotext._signal.signal.signal_class.clone>`. Use ``copy`` when you want to keep the original configuration and replay it with new data alongside; use ``clone`` to swap one signal's points for another's while keeping the rest of the configuration intact.
+
 
 .. _line:
 

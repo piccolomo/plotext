@@ -20,7 +20,7 @@ from plotext._settings import defaults
 
 add(plot_class.clear, name = "clear")
 alias("clf")
-doc("Clears all signals, settings and sizes from this plot, resetting it to an empty state. Equivalent to calling clear_data(), clear_settings(), clear_pixels(), clear_styles(), clear_size() and clear_subplots() in turn.")
+doc("Clears all signals, settings and sizes from this plot, resetting it to an empty state. Equivalent to calling clear_data(), clear_settings(), clear_pixels(), clear_styles(), clear_size() and clear_subplots() in turn. On the master plot, clear_size() also resets the terminal's sizing state (prompt height + per-axis limit flags) so no terminal-level state leaks across calls.")
 out("This plot", type.plot)
 
 add(plot_class.clear_data, name = "clear_data")
@@ -44,7 +44,7 @@ past_out("clear")
 
 add(plot_class.clear_size, name = "clear_size")
 alias("clz")
-doc("Drops any explicit plot_size() value. On the master plot the size reverts to the current terminal dimensions. Signals, subplots, settings, pixels and styles are preserved.")
+doc("Drops any explicit plot_size() value and resets every subplot's size to None so the next harmonization redistributes proportionally. On the master plot it also resets the terminal's sizing state by calling terminal.clear() — prompt height and per-axis limit flags revert to their defaults, and the master size snaps back to the current terminal dimensions. Signals, subplots, settings, pixels and styles are preserved.")
 past_out("clear")
 
 add(plot_class.clear_subplots, name = "clear_subplots")
@@ -78,6 +78,54 @@ par("offset", "Additional vertical offset"); spec(type.float, 0)
 out("List of floats representing the generated signal", type.floats)
 
 
+add(square)
+doc("Generates a square-wave signal alternating between +amplitude and -amplitude — a discrete companion to sin() for testing plotting routines.")
+par("periods", "Number of complete square-wave cycles"); spec(type.float, 2)
+par("length", "Total number of sample points"); spec(type.int, 200)
+par("amplitude", "Half the peak-to-peak value of the square wave"); spec(type.float, 1)
+out("List of floats representing the generated signal", type.floats)
+
+
+add(image)
+doc("Direct image-to-matrix renderer: opens the file via Pillow, optionally converts it to grayscale, resizes it to (width, height) and returns a fully painted plotext.matrix. Bypasses the figure pipeline — much faster than figure.image() — and is meant for the print-and-go use case (caller does img.print()).")
+par("path", "Filesystem path to the image (any format supported by Pillow)"); spec(type.string)
+par("gray", "If True, convert the image to grayscale before rendering"); spec(type.bool, False)
+par("ratio", "If True (default), preserve the source image's aspect ratio while fitting inside (width, height); the returned matrix is the largest size that fits without distortion (with cell-aspect compensation, since terminal cells are roughly twice as tall as they are wide). If False, stretch to exactly (width, height)."); spec(type.bool, True)
+par("width", "Target width in canvas chars. None falls back to the terminal width; otherwise clamped to the terminal width when plt.terminal.limit's width flag is on (the default), or passed through untouched when the limit has been disabled"); spec(type.int, None)
+par("height", "Target height in canvas chars. None falls back to the terminal height; otherwise clamped to the terminal height when plt.terminal.limit's height flag is on (the default), or passed through untouched when the limit has been disabled"); spec(type.int, None)
+out("A painted plotext.matrix ready to print", type.matrix)
+
+
+add(gif)
+doc("Animate a GIF in the terminal: decodes each frame on the fly (no upfront pre-decode wait), paints, prints, and sleeps only the remainder of the GIF's per-frame duration so playback runs at the GIF's natural speed and degrades gracefully when paint is slow. Adapts to terminal resize automatically. Press q to exit. Side-effect-only — no return value.")
+par("path", "Filesystem path to the GIF"); spec(type.string)
+par("gray", "If True, convert each frame to grayscale before rendering"); spec(type.bool, False)
+par("ratio", "If True (default), preserve the source aspect ratio (with cell-aspect compensation); if False, stretch each frame to exactly (width, height)"); spec(type.bool, True)
+par("loop", "If True (default), replay forever until q is pressed; if False, play once and return"); spec(type.bool, True)
+par("width", "Target width in canvas chars. None falls back to the terminal width; otherwise clamped to the terminal width when plt.terminal.limit's width flag is on, or passed through when the limit has been disabled"); spec(type.int, None)
+par("height", "Target height in canvas chars. None falls back to the terminal height; otherwise clamped to the terminal height when plt.terminal.limit's height flag is on, or passed through when the limit has been disabled"); spec(type.int, None)
+
+
+add(video)
+doc("Play a video file in the terminal with synchronised audio and video. A single ffpyplayer.MediaPlayer owns both streams — pushing audio on its own thread and yielding video frames paired with the seconds-to-sleep value that keeps the visible frames locked to the audio clock. Press q to exit. Side-effect-only — no return value.")
+par("path", "Filesystem path to the video (any format ffpyplayer can decode)"); spec(type.string)
+par("gray", "If True, convert each frame to grayscale before rendering"); spec(type.bool, False)
+par("ratio", "If True (default), preserve the source aspect ratio (with cell-aspect compensation); if False, stretch each frame to exactly (width, height)"); spec(type.bool, True)
+par("loop", "If True (default), replay forever until q is pressed; if False, play once and return"); spec(type.bool, True)
+par("width", "Target width in canvas chars. None falls back to the terminal width; otherwise clamped per terminal.limit's width flag"); spec(type.int, None)
+par("height", "Target height in canvas chars. None falls back to the terminal height; otherwise clamped per terminal.limit's height flag"); spec(type.int, None)
+
+
+add(youtube)
+doc("Play a YouTube URL in the terminal: resolves the URL to a direct stream URL via yt-dlp, then delegates to video(). Press q to exit. Stream URLs expire after a while — re-resolve before each playback for long sessions.")
+par("url", "YouTube URL"); spec(type.string)
+par("gray", "If True, convert each frame to grayscale before rendering"); spec(type.bool, False)
+par("ratio", "If True (default), preserve the source aspect ratio (with cell-aspect compensation); if False, stretch to exactly (width, height)"); spec(type.bool, True)
+par("loop", "If True (default), replay forever until q is pressed; if False, play once and return"); spec(type.bool, True)
+par("width", "Target width in canvas chars; None falls back to the terminal width"); spec(type.int, None)
+par("height", "Target height in canvas chars; None falls back to the terminal height"); spec(type.int, None)
+
+
 add(plot_class.signal, name = "signal")
 doc("Creates a signal, a sequence of points to be plotted. Line drawing is configured on the returned signal via its fluent methods (lines, point_lines); line_method and fill_method are construction-time parameters here; label and stem fills (fillx, filly) are also set fluently on the signal.")
 par("args", "Input data: x, y coordinates, or a single y sequence; date values are also supported"); spec(type.data_multiple)
@@ -103,6 +151,28 @@ par("orientation", "Candlestick orientation, either vertical (or v) or horizonta
 past("xside", "signal")
 past("yside", "signal")
 out("The candlestick signal", type.signal)
+
+
+add(plot_class.error, name = "error")
+doc("Creates an error-bar plot: a scatter point at each (x, y), with a vertical bar of total length yerr[i] (centred on y[i]) and a horizontal bar of total length xerr[i] (centred on x[i]). The bars are drawn as box-line glyphs so the vertical and horizontal arms auto-merge into ┼ at the centre point. The returned signal must be passed to draw().")
+par("args", "Error input data, given as positional sequences. One sequence sets the y values (x defaults to 1..N), two set x and y with no errors, three set x, y and y errors, four set x, y, y errors and x errors (yerr first mirrors matplotlib.errorbar's positional convention). Each error sequence may be a scalar (broadcast to every point) or a list."); spec(type.data_multiple)
+par("pixel", "Pixel (colour and style) used for every stroke of the error bars; if None, a fresh colour is taken from the cycler"); spec(type.pixel_par, None)
+par("style", "Line drawing style applied to the bars. " + type.line_styles); spec(type.style, repr('default'))
+past("xside", "signal")
+past("yside", "signal")
+par("label", "Legend label for the error series"); spec(type.label, None)
+out("The composed error-bar signal", type.signal)
+
+
+add(plot_class.event, name = "event")
+doc("Draws a stem at every event coordinate. Each stem is a ruler-registered line (│ vertical, ─ horizontal) that spans the full canvas and merges with the axes (┼ / ┴ / ┬ on the axis cells). The perpendicular axis is squashed to [0, 1] with no ticks since it carries no data. Side-effect: this method mutates the figure's lim and frequency on the perpendicular axis.")
+par("data", "Sequence of event coordinates along the chosen orientation"); spec(type.data_single)
+par("orientation", "Stem orientation, either vertical (or v) or horizontal (or h)"); spec(type.orientation, repr("vertical"))
+par("pixel", "Pixel (colour and style) used for every stem; if None, a fresh colour is taken from the cycler"); spec(type.pixel_par, None)
+par("style", "Line drawing style applied to the stems. " + type.line_styles); spec(type.style, repr('default'))
+par("side", "Axis side the events are anchored to (xside if vertical, yside if horizontal)"); spec(type.side, 0)
+par("label", "Legend label for the event series (only the first stem carries the label so the legend stays a single entry)"); spec(type.label, None)
+past_out("draw")
 
 
 add(plot_class.rectangle, name = "rectangle")
@@ -179,6 +249,53 @@ past("fill", "bar")
 past("xside", "signal")
 past("yside", "signal")
 out("The composed bar signal", type.signal)
+
+
+add(plot_class.box, name = "box")
+doc("Creates a box-and-whisker plot per category: plotext computes the quartiles for each category and renders a Q1..Q3 rectangle, a median line across it, and whiskers extending from the box edges to min and max. The median is drawn as a perpendicular box-line whose colours are derived automatically — its foreground is set to the canvas pixel's background and its background to the box marker's foreground, so the median appears as a contrasting strip cut through the box (and adapts if the canvas pixel is overridden). The returned signal must be passed to draw().")
+par("args", "Two sequences: categorical labels (or numeric x positions) and a list of per-category value lists"); spec(type.data_multiple)
+par("marker", "Symbol used for the box outline / fill (the median line and whiskers inherit colour from this marker)"); spec(type.marker_par_draw, repr("hd"))
+par("width", "Box width as a fraction of the inter-bar spacing"); spec(type.float, 4/5)
+past("orientation", "bar")
+past("lines", "bar")
+past("fill", "bar")
+past("xside", "signal")
+past("yside", "signal")
+out("The composed box-plot signal", type.signal)
+
+
+add(plot_class.hist, name = "hist")
+doc("Creates a histogram from a flat data sequence: counts how many values fall into each of bins evenly-spaced buckets between the data minimum and maximum, then renders the result as a bar plot. The returned signal must be passed to draw().")
+par("data", "The flat numerical sequence to bin"); spec(type.data_single)
+par("bins", "Number of evenly-spaced buckets between min(data) and max(data)"); spec(type.int, 10)
+par("marker", "Symbol used to render the bars"); spec(type.marker_par_draw, repr("hd"))
+par("width", "Bar width as a fraction of the inter-bar spacing"); spec(type.float, 4/5)
+past("orientation", "bar")
+par("norm", "If True, divide each bin count by the total number of points so all bins sum to 1 (density form); if False (default), bin heights are raw counts"); spec(type.bool, False)
+past("lines", "bar")
+past("fill", "bar")
+past("xside", "signal")
+past("yside", "signal")
+out("The histogram bar signal", type.signal)
+
+
+add(plot_class.heatmap, name = "heatmap")
+doc("Renders a 2D matrix as a coloured grid. Numeric input is normalized to the chosen colormap; RGB-tuple input passes through untouched. Row 0 of the matrix is drawn at the top of the canvas. The returned signal must be passed to draw().")
+par("data", "A 2D sequence; either numeric values (colormap applied) or (r, g, b) integer triples (used as cell colour directly). Ragged input is truncated to the shortest row."); spec(type.data_2d)
+par("map", "Colormap name applied to numeric input. Ignored when input is already RGB."); spec(type.colormap, repr("gray"))
+par("fill", "If False (default), one symbol per cell — caller sizes the plot via plot_size so the canvas matches cols/rows or cells will be sparse. If True, each row is densified into a filled band that auto-scales to whatever canvas size is currently set (no plot_size hand-tuning needed)."); spec(type.bool, False)
+par("symbol", "Symbol used to render every cell"); spec(type.symbol, repr('█'))
+past("xside", "signal")
+past("yside", "signal")
+out("The composed heatmap signal", type.signal)
+
+
+add(plot_class.image, name = "figure.image")
+doc("Plot-integrated image renderer: opens the file via Pillow, optionally converts it to grayscale, resamples it to the current plot_size (or the terminal size when no plot_size has been set), and returns a heatmap signal mapping each pixel 1:1 to a canvas char rendered with the given symbol. Caller is responsible for plot_size, frame and tick frequency settings. The returned signal must be passed to draw(). Slower than the module-level plotext.image() but supports plot integration (axes, ticks, overlay with other signals).")
+par("path", "Filesystem path to the image (any format supported by Pillow)"); spec(type.string)
+par("gray", "If True, convert the image to grayscale before rendering"); spec(type.bool, False)
+par("symbol", "Symbol used to render every pixel"); spec(type.symbol, repr('█'))
+out("The composed image signal", type.signal)
 
 
 add(plot_class.text, name = "text")
@@ -502,9 +619,9 @@ past_out("signal")
 # -----------------------------
 
 add(plot_class.time, name = "time")
-doc("Prints a timing report of the most recent build — total elapsed time and, optionally, per-step breakdown for each profiled section. Useful when investigating slow renders.")
-par("full", "If True (default), include the per-step breakdown; if False, print only the total"); spec(type.bool, True)
-past_out("title")
+doc("Prints a timing report of the most recent build — total elapsed time and, optionally, the per-step breakdown for each profiled section, recursing into subplots so each one prints its own indented sub-report. Useful when investigating slow renders.")
+par("full", "If True (default), include the per-step breakdown and recurse into subplots; if False, print only the master total"); spec(type.bool, True)
+out("Total elapsed time of the master plot in milliseconds — handy for assertions or perf gating", type.float)
 
 
 # -----------------------------
@@ -518,7 +635,7 @@ out("A terminal object", type.terminal)
 add(terminal_class.clean, name = "terminal.clean")
 alias("clt")
 doc("Clears the visible terminal output — either entirely, or by a specific number of lines above the prompt. Useful when plotting a continuous stream of data. Note that, depending on the terminal shell used, a few extra lines may be printed after the plot.")
-par("lines", "If an integer, that many printed lines are removed from the terminal, plus the prompt height; if None (default), the terminal is fully cleared."); spec(type.int, None)
+par("lines", "How many lines to clean. None (default) clears the whole terminal with a hard reset. A positive integer clears that many lines above the prompt. -1 clears the screen without resetting the terminal — experimental, not used by plotext yet."); spec(type.int, None)
 out("The terminal itself", type.terminal)
 
 add(terminal_class.clear, name = "terminal.clear")
@@ -545,6 +662,11 @@ out("A tuple (width, height).", type.tuple)
 add(terminal_class.log, name = "terminal.log")
 doc("Prints a detailed log of the terminal, its master plot, and any subplots.")
 past_out("terminal.clean")
+
+add(terminal_class.is_pressed, name = "terminal.is_pressed")
+doc("Non-blocking key poll: returns True if the user has pressed the given key since the last call. The first call sets the terminal into cbreak mode (so each keystroke is delivered immediately, without waiting for Enter) and registers an atexit hook to restore cooked mode. When stdin is not a TTY (piped, redirected, /dev/null) the function always returns False — useful for live-streaming demos that should also run cleanly in non-interactive sweeps.")
+par("key", "Single character to poll for; case-insensitive"); spec(type.string, repr('q'))
+out("True if the user has pressed key, else False", type.bool)
 
 
 # -----------------------------
@@ -668,7 +790,7 @@ doc("Prints every available marker code: the HD sub-character codes ('hd', 'fhd'
 
 add(marker_class, name = "marker")
 doc("Creates a marker: a symbol with optional foreground, background and style, used to render points on the plot canvas.")
-par("marker", "The marker to use. Possible entries: a single character; one of the character codes available via plotext.markers(); or an HD marker code ('hd', 'fhd', 'braille') for sub-character resolution"); spec(type.marker_par)
+par("marker", "The marker to use. Possible entries: a single character; one of the character codes available via plotext.markers(); or a higher-resolution code ('hd', 'fhd', 'braille') that splits each character cell into sub-cells"); spec(type.marker_par)
 past("foreground", "pixel")
 past("background", "pixel")
 past("style", "pixel")

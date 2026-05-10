@@ -4,7 +4,7 @@ from math import ceil
 from plotext._primitives.colorize import colorize
 from plotext._primitives.marker import marker as marker_class
 from plotext._methods.string import pad
-from plotext._constants.enums import color_codes, style_codes, marker_codes, hd_markers_codes
+from plotext._constants.enums import color_codes, style_codes, symbol_codes, hd_markers_codes
 from plotext._methods.sequence import unique
 
 
@@ -70,28 +70,28 @@ def styles():
     eg.print()
 
 
-# Display available marker codes (HD codes and named character codes)
+# Display available marker codes (higher-resolution codes and named character symbols)
 def markers():
     marker_pad = 12
     grid_cols = 4
 
-    # HD marker codes (sub-character resolution)
-    colorize("HD Marker Codes", style='bold').print()
+    # Higher-resolution marker codes (each splits one character cell into sub-cells for finer plotting)
+    colorize("Higher Resolution Marker Codes", style='bold').print()
     hd_codes = [c for c in hd_markers_codes if c != 'none']
     for code in hd_codes:
         default = '  [default]' if code == 'hd' else ''
-        print(f"  {pad(code, marker_pad)} {marker_class(code)}{default}")
+        print(f"  {pad(code, marker_pad)} {marker_class(code)._get_model()}{default}")
 
-    # Named character marker codes
+    # Named character symbol codes
     print()
-    colorize("Character Marker Codes", style='bold').print()
-    for row in range(ceil(len(marker_codes) / grid_cols)):
+    colorize("Character Symbol Codes", style='bold').print()
+    for row in range(ceil(len(symbol_codes) / grid_cols)):
         line = ""
         for col in range(grid_cols):
             i = row * grid_cols + col
-            if i >= len(marker_codes): break
-            code = marker_codes[i]
-            line += f"  {pad(code, marker_pad)} {marker_class(code)}  "
+            if i >= len(symbol_codes): break
+            code = symbol_codes[i]
+            line += f"  {pad(code, marker_pad)} {marker_class(code)._get_model()}  "
         print(line)
 
     print()

@@ -179,13 +179,17 @@ class legend_class:
         self._labels.append(label)
         return self
 
-    # Update with signals. Each signal either contributes its own label, or
-    # falls back to "signal[N]" (N = index in the plot's signal list).
-    def update(self, signals):
+    # Update with signals (and optional rulers). Each signal contributes its label or "signal[N]" fallback; each ruler line that carries an explicit label contributes too (no fallback — unlabeled lines stay out of the legend).
+    def update(self, signals, rulers = None):
         self.clear_signals()
         for i, signal in enumerate(signals):
             label = correct_label.legend_label(signal._get_label(), i)
             self.add(signal._get_marker(), label)
+        if rulers is not None:
+            for ruler in rulers:
+                for line_sig in ruler._lines:
+                    if line_sig.get_label() is not None:
+                        self.add(line_sig, line_sig.get_label())
         return self
 
     # Fix background on pixel, labels and markers

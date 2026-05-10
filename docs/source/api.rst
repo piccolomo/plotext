@@ -13,6 +13,8 @@ The ``plotext`` module is the main package. It exposes a small set of module-lev
 
 .. autofunction:: plotext.sin
 
+.. autofunction:: plotext.square
+
 .. autofunction:: plotext.uncolorize
 
 .. autofunction:: plotext.colors
@@ -20,6 +22,22 @@ The ``plotext`` module is the main package. It exposes a small set of module-lev
 .. autofunction:: plotext.styles
 
 .. autofunction:: plotext.markers
+
+.. autofunction:: plotext.image
+
+See :doc:`image` for full usage notes and a comparison with the figure-integrated ``fig.image``.
+
+.. autofunction:: plotext.gif
+
+See :doc:`image` for full usage notes.
+
+.. autofunction:: plotext.video
+
+See :doc:`video` for full usage notes.
+
+.. autofunction:: plotext.youtube
+
+See :doc:`video` for full usage notes.
 
 .. autofunction:: plotext.test
 
@@ -30,7 +48,7 @@ figure
 ``plt.figure`` is the master figure instance — an object of :class:`plotext._plotter.plot.plot_class`. Every plotting call (drawing signals, configuring axes, creating subplots) is a method on it. The same methods are available on any subplot returned by ``fig.subplot(r, c)``.
 
 .. autoclass:: plotext._plotter.plot.plot_class()
-   :members: signal, draw, candlestick, segment, rectangle, polygon, bar, text, show, build,
+   :members: signal, draw, candlestick, segment, rectangle, polygon, bar, multiple_bar, stacked_bar, hist, box, error, event, heatmap, image, text, show, build,
              clear, clear_data, clear_settings, clear_size, clear_subplots, clear_pixels, clear_styles,
              title, label, legend,
              axis, frame, alignment, direction,
@@ -88,7 +106,7 @@ terminal
 ``plt.terminal`` is the pre-built terminal object; use its methods to inspect and constrain the terminal in which plotext renders.
 
 .. autoclass:: plotext._kernel.terminal.terminal()
-   :members: limit, get_size, clean, clear, prompt, log
+   :members: limit, get_size, clean, clear, prompt, log, is_pressed
 
 
 .. _prettydoc_api:

@@ -104,6 +104,19 @@ class pixel:
         clink.pixel_copy_background(self._pointer, other._pointer)
         return self
 
+    # Swap fg and bg in place (works for any colour representation — palette, rgb, named).
+    def _swap(self):
+        clink.pixel_swap(self._pointer)
+        return self
+
+    # Background palette index (0..255). Useful when the bg colour needs to be reused as another pixel's foreground.
+    def _get_background_integer_code(self):
+        return clink.pixel_get_background_integer_code(self._pointer)
+
+    # Foreground (fullground) palette index (0..255).
+    def _get_fullground_integer_code(self):
+        return clink.pixel_get_fullground_integer_code(self._pointer)
+
     # Check if pixel has no background
     def _no_background(self):
         return clink.pixel_no_background(self._pointer)

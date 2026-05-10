@@ -57,45 +57,57 @@ inline unsigned char get_style_code(const string & style) {
 
 // Normal Marker Codes
 
-const unordered_map<string, wchar_t> marker_codes = {
-  {"sd",        L'█'},
-  {"dot",       L'•'},
-  {"dollar",    L'$'},
-  {"euro",      L'€'},
-  {"bitcoin",   L'฿'},
-  {"at",        L'@'},
-  {"heart",     L'♥'},
-  {"smile",     L'☺'},
-  {"gclef",     U'𝄞'},
-  {"note",      U'𝅘𝅥'},
-  {"shamrock",  L'☘'},
-  {"atom",      L'⚛'},
-  {"snowflake", L'❄'},
-  {"star",      L'❋'},
-  {"flower",    L'❁'},
-  {"lightning", U'🌩'},
-  {"queen",     L'♕'},
-  {"king",      L'♔'},
-  {"cross",     L'♰'},
-  {"yinyang",   L'☯'},
-  {"om",        L'ॐ'},
-  {"osiris",    U'𓂀'},
-  {"zero",      U'🯰'},
-  {"one",       U'🯱'},
-  {"two",       U'🯲'},
-  {"three",     U'🯳'},
-  {"four",      U'🯴'},
-  {"five",      U'🯵'},
-  {"six",       U'🯶'},
-  {"seven",     U'🯷'},
-  {"eight",     U'🯸'},
-  {"nine",      U'🯹'},
+const unordered_map<string, wchar_t> symbol_codes = {
+  {"block",        L'█'},
+  {"dot",          L'•'},
+  {"dollar",       L'$'},
+  {"euro",         L'€'},
+  {"bitcoin",      L'฿'},
+  {"at",           L'@'},
+  {"heart",        L'♥'},
+  {"smile",        L'☺'},
+  {"shamrock",     L'☘'},
+  {"atom",         L'⚛'},
+  {"snowflake",    L'❄'},
+  {"sun",          L'☀'},
+  {"cloud",        L'☁'},
+  {"umbrella",     L'☂'},
+  {"zigzag",       L'↯'},
+  {"star",         L'❋'},
+  {"emptystar",    L'☆'},
+  {"flower",       L'❁'},
+  {"queen",        L'♕'},
+  {"king",         L'♔'},
+  {"cross",        L'♰'},
+  {"yinyang",      L'☯'},
+  {"om",           L'ॐ'},
+  {"square",       L'■'},
+  {"emptysquare",  L'□'},
+  {"circle",       L'●'},
+  {"emptycircle",  L'○'},
+  {"diamond",      L'◆'},
+  {"emptydiamond", L'◇'},
+  {"up",           L'▲'},
+  {"down",         L'▼'},
+  {"left",         L'◀'},
+  {"right",        L'▶'},
+  {"arrowup",      L'↑'},
+  {"arrowdown",    L'↓'},
+  {"arrowleft",    L'←'},
+  {"arrowright",   L'→'},
+  {"infinity",     L'∞'},
+  {"check",        L'✓'},
+  {"xmark",        L'✗'},
+  {"eighth",       L'♪'},
+  {"beamed",       L'♫'},
+  {"flat",         L'♭'},
+  {"sharp",        L'♯'},
 };
 
-// Retrieves the marker character for a given string code
-inline wchar_t get_marker(const string & code) {
-    auto it = marker_codes.find(code);
-    if (it != marker_codes.end()){return it->second;} else {return code[0];}}
+// Retrieves the marker symbol (glyph) for a given string code
+inline wchar_t get_symbol(const string & code) {
+    auto it = symbol_codes.find(code);
+    if (it != symbol_codes.end()){return it->second;} else {return code[0];}}
 
 
 // HD codes
@@ -120,7 +132,7 @@ constexpr wchar_t hd_lookup[16] = {
 };
 
 // Retrieve the HD character for a given 4-bit code
-constexpr inline wchar_t get_hd_marker(unsigned char code) noexcept {return hd_lookup[code];}
+constexpr inline wchar_t get_hd_symbol(unsigned char code) noexcept {return hd_lookup[code];}
 
 // Single-bit mask for a sub-cell at (col, row) in a (cols x rows) high-def grid.
 // Top-left occupies the highest bit (cols*rows - 1); bottom-right occupies bit 0.
@@ -198,7 +210,7 @@ constexpr wchar_t fhd_lookup[64] = {
 
 
 // Retrieve the FHD character for a given 6-bit code
-constexpr inline wchar_t get_fhd_marker(unsigned char code) noexcept {return fhd_lookup[code];}
+constexpr inline wchar_t get_fhd_symbol(unsigned char code) noexcept {return fhd_lookup[code];}
 
 
 //Braille codes
@@ -463,7 +475,7 @@ constexpr wchar_t braille_lookup[256] = {
 };
 
 // Retrieve the braille character for a given 8-bit code
-constexpr inline wchar_t get_braille_marker(unsigned char code) noexcept {return braille_lookup[code];}
+constexpr inline wchar_t get_braille_symbol(unsigned char code) noexcept {return braille_lookup[code];}
 
 
 // Cell-kind tags: identify which marker kind produced a Matrix cell. marker_none = 0 so default-constructed cells (kind = 0) read as "no kind" naturally; real kinds start from 1.
@@ -475,16 +487,16 @@ constexpr uint8_t marker_braille = 4;
 constexpr uint8_t marker_box    = 5;
 
 // Representative model glyph per kind — used by Python's marker preview / docs.
-const unordered_map<uint8_t, wchar_t> marker_model = {
+const unordered_map<uint8_t, wchar_t> symbol_model = {
     {marker_normal,  L'?'},
     {marker_hd,      L'▚'},
     {marker_fhd,     L'🬗'},
     {marker_braille, L'⢕'},
     {marker_box,    L'┼'}};
 
-inline wchar_t get_marker_model(uint8_t type) noexcept {
-    auto it = marker_model.find(type);
-    return it != marker_model.end() ? it->second : L'?'; }
+inline wchar_t get_symbol_model(uint8_t type) noexcept {
+    auto it = symbol_model.find(type);
+    return it != symbol_model.end() ? it->second : L'?'; }
 
 // Box-drawing line lookups: one 16-entry table per style. 4-bit arm code (N/E/S/W = bits 3/2/1/0) indexes each table. Style is selected externally by the caller (e.g. BoxCharacter::style_bits).
 constexpr uint8_t box_n = 0b1000;   // bit 3

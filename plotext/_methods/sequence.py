@@ -17,6 +17,12 @@ def sin(periods = 2, length = 200, amplitude = 1, phase = 0, decay = 0, offset =
     return [amplitude * math.sin(f * el + phase) * math.exp(-d * el) + offset for el in range(length)]
 
 
+# Generate a square-wave signal alternating between +amplitude and -amplitude
+def square(periods = 2, length = 200, amplitude = 1):
+    T = length / periods
+    return [amplitude if i % T <= T / 2 else -amplitude for i in range(length)]
+
+
 # Transpose a 2D list (matrix)
 def transpose(data, length = 1):
     return [[]] * length if data == [] else list(map(list, zip(*data)))

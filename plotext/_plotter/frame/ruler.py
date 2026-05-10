@@ -137,8 +137,7 @@ class ruler_class:
                 lbl.set_pixel(self._pixel)
         return self
 
-    # Fix the grid pixel against another pixel.
-    # box_style_get_pixel returns a copy, so mutate-in-place won't stick — round-trip via set_pixel.
+    # Fix the grid pixel against another pixel; round-trip via set_pixel because box_style_get_pixel returns a copy.
     def _fix_grid_pixel(self, pixel):
         p = self._grid.get_pixel()
         p._fix(pixel)

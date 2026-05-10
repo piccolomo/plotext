@@ -15,7 +15,7 @@ class axes_class:
 
     # Clear all axes
     def clear_settings(self):
-        [axis.clear_settings() for axis in self.get_multiple()]
+        [axis.clear_settings() for axis in self.get_multiple(binary, binary)]
         return self
 
     # Set default pixel for all axes

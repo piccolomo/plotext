@@ -36,7 +36,7 @@ class box_class:
 
     # Model glyph for the line kind (the legend-style preview char, e.g. ┼)
     def _get_model(self):
-        p = clink.marker_get_model(self._pointer); s = wstring.from_buffer(p).value; clink.wstring_delete(p); return s
+        return clink.marker_get_model(self._pointer)[0]
 
     # Rendered string (the actual glyph this line draws as a single cell)
     def _get_string(self):
@@ -60,6 +60,8 @@ class box_class:
 
 # User-facing class — orientation-only init (0 = horizontal, 1 = vertical). Sugar over box_class. orientation must be int 0/1 (caller pre-corrects).
 class line(box_class):
-    def __init__(self, orientation=0, pixel=pixel_class(), style=0):
+    def __init__(self, orientation=0, pixel=pixel_class(), style=0, _pointer=None):
+        if _pointer is not None:
+            super().__init__(_pointer=_pointer); return
         v = bool(orientation)
         super().__init__(up=v, down=v, left=not v, right=not v, pixel=pixel, style=style)

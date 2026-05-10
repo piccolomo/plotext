@@ -2,6 +2,7 @@
 
 from plotext._settings import defaults
 from plotext._methods.string import write
+from plotext._methods.key import is_pressed as _is_pressed
 from plotext._plotter.plot import plot_class
 import shutil
 
@@ -13,10 +14,12 @@ class terminal:
         self.clear()
         self._create_master()
 
-    # Clean the visible region of the terminal, either fully or by a number of lines
+    # Clean the visible region of the terminal: None = hard reset (\033c, clears scrollback + modes), -1 = soft full-clear (\033[H\033[2J, just clear screen, no flicker, terminal state preserved), N>0 = cursor up so the next write overwrites the last N lines in place
     def clean(self, lines = None):
         if lines is None:
             write('\033c')
+        elif lines == -1:
+            write('\033[H\033[2J')
         else:
             write("\033[A" * (lines + self._prompt))
         return self
@@ -102,6 +105,10 @@ class terminal:
     def log(self):
         print(self._get_log())
         return self
+
+    # Non-blocking poll: True if the user has pressed `key` since the last call. First call sets cbreak mode (restored at exit) so keystrokes are delivered immediately. Returns False when stdin is not a TTY.
+    def is_pressed(self, key = 'q'):
+        return _is_pressed(key)
 
     # Short string representation
     def __repr__(self):

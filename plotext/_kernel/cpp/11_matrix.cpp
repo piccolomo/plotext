@@ -106,21 +106,21 @@ public:
                 wchar_to_buffer(L'\n', buffer, length); } }
         buffer[length] = L'\0'; }
 
-    // Render to wstring (uses to_buffer + a stack VLA). Fast path: build once, copy out.
+    // Render to wstring; uses Array<wchar_t> on the heap because a stack VLA overflows the default 8 MB stack for matrices with thousands of cells. Fast path: build once, copy out.
     inline wstring get_wstring(bool colorless = false) noexcept {
         const size_t cap = character_size_max * get_size() + get_height() + 1;
-        wchar_t buffer[cap]; buffer[0] = L'\0';
+        Array<wchar_t> buffer(cap, L'\0');
         size_t length = 0;
-        to_buffer(buffer, length, !colorless);
-        return wstring(buffer); }
+        to_buffer(buffer.begin(), length, !colorless);
+        return wstring(buffer.begin(), length); }
 
-    // Stream to stdout: build the whole matrix into a single buffer, then one wcout.write — much faster than per-cell wcout calls (saves the per-call streambuf overhead).
+    // Stream to stdout: build the whole matrix into a single buffer, then one wcout.write — much faster than per-cell wcout calls (saves the per-call streambuf overhead). Heap-allocated buffer (Array<wchar_t>) to survive matrices large enough to overflow the stack.
     inline void stream(bool colorfull = true, bool flushing = true) noexcept {
         const size_t cap = character_size_max * get_size() + get_height() + 1;
-        wchar_t buffer[cap]; buffer[0] = L'\0';
+        Array<wchar_t> buffer(cap, L'\0');
         size_t length = 0;
-        to_buffer(buffer, length, colorfull);
-        wcout.write(buffer, length);
+        to_buffer(buffer.begin(), length, colorfull);
+        wcout.write(buffer.begin(), length);
         if (flushing) flush(); }
 
     inline void log() noexcept { wcout << L"Matrix(" << get_width() << L"x" << get_height() << L")" << endl; stream(); }

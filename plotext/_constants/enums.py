@@ -35,19 +35,30 @@ color_codes = [
     'orange', 'orange+', 'blue', 'blue+',
     'magenta', 'magenta+', 'cyan', 'cyan+']
 
+# Colormaps: lookup tables of (r, g, b) stops used by heatmap()
+viridis = [(68, 1, 84), (72, 24, 106), (71, 45, 123), (65, 68, 135),
+           (57, 86, 140), (49, 104, 142), (42, 120, 142), (36, 136, 142),
+           (31, 152, 139), (34, 168, 132), (53, 183, 121), (84, 197, 104),
+           (122, 209, 81), (165, 219, 54), (212, 225, 25), (253, 231, 37)]
+
 # Markers
 hd_markers_codes = ['none', 'hd', 'fhd', 'braille']
 
-# Character marker codes — list of names that mirror the keys of
-# marker_codes in plotext/_kernel/cpp/utility/5_maps.cpp. Used by
-# plotext.markers() to enumerate available named character markers.
+# Character symbol codes — list of names that mirror the keys of
+# symbol_codes in plotext/_kernel/cpp/utility/5_maps.cpp. Used by
+# plotext.markers() to enumerate available named character symbols.
 # The name-to-glyph resolution itself is handled on the C side.
-marker_codes = [
-    'sd', 'dot', 'dollar', 'euro', 'bitcoin', 'at', 'heart', 'smile',
-    'gclef', 'note', 'shamrock', 'atom', 'snowflake', 'star', 'flower',
-    'lightning', 'queen', 'king', 'cross', 'yinyang', 'om', 'osiris',
-    'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven',
-    'eight', 'nine',
+symbol_codes = [
+    'block', 'dot', 'dollar', 'euro', 'bitcoin', 'at',
+    'heart', 'smile', 'shamrock', 'atom',
+    'snowflake', 'sun', 'cloud', 'umbrella', 'zigzag',
+    'star', 'emptystar', 'flower',
+    'queen', 'king', 'cross', 'yinyang', 'om',
+    'square', 'emptysquare', 'circle', 'emptycircle', 'diamond', 'emptydiamond',
+    'up', 'down', 'left', 'right',
+    'arrowup', 'arrowdown', 'arrowleft', 'arrowright',
+    'infinity', 'check', 'xmark',
+    'eighth', 'beamed', 'flat', 'sharp',
 ]
 
 # Line rendering

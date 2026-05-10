@@ -12,9 +12,10 @@ public:
     virtual const Pixel &   get_pixel()   const noexcept = 0;                                                               // every Marker subclass IS-A Pixel; expose it
     virtual void            fix(const Pixel & p) noexcept = 0;                                                              // forward to Pixel::fix
     virtual void            fix_background(const Pixel & p) noexcept = 0;                                                   // forward to Pixel::fix_background
+    virtual void            set_pixel(const Pixel & p) noexcept = 0;                                                        // overwrite the marker's internal pixel
     virtual Marker *        copy()        const = 0;                                                                        // polymorphic deep copy
     virtual bool            get_orientation() const noexcept { return false; }                                              // only meaningful for BoxMarker — default false for the others
-    virtual wchar_t         get_model_character() const noexcept { return get_marker_model(get_type()); }                   // glyph used to represent this marker in the legend; subclasses can override (NormalMarker exposes its actual character; others use the type-based lookup glyph)
+    virtual wchar_t         get_model_character() const noexcept { return get_symbol_model(get_type()); }                   // glyph used to represent this marker in the legend; subclasses can override (NormalMarker exposes its actual character; others use the type-based lookup glyph)
     inline  size_t          get_foreground_integer_code() const noexcept { return get_pixel().get_fullground_integer_code(); }  // palette index of the marker's foreground; dispatches once through get_pixel
     inline  void            log() const { wcout << get_wstring() << endl; }
 };
@@ -33,6 +34,7 @@ public:
     const Pixel &   get_pixel()   const noexcept override { return *this; }
     void            fix(const Pixel & p) noexcept override { Pixel::fix(p); }
     void            fix_background(const Pixel & p) noexcept override { Pixel::fix_background(p); }
+    void            set_pixel(const Pixel & p) noexcept override { Pixel::operator=(p); }
     Marker *        copy()        const override { return new NormalMarker(*this); }
 };
 
@@ -54,6 +56,7 @@ public:
     const Pixel &   get_pixel()   const noexcept override { return *this; }
     void            fix(const Pixel & p) noexcept override { Pixel::fix(p); }
     void            fix_background(const Pixel & p) noexcept override { Pixel::fix_background(p); }
+    void            set_pixel(const Pixel & p) noexcept override { Pixel::operator=(p); }
     Marker *        copy()        const override { return new HDMarker(*this); }
 };
 
@@ -75,6 +78,7 @@ public:
     const Pixel &   get_pixel()   const noexcept override { return *this; }
     void            fix(const Pixel & p) noexcept override { Pixel::fix(p); }
     void            fix_background(const Pixel & p) noexcept override { Pixel::fix_background(p); }
+    void            set_pixel(const Pixel & p) noexcept override { Pixel::operator=(p); }
     Marker *        copy()        const override { return new FHDMarker(*this); }
 };
 
@@ -96,6 +100,7 @@ public:
     const Pixel &   get_pixel()   const noexcept override { return *this; }
     void            fix(const Pixel & p) noexcept override { Pixel::fix(p); }
     void            fix_background(const Pixel & p) noexcept override { Pixel::fix_background(p); }
+    void            set_pixel(const Pixel & p) noexcept override { Pixel::operator=(p); }
     Marker *        copy()        const override { return new BrailleMarker(*this); }
 };
 
@@ -117,6 +122,7 @@ public:
     bool get_orientation() const noexcept override { return (get_arms() & (box_n | box_s)) != 0; }
 
     uint8_t         get_type()    const noexcept override { return marker_box; }
+    wchar_t         get_model_character() const noexcept override { return BoxCharacter::get_wcharacter(); }   // legend shows the actual arm shape (│ ─ ┼ etc.) instead of the type-default glyph
     wstring         get_wstring() const override { return get_orientation() ? L"Box Marker(vertical)" : L"Box Marker(horizontal)"; }
     MatrixCharacter get_matrix_character(uint8_t, uint8_t) const override {
         MatrixCharacter mc(marker_box, *this);
@@ -125,6 +131,7 @@ public:
     const Pixel &   get_pixel()                     const noexcept override { return *this; }
     void            fix(const Pixel & p)                  noexcept override { Pixel::fix(p); }
     void            fix_background(const Pixel & p)       noexcept override { Pixel::fix_background(p); }
+    void            set_pixel(const Pixel & p)            noexcept override { Pixel::operator=(p); }
     Marker *        copy()                          const          override { return new BoxMarker(*this); }
 };
 
@@ -135,13 +142,14 @@ extern "C" {
     Marker * marker_new_fhd    (Pixel * p) noexcept { return new FHDMarker    (*p); }
     Marker * marker_new_braille(Pixel * p) noexcept { return new BrailleMarker(*p); }
     Marker * marker_new_box      (bool up, bool down, bool left, bool right, uint8_t style, Pixel * p) noexcept { return new BoxMarker(up, down, left, right, style, *p); }
-    Marker * marker_new_code   (const char * code, Pixel * p) noexcept { return new NormalMarker(get_marker(string(code)), *p); }
+    Marker * marker_new_code   (const char * code, Pixel * p) noexcept { return new NormalMarker(get_symbol(string(code)), *p); }
     void     marker_delete     (Marker * m) noexcept { delete m; }
 
     const wchar_t * marker_get_wstring(Marker * m) noexcept { return wstring_to_cstring(m->get_wstring()); }
     const wchar_t * marker_get_model  (Marker * m) noexcept { return wstring_to_cstring(wstring(1, m->get_model_character())); }
     Pixel  *        marker_get_pixel  (Marker * m) noexcept { return new Pixel(m->get_pixel()); }
     void            marker_fix        (Marker * m, Pixel * p) noexcept { m->fix(*p); }
+    void            marker_set_pixel  (Marker * m, Pixel * p) noexcept { m->set_pixel(*p); }
     Marker *        marker_copy       (Marker * m) noexcept { return m->copy(); }
     bool            marker_get_orientation(Marker * m) noexcept { return m->get_orientation(); }
     // Returns the line style (0 = normal, 1 = double, 2 = heavy, 3 = dotted, 4 = rounded). Only meaningful for BoxMarker; other kinds return 0.

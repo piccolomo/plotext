@@ -57,10 +57,14 @@ class plot_class(subplot_class, draw_class, plot_build_class):
         self._for_each_subplot("_clone", self)
         return self
 
-    # Clear size and parts
+    # Clear size and parts; reset subplot sizes to None so harmonization can redistribute them on the next plot_size call. On the master also reset the terminal's sizing state (prompt height + per-axis limit flags) since those are size-domain settings.
     def clear_size(self):
         self._parts.clear()
-        self._set_size(*self.get_terminal().get_size(update = True)) if self._is_master() else None
+        if self._is_master():
+            self.get_terminal().clear()
+            self._set_size(*self.get_terminal().get_size())
+        else:
+            self._set_size()
         self._for_each_subplot("clear_size")
         return self
 
@@ -287,10 +291,20 @@ class plot_class(subplot_class, draw_class, plot_build_class):
         self._timer.stop(event)
         return self
 
-    # Log timings
+    # Log timings; recurses into subplots (when full=True) so each one prints its own report indented right after the parent's `create matrices` event — the place where its work logically happened. Subplot events are indented one more level than their `Subplot(r, c)` header so the hierarchy reads naturally. Returns the master's total elapsed time in milliseconds — handy for assertions / perf gating.
     def time(self, full = True):
-        self._timer.log(full)
-        return self
+        indent = (self._get_nest_level() - 1) * 3
+        event_pad = ' ' * (indent + (1 if not self._is_master() else 0))
+        pad = ' ' * indent
+        header = "Plotext Timing Report" if self._is_master() else f"Subplot({self.get_position()[0]}, {self.get_position()[1]}) timing"
+        print(f"{pad}{header} {self._timer.to_string(self._timer.get_total_duration())}")
+        if full:
+            for label in self._timer.get_labels():
+                print(f"{event_pad}└─ {label} {self._timer.to_string(self._timer.get_event_duration(label))}")
+                if label == "create matrices" and self._has_subplots():
+                    for r, c in self._get_slots_range():
+                        self._get_subplot(r, c).time(full)
+        return self._timer.get_total_duration()
 
     # Build and print the plot
     def show(self, colorless = False, flush = False):

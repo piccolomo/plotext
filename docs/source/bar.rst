@@ -42,7 +42,7 @@ Orientation, Width and Style
 
 - ``orientation`` — ``"vertical"`` (or ``"v"``, the default) draws bars upright; ``"horizontal"`` (or ``"h"``) lays them sideways.
 - ``width`` — bar thickness as a fraction of the inter-bar spacing. Default ``0.8`` leaves a small gap; ``1.0`` makes neighbouring bars touch.
-- ``marker`` — symbol used to render the bars; accepts a single character, a code from :func:`plotext.markers`, or an HD code (``"hd"``, ``"fhd"``, ``"braille"``).
+- ``marker`` — symbol used to render the bars; accepts a single character, a code from :func:`plotext.markers`, or a higher-resolution code (``"hd"``, ``"fhd"``, ``"braille"``).
 - ``lines`` — when ``True`` (default), each bar's outline is densified so the body fills cleanly. When ``False``, only the corner points are placed.
 - ``fill`` — when ``True`` (default), the bar's interior is filled with the marker. When ``False``, only the outline is drawn.
 
@@ -257,3 +257,65 @@ The pieces:
 
 
 .. note:: More documentation is available via :code:`plotext.doc.bar()`.
+
+
+Histogram
+---------
+
+:meth:`~plotext._plotter.plot.plot_class.hist` is a thin wrapper around ``bar()`` that bins a flat data sequence first. The data range ``[min, max]`` is split into ``bins`` evenly-spaced buckets and the count of values per bucket becomes the bar heights. Pass ``norm = True`` to normalise the counts so all bins sum to 1 (density form).
+
+.. code-block:: python
+
+   import random
+   import plotext as plt
+
+   random.seed(0)
+   fig = plt.figure
+   fig.clear()
+
+   l = 7 * 10 ** 4
+   fig.draw(fig.hist([random.gauss(0, 1) for _ in range(10 * l)], bins = 60).label("mean 0"))
+   fig.draw(fig.hist([random.gauss(3, 1) for _ in range( 6 * l)], bins = 60).label("mean 3"))
+   fig.draw(fig.hist([random.gauss(6, 1) for _ in range( 4 * l)], bins = 60).label("mean 6"))
+
+   fig.title("Histogram")
+   fig.legend()
+   fig.show()
+
+Parameters mirror ``bar()`` (``marker``, ``width``, ``orientation``, ``lines``, ``fill``, ``xside``, ``yside``); the histogram-specific knobs are ``bins`` (defaults to 10) and ``norm`` (defaults to ``False``).
+
+.. note:: More documentation is available via :code:`plotext.doc.hist()`.
+
+
+Box Plot
+--------
+
+:meth:`~plotext._plotter.plot.plot_class.box` draws a box-and-whisker diagram per category — a Q1..Q3 rectangle, a median bar across the box, and whiskers extending from the box edges out to the min and max. Pass one list of raw values per category; plotext computes the quartiles internally.
+
+.. code-block:: python
+
+   import plotext as plt
+
+   fig = plt.figure
+   fig.clear()
+
+   labels = ["apple", "orange", "pear", "banana"]
+   data   = [
+       [1, 2, 3, 5, 10, 8],
+       [4, 9, 6, 12, 20, 13],
+       [1, 2, 3, 4, 5, 6],
+       [3, 9, 12, 16, 9, 8, 3, 7, 2],
+   ]
+
+   fig.draw(fig.box(labels, data, width = 0.3).label("weight"))
+   fig.title("Fruit weight")
+   fig.legend()
+   fig.show()
+
+Parameters mirror ``bar()`` (``marker``, ``width``, ``orientation``, ``lines``, ``fill``, ``xside``, ``yside``). No box-specific knobs.
+
+.. note::
+
+   The median is drawn as a perpendicular box-line whose colours are derived automatically: its foreground is set to the canvas pixel's background, and its background to the box marker's foreground. The result is a contrasting strip cut through the middle of the box that adapts to whatever :meth:`~plotext._plotter.plot.plot_class.canvas_pixel` was set to — no second colour decision falls on the user.
+
+.. note:: More documentation is available via :code:`plotext.doc.box()`.

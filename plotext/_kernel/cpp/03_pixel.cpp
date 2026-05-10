@@ -72,6 +72,12 @@ public:
     // Copy only the background
     inline void copy_background(const Pixel & p) noexcept { Background::operator=(p); }
 
+    // Swap fg and bg, patching each side's "3"/"4" prefix byte so the result remains a valid pixel for any colour representation.
+    inline void swap() noexcept {
+        Pixel saved = *this;
+        Fullground::copy(static_cast<const Background&>(saved)); if (Fullground::length > 2) Fullground::code[2] = L'3';
+        Background::copy(static_cast<const Fullground&>(saved)); if (Background::length > 2) Background::code[2] = L'4'; }
+
     // Apply another pixel's background only if this pixel has none
     inline void fix_background(const Pixel & pixel) noexcept { if (no_background()) copy_background(pixel); }
 
@@ -101,6 +107,9 @@ public:
 
     // Parse the foreground palette index from the foreground ANSI code
     inline unsigned char get_fullground_integer_code() const noexcept { return Fullground::get_integer_code(); }
+
+    // Parse the background palette index from the background ANSI code
+    inline unsigned char get_background_integer_code() const noexcept { return Background::get_integer_code(); }
 
     // Append the combined ANSI code (foreground + background + style) to a buffer
     inline void to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept {
@@ -181,6 +190,15 @@ extern "C" {
 
     // Copy only the background from src into dest
     void pixel_copy_background(Pixel * dest, const Pixel * src) noexcept { dest->copy_background(*src); }
+
+    // Swap the pixel's fg and bg (preserving each side's ansi prefix)
+    void pixel_swap(Pixel * p) noexcept { p->swap(); }
+
+    // Get the background palette index
+    unsigned char pixel_get_background_integer_code(const Pixel * p) noexcept { return p->get_background_integer_code(); }
+
+    // Get the foreground (fullground) palette index
+    unsigned char pixel_get_fullground_integer_code(const Pixel * p) noexcept { return p->get_fullground_integer_code(); }
 
     // Fix both foreground and background of dest using src
     void pixel_fix(Pixel * dest, const Pixel * src) noexcept { dest->fix(*src); }

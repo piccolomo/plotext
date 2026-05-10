@@ -27,9 +27,7 @@ class subplot_class:
         self._parent = parent
         return self
 
-    # Set width and height, clamped by parent when needed.
-    # None on the master inherits from the terminal; None on a child stays None
-    # so _harmonize_sizes can distribute it.
+    # Set width and height, clamped by parent; None inherits from the terminal on master, stays None on a child so _harmonize_sizes can distribute it.
     def _set_size(self, width = None, height = None):
         width = None if width is None else max(0, round(width))
         height = None if height is None else max(0, round(height))

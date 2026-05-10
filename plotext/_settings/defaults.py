@@ -44,6 +44,9 @@ pixels = {k: pixel(*v) for k, v in colors.items()}
 size_direction = 1
 size_policy = "maximum"
 
+# Bar plots
+bar_width = 4 / 5
+
 # Legend
 legend = {
     "status": False,

@@ -1,7 +1,30 @@
 Inspection
 ==========
 
-Plotext exposes a small set of helpers for poking at the live state of a plot — useful when investigating layout problems or render performance.
+Plotext exposes a small set of helpers for poking at the live state of a plot or generating quick test data — useful when investigating layout problems, profiling renders, or just exercising the pipeline.
+
+
+Test data
+---------
+
+Two synthetic-data generators are bundled for tests and examples:
+
+- :func:`~plotext.sin` — sinusoidal samples, with optional ``phase``, ``decay`` and ``offset``.
+- :func:`~plotext.square` — square wave alternating between ``+amplitude`` and ``-amplitude``.
+
+Both share the same ``periods``, ``length`` and ``amplitude`` parameters and return a plain Python list of floats — drop-in input to :meth:`~plotext._plotter.plot.plot_class.signal`.
+
+.. code-block:: python
+
+   import plotext as plt
+
+   fig = plt.figure
+   fig.clear()
+   fig.draw(fig.signal(plt.sin(periods = 4)).lines().label("sin"))
+   fig.draw(fig.signal(plt.square(periods = 4)).lines().label("square"))
+   fig.title("Test data generators")
+   fig.legend()
+   fig.show()
 
 
 Timing

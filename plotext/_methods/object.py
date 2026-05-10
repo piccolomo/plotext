@@ -31,6 +31,11 @@ def is_numerical(x):
     return isinstance(x, (int, float, bool))
 
 
+# Check if object is an RGB triplet (tuple or list of length 3)
+def is_rgb(obj):
+    return isinstance(obj, (tuple, list)) and len(obj) == 3
+
+
 # Set nested attribute on an object, creating intermediate attributes if missing
 def set_attribute(obj, attribute, value):
     value_copy = copy(value)

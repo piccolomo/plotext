@@ -72,12 +72,13 @@ class timer_class:
     def get_labels(self):
         return self.times.keys()
 
-    # Generate full report
-    def get_log(self, full = True):
-        out = f"Plotext Timing Report {self.to_string(self.get_total_duration())}"
+    # Generate full report; optional custom header and indent (caller can prefix every line, e.g. for nested subplot reports)
+    def get_log(self, full = True, header = "Plotext Timing Report", indent = 0):
+        pad = ' ' * indent
+        out = f"{pad}{header} {self.to_string(self.get_total_duration())}"
         if full:
             for label in self.get_labels():
-                out += f'\n└─ {label} {self.to_string(self.get_event_duration(label))}'
+                out += f'\n{pad}└─ {label} {self.to_string(self.get_event_duration(label))}'
         return out
 
     # Print report

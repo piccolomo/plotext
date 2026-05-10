@@ -17,37 +17,27 @@ def data(x=None, y=None):
     return [list(x[:l]), list(y[:l])]
 
 
-# Format bar plot data into (x, y_min, y_max) aligned lists. Accepts:
-#   ()                  → empty
-#   (y_max,)            → x = 1..N, y_min = 0
-#   (x, y_max)          → y_min = 0
-#   (x, y_min, y_max)   → all explicit
-# Reuses data() so scalar broadcasting, truncation and missing-arg
-# defaults match the rest of plotext. Extra args (n > 3) are ignored.
-def bar_data(*args):
-    if len(args) <= 2:
-        x, y_max = data(*args)
-        y_min = [0] * len(y_max)
-    else:
-        x, y_min = data(args[0], args[1])
-        _, y_max = data(args[0], args[2])
-        l = min(len(x), len(y_min), len(y_max))
-        x, y_min, y_max = x[:l], y_min[:l], y_max[:l]
-    return x, y_min, y_max
-
-
-# Format multiple bar plot data into (x, Y) where Y is a list of equal-length sequences. Accepts:
-#   (Y,)        → list of height sequences; x defaults to 1..N
-#   (x, Y)      → explicit x and a list of height sequences
-# All Y rows are truncated to a common length (the shortest), and x is aligned to that.
-def multiple_bar_data(*args):
+# Format error-bar plot data into (x, y, xerr, yerr) aligned lists. Accepts:
+#   (y,)                 → x = 1..N, no errors
+#   (x, y)               → paired, no errors
+#   (x, y, yerr)         → y errors only (the common case)
+#   (x, y, yerr, xerr)   → both axes — order mirrors matplotlib's errorbar()
+# Reuses data() so scalar broadcasting and missing-arg defaults match the rest of plotext.
+# Extra args (n > 4) are ignored.
+def error_data(*args):
+    if len(args) == 0:
+        return [], [], [], []
     if len(args) == 1:
-        Y = [list(y) for y in args[0]]
-        n = min((len(y) for y in Y), default=0)
-        x = list(range(1, n + 1))
+        x, y = data(args[0])
     else:
-        x = list(args[0])
-        Y = [list(y) for y in args[1]]
-        n = min(len(x), *(len(y) for y in Y)) if Y else 0
-    return x[:n], [y[:n] for y in Y]
+        x, y = data(args[0], args[1])
+    _, yerr = data(x, args[2] if len(args) > 2 else 0)
+    _, xerr = data(x, args[3] if len(args) > 3 else 0)
+    return x, y, xerr, yerr
 
+
+# Normalize a 2D matrix input to (rows, cols, list-of-lists), truncating ragged rows.
+def matrix(data):
+    if not data: return 0, 0, []
+    cols = min(len(row) for row in data)
+    return len(data), cols, [list(row[:cols]) for row in data]

@@ -40,6 +40,9 @@ clink.add('pixel', 'copy').input("void").output("void")
 clink.add('pixel', 'no', 'background').input("void").output("bool")
 
 clink.add('pixel', 'copy', 'background').input("void", "void").output("void")
+clink.add('pixel', 'swap').input("void").output("void")
+clink.add('pixel', 'get', 'background', 'integer', 'code').input("void").output("size")
+clink.add('pixel', 'get', 'fullground', 'integer', 'code').input("void").output("size")
 clink.add('pixel', 'copy', 'pixel').input("void", "void").output("void")
 
 clink.add('pixel', 'fix', 'background').input("void", "void").output("void")
@@ -128,6 +131,7 @@ clink.add('marker', 'get', 'model').input("void").output("wstring")
 clink.add('marker', 'get', 'pixel').input("void").output("void")
 
 clink.add('marker', 'fix').input("void", "void").output("void")
+clink.add('marker', 'set', 'pixel').input("void", "void").output("void")
 clink.add('marker', 'get', 'orientation').input("void").output("bool")
 clink.add('marker', 'get', 'style').input("void").output("size")
 

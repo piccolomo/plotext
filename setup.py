@@ -30,10 +30,8 @@ setup(
     extras_require={
         "image": ["pillow>=8.4"],
         "video": ["pillow>=8.4",
-                  "pafy>=0.5.5",
-                  "opencv-python>=4.5.5",
                   "ffpyplayer>=4.3.5",
-                  "youtube-dl==2020.12.2"],
+                  "yt-dlp>=2024.1"],
         "completion": ["shtab"],
     },
     classifiers=[],

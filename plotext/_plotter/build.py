@@ -124,10 +124,12 @@ class plot_build_class:
         self._stop_event("create matrix")
 
         # Rescale Rulers
+        self._start_event("rescale rulers")
         irulers.update_grid_lines()
         irulers._rescale(width_canvas, height_canvas)
         grid_xpositions = irulers._get_grid_positions(0)
         grid_ypositions = irulers._get_grid_positions(1)
+        self._stop_event("rescale rulers")
 
         # Render all registered lines (user-added + grid-derived) — cells merge arms automatically; crossings produce ┼ via cell.merge()
         self._start_event("lines")
@@ -239,7 +241,7 @@ class plot_build_class:
         # Legend
         self._start_event("legend")
         if self._legend.get_status():
-            self._legend.update(signals)
+            self._legend.update(signals, irulers)
             self._legend.fix_background(self._canvas_pixel)
             self._legend.draw(matrix, irulers, self._parts.canvas, self._parts.legend)
         self._stop_event("legend")

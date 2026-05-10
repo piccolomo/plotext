@@ -14,6 +14,9 @@ public:
     using Array<T>::end;
     using Array<T>::at;
 
+    // Re-expose the global Array template so derived classes (e.g. Matrix) can write `Array<wchar_t>` without the `::` qualifier — the private inheritance above otherwise shadows the global name during unqualified lookup.
+    template <typename U> using Array = ::Array<U>;
+
     // --- Constructors ---
 
     // Default constructor

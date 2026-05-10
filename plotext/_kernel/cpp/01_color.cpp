@@ -2,7 +2,7 @@
 
 // Single ANSI color code (foreground or background) with name/integer/RGB setters
 class Color {
-private:
+protected:
     wchar_t code[color_size_max]; // ANSI color code storage
     size_t length = 0;            // Cache length
 
@@ -138,6 +138,7 @@ public:
     inline Fullground & operator=(const Fullground & fg) noexcept {
         if (this != &fg) Color::copy(fg);
         return *this; }
+
 
     // RGB setter
     inline void set(const unsigned char & r, const unsigned char & g, const unsigned char & b) { Color::set(true, false, r, g, b); }

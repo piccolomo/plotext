@@ -35,10 +35,14 @@ Documentation
    date
    shape
    bar
+   specialized
+   image
+   video
    colorize
    marker
    settings
    subplot
+   terminal
    inspection
    api
    prettydoc
