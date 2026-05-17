@@ -1,7 +1,7 @@
 Axes
 ====
 
-The *frame axes* are the four lines drawn at the edges of the plot canvas: the lower and upper x axes and the left and right y axes. They control the visible borders or frame of the plot itself, and can optionally carry ticks corresponding to the numerical ones placed by the :doc:`rulers`.
+The *frame axes* are the four lines drawn at the edges of the plot canvas: the lower and upper x axes and the left and right y axes. They control the visible borders or frame of the plot itself, and can optionally carry ticks corresponding to the numerical ones placed by the :doc:`ruler`.
 
 Two methods manage their appearance: ``axis`` for a single axis side, and ``frame`` as a batch shortcut for all four at once.
 

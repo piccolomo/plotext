@@ -161,7 +161,7 @@ class legend_class:
     # Compute width
     def get_width(self):
         frame = 4 * self._axes.get(1, 0).get_status()
-        return max((len(el) for el in self._labels), default = 0) + 2 + frame
+        return max((el.get_width() for el in self._labels), default = 0) + 2 + frame
 
     # Compute height
     def get_height(self):

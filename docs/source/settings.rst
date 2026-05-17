@@ -6,8 +6,8 @@ Pages in this section cover how to configure a plot — axis labels, ruler behav
 .. toctree::
    :maxdepth: 1
 
-   labels
-   rulers
+   label
+   ruler
    axis
    canvas
    size

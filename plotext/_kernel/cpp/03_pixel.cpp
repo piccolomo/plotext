@@ -117,6 +117,18 @@ public:
         Background::to_buffer(buffer, length_buffer);
         Style::to_buffer(buffer, length_buffer);}
 
+    // Append the combined CSS body (foreground + background + style) to a buffer
+    inline void html_to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept {
+        Fullground::html_to_buffer(buffer, length_buffer);
+        Background::html_to_buffer(buffer, length_buffer);
+        Style::html_to_buffer(buffer, length_buffer); }
+
+    // Get the combined CSS body as a wstring
+    inline wstring get_html() const {
+        wchar_t buffer[512] = {L'\0'}; size_t len = 0;
+        html_to_buffer(buffer, len);
+        return wstring(buffer, len); }
+
     // Get combined ANSI code (caller owns the returned heap buffer — prefer get_wstring)
     inline const wchar_t * get_code() const {
         wchar_t * buffer = new wchar_t[pixel_size_max + 1]; buffer[0] = L'\0'; size_t len = 0;
@@ -215,6 +227,10 @@ extern "C" {
     // Return the rendered wide string (caller owns the buffer, free with wstring_delete)
     const wchar_t * pixel_get_wstring(const Pixel * p) noexcept {
         return wstring_to_cstring(p->get_wstring()); }
+
+    // Return the pixel's HTML CSS body as a wide string (caller owns the buffer, free with wstring_delete)
+    const wchar_t * pixel_get_html(const Pixel * p) noexcept {
+        return wstring_to_cstring(p->get_html()); }
 
     // Deep copy of the pixel
     Pixel * pixel_copy(const Pixel * p) noexcept { return new Pixel(*p); }

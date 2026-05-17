@@ -19,5 +19,11 @@ from plotext._signal.points import points_class as points
 # Public plot API (signal, draw, title, label, sin, clf, show, ...)
 from plotext._kernel.api import *
 
+# Phase-driven text effects (shimmer, ...)
+from plotext._methods.effects import effect
+
+# File I/O helpers exposed as plotext.file (correct, read, write, exists, delete, parent, join)
+from plotext._methods.file import file
+
 # Pretty documentation container (loaded after the API so plotext is fully initialized)
 from plotext._doc.doc import docs as doc

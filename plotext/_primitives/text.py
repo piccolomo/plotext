@@ -1,15 +1,13 @@
-# Text primitive: wraps a C++ Text pointer; a Colorize anchored at (x, y) with alignment, orientation, axis sides and relative placement
+# Text primitive: wraps a C++ Text pointer; a Matrix anchored at (x, y) with alignment, orientation, axis sides and relative placement.
 
 from plotext._kernel.clink import clink
 from plotext._kernel.tools import wstring
-from plotext._primitives.colorize import colorize as colorize_class
 
 
 class text:
-    # Initialize text with raw types: caller is responsible for validation (see draw.text)
-    def __init__(self, x = 0, y = 0, colorized = None, alignment = -1, orientation = 0, xside = 0, yside = 0, relative = False, _pointer = None):
-        colorized = colorize_class() if colorized is None else colorized
-        self._pointer = clink.text_new(float(x), float(y), colorized._pointer, orientation, alignment) if _pointer is None else _pointer
+    # Initialize text with raw types: `matrix` must be a 1-row matrix (caller is responsible for normalization).
+    def __init__(self, x, y, matrix, alignment = -1, orientation = 0, xside = 0, yside = 0, relative = False):
+        self._pointer = clink.text_new_from_matrix(float(x), float(y), matrix._pointer, orientation, alignment)
         self._xside = xside
         self._yside = yside
         self._relative = relative
@@ -22,7 +20,12 @@ class text:
 
     # Deep copy of the text (independent C pointer + same Python-side attributes)
     def copy(self):
-        return text(_pointer = clink.text_copy(self._pointer), xside = self._xside, yside = self._yside, relative = self._relative)
+        clone = text.__new__(text)                                                  # bypass __init__ to keep matrix required for the public constructor
+        clone._pointer = clink.text_copy(self._pointer)
+        clone._xside = self._xside
+        clone._yside = self._yside
+        clone._relative = self._relative
+        return clone
 
     # Set the (x, y) anchor position
     def _set_position(self, x, y):

@@ -21,7 +21,6 @@ from plotext._correct import heatmap as correct_heatmap
 from plotext._primitives.marker import marker as marker_class
 from plotext._primitives.box import box_class, line
 from plotext._primitives.pixel import pixel as pixel_class
-from plotext._primitives.colorize import correct_colorized
 from plotext._primitives.text import text as text_class
 from plotext._settings import defaults
 from plotext._methods import sequence
@@ -47,7 +46,7 @@ class draw_class:
 
     # Build a text annotation at (x, y); caller passes the result to draw() to register it
     def text(self, x, y, label, alignment = None, orientation = None, xside = None, yside = None, relative = None):
-        label = correct_colorized(label, defaults.pixels["label"])
+        label = correct_label.label(label, defaults.pixels["label"])
         orientation = correct_placement.orientation(orientation)
         alignment = correct_placement.alignment(alignment, orientation = orientation)
         xside = correct_axis.side(0, xside)

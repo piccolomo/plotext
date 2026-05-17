@@ -142,6 +142,13 @@ class pixel:
         clink.wstring_delete(p)
         return string
 
+    # Get the CSS body for HTML rendering (e.g. "color:rgb(255,0,0);background:rgb(0,0,0);font-weight:bold;")
+    def get_html(self):
+        p = clink.pixel_get_html(self._pointer)
+        string = wstring.from_buffer(p).value
+        clink.wstring_delete(p)
+        return string
+
     # String representation
     def __repr__(self):
         return self._get_string()

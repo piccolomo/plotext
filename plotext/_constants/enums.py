@@ -67,3 +67,6 @@ line_methods = ['simple', 'full']
 # Subplot harmonization policy: when nested subplots disagree, take the
 # smallest (everyone fits) or the largest (one grows to accommodate).
 size_policies = ['minimum', 'maximum']
+
+# Text effects (used by plotext.effect)
+effect_names = ['shimmer', 'pulse', 'rainbow', 'gradient']

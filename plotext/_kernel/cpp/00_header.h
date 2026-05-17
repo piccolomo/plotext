@@ -44,5 +44,5 @@
 #include "13_point_filled.cpp"
 #include "14_points_filled.cpp"
 #include "16_signal.cpp"
-#include "12_text.cpp"
 #include "11_matrix.cpp"
+#include "12_text.cpp"

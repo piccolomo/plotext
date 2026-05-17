@@ -3,17 +3,22 @@
 from re import sub
 
 from plotext._primitives.colorize import colorize as colorize_class
+from plotext._primitives.matrix   import matrix   as matrix_class
 from plotext._methods.string import only_spaces
 
 
-# Normalize a single label
+# Normalize a single label (str / colorize / matrix / None) into a 1-row matrix ready to feed text_class. None passes through (means "no label"). Cells get `default_pixel`'s background where they don't already have one.
 def label(label, default_pixel):
-    if label is None or only_spaces(label):
-        return None
+    if label is None: return None
+    if isinstance(label, matrix_class):
+        label = label.copy()                                                         # don't mutate the caller's matrix
+        label._fix_background(default_pixel)
+        return label
     if isinstance(label, str):
+        if only_spaces(label): return None
         label = colorize_class(label).set_pixel(default_pixel)
     label._fix(default_pixel)
-    return label
+    return label.get_matrix()
 
 
 # Normalize list of labels

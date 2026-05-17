@@ -23,6 +23,10 @@ The ``plotext`` module is the main package. It exposes a small set of module-lev
 
 .. autofunction:: plotext.markers
 
+.. autofunction:: plotext.effect
+
+See :doc:`colorize` for usage and :doc:`stream` for the animation pattern.
+
 .. autofunction:: plotext.image
 
 See :doc:`image` for full usage notes and a comparison with the figure-integrated ``fig.image``.
@@ -117,4 +121,11 @@ prettydoc
 The ``prettydoc`` module is responsible for managing and customizing docstring formatting.
 
 .. autoclass:: plotext.prettydoc.docs
+   :members:
+
+
+file
+----
+
+.. autoclass:: plotext.file
    :members:

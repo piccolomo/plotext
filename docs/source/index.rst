@@ -38,12 +38,14 @@ Documentation
    specialized
    image
    video
+   stream
    colorize
    marker
    settings
    subplot
    terminal
    inspection
+   file
    api
    prettydoc
 

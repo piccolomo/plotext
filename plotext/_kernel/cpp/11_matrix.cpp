@@ -1,5 +1,7 @@
 // Matrix: a 2D grid of MatrixCharacter cells. Construct, fill/clear, stamp Point(s) via merge, stream rendered output.
 
+class Text;                                                                          // forward declaration: Matrix::insert(const Text&) is defined out-of-class at the bottom of 12_text.cpp (after Text is fully declared)
+
 class Matrix : public Array2D<MatrixCharacter> {
 public:
     Matrix() noexcept = default;
@@ -58,35 +60,8 @@ public:
             Array2D<MatrixCharacter>::insert(aligned_col, aligned_row, m); }
 
     // Insert a Text. Static alignment → place at computed start. Dynamic alignment → search center-relative displacements until one fits with check_space=true. check_space requires the target span to be empty.
-    inline bool insert(const Text & t, bool check_space = false) noexcept {
-        const size_t length = t.get_length();
-        if (length == 0) return true;
-
-        if (t.get_alignment().is_dynamic()) {
-            if (t.get_row() >= get_height()) return false;
-            Text candidate = t;
-            candidate.set_alignment(Alignment(0));
-            for (int delta : get_dynamic_displacements(length)) {
-                candidate.set_position(t.get_col() + delta, t.get_row());
-                if (insert(candidate, true)) return true; }
-            return false; }
-
-        const bool horizontal = t.get_orientation().is_horizontal();
-        const int  disp       = t.get_alignment().get_displacement(length);
-        const int  col0       = (int)t.get_col() + (horizontal ? disp : 0);
-        const int  row0       = (int)t.get_row() + (horizontal ? 0    : disp);
-        const int  col1       = col0 + (horizontal ? (int)length : 1);
-        const int  row1       = row0 + (horizontal ? 1           : (int)length);
-        if (col0 < 0 || row0 < 0) return false;
-        if ((size_t)col1 > get_width() || (size_t)row1 > get_height()) return false;
-
-        if (check_space && !is_empty(col0, col1, row0, row1)) return false;
-
-        for (size_t i = 0; i < length; ++i) {
-            const size_t c = col0 + (horizontal ? i : 0);
-            const size_t r = row0 + (horizontal ? 0 : i);
-            at(c, r).merge(MatrixCharacter(marker_normal, t, t.get_wcharacter(i))); }
-        return true; }
+    // Body is defined at the bottom of 12_text.cpp — Text inherits Matrix, so the body needs Text fully declared (only the declaration is legal here).
+    inline bool insert(const Text & t, bool check_space = false) noexcept;
 
     // Render the matrix into a wchar_t buffer. Same per-cell logic the old stream() had: refresh glyph, emit pixel transition only when it changes, ansi_end + newline at row ends. Buffer must be sized for character_size_max * size + height + 1 wchars.
     inline void to_buffer(wchar_t * buffer, size_t & length, bool colorfull = true) noexcept {
@@ -106,9 +81,47 @@ public:
                 wchar_to_buffer(L'\n', buffer, length); } }
         buffer[length] = L'\0'; }
 
+    // Render the matrix as HTML into a wchar buffer. Same per-cell logic as to_buffer: emit a new <span style="..."> only when the pixel differs from the previous cell or at row start. Wraps the whole output in <pre> so whitespace is preserved without &nbsp;. HTML-escapes < > & inside cell glyphs.
+    inline void html_to_buffer(wchar_t * buffer, size_t & length) noexcept {
+        cstring_to_buffer(L"<pre>", 5, buffer, length);
+        const size_t total = get_size();
+        const size_t w     = get_width();
+        bool open = false;
+        for (size_t i = 0; i < total; ++i) {
+            at(i).update_wcharacter();
+            const bool end_line        = (i + 1) % w == 0;
+            const bool start_of_row    = (i % w) == 0;
+            const bool different_pixel = i == 0 or start_of_row or at(i).different_pixel(at(i - 1));
+            if (different_pixel) {
+                if (open) { cstring_to_buffer(L"</span>", 7, buffer, length); open = false; }
+                if (at(i).Pixel::has_color()) {
+                    cstring_to_buffer(L"<span style=\"", 13, buffer, length);
+                    at(i).Pixel::html_to_buffer(buffer, length);
+                    cstring_to_buffer(L"\">", 2, buffer, length);
+                    open = true; } }
+            const wchar_t c = at(i).get_wcharacter();
+            // HTML-escape special characters so Text-stamped labels containing "<", ">" or "&" don't corrupt the page
+            if      (c == L'<') cstring_to_buffer(L"&lt;",  4, buffer, length);
+            else if (c == L'>') cstring_to_buffer(L"&gt;",  4, buffer, length);
+            else if (c == L'&') cstring_to_buffer(L"&amp;", 5, buffer, length);
+            else                wchar_to_buffer(c, buffer, length);
+            if (end_line) {
+                if (open) { cstring_to_buffer(L"</span>", 7, buffer, length); open = false; }
+                wchar_to_buffer(L'\n', buffer, length); } }
+        cstring_to_buffer(L"</pre>", 6, buffer, length);
+        buffer[length] = L'\0'; }
+
+    // Render the matrix as HTML into a wstring. Heap-allocated buffer to survive large matrices.
+    inline wstring get_html() noexcept {
+        const size_t cap = 400 * get_size() + 10 * get_height() + 16;
+        Array<wchar_t> buffer(cap, L'\0');
+        size_t length = 0;
+        html_to_buffer(buffer.begin(), length);
+        return wstring(buffer.begin(), length); }
+
     // Render to wstring; uses Array<wchar_t> on the heap because a stack VLA overflows the default 8 MB stack for matrices with thousands of cells. Fast path: build once, copy out.
     inline wstring get_wstring(bool colorless = false) noexcept {
-        const size_t cap = character_size_max * get_size() + get_height() + 1;
+        const size_t cap = character_size_max * get_size() + (1 + wcslen(ansi_end)) * get_height() + 1;   // per row: newline + trailing ansi_end
         Array<wchar_t> buffer(cap, L'\0');
         size_t length = 0;
         to_buffer(buffer.begin(), length, !colorless);
@@ -116,30 +129,27 @@ public:
 
     // Stream to stdout: build the whole matrix into a single buffer, then one wcout.write — much faster than per-cell wcout calls (saves the per-call streambuf overhead). Heap-allocated buffer (Array<wchar_t>) to survive matrices large enough to overflow the stack.
     inline void stream(bool colorfull = true, bool flushing = true) noexcept {
-        const size_t cap = character_size_max * get_size() + get_height() + 1;
+        const size_t cap = character_size_max * get_size() + (1 + wcslen(ansi_end)) * get_height() + 1;   // per row: newline + trailing ansi_end
         Array<wchar_t> buffer(cap, L'\0');
         size_t length = 0;
         to_buffer(buffer.begin(), length, colorfull);
         wcout.write(buffer.begin(), length);
         if (flushing) flush(); }
 
+    // Apply `p`'s background to every cell that doesn't already have one. Each MatrixCharacter is-a Pixel, so this is a per-cell forward to Pixel::fix_background.
+    inline void fix_background(const Pixel & p) noexcept {
+        for (size_t i = 0; i < get_size(); ++i) at(i).fix_background(p); }
+
+    // Apply `p` as the pixel of every cell, preserving the cached glyph. Per-cell forward to NormalCharacter::set_pixel.
+    inline void set_pixel(const Pixel & p) noexcept {
+        for (size_t i = 0; i < get_size(); ++i) at(i).set_pixel(p); }
+
     inline void log() noexcept { wcout << L"Matrix(" << get_width() << L"x" << get_height() << L")" << endl; stream(); }
 };
 
 
-// Split a multi-line Colorize into a Matrix — one row per line, width = longest line. Each line keeps the source Colorize's pixel.
-inline Matrix colorize_to_matrix(const Colorize & c) noexcept {
-    vector<wstring> lines = split_wstring(c.get_colorless_wstring());
-    size_t height = lines.size();
-    size_t width  = 0;
-    for (const auto & line : lines) width = std::max(width, line.size());
-    Matrix out(width, height);
-    for (size_t row = 0; row < height; ++row) {
-        Colorize cs(lines[row], c);
-        Text t(0.0f, static_cast<float>(row), cs, Orientation(0), Alignment(-1));
-        out.insert(t); }
-    return out;
-}
+// `colorize_to_matrix` body lives at the bottom of 12_text.cpp (uses Text, which inherits Matrix — same cycle as Matrix::insert(const Text&)).
+inline Matrix colorize_to_matrix(const Colorize & c) noexcept;                       // forward declaration: defined at the bottom of 12_text.cpp
 
 
 extern "C" {
@@ -152,6 +162,8 @@ extern "C" {
     void     matrix_print        (Matrix * m, bool colorless, bool flush) noexcept { m->stream(!colorless, flush); }
     Matrix * matrix_copy         (Matrix * m) noexcept { return new Matrix(*m); }
     void     matrix_fill_pixel   (Matrix * m, Pixel * p) noexcept { m->fill(MatrixCharacter(L' ', *p)); }
+    void     matrix_fix_background(Matrix * m, Pixel * p) noexcept { m->fix_background(*p); }
+    void     matrix_apply_pixel  (Matrix * m, Pixel * p) noexcept { m->set_pixel(*p); }
     void     matrix_set_pixel    (Matrix * m, size_t col, size_t row, Pixel * p) noexcept { m->at(col, row).set_pixel(*p); }
     // Set the cell at (col, row) to a NormalCharacter built from (wchar, pixel). Builds a transient MatrixCharacter (kind=marker_normal, bits=0) and dispatches to Array2D::insert.
     void     matrix_set_normal_character(Matrix * m, size_t col, size_t row, wchar_t c, Pixel * p) noexcept { m->Array2D<MatrixCharacter>::insert(col, row, MatrixCharacter(c, *p)); }
@@ -165,4 +177,5 @@ extern "C" {
     Matrix * matrix_hstack       (Matrix * m1, Matrix * m2, bool adapt) noexcept { return new Matrix(m1->hstack(*m2, adapt)); }
     Matrix * matrix_part         (Matrix * m, size_t col_start, size_t col_stop, size_t row_start, size_t row_stop) noexcept { return new Matrix(m->part(col_start, col_stop, row_start, row_stop)); }
     const wchar_t * matrix_get_wstring(Matrix * m, bool colorless) noexcept { return wstring_to_cstring(m->get_wstring(colorless)); }
+    const wchar_t * matrix_get_html   (Matrix * m) noexcept { return wstring_to_cstring(m->get_html()); }
 }

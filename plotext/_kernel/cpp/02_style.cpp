@@ -64,6 +64,17 @@ public:
     inline void to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept {
         if (has_style()) { cstring_to_buffer(code, length, buffer, length_buffer); } }
 
+    // Append the CSS declarations for this style to a buffer (e.g. "font-weight:bold;font-style:italic;"). Re-parses the cached ANSI code to recover individual style integers, then looks up each in style_html_codes.
+    inline void html_to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept {
+        if (no_style()) return;
+        const wchar_t * p = code + 2; // skip "\x1b["
+        while (*p && *p != L'm') {
+            unsigned int sc = 0;
+            while (*p >= L'0' && *p <= L'9') { sc = sc * 10 + (*p - L'0'); ++p; }
+            auto it = style_html_codes.find((unsigned char)sc);
+            if (it != style_html_codes.end()) cstring_to_buffer(it->second.c_str(), it->second.length(), buffer, length_buffer);
+            if (*p == L';') ++p; } }
+
     // Get wide string representation
     inline wstring get_wstring() const {
         wchar_t buffer[style_size_max + 11] = { L'\0' };

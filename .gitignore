@@ -1,21 +1,12 @@
-# Python
-__pycache__/
-*.pyc
-
-# Packaging artifacts
+plotext.egg-info/
 build/
 dist/
-*.egg-info/
-
-# Compiled C++ kernel (built at install time by build_cpp.py)
-*.so
-*.dll
-
-# Editor files (Emacs)
+__pycache__/
 *~
-\#*\#
+plotext/#*
+#*
 .#*
-
-# Local scratch
-test.py
-tests/
+plotext/temp/
+plotext/bin/
+plotext/todo.txt
+*.so

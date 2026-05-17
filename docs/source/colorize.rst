@@ -107,6 +107,23 @@ Different matrices can be combined with the :meth:`~plotext.matrix.insert` metho
 .. seealso:: More details in the :class:`plotext.matrix` API or via ``plotext.doc.matrix()``.
 
 
+.. _effects:
+
+Animated Text Effects
+---------------------
+
+:func:`plotext.effect` returns a single-row :class:`~plotext.matrix` where each character is colored by a phase-driven effect. Pass it to :func:`fig.title <plotext._plotter.plot.plot_class.title>` or :func:`fig.label <plotext._plotter.plot.plot_class.label>` inside a streaming loop, advancing ``step`` each iteration, to animate titles and axis labels.
+
+Available effects:
+
+- ``"shimmer"`` — a Gaussian bright spot sweeps across the text.
+- ``"pulse"`` — the whole string fades between two colors.
+- ``"rainbow"`` — hue cycles across the characters and scrolls with ``step``.
+- ``"gradient"`` — sinusoidal blend between two colors scrolls along the text.
+
+.. seealso:: A runnable demo lives at ``tests/29_effects.py``; the streaming example in :doc:`stream` shows ``plt.effect`` driving an animated title and labels.
+
+
 .. _colors:
 
 Colors

@@ -5,6 +5,7 @@ from plotext._kernel.tools import wstring, wchar
 from plotext._primitives.pixel import pixel as pixel_class
 from plotext._methods.string import write
 from plotext._methods.object import hash as object_hash
+from plotext._methods.file import write, _get_extension
 import plotext._correct.matrix as correct
 from plotext._settings import defaults
 
@@ -111,6 +112,20 @@ class matrix:
         clink.wstring_delete(p)
         return string
 
+    # Build the rendered HTML representation (run-length colored spans inside <pre>)
+    def get_html(self):
+        p = clink.matrix_get_html(self._pointer)
+        string = wstring.from_buffer(p).value
+        clink.wstring_delete(p)
+        return string
+
+    # Save the matrix to disk. Extension-driven: "html" → HTML via get_html(), "ansi" → colored text, anything else → plain colorless text. append=True appends.
+    def save(self, path, append=False):
+        ext = _get_extension(path)
+        canvas = self.get_html() if ext == "html" else self.get_string(colorless=(ext != "ansi"))
+        write(canvas, path, append)
+        return self
+
     # Print the matrix to stdout
     def print(self, colorless = False, flush = True):
         clink.matrix_print(self._pointer, colorless, flush)
@@ -143,6 +158,16 @@ class matrix:
     # Extract a sub-matrix [col_start, col_stop) x [row_start, row_stop)
     def _part(self, col_start, col_stop, row_start, row_stop):
         return self.__class__(_pointer=clink.matrix_part(self._pointer, col_start, col_stop, row_start, row_stop))
+
+    # Apply `pixel`'s background to every cell that doesn't already have one (per-cell forward to Pixel::fix_background in C++).
+    def _fix_background(self, pixel):
+        clink.matrix_fix_background(self._pointer, pixel._pointer)
+        return self
+
+    # Apply `pixel` to every cell, preserving each cell's glyph. Bulk counterpart to the per-cell `_set_pixel(col, row, pixel)`.
+    def set_pixel(self, pixel):
+        clink.matrix_apply_pixel(self._pointer, pixel._pointer)
+        return self
 
     # Hash of the rendered string (used by tests)
     def _hash(self):

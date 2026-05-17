@@ -43,9 +43,9 @@ class ticks_class:
     def get_labels(self):
         return [t.get_label() for t in self.ticks]
 
-    # Get maximum width of tick labels
+    # Get maximum width of tick labels (labels are now 1-row matrices, so width = number of columns)
     def get_labels_width(self):
-        return max([len(l) for l in self.get_labels()], default=0)
+        return max([l.get_width() for l in self.get_labels()], default=0)
 
     # Get number of ticks
     def get_length(self):

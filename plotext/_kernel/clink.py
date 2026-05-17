@@ -33,6 +33,7 @@ clink.add('pixel', 'set', 'background', 'code').input("void", "string").output("
 clink.add('pixel', 'set', 'style', 'code').input("void", "string").output("void")
 
 clink.add('pixel', 'get', 'wstring').input("void").output("wchar pointer")
+clink.add('pixel', 'get', 'html').input("void").output("wchar pointer")
 
 clink.add('pixel', 'log').input("void").output("void")
 clink.add('pixel', 'copy').input("void").output("void")
@@ -93,6 +94,7 @@ clink.add('matrix', 'vstack').input("void", "void", "bool").output("void")
 clink.add('matrix', 'hstack').input("void", "void", "bool").output("void")
 
 clink.add('matrix', 'get', 'wstring').input("void", "bool").output("wchar pointer")
+clink.add('matrix', 'get', 'html').input("void").output("wchar pointer")
 
 clink.add('matrix', 'part').input("void", "size", "size", "size", "size").output("void")
 # clink.add('matrix', 'is', 'empty').input("void", "size", "size", "size", "size").output("bool")   # disabled: no Python callers
@@ -154,7 +156,8 @@ clink.add('box', 'style', 'set', 'pixel').input("void", "void").output("void")
 # Text
 # =========================
 
-clink.add('text', 'new').input("float", "float", "void", "integer", "integer").output("void")
+clink.add('text', 'new', 'from', 'colorize').input("float", "float", "void", "integer", "integer").output("void")
+clink.add('text', 'new', 'from', 'matrix').input("float", "float", "void", "integer", "integer").output("void")
 clink.add('text', 'copy').input("void").output("void")
 clink.add('text', 'delete').input("void").output("void")
 
@@ -206,6 +209,8 @@ clink.add('points', 'select', 'in', 'matrix').input("void", "size", "size").outp
 
 clink.add('matrix', 'insert', 'points').input("void", "void").output("void")
 clink.add('matrix', 'fill', 'pixel').input("void", "void").output("void")
+clink.add('matrix', 'fix', 'background').input("void", "void").output("void")
+clink.add('matrix', 'apply', 'pixel').input("void", "void").output("void")
 
 clink.add('points', 'fix', 'background').input("void", "void").output("void")
 clink.add('points', 'squash').input("void", "void").output("void")

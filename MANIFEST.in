@@ -1,4 +1,2 @@
-include build_cpp.py
-include plotext/_kernel/cpp/kernel.so
-include plotext/_kernel/cpp/kernel.dll
-recursive-include plotext/_kernel/cpp *.cpp *.h
+include plotext/_kernel.so
+include plotext/_kernel.dll

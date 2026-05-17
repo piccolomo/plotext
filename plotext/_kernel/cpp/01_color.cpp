@@ -74,6 +74,23 @@ public:
     inline void to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept {
         if (has_color()) { cstring_to_buffer(code, length, buffer, length_buffer); } }
 
+    // Append the CSS property name to a buffer (overridden by Fullground = "color", Background = "background")
+    virtual inline void css_name_to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept { cstring_to_buffer(L"color", 5, buffer, length_buffer); }
+
+    // Decode this color's ANSI code into an RGB triplet (palette form via rgb_lookup, rgb form by parsing)
+    inline void get_rgb(unsigned char & r, unsigned char & g, unsigned char & b) const noexcept {
+        if (code[5] == L'5') { unsigned char idx = get_integer_code(); r = rgb_lookup[idx][0]; g = rgb_lookup[idx][1]; b = rgb_lookup[idx][2]; }
+        else { unsigned int rr = 0, gg = 0, bb = 0; swscanf(code + 7, L"%u;%u;%um", &rr, &gg, &bb); r = (unsigned char)rr; g = (unsigned char)gg; b = (unsigned char)bb; } }
+
+    // Append the CSS declaration for this color to a buffer (e.g. "color:rgb(229,229,16);")
+    inline void html_to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept {
+        if (no_color()) return;
+        unsigned char r, g, b; get_rgb(r, g, b);
+        css_name_to_buffer(buffer, length_buffer);
+        wchar_t tmp[24] = {L'\0'};
+        int n = swprintf(tmp, 24, L":rgb(%u,%u,%u);", r, g, b);
+        if (n > 0) cstring_to_buffer(tmp, (size_t)n, buffer, length_buffer); }
+
     // Append the class name label to a buffer (overridden by Fullground / Background)
     virtual inline void name_to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept { cstring_to_buffer(L"Color", 5, buffer, length_buffer); }
 
@@ -151,6 +168,9 @@ public:
 
     // Append class name label "Fullground" to a buffer
     inline void name_to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept override { cstring_to_buffer(L"Fullground", 10, buffer, length_buffer); }
+
+    // Append the CSS property name "color" to a buffer
+    inline void css_name_to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept override { cstring_to_buffer(L"color", 5, buffer, length_buffer); }
 };
 
 
@@ -197,4 +217,7 @@ public:
 
     // Append class name label "Background" to a buffer
     inline void name_to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept override { cstring_to_buffer(L"Background", 10, buffer, length_buffer); }
+
+    // Append the CSS property name "background" to a buffer
+    inline void css_name_to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept override { cstring_to_buffer(L"background", 10, buffer, length_buffer); }
 };
