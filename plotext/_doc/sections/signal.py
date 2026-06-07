@@ -8,7 +8,7 @@ from plotext._signal.signal import signal_class
 add(plot_class.signal, name = "signal")
 doc("Creates a signal, a sequence of points to be plotted. Line drawing is configured on the returned signal via its fluent methods (lines, point_lines); line_method and fill_method are construction-time parameters here; label and stem fills (fillx, filly) are also set fluently on the signal.")
 par("args", "Input data: x, y coordinates, or a single y sequence; date values are also supported"); spec(type.data_multiple)
-par("marker", "Symbol used to represent each data point"); spec(type.marker_par_draw, repr("hd"))
+par("marker", "Symbol used to represent each data point"); spec(type.marker_par, repr("hd"))
 par("line_method", "How densely the connecting lines are drawn (simple or full); applies only when lines have been turned on via signal.lines() or signal.point_lines()"); spec(type.line_method, repr("simple"))
 par("fill_method", "How densely fills are drawn for points carrying fill data (simple or full)"); spec(type.line_method, repr("simple"))
 par("xside", "Which x axis to plot against"); spec(type.xside, repr('lower'))

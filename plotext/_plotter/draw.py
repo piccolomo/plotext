@@ -17,14 +17,19 @@ from plotext._correct import line as correct_line
 from plotext._correct import label as correct_label
 from plotext._correct import marker as correct_marker
 from plotext._correct import bar    as correct_bar
+from plotext._correct import candlestick as correct_candlestick
 from plotext._correct import heatmap as correct_heatmap
 from plotext._primitives.marker import marker as marker_class
+from plotext._primitives.matrix_marker import matrix_marker
+from plotext._primitives.matrix import matrix as matrix_class
+from plotext._primitives.colorize import colorize as colorize_class
 from plotext._primitives.box import box_class, line
 from plotext._primitives.pixel import pixel as pixel_class
-from plotext._primitives.text import text as text_class
+from plotext._plotter.utils.interactive import refresh, silent
 from plotext._settings import defaults
 from plotext._methods import sequence
 from plotext._methods.bar import bar_edges, box_data, hist_data, is_vertical
+from plotext._methods.ruler import get_labels
 from plotext._methods.object import is_rgb
 
 
@@ -32,27 +37,23 @@ class draw_class:
 
     # ---- 1. Registration ----------------------------------------------------
 
-    # Register a pre-built drawable (signal or text) on the plot and propagate to subplots
+    # Register a pre-built drawable (always a signal now: plotted data, lines, annotations) on the plot and propagate to subplots
+    @refresh
     def draw(self, drawable):
-        if isinstance(drawable, text_class):
-            self._texts.add(drawable)
-        else:
-            self._signals._add(drawable)
-            self._cycler.remove_colors(drawable._get_foreground_unique_integer_colors())
+        self._signals._add(drawable)
+        self._cycler.remove_pixels(drawable._get_unique_pixels())
         self._for_each_subplot("draw", drawable)
         return self
 
     # ---- 2. Annotation ------------------------------------------------------
 
-    # Build a text annotation at (x, y); caller passes the result to draw() to register it
-    def text(self, x, y, label, alignment = None, orientation = None, xside = None, yside = None, relative = None):
+    # Build a text annotation at (x, y): one-point signal whose marker is a MatrixMarker carrying the label matrix. orientation=0 horizontal (W×1 label, alignment maps to ha — accepts left/center/right), orientation=1 vertical (label transposed to 1×W, alignment maps to va — accepts top/center/bottom). Caller passes the result to draw() to register it.
+    def text(self, x, y, label, alignment = None, orientation = None, xside = None, yside = None):
         label = correct_label.label(label, defaults.pixels["label"])
         orientation = correct_placement.orientation(orientation)
         alignment = correct_placement.alignment(alignment, orientation = orientation)
-        xside = correct_axis.side(0, xside)
-        yside = correct_axis.side(1, yside)
-        relative = correct_bool.boolean(relative, False)
-        return text_class(x, y, label, alignment = alignment, orientation = orientation, xside = xside, yside = yside, relative = relative)
+        ha, va = (-1, alignment) if orientation == 1 else (alignment, -1)
+        return self.signal([x], [y], marker = matrix_marker(label.transpose() if orientation == 1 else label, ha = ha, va = va), xside = xside, yside = yside)
 
     # ---- 3. Geometric shapes ------------------------------------------------
 
@@ -61,6 +62,7 @@ class draw_class:
         return self.signal(list(x)[:2], list(y)[:2], marker = marker, xside = xside, yside = yside).lines(True)
 
     # Add a line at coord. orientation 0 = horizontal (on y-ruler), 1 = vertical (on x-ruler). Registered on the ruler; rendered at build time.
+    @refresh
     def line(self, coord, orientation = 0, relative = False, pixel = None, style = None, label = None, xside = None, yside = None):
         orientation = correct_placement.orientation(orientation)
         relative    = correct_bool.boolean(relative, False)
@@ -79,8 +81,8 @@ class draw_class:
         self._for_each_subplot("line", coord, orientation, relative, pixel, style, label, xside, yside)
         return self
 
-    # Build a rectangle signal spanning given x/y ranges; lines = outline, fill = body.
-    def rectangle(self, x = (0, 1), y = (0, 1), marker = None, lines = True, fill = True, xside = None, yside = None):
+    # Build a rectangle signal spanning given x/y ranges; lines = outline, fill = body. Optional `label` centered inside the rectangle.
+    def rectangle(self, x = (0, 1), y = (0, 1), marker = None, lines = True, fill = True, label = None, xside = None, yside = None):
         x0, x1 = min(x), max(x)
         y0, y1 = min(y), max(y)
         if fill:
@@ -89,12 +91,24 @@ class draw_class:
             lower = self.signal([x0, x1], [y0, y0], marker = marker)
             upper.fill(lower)
             upper.lines(lines)
-            return upper
-        xs = [x0, x1, x1, x0, x0]
-        ys = [y0, y0, y1, y1, y0]
-        sig = self.signal(xs, ys, marker = marker, xside = xside, yside = yside)
-        if lines: sig.line_method("full")
-        sig.lines(lines)
+            sig = upper
+        else:
+            xs = [x0, x1, x1, x0, x0]
+            ys = [y0, y0, y1, y1, y0]
+            sig = self.signal(xs, ys, marker = marker, xside = xside, yside = yside)
+            if lines: sig.line_method("full")
+            sig.lines(lines)
+        if label is not None:
+            rect_pixel = sig._get_marker().get_pixel()
+            if fill:
+                label_pixel = rect_pixel.copy()._swap()                                # bg = rect.fg
+                label_pixel._copy_fullground(self._canvas_pixel.copy()._swap())        # fg = canvas.bg
+            else:
+                label_pixel = pixel_class()._copy_fullground(rect_pixel)               # fg = rect.fg
+            label_mat = correct_label.label(label, label_pixel)
+            join = sig.get_length()
+            sig._append(self.signal([(x0 + x1) / 2], [(y0 + y1) / 2], marker = matrix_marker(label_mat, ha = 0, va = 0), xside = xside, yside = yside))
+            sig._set_connected(join, False)
         return sig
 
     # Build a regular polygon signal centred at (x, y) with given radius and sides.
@@ -118,8 +132,9 @@ class draw_class:
 
     # ---- 4. Bar family ------------------------------------------------------
 
-    # Build a bar plot signal; args: bar(y_max), bar(x, y_max), or bar(x, y_min, y_max).
-    def bar(self, *args, marker = None, width = None, orientation = None, offset = 0, _reset_ticks = True, lines = True, fill = True, xside = None, yside = None):
+    # Build a bar plot signal; args: bar(y_max), bar(x, y_max), or bar(x, y_min, y_max). When labelled=True each bar carries its height value (y_max) as the rectangle's centered label.
+    @silent
+    def bar(self, *args, marker = None, width = None, orientation = None, lines = True, fill = True, labelled = False, xside = None, yside = None, _reset_ticks = True, _offset = 0):
         x, y_min, y_max = correct_bar.bar_data(*args)
         width = correct_bar.width(width)
 
@@ -131,19 +146,19 @@ class draw_class:
             x = positions
 
         # Apply x offset
-        x = [el + offset for el in x]
+        x = [el + _offset for el in x]
 
         # Numeric x: bar centres (post-offset) become tick positions, their string version the labels
         if not string_x:
             positions = list(x)
-            labels = list(map(str, x))
+            labels = get_labels(x)
 
         # Bar geometry
         xe, ye = bar_edges(x, y_min, y_max, width)
 
         vertical = is_vertical(correct_matrix.orientation(orientation))
 
-        # Pick the marker once so every bar shares the same colour from the cycler; normalize so string codes ('hd', 'block', a single char) become proper marker instances.
+        # Pick the marker once so every bar shares the same colour from the cycler; normalize so string codes ('hd', 'full', a single char) become proper marker instances.
         bar_marker = correct_marker.marker(marker, self._next_marker())
 
         # Start empty and append one rectangle per bar; disconnect at joins keeps outlines isolated
@@ -152,6 +167,7 @@ class draw_class:
             rx, ry = (xe[i], ye[i]) if vertical else (ye[i], xe[i])
             rect = self.rectangle(rx, ry, marker = bar_marker,
                                   lines = lines, fill = fill,
+                                  label = str(y_max[i]) if labelled else None,
                                   xside = xside, yside = yside)
             join = sig.get_length()
             sig._append(rect)
@@ -168,7 +184,8 @@ class draw_class:
         return sig
 
     # Build a grouped bar plot from (x, Y) where Y is a list of height-sequences; sub-bars are merged into one signal via _append, per-rectangle markers preserve cycler colours.
-    def multiple_bar(self, *args, marker = None, width = None, orientation = None, _reset_ticks = True, lines = True, fill = True, xside = None, yside = None):
+    @silent
+    def multiple_bar(self, *args, marker = None, width = None, orientation = None, lines = True, fill = True, labelled = False, xside = None, yside = None, _reset_ticks = True, _offset = None):
         x, Y = correct_bar.multiple_bar_data(*args)
         n = len(Y)
         width = correct_bar.width(width)
@@ -176,26 +193,31 @@ class draw_class:
         offsets = [(-1/2 + 1/(2 * n)) + i / n for i in range(n)]
         markers = marker if isinstance(marker, list) else [marker] * n
 
+        # _offset = where the category label sits relative to the integer position. Default lines it up with the first sub-bar in horizontal orientation (avoids row-rounding collisions); stays centered (0) in vertical, where sub-cell rendering handles the gap cleanly.
+        vertical = is_vertical(correct_matrix.orientation(orientation))
+        if _offset is None: _offset = 0 if vertical or not n else offsets[0]
+
         # Start empty and append one sub-bar per Y row (mirrors bar()'s own start-empty-then-append pattern).
         main = self.signal([], [], xside = xside, yside = yside)
         for i in range(n):
             # _reset_ticks=False on sub-bars: each bar() shifts x by its offset, ticks would land off-centre — we re-set them ourselves below at group centres.
-            sub = self.bar(x, Y[i], marker = markers[i], width = sub_width, orientation = orientation, offset = offsets[i], _reset_ticks = False, lines = lines, fill = fill, xside = xside, yside = yside)
+            sub = self.bar(x, Y[i], marker = markers[i], width = sub_width, orientation = orientation, _offset = offsets[i], lines = lines, fill = fill, labelled = labelled, xside = xside, yside = yside, _reset_ticks = False)
             # Mark this bar's colour as used so the next sub-bar's _next_marker() picks a different one (draw() normally does this — we trigger it inline).
-            self._cycler.remove_colors(sub._get_foreground_unique_integer_colors())
+            self._cycler.remove_pixels(sub._get_unique_pixels())
             main._append(sub)
 
         if _reset_ticks and n:
             string_x = any(isinstance(el, str) for el in x)
-            positions = list(range(1, len(x) + 1)) if string_x else list(x)
-            labels = list(map(str, x))
-            axis = "x" if is_vertical(correct_matrix.orientation(orientation)) else "y"
+            positions = [p + _offset for p in (range(1, len(x) + 1) if string_x else x)]
+            labels = list(map(str, x)) if string_x else get_labels(x)
+            axis = "x" if vertical else "y"
             self.ticks(positions, labels = labels, axis = axis, side = xside if axis == "x" else yside)
 
         return main
 
     # Build a stacked bar plot from (x, Y) where Y is a list of height-sequences; each group's bar starts at the previous group's cumulative top via the 3-arg bar(x, y_min, y_max) form.
-    def stacked_bar(self, *args, marker = None, width = None, orientation = None, _reset_ticks = True, lines = True, fill = True, xside = None, yside = None):
+    @silent
+    def stacked_bar(self, *args, marker = None, width = None, orientation = None, lines = True, fill = True, labelled = False, xside = None, yside = None, _reset_ticks = True):
         x, Y = correct_bar.multiple_bar_data(*args)
         n = len(Y)
         width = correct_bar.width(width)
@@ -207,17 +229,18 @@ class draw_class:
         for i in range(n):
             y_min = list(cum)
             cum = [cum[k] + Y[i][k] for k in range(len(x))]
-            sub = self.bar(x, y_min, list(cum), marker = markers[i], width = width, orientation = orientation, _reset_ticks = _reset_ticks if i == 0 else False, lines = lines, fill = fill, xside = xside, yside = yside)
-            self._cycler.remove_colors(sub._get_foreground_unique_integer_colors())
+            sub = self.bar(x, y_min, list(cum), marker = markers[i], width = width, orientation = orientation, lines = lines, fill = fill, labelled = labelled, xside = xside, yside = yside, _reset_ticks = _reset_ticks if i == 0 else False)
+            self._cycler.remove_pixels(sub._get_unique_pixels())
             main._append(sub)
         return main
 
     # Build a histogram from a flat data sequence: bin via hist_data() then forward to bar() with _reset_ticks=False so the frequency-based ticks survive.
     def hist(self, data, bins = 10, marker = None, width = None, orientation = None, norm = False, lines = True, fill = True, xside = None, yside = None):
         x, y = hist_data(data, bins, norm)
-        return self.bar(x, y, marker = marker, width = width, orientation = orientation, _reset_ticks = False, lines = lines, fill = fill, xside = xside, yside = yside)
+        return self.bar(x, y, marker = marker, width = width, orientation = orientation, lines = lines, fill = fill, xside = xside, yside = yside, _reset_ticks = False)
 
     # Build a box-and-whisker plot per category from raw values: a Q1..Q3 rectangle, a median segment across it, and whiskers from box edges to min/max.
+    @silent
     def box(self, *args, marker = None, width = None, orientation = None, lines = True, fill = True, xside = None, yside = None):
         x, y = correct_data.data(*args)
         width = correct_bar.width(width)
@@ -249,45 +272,63 @@ class draw_class:
                 sig._append(sub)
                 sig._set_connected(join, False)
 
-        self.ticks(positions, labels = list(map(str, x)), axis = "x" if vertical else "y", side = (xside if vertical else yside) or 0)
+        labels = list(map(str, x)) if any(isinstance(el, str) for el in x) else get_labels(x)
+        self.ticks(positions, labels = labels, axis = "x" if vertical else "y", side = (xside if vertical else yside) or 0)
         return sig
 
     # ---- 5. Specialized -----------------------------------------------------
 
-    # Build an OHLC candlestick signal from a dict with date/open/close/high/low keys.
-    def candlestick(self, data, colors = None, orientation = None, xside = None, yside = None):
-        # Orientation: vertical = dates on x; horizontal = dates on y.
+    # Build an OHLC candlestick signal from a dict with date/open/close/high/low keys. style='candle' (default) draws a filled body between open and close; style='ohlc' replaces the body with two short ticks (open extending towards the previous bar, close extending towards the next) — flatter, preferred when bars are dense. tick controls the OHLC tick half-width (autosized to 40% of the median date spacing when None); ignored for candles.
+    def candlestick(self, data, style = None, tick = None, orientation = None, xside = None, yside = None):
         vertical = is_vertical(correct_matrix.orientation(orientation))
+        style    = correct_candlestick.style(style)
 
-        # Up/down candle colors (up = close > open; dojis use down).
-        colors = ["green", "red"] if colors is None else colors
-        up_color, down_color = colors[0], colors[1]
-
-        # Characters for the thin wick and the filled body
-        wick_ch = '│' if vertical else '─'
+        up_pixel   = pixel_class(foreground = defaults.candlestick_up_color)
+        down_pixel = pixel_class(foreground = defaults.candlestick_down_color)
         body_ch = '█'
 
-        # Unpack the OHLC dict (empty fallback so an empty chart still renders)
         data = {"date": [], "open": [], "close": [], "high": [], "low": []} if not data else data
         date = list(data["date"])
-        op   = list(data["open"])          # 'open' would shadow the builtin
+        op   = list(data["open"])
         cl   = list(data["close"])
         high = list(data["high"])
         low  = list(data["low"])
         n    = len(date)
 
-        # Master signal; per candle append a wick (BoxMarker line) and a body (rectangle), disconnect at each join. Legend marker is a 4-arm box.
+        # OHLC mode: tick = number of dash cells flanking the wick (default 2). Ticks are stamped as matrix markers whose first / last cell carries the explicit corner glyph (├ / ┤ for vertical, ┴ / ┬ for horizontal), so the wick column doesn't get the perpendicular arm and crossings stay one-sided.
+        if style == 'ohlc':
+            tick = 2 if tick is None else int(tick)
+            if vertical:
+                close_glyphs, open_glyphs = '├' + '─' * tick, '─' * tick + '┤'
+                close_ha, close_va, open_ha, open_va = -1, 0, 1, 0
+            else:
+                close_glyphs, open_glyphs = '│\n' * tick + '┴', '┬' + '\n│' * tick
+                close_ha, close_va, open_ha, open_va = 0, 1, 0, -1
+
         sig = self.signal([], [], xside = xside, yside = yside)
-        sig._set_marker(box_class(up = True, down = True, left = True, right = True, pixel = pixel_class(foreground = up_color)))
+        sig._set_marker(box_class(up = True, down = True, left = True, right = True, pixel = up_pixel))
         for i in range(n):
-            col = up_color if op[i] < cl[i] else down_color
-            body_lo, body_hi = min(op[i], cl[i]), max(op[i], cl[i])
-            wick_marker = box_class(up = vertical, down = vertical, left = not vertical, right = not vertical, pixel = pixel_class(col))
+            pix         = up_pixel if op[i] < cl[i] else down_pixel
+            wick_marker = box_class(up = vertical, down = vertical, left = not vertical, right = not vertical, pixel = pix)
             wick = (self.segment((date[i], date[i]), (low[i], high[i]), marker = wick_marker, xside = xside, yside = yside) if vertical
                     else self.segment((low[i], high[i]), (date[i], date[i]), marker = wick_marker, xside = xside, yside = yside))
-            rx, ry = ((date[i], date[i]), (body_lo, body_hi)) if vertical else ((body_lo, body_hi), (date[i], date[i]))
-            body = self.rectangle(rx, ry, marker = marker_class(body_ch, col), xside = xside, yside = yside)
-            for sub in (wick, body):
+
+            if style == 'candle':
+                body_lo, body_hi = min(op[i], cl[i]), max(op[i], cl[i])
+                rx, ry = ((date[i], date[i]), (body_lo, body_hi)) if vertical else ((body_lo, body_hi), (date[i], date[i]))
+                parts = (wick, self.rectangle(rx, ry, marker = marker_class(body_ch, pix), xside = xside, yside = yside))
+            else:  # ohlc
+                cm   = matrix_marker(colorize_class(close_glyphs).set_pixel(pix), ha = close_ha, va = close_va)
+                om   = matrix_marker(colorize_class(open_glyphs ).set_pixel(pix), ha = open_ha,  va = open_va)
+                if vertical:
+                    c_tk = self.signal([date[i]], [cl[i]], marker = cm, xside = xside, yside = yside)
+                    o_tk = self.signal([date[i]], [op[i]], marker = om, xside = xside, yside = yside)
+                else:
+                    c_tk = self.signal([cl[i]], [date[i]], marker = cm, xside = xside, yside = yside)
+                    o_tk = self.signal([op[i]], [date[i]], marker = om, xside = xside, yside = yside)
+                parts = (wick, o_tk, c_tk)
+
+            for sub in parts:
                 join = sig.get_length()
                 sig._append(sub)
                 sig._set_connected(join, False)
@@ -299,7 +340,7 @@ class draw_class:
         x, y, xerr, yerr = correct_data.error_data(*args)
 
         # Single colour for every part of every error bar; pixel overrides cycler when given.
-        px       = correct_pixel.pixel(pixel, pixel_class(self._cycler.next_color()))
+        px       = correct_pixel.pixel(pixel, self._cycler.next_pixel())
         style    = correct_line.line_style(style)
         v_marker = box_class(up = True, down = True, pixel = px, style = style)
         h_marker = box_class(left = True, right = True, pixel = px, style = style)
@@ -319,10 +360,11 @@ class draw_class:
         return sig
 
     # Build an event plot via ruler-registered lines so each stem spans the full canvas and merges with the axes (┼ / ┴ / ┬ on the axis cells); the perpendicular axis is squashed to [0, 1] with no ticks. Returns the figure (no signal involved).
+    @refresh
     def event(self, data, orientation = None, pixel = None, style = None, side = None, label = None):
         vertical = is_vertical(correct_matrix.orientation(orientation))
         line_orientation = 1 if vertical else 0
-        pixel = correct_pixel.pixel(pixel, pixel_class(self._cycler.next_color()))
+        pixel = correct_pixel.pixel(pixel, self._cycler.next_pixel())
         for i, d in enumerate(data):
             kwargs = {"xside": side} if vertical else {"yside": side}
             self.line(d, orientation = line_orientation, relative = True, pixel = pixel, style = style, label = label if i == 0 else None, **kwargs)
@@ -361,7 +403,8 @@ class draw_class:
     # Image signal: opens via Pillow, optional gray, resamples to plot/terminal size, returns a heatmap with each pixel as one canvas char. Caller handles plot_size, frame, tick frequency.
     def image(self, path, gray = False, symbol = None):
         from plotext._settings import system
-        img = system.Image.open(path)
+        from plotext._methods.file import correct as _correct_path
+        img = system.Image.open(_correct_path(path))
         if gray: img = system.ImageOps.grayscale(img)
         img = img.convert('RGB')
         width, height = self.get_size()
@@ -372,3 +415,22 @@ class draw_class:
         pixels = list(img.getdata())
         matrix = [list(pixels[r * width : (r + 1) * width]) for r in range(height)]
         return self.heatmap(matrix, fill = False, symbol = symbol)
+
+
+    # Confusion matrix: builds a composite signal of gradient-filled rectangle cells from tabulated (actual, predicted) counts. Caller is responsible for ticks, axis labels, and title.
+    def confusion_matrix(self, actual, predicted, labels = None, norm = False, map = 'gray'):
+        labels, counts = sequence._crosstab(actual, predicted, labels)
+        n = len(labels)
+        rgb = correct_heatmap.colormap(counts, map)
+        row_sums = [sum(row) or 1 for row in counts] if norm else None
+        signal = self.signal([], [])
+        for r in range(n):
+            for c in range(n):
+                y = n - 1 - r
+                cell_marker = marker_class('█', pixel = pixel_class(foreground = rgb[r][c]))
+                label = f"{counts[r][c] / row_sums[r] * 100:.0f} %" if norm else str(counts[r][c])
+                cell_rect = self.rectangle(x = (c - 0.5, c + 0.5), y = (y - 0.5, y + 0.5), marker = cell_marker, lines = True, fill = True, label = label)
+                join = signal.get_length()
+                signal._append(cell_rect)
+                signal._set_connected(join, False)
+        return signal

@@ -31,6 +31,18 @@ class colorize:
         new = colorize(string).set_pixel(self.get_pixel())
         return self.clone(new)
 
+    # Return a new colorize with the same pixel and the string uppercased.
+    def upper(self):
+        return self.copy().set_string(self.get_string(colorless = True).upper())
+
+    # Return a new colorize with the same pixel and the string lowercased.
+    def lower(self):
+        return self.copy().set_string(self.get_string(colorless = True).lower())
+
+    # Return a new colorize with the same pixel and the string title-cased.
+    def title(self):
+        return self.copy().set_string(self.get_string(colorless = True).title())
+
     # Get length of colorized string
     def get_length(self):
         return clink.colorize_get_length(self._pointer)

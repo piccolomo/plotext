@@ -28,6 +28,8 @@ Use the :class:`~plotext.colorize` class with its ``string``, ``foreground``, ``
 
 .. tip:: The generated string contains ANSI escape codes, which can be stripped later with :func:`plotext.uncolorize`.
 
+.. tip:: Use :meth:`~plotext.colorize.upper`, :meth:`~plotext.colorize.lower`, or :meth:`~plotext.colorize.title` to return a new colorize with the case transformed, preserving the original color and style.
+
 .. seealso:: More details are in the :class:`plotext.colorize` API or via ``plotext.doc.colorize()``.
 
 
@@ -107,6 +109,52 @@ Different matrices can be combined with the :meth:`~plotext.matrix.insert` metho
 .. seealso:: More details in the :class:`plotext.matrix` API or via ``plotext.doc.matrix()``.
 
 
+.. _plotting_matrices:
+
+Plotting matrices
+-----------------
+
+Both :class:`~plotext.matrix` and :class:`~plotext.colorize` can be used directly as the *symbol* of a :class:`~plotext.marker`: pass either to :class:`plotext.marker` and the result is a multi-cell marker that gets stamped at each data point's coordinates. The ``ha`` and ``va`` arguments (horizontal / vertical alignment of the matrix around the anchor point) become available in this mode. Pass a list — one marker per point — to label each point individually.
+
+Two common use cases.
+
+**Plotting colorize objects** — short coloured strings as per-point labels:
+
+.. code-block:: python
+
+   import plotext as plt
+
+   labels  = ["A", "B", "C", "D", "E"]
+   markers = [plt.marker(plt.colorize(s, foreground = "red"), ha = 0, va = 0) for s in labels]
+
+   x = [1, 2, 3, 4, 5]; y = [3, 5, 4, 6, 2]
+
+   fig = plt.figure
+   fig.clear()
+   fig.draw(fig.signal(x, y, marker = markers))
+   fig.title("Labelled scatter via matrix markers")
+   fig.show()
+
+**Plotting coloured matrices** — small painted blocks as per-point swatches:
+
+.. code-block:: python
+
+   def chip(bg): return plt.matrix(3, 3, plt.pixel(foreground = "white", background = bg))
+
+   markers = [plt.marker(chip(c), ha = 0, va = 0) for c in ["red", "green", "blue", "yellow", "magenta"]]
+
+   fig = plt.figure
+   fig.clear()
+   fig.draw(fig.signal(x, y, marker = markers))
+   fig.show()
+
+The matrix is stamped centered on each data point (``ha = 0``, ``va = 0``) and its colours come from the matrix's own pixels, not the cycler.
+
+.. note::
+
+   Matrix markers interact with line and fill modes literally: ``lines = True`` stamps the source point's marker at every interpolated cell along the path between two consecutive points, and ``signal.fill_method('full')`` paired with a baseline signal repeats the marker vertically down to the baseline. With small painted matrices (3 × 3 swatches), this produces a pleasant "fan" of chips along lines and bar-like coloured columns under stems. With text-label matrices (``"A"``, ``"abc"``), the same stamping reads as a smear of repeated characters — visually busy but valid. Use single-character text markers for stem labels and turn lines off for text-labelled scatter.
+
+
 .. _effects:
 
 Animated Text Effects
@@ -121,7 +169,7 @@ Available effects:
 - ``"rainbow"`` — hue cycles across the characters and scrolls with ``step``.
 - ``"gradient"`` — sinusoidal blend between two colors scrolls along the text.
 
-.. seealso:: A runnable demo lives at ``tests/29_effects.py``; the streaming example in :doc:`stream` shows ``plt.effect`` driving an animated title and labels.
+.. seealso:: A runnable demo lives at ``tests/31_effects.py``; the streaming example in :doc:`stream` shows ``plt.effect`` driving an animated title and labels.
 
 
 .. _colors:

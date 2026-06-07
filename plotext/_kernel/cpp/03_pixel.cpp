@@ -105,12 +105,6 @@ public:
     // Total ANSI code length (sum of the three components)
     inline size_t get_length() const noexcept { return Fullground::get_length() + Background::get_length() + Style::get_length(); }
 
-    // Parse the foreground palette index from the foreground ANSI code
-    inline unsigned char get_fullground_integer_code() const noexcept { return Fullground::get_integer_code(); }
-
-    // Parse the background palette index from the background ANSI code
-    inline unsigned char get_background_integer_code() const noexcept { return Background::get_integer_code(); }
-
     // Append the combined ANSI code (foreground + background + style) to a buffer
     inline void to_buffer(wchar_t * buffer, size_t & length_buffer) const noexcept {
         Fullground::to_buffer(buffer, length_buffer);
@@ -203,14 +197,14 @@ extern "C" {
     // Copy only the background from src into dest
     void pixel_copy_background(Pixel * dest, const Pixel * src) noexcept { dest->copy_background(*src); }
 
+    // Copy only the foreground from src into dest (verbatim, preserves color type)
+    void pixel_copy_fullground(Pixel * dest, const Pixel * src) noexcept { dest->copy_fullground(*src); }
+
+    // True iff a and b match on fg + bg + style (full pixel equality)
+    bool pixel_equals(const Pixel * a, const Pixel * b) noexcept { return *a == *b; }
+
     // Swap the pixel's fg and bg (preserving each side's ansi prefix)
     void pixel_swap(Pixel * p) noexcept { p->swap(); }
-
-    // Get the background palette index
-    unsigned char pixel_get_background_integer_code(const Pixel * p) noexcept { return p->get_background_integer_code(); }
-
-    // Get the foreground (fullground) palette index
-    unsigned char pixel_get_fullground_integer_code(const Pixel * p) noexcept { return p->get_fullground_integer_code(); }
 
     // Fix both foreground and background of dest using src
     void pixel_fix(Pixel * dest, const Pixel * src) noexcept { dest->fix(*src); }

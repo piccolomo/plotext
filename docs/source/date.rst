@@ -4,9 +4,9 @@ Datetime Plot
 Basic Plot
 ----------
 
-To plot datetime objects just notify ``plotext`` that you intend to do so along a specific axis using the ``date`` method.
+To plot datetime objects, notify ``plotext`` that you intend to do so by calling ``fig.date(axis, side).activate()`` on the relevant ruler. ``fig.date(axis, side)`` is a getter — it returns the ``date_class`` instance bound to that ruler, and all date operations live on the returned object: ``.activate(active, form, origin)`` to turn date handling on (and optionally set the format and the time origin), ``.convert(time, output)`` to translate between string / datetime / timestamp, ``.today(output)`` for today's date, ``.clear()`` to reset.
 
-.. note:: Once notified via ``date``, ``plotext`` automatically recognises the input type and interprets date and time values from strings, ``datetime`` objects (including ``pandas.DatetimeIndex``), or timestamps (seconds from the origin of time).
+.. note:: Once notified via ``activate()``, ``plotext`` automatically recognises the input type and interprets date and time values from strings, ``datetime`` objects (including ``pandas.DatetimeIndex``), or timestamps (seconds from the origin of time).
 
 
 Here is an example, which requires the ``yfinance`` package:
@@ -19,14 +19,14 @@ Here is an example, which requires the ``yfinance`` package:
    fig = plt.figure
    fig.clear()
 
-   fig.date(axis = 'x') # fig.date() would also work in this case
+   fig.date('x').activate() # fig.date().activate() would also work in this case
 
-   start = fig.convert('11/04/2024', "datetime")
-   end   = fig.convert('22/10/2025', "datetime")
+   start = fig.date('x').convert('11/04/2024', "datetime")
+   end   = fig.date('x').convert('22/10/2025', "datetime")
    data  = yf.download('GOOG', start = start, end = end, auto_adjust = False, progress = False)
 
    prices = data[('Close', 'GOOG')]
-   dates  = data.index # or fig.convert(data.index, "string")
+   dates  = data.index # or fig.date('x').convert(data.index, "string")
 
    signal = fig.signal(dates, prices, marker = "fhd").lines(True)
    fig.draw(signal)
@@ -66,15 +66,15 @@ Here is an example, which requires the ``yfinance`` package:
    fig = plt.figure
    fig.clear()
 
-   fig.date(axis = "x")                              # treat x as a date axis (default format "%d/%m/%Y")
+   fig.date("x").activate()                          # treat x as a date axis (default format "%d/%m/%Y")
 
-   start = fig.convert("11/04/2022", "datetime")
-   end   = fig.convert("11/06/2022", "datetime")
+   start = fig.date("x").convert("11/04/2022", "datetime")
+   end   = fig.date("x").convert("11/06/2022", "datetime")
    data  = yf.download("GOOG", start = start, end = end,
                        auto_adjust = False, progress = False)
 
    ohlc = {
-       "date":  fig.convert(data.index, "string"),
+       "date":  fig.date("x").convert(data.index, "string"),
        "open":  data[("Open",  "GOOG")],
        "close": data[("Close", "GOOG")],
        "high":  data[("High",  "GOOG")],
@@ -91,3 +91,61 @@ Here is an example, which requires the ``yfinance`` package:
    fig.show()
 
 .. note:: More documentation is available via :code:`plotext.doc.candlestick()`.
+
+.. note:: The up/down candle colors come from ``plotext._settings.defaults.candlestick_up_color`` (``"green"``) and ``candlestick_down_color`` (``"red"``); override them globally to restyle every candlestick chart in the session:
+
+   .. code-block:: python
+
+      from plotext._settings import defaults
+      defaults.candlestick_up_color   = "blue"
+      defaults.candlestick_down_color = "magenta"
+
+
+Command-line
+------------
+
+The :doc:`cli` chain syntax handles the date axis through *intermediate-object chaining*: ``--date axis=x`` calls ``fig.date(axis='x')`` which returns the underlying ``date_class`` instance, and the next method (``--activate``) resolves on that instance — so ``--date axis=x --activate`` is equivalent to ``fig.date(axis='x').activate()``.
+
+The actual *plot* still needs dates and values from somewhere: the Python examples above use ``yfinance`` to fetch them, which is an external library the CLI can't call. Feed the data from another source instead (literal args, ``@path:<file>.csv``, or stdin):
+
+.. code-block:: shell
+
+   plotext --date axis=x --activate \
+           --signal '["11/04/2024","12/04/2024","13/04/2024","14/04/2024"]' \
+                    '[170.5, 172.3, 169.8, 174.1]' \
+           --lines --draw \
+           --title 'Stock Price' --label Date axis=x --show
+
+Note the explicit ``--draw``: ``--lines`` and the other signal-config methods dispatch to the in-progress drawable, so figure-level methods (``--title``, ``--label``) only resolve to the figure once ``--draw`` closes the drawable phase.
+
+For a longer series, pipe a CSV with a date column and a price column:
+
+.. code-block:: shell
+
+   plotext --date axis=x --activate \
+           --signal @path:prices.csv --lines --draw \
+           --title 'Stock Price' --show
+
+The candlestick chart works the same way. The OHLC dict can be passed inline as a single literal argument:
+
+.. code-block:: shell
+
+   plotext --date axis=x --activate \
+           --candlestick '{"date":["01/01/2024","02/01/2024","03/01/2024","04/01/2024","05/01/2024"],
+                           "open":[10,12,11,13,14],
+                           "close":[12,11,13,14,13],
+                           "high":[13,13,14,15,15],
+                           "low":[9,10,10,12,12]}' \
+           --draw --title 'Candlestick' --show
+
+Cleaner if the OHLC values live in a CSV with a header row — ``@path:<file>.csv:dict`` reads the first row as keys and returns a dict of column lists. plotext bundles a small sample CSV (``@sample:stock``) so the example runs out of the box:
+
+.. code-block:: shell
+
+   plotext --date axis=x --activate \
+           --candlestick @sample:stock:dict \
+           --draw --title 'Candlestick' --show
+
+Replace ``@sample:stock:dict`` with ``@path:/path/to/your.csv:dict`` for your own data (the CSV needs a header row with ``date,open,close,high,low``).
+
+When the data lives in a Python data frame (like the ``yfinance`` example), keep the Python API — building the OHLC dict programmatically is cleaner there than templating it onto a shell command line.

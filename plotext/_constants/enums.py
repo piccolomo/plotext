@@ -49,7 +49,7 @@ hd_markers_codes = ['none', 'hd', 'fhd', 'braille']
 # plotext.markers() to enumerate available named character symbols.
 # The name-to-glyph resolution itself is handled on the C side.
 symbol_codes = [
-    'block', 'dot', 'dollar', 'euro', 'bitcoin', 'at',
+    'full', 'dot', 'dollar', 'euro', 'bitcoin', 'at',
     'heart', 'smile', 'shamrock', 'atom',
     'snowflake', 'sun', 'cloud', 'umbrella', 'zigzag',
     'star', 'emptystar', 'flower',
@@ -70,3 +70,6 @@ size_policies = ['minimum', 'maximum']
 
 # Text effects (used by plotext.effect)
 effect_names = ['shimmer', 'pulse', 'rainbow', 'gradient']
+
+# Candlestick body styles (consumed by fig.candlestick): candle = filled body, ohlc = open/close ticks
+candlestick_styles = ['candle', 'ohlc']

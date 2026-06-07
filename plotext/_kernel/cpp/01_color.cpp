@@ -52,10 +52,10 @@ public:
         if (color_code == 100) { clear(); }
         else { set(is_fullground, true, color_code); } }
 
-    // Parse the integer code from the stored ANSI sequence (returns 20 if not found)
+    // Parse the integer code from the stored ANSI sequence (returns 20 if not found). `val` is `int` because `%d` writes sizeof(int) bytes — using `unsigned char` here is UB and stack-smashes.
     inline unsigned char get_integer_code() const noexcept {
         const wchar_t * p = wcsstr(code, L"5;");
-        if (p) { unsigned char val = 0; if (swscanf(p + 2, L"%dm", &val) == 1) return val; }
+        if (p) { int val = 0; if (swscanf(p + 2, L"%dm", &val) == 1) return static_cast<unsigned char>(val); }
         return 20; }
 
     // Cached code length

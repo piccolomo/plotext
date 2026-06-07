@@ -12,3 +12,6 @@ infinitesimal = 1e-12
 
 # Bounds
 infinity = float('inf')
+
+# Maximum number of unique pixels to scan per signal when feeding the colour cycler. Caps the per-draw dedup so image-style signals (thousands of RGB pixels that never match the cycler's palette pool) return in O(MAX_UNIQUE_PIXELS) instead of O(N).
+max_unique_pixels = 64

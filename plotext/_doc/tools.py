@@ -67,8 +67,8 @@ add_type("data_multiple_bar", "One or two arguments: a list of height-sequences,
 add_type("data_2d", "A 2D sequence; either numeric values, or (r, g, b) integer triples")
 add_type("colormap", "Colormap name applied to numeric heatmap input: 'gray' or 'viridis'")
 add_type("symbol", "A single character or a named symbol code from plotext.markers(). Higher-resolution codes ('hd', 'fhd', 'braille') are not accepted")
-add_type("marker_par_draw", "A single character, a character code from plotext.markers(), a higher-resolution code ('hd', 'fhd', 'braille'), a plotext.marker() object, or a list of any of these (one per point)")
-add_type("marker_par", "A single character, a character code from plotext.markers(), or a higher-resolution code ('hd', 'fhd', 'braille')")
+add_type("marker_par", "A single character, a character code from plotext.markers(), a higher-resolution code ('hd', 'fhd', 'braille'), a plotext.matrix or plotext.colorize for a multi-cell marker, a plotext.marker() object, or a list of any of these (one per point)")
+add_type("symbol_par", "A single character, a character code from plotext.markers(), a higher-resolution code ('hd', 'fhd', 'braille'), or a plotext.matrix or plotext.colorize for a multi-cell marker")
 add_type("pixel_par", "A plotext.pixel object, a foreground string or integer, or a tuple specifying (foreground, background, style)")
 add_type("color", "A string color code, an integer (lower than 256), or a tuple of 3 integers (each lower than 256)")
 

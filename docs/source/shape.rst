@@ -18,6 +18,7 @@ Rectangle
    fig.clear()
 
    fig.draw(fig.rectangle((0, 10), (0, 5)).label("filled"))
+   fig.draw(fig.rectangle((12, 22), (0, 5), label = "labelled"))
    fig.title("Rectangle")
    fig.show()
 
@@ -28,7 +29,12 @@ Parameters:
 - ``marker`` — the symbol used to render the rectangle. Pass a single character or a *plotext marker* (see :ref:`markers`).
 - ``lines`` — when *true* (default), the rectangle outline is densified so the border draws cleanly (and the body fills, when fill is also true). When *false*, only the corner points are placed.
 - ``fill`` — when *true* (default), the rectangle's body is filled with markers. When *false*, only the clockwise outline is drawn.
+- ``label`` — optional text drawn centered inside the rectangle. Colours adapt to the rectangle automatically: when filled, the label is painted in the canvas background colour over the rectangle's foreground; when only outlined, the label takes the rectangle's foreground colour. Accepts a plain string, a :class:`~plotext.colorize` for explicit per-character styling, or a :class:`~plotext.matrix` for full pixel control.
 - ``xside``, ``yside`` — which axis pair the rectangle is plotted against (see :ref:`axis`).
+
+.. note::
+
+   When the rectangle is drawn with a sub-cell marker (``"hd"``, ``"fhd"``, ``"braille"``) and the rectangle's edges don't land on integer cell boundaries, a half-cell canvas-coloured gap can appear immediately next to a label. This is rendering-correct — sub-cell edge glyphs like ``▌``/``▐`` split a cell into bar-colour and canvas-colour halves, and labels are full-cell, so the visual contrast surfaces the half-block's canvas side as a "white gap". To eliminate it, use a full-cell marker (``"full"``) or snap rectangle x-ranges to integer values.
 
 
 Polygon
@@ -101,3 +107,34 @@ Shapes can be drawn into the same plot by issuing multiple draw calls; each shap
    fig.title("Shapes")
    fig.legend()
    fig.show()
+
+
+Command-line
+------------
+
+All three shape primitives translate directly. Tuples on the shell need quoting (parentheses are shell metacharacters):
+
+.. code-block:: shell
+
+   # Rectangle
+   plotext --rectangle '(0, 10)' '(0, 5)' --label filled --draw \
+           --rectangle '(12, 22)' '(0, 5)' label=labelled --draw \
+           --title Rectangle --show
+
+   # Polygon
+   plotext --polygon sides=6 --label hexagon --draw \
+           --polygon sides=100 radius=0.5 --label circle --draw \
+           --title Polygons --show
+
+   # Segment
+   plotext --segment '(0, 10)' '(0, 5)' --label diagonal --draw \
+           --segment '(0, 10)' '(5, 5)' --label horizontal --draw \
+           --title Segment --show
+
+   # Combining shapes in one figure
+   plotext --polygon --label triangle --draw \
+           --rectangle --label rectangle --draw \
+           --polygon sides=100 --label circle --draw \
+           --title Shapes --legend --show
+
+Each shape factory enters the drawable-config phase; ``--label`` chains on the just-built shape, ``--draw`` adds it to the figure and clears the slot for the next one.

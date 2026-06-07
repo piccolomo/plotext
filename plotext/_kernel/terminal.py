@@ -14,14 +14,15 @@ class terminal:
         self.clear()
         self._create_master()
 
-    # Clean the visible region of the terminal: None = hard reset (\033c, clears scrollback + modes), -1 = soft full-clear (\033[H\033[2J, just clear screen, no flicker, terminal state preserved), N>0 = cursor up so the next write overwrites the last N lines in place
-    def clean(self, lines = None):
+    # Clean the visible region of the terminal: None = hard reset (\033c, clears scrollback + modes), -1 = soft full-clear (\033[H\033[2J, just clear screen, no flicker, terminal state preserved), N>0 = cursor up so the next write overwrites the last N lines in place. _prompt is a hidden override of the reserved-prompt offset added to N (default uses self._prompt; playback passes 0 to move up exactly N lines when reprinting a frame that does not fill the screen).
+    def clean(self, lines = None, _prompt = None):
+        prompt = self._prompt if _prompt is None else _prompt
         if lines is None:
             write('\033c')
         elif lines == -1:
             write('\033[H\033[2J')
         else:
-            write("\033[A" * (lines + self._prompt))
+            write("\033[A" * (lines + prompt))
         return self
 
     clt = clean

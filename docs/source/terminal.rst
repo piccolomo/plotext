@@ -46,7 +46,7 @@ The canonical "live update" idiom is:
        fig.show(flush = 1)
        print("press q to exit")
 
-A full multi-stream variant — a 2×2 subplot grid where the top-right cell is itself split into two nested streaming rows — lives in ``tests/21_multi_stream.py``.
+A full multi-stream variant — a 2×2 subplot grid where the top-right cell is itself split into two nested streaming rows — lives in ``tests/23_multi_stream.py``.
 
 
 .. _is_pressed:

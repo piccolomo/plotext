@@ -15,6 +15,8 @@ The ``plotext`` module is the main package. It exposes a small set of module-lev
 
 .. autofunction:: plotext.square
 
+.. autofunction:: plotext.noise
+
 .. autofunction:: plotext.uncolorize
 
 .. autofunction:: plotext.colors
@@ -23,9 +25,15 @@ The ``plotext`` module is the main package. It exposes a small set of module-lev
 
 .. autofunction:: plotext.markers
 
+.. autofunction:: plotext.themes
+
 .. autofunction:: plotext.effect
 
 See :doc:`colorize` for usage and :doc:`stream` for the animation pattern.
+
+.. autofunction:: plotext.sleep
+
+See :doc:`stream` for the animation pattern.
 
 .. autofunction:: plotext.image
 
@@ -37,11 +45,7 @@ See :doc:`image` for full usage notes.
 
 .. autofunction:: plotext.video
 
-See :doc:`video` for full usage notes.
-
-.. autofunction:: plotext.youtube
-
-See :doc:`video` for full usage notes.
+See :doc:`video` for full usage notes — ``plt.video`` handles local files, direct media URLs, and YouTube URLs natively.
 
 .. autofunction:: plotext.test
 
@@ -52,12 +56,12 @@ figure
 ``plt.figure`` is the master figure instance — an object of :class:`plotext._plotter.plot.plot_class`. Every plotting call (drawing signals, configuring axes, creating subplots) is a method on it. The same methods are available on any subplot returned by ``fig.subplot(r, c)``.
 
 .. autoclass:: plotext._plotter.plot.plot_class()
-   :members: signal, draw, candlestick, segment, rectangle, polygon, bar, multiple_bar, stacked_bar, hist, box, error, event, heatmap, image, text, show, build,
+   :members: signal, draw, candlestick, segment, rectangle, polygon, bar, multiple_bar, stacked_bar, hist, box, error, event, heatmap, confusion_matrix, image, text, show, build, interactive,
              clear, clear_data, clear_settings, clear_size, clear_subplots, clear_pixels, clear_styles,
              title, label, legend,
              axis, frame, alignment, direction,
              scale, lim, frequency, ticks, ruler_pixel, tick_alignment, grid,
-             date, convert,
+             date,
              plot_size, subplots, subplot,
              size_direction, size_policy,
              canvas_pixel,

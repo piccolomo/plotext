@@ -48,6 +48,18 @@ par("colorless", "If True, render the output without colors"); spec(type.bool, F
 par("flush", "If True, flush the terminal after printing"); spec(type.bool, False)
 past_out("clear")
 
+add(plot_class.save, name = "save")
+doc("Builds and saves the figure to disk. Format dispatched by extension: '.html' writes a rich HTML representation with embedded colors; '.ansi' writes coloured text with ANSI escape codes; any other extension writes plain colorless text. Pass append=True to append instead of overwrite.")
+par("path", "Output file path"); spec(type.string)
+par("append", "If True, append to the file instead of overwriting"); spec(type.bool, False)
+par("log", "If True, prints a one-line summary with the number of bytes written and the path"); spec(type.bool, False)
+past_out("clear")
+
+add(plot_class.interactive, name = "interactive")
+doc("Toggles interactive mode. When on, every figure-mutating call (draw, title, lim, theme, ...) reprints the whole figure immediately, so you see each change without calling show() — matplotlib-style. Enabling is silent; the next mutating call produces the first reprint. Builders like bar() and box() reprint when their result is passed to draw(), not while being built. The mode is a session toggle: it persists across clear() and is switched off with interactive(False).")
+par("active", "If True (default), turn interactive mode on; if False, turn it off"); spec(type.bool, True)
+past_out("clear")
+
 
 # Inspection
 

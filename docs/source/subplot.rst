@@ -95,3 +95,32 @@ Once a tree of subplots has been built, the following methods let you walk it:
 - :meth:`~plotext._plotter.plot.plot_class.get_position` — returns this subplot's ``(row, col)`` within its parent grid; ``(None, None)`` for the master.
 - :meth:`~plotext._plotter.plot.plot_class.get_size` — returns this subplot's ``(width, height)`` in terminal cells.
 - :meth:`~plotext._plotter.plot.plot_class.get_log` and :meth:`~plotext._plotter.plot.plot_class.log` — return / print a multi-line indented dump of this subplot and every nested subplot, useful when debugging layout resolution.
+
+
+Command-line
+------------
+
+The subplot tree is built imperatively (``subplots`` → ``subplot`` → per-cell ``plot_size`` / ``draw`` / ``title``) and reuses the same handle across many lines. The CLI's chain syntax can address one subplot at a time but doesn't carry drawable-mode through the intermediate; for a nested example like the one above, reach for ``plotext -c "<code>"``, which runs arbitrary Python with ``plt`` (and ``plotext``) pre-bound:
+
+.. code-block:: shell
+
+   plotext -c "
+   fig = plt.figure
+   y = plt.sin()
+   fig.clear()
+   fig.size_direction(-1)
+   fig.size_policy('maximum')
+   fig.subplots(2, 2)
+   sub = fig.subplot(1, 1); sub.plot_size(200, 10); sub.draw(sub.signal(y).label('(1,1)')); sub.title('top-left')
+   sub = fig.subplot(1, 2); sub.plot_size(200, 10); sub.draw(sub.signal(y).label('(1,2)')); sub.title('top-right')
+   sub = fig.subplot(2, 1);                          sub.draw(sub.signal(y).label('(2,1)')); sub.title('bottom-left')
+   sub = fig.subplot(2, 2); sub.plot_size(100, 10); sub.size_direction(+1); sub.size_policy('minimum'); sub.subplots(3, 3)
+   sub.subplot(2, 2).plot_size(60, 6)
+   for r in range(1, 4):
+       for c in range(1, 4):
+           sub.subplot(r, c).title(f'{r}-{c}')
+   fig.legend()
+   fig.show()
+   "
+
+For single-cell subplots without nesting, the chain form ``plotext --subplots 1 2 --subplot 1 1 --title left --subplot 1 2 --title right --show`` works — the intermediate slot picks up ``fig.subplot(r,c)`` automatically — but signal-drawing inside a subplot intermediate isn't supported in the chain (use the ``-c`` form above instead).

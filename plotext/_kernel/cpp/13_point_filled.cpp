@@ -6,9 +6,9 @@ private:
     bool  connected = false;  // true = a line is drawn from the previous FilledPoint to this one (set via signal.lines() / signal.point_lines())
 
 public:
-    FilledPoint() noexcept = default;
+    FilledPoint() noexcept = default; 
     FilledPoint(float x, float y, Marker * m = nullptr) noexcept : Point(x, y, m), fill(x, y) {}
-    FilledPoint(float x, float y, Marker * m, const Point & f) noexcept : Point(x, y, m), fill(f) {}
+    FilledPoint(float x, float y, Marker * m, const Point & f) noexcept : Point(x, y, m), fill(f) {} 
     FilledPoint(const Point & main, const Point & f) noexcept : Point(main), fill(f) {}
 
     // Explicit rule-of-five — the compiler-generated defaults rely on every base/member's copy/move ctor being trivial-or-correct. With polymorphic Marker* ownership in Point, that's fragile (subtle UB if any path picks the wrong default). Defining all five explicitly eliminates that class of bugs.
@@ -37,10 +37,6 @@ public:
     inline bool          is_connected()             const noexcept { return connected; }
     inline void          set_connected(bool value)        noexcept { connected = value; }
 
-    // Foreground palette indices for main and fill markers (no_color sentinel when the corresponding marker is null). Used by the C-API for color lookups.
-    inline size_t get_main_foreground_integer_code() const noexcept { return Point::get_foreground_integer_code(); }
-    inline size_t get_fill_foreground_integer_code() const noexcept { return fill.get_foreground_integer_code(); }
-
     // Generate the line of Points from main down to fill (uses Point::get_line). When has_fill() is false, returns just the main point. method=false is the simple linspace line; method=true is the full grid-cell-crossing line (denser, fills wedges between adjacent fan rays).
     inline Vector<Point> get_filled_line(bool method = false) const noexcept {
         if (!has_fill()) { Vector<Point> single(1); single.append(*this); return single; }
@@ -66,10 +62,17 @@ extern "C" {
     size_t        point_filled_get_row (FilledPoint * fp) noexcept { return fp->get_row(); }
     float         point_filled_get_x   (FilledPoint * fp) noexcept { return fp->get_x(); }
     float         point_filled_get_y   (FilledPoint * fp) noexcept { return fp->get_y(); }
-    size_t        point_filled_get_main_foreground_integer_code(FilledPoint * fp) noexcept { return fp->get_main_foreground_integer_code(); }
-    size_t        point_filled_get_fill_foreground_integer_code(FilledPoint * fp) noexcept { return fp->get_fill_foreground_integer_code(); }
+    // Returns a heap-allocated copy of the main/fill marker's pixel (Python wraps it; nullptr if no marker).
+    Pixel *       point_filled_get_main_pixel(FilledPoint * fp) noexcept { Marker * m = fp->get_marker();             return m ? new Pixel(m->get_pixel()) : nullptr; }
+    Pixel *       point_filled_get_fill_pixel(FilledPoint * fp) noexcept { Marker * m = fp->get_fill().get_marker();  return m ? new Pixel(m->get_pixel()) : nullptr; }
     bool          point_filled_has_fill(FilledPoint * fp) noexcept { return fp->has_fill(); }
 
     // bool param ignored — our get_wstring always includes the fill segment.
     const wchar_t * point_filled_get_wstring(FilledPoint * fp, bool) noexcept { return wstring_to_cstring(fp->get_wstring()); }
 }
+
+
+// Stamp a FilledPoint: walks the main→fill line via get_filled_line() and stamps each Point. Declared inside Matrix's class body in 07_matrix.cpp; defined here because FilledPoint must be fully declared first.
+inline void Matrix::insert(const FilledPoint & fp) noexcept {
+    Vector<Point> line = fp.get_filled_line();
+    for (size_t i = 0; i < line.get_length(); ++i) insert(line.at(i)); }

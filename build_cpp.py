@@ -12,6 +12,24 @@ CPP_DIR = HERE / "plotext" / "_kernel" / "cpp"
 CPP_SRC = CPP_DIR / "kernel.cpp"
 
 
+def _windows_compile_cmd(out):
+    """Pick a Windows compile command. Native MSVC (cl.exe) when available
+    (typical on GitHub Actions windows runners); otherwise fall back to mingw,
+    either native (g++ on PATH inside MSYS) or the cross toolchain. The kernel
+    is a single TU so we don't need a full setuptools-style invocation."""
+    import shutil
+    if shutil.which("cl.exe"):
+        return ["cl.exe", "/LD", "/O2", "/EHsc", "/std:c++17",
+                str(CPP_SRC), "/link", "/OUT:" + str(out)]
+    if shutil.which("g++"):
+        return ["g++", "-shared", "-O2", "-fno-stack-protector",
+                "-o", str(out), str(CPP_SRC)]
+    if shutil.which("x86_64-w64-mingw32-g++"):
+        return ["x86_64-w64-mingw32-g++", "-shared", "-O2", "-fno-stack-protector",
+                "-o", str(out), str(CPP_SRC)]
+    return None
+
+
 def compile_kernel():
     """Compile the C++ kernel into kernel.so (or kernel.dll on Windows)."""
     if not CPP_SRC.exists():
@@ -26,9 +44,12 @@ def compile_kernel():
     # themselves should be enlarged in a follow-up cleanup.
     if platform.system() == "Windows":
         out = CPP_DIR / "kernel.dll"
-        cmd = ["x86_64-w64-mingw32-g++", "-shared",
-               "-O2", "-fno-stack-protector",
-               "-o", str(out), str(CPP_SRC)]
+        cmd = _windows_compile_cmd(out)
+        if cmd is None:
+            print("[plotext] WARNING: no C++ compiler found (looked for cl.exe, g++, "
+                  "x86_64-w64-mingw32-g++). Install MSVC build tools or MSYS2.",
+                  file=sys.stderr)
+            return
     else:
         out = CPP_DIR / "kernel.so"
         cmd = ["g++", "-fPIC", "-shared",

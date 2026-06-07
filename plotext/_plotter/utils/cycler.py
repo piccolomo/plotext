@@ -1,52 +1,45 @@
-# A utility class to cycle through a predefined sequence of colors.
+# A utility class to cycle through a predefined sequence of pixels.
 
-from plotext._methods import colors
 from plotext._primitives.pixel import pixel as pixel_class
 
 
 class color_cycler:
-    # Initialize with a color sequence
+    # Initialize with a sequence of pixel objects
     def __init__(self, sequence):
         self.set_sequence(sequence)
 
-    # Set a new sequence and reset usage
+    # Accepts a sequence of pixel objects (caller — typically defaults — is responsible for the promotion)
     def set_sequence(self, sequence):
         self.sequence = list(sequence)
         self.used = [False] * len(self.sequence)
 
-    # Return next unused color, cycling if necessary
-    def next_color(self):
+    # Return a copy of the next unused pixel (wrapping around when exhausted)
+    def next_pixel(self):
         for i, used in enumerate(self.used):
             if not used:
-                return self.sequence[i]
+                return self.sequence[i].copy()
         self.reset()
-        return self.next_color()
+        return self.next_pixel()
 
-    # Convenience: wrap next_color into a pixel (useful when callers need a pixel handle for marker/line construction).
-    def next_pixel(self):
-        return pixel_class(foreground=self.next_color())
-
-    # Mark a color as used
-    def remove_color(self, color):
-        for i, c in enumerate(self.sequence):
-            if c == color:
+    # Mark sequence pixels that fully match p (fg + bg + style) as used
+    def remove_pixel(self, p):
+        for i, q in enumerate(self.sequence):
+            if q._equals(p):
                 self.used[i] = True
         return self
 
-    # Mark multiple colors as used
-    def remove_colors(self, colors):
-        [self.remove_color(color) for color in colors]
+    # Mark multiple pixels
+    def remove_pixels(self, pixels):
+        for p in pixels:
+            self.remove_pixel(p)
         return self
 
-    # Get length of the sequence
     def get_length(self):
         return len(self.sequence)
 
-    # Reset all colors to unused
     def reset(self):
         self.used = [False] * len(self.sequence)
 
-    # Representation showing usage status
     def __repr__(self):
-        used_status = [f"{colors.get_color_name(c)}{'▣' if u else '▢'}" for c, u in zip(self.sequence, self.used)]
-        return f"ColorCycler: {'  '.join(used_status)}"
+        # Paint each ▣/▢ glyph with its pixel's own ANSI colour (recycles pixel._get_string() which wraps the literal "Pixel" in the pixel's codes)
+        return "ColorCycler: " + "  ".join(p._get_string().replace("Pixel", '▣' if u else '▢') for p, u in zip(self.sequence, self.used))

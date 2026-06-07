@@ -1,33 +1,33 @@
-# PointsGrid: fixed-size (cols x rows) backing grid used by points_class.squash for fast (col, row) → point-index lookup
+# Grid: fixed-size (cols x rows) backing grid used by points_class.squash for fast (col, row) → point-index lookup
 
 from plotext._kernel.clink import clink
 
 
-# Points grid: fixed-size 2D grid mapping (col, row) → index in a points collection
-class points_grid:
+# Grid: fixed-size 2D grid mapping (col, row) → index in a points collection
+class grid:
     # Initialize the grid with given cols and rows
     def __init__(self, cols, rows):
-        self._pointer = clink.points_grid_new(cols, rows)
+        self._pointer = clink.grid_new(cols, rows)
         self._cols = cols
         self._rows = rows
 
     # Destructor
     def __del__(self):
-        clink.points_grid_delete(self._pointer)
+        clink.grid_delete(self._pointer)
 
     # Clear the grid
     def clear(self):
-        clink.points_grid_clear(self._pointer)
+        clink.grid_clear(self._pointer)
         return self
 
     # Log the grid
     def log(self):
-        clink.points_grid_log(self._pointer)
+        clink.grid_log(self._pointer)
         return self
 
     # Get the number of stored points
     def get_length(self):
-        return clink.points_grid_get_length(self._pointer)
+        return clink.grid_get_length(self._pointer)
 
     # Get number of columns
     def get_cols(self):
@@ -39,4 +39,4 @@ class points_grid:
 
     # String representation
     def __repr__(self):
-        return f"Plotext PointsGrid: Cols {self._cols}, Rows {self._rows}, Length {self.get_length()}"
+        return f"Plotext Grid: Cols {self._cols}, Rows {self._rows}, Length {self.get_length()}"

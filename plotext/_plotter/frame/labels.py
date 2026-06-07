@@ -2,7 +2,8 @@
 
 from plotext._primitives.colorize import colorize
 from plotext._primitives.matrix import matrix as matrix_class
-from plotext._primitives.text import text as text_class
+from plotext._primitives.matrix_marker import matrix_marker
+from plotext._signal.point import point_class
 from plotext._constants.numerical import binary
 from plotext._correct import label as correct_label
 from plotext._correct import pixel as correct_pixel
@@ -60,7 +61,7 @@ class labels_class:
 
     # Batch setter across axes and sides
     def set(self, label = None, axes = 0, sides = 0):
-        label = correct_label.label(label, defaults.pixels["label"])
+        label = correct_label.label(label, self._pixel)
         axes = correct_axis.axes(axes)
         sides = correct_axis.sides(axes, sides)
         [self.set_label(label = label, axis = axis, side = side) for axis in axes for side in sides]
@@ -68,7 +69,7 @@ class labels_class:
 
     # Set plot title
     def set_title(self, label):
-        self._title = correct_label.label(label, defaults.pixels["label"])
+        self._title = correct_label.label(label, self._pixel)
         return self
 
     # Set pixel for labels
@@ -87,24 +88,24 @@ class labels_class:
     # Paint title + upper x-label onto the matrix at (bar_col, bar_row), spanning bar_width.
     def draw_upper_bar(self, matrix, bar_col, bar_row, bar_width):
         part = matrix_class(bar_width, 1, self._pixel)
-        t = text_class(bar_width // 2, 0, self.get(0, 1), alignment = 0) if self.get(0, 1) is not None else None
-        part._insert_text(t) if t is not None else None
-        t = text_class(bar_width // 2, 0, self._title, alignment = 0) if self._title is not None else None
-        title_centered = part._insert_text(t) if t is not None else False
-        t = text_class(0, 0, self._title, alignment = -1) if self._title is not None and not title_centered else None
-        part._insert_text(t) if t is not None else None
+        p = point_class(bar_width // 2, 0, matrix_marker(self.get(0, 1), ha = 0)) if self.get(0, 1) is not None else None
+        part._insert_point(p) if p is not None else None
+        p = point_class(bar_width // 2, 0, matrix_marker(self._title,     ha = 0)) if self._title is not None else None
+        title_centered = part._insert_point(p) if p is not None else False
+        p = point_class(0, 0, matrix_marker(self._title, ha = -1)) if self._title is not None and not title_centered else None
+        part._insert_point(p) if p is not None else None
         matrix._insert_matrix(bar_col, bar_row, part)
         return self
 
     # Paint y-labels (corners) + lower x-label onto the matrix at (bar_col, bar_row), spanning bar_width.
     def draw_lower_bar(self, matrix, bar_col, bar_row, bar_width):
         part = matrix_class(bar_width, 1, self._pixel)
-        t = text_class(0, 0, self.get_y(0), alignment = -1) if self.get(1, 0) is not None else None
-        part._insert_text(t) if t is not None else None
-        t = text_class(bar_width // 2, 0, self.get(0, 0), alignment = 0) if self.get_x(0) is not None else None
-        part._insert_text(t) if t is not None else None
-        t = text_class(bar_width - 1, 0, self.get(1, 1), alignment = 1) if self.get_y(1) is not None else None
-        part._insert_text(t) if t is not None else None
+        p = point_class(0,              0, matrix_marker(self.get_y(0),   ha = -1)) if self.get(1, 0)  is not None else None
+        part._insert_point(p) if p is not None else None
+        p = point_class(bar_width // 2, 0, matrix_marker(self.get(0, 0),  ha =  0)) if self.get_x(0)   is not None else None
+        part._insert_point(p) if p is not None else None
+        p = point_class(bar_width - 1,  0, matrix_marker(self.get(1, 1),  ha =  1)) if self.get_y(1)   is not None else None
+        part._insert_point(p) if p is not None else None
         matrix._insert_matrix(bar_col, bar_row, part)
         return self
 

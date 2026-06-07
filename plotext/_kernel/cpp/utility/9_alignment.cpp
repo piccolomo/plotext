@@ -33,3 +33,15 @@ inline Vector<int> get_dynamic_displacements(const size_t & width) {
     auto displacement = center.get_displacement(width);  // Center displacement
     transform(sorted.begin(), sorted.end(), sorted.begin(), [displacement](int x){return x - displacement;}); // Adjust to center
     return sorted;}
+
+// Build a delta sequence for an Alignment: dynamic → centred search list (get_dynamic_displacements shifted by the center displacement so the first try is the centred placement, mirroring Text's dynamic-insert semantics), static → a one-element sequence with the static displacement. Lets callers handle every alignment combination through a single uniform loop where each delta is the absolute offset to add to the anchor.
+inline Vector<int> get_displacements(const Alignment & a, size_t length) noexcept {
+    if (a.is_dynamic()) {
+        Vector<int> deltas = get_dynamic_displacements(length);
+        const int c_disp = Alignment(0).get_displacement(length);
+        for (size_t i = 0; i < deltas.get_length(); ++i) deltas.at(i) += c_disp;
+        return deltas;
+    }
+    Vector<int> v(1); v.append(a.get_displacement(length));
+    return v;
+}

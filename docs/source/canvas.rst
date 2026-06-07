@@ -85,3 +85,49 @@ Parameters:
 - ``style`` — appearance of each grid line. The *default* style draws a single solid line, while *double* draws a doubled solid line that stands out more on dense plots.
 - ``pixel`` — colour and style of the grid lines themselves. Pass a *plotext pixel* (see :ref:`pixel`); *foreground* sets the line colour, *background* harmonises with the canvas, and *style* can apply emphases such as *bold* or *dim*.
 - ``axis`` and ``side`` — restrict the grid to a specific axis or side. By default the grid is drawn for both axes and both sides; pass these to limit it, for example to vertical lines only or to ticks on a single side. See :ref:`axis` for the accepted values.
+
+
+.. _theme:
+
+Theme
+-----
+
+:meth:`~plotext._plotter.plot.plot_class.theme` applies a named colour preset that covers the canvas background, the frame foreground, the ruler foreground (with its style), and the cycler's :class:`~plotext.pixel` sequence — all in one call. Useful for quickly swapping the overall look without setting each pixel by hand.
+
+.. code-block:: python
+
+   import plotext as plt
+   fig = plt.figure
+   fig.clear()
+   fig.theme("matrix")                                         # dark purple bg, bold green text & sequence
+   fig.draw(fig.signal(plt.sin(length = 60)).lines(True))
+   fig.title("matrix theme")
+   fig.show()
+
+The settings propagate to subplots, so calling ``fig.theme(name)`` on a master applies the preset across the whole figure. Unknown names raise ``ValueError`` listing the valid options.
+
+The available themes:
+
+- ``default`` — white canvas, black chrome text, the standard 16-colour signal palette. The look you get out of the box.
+- ``simple`` — colourless chrome (no canvas/frame/tick colours), but signals still cycle through the default colour palette. Clean look that adapts to any terminal background.
+- ``colorless`` — strips **all** colour, chrome *and* signals. Distinct from :meth:`~plotext._plotter.plot.plot_class.clear_pixels`, which *resets* to the coloured package defaults rather than going monochrome.
+- ``dusk`` — slate-teal canvas, bold salmon-on-blue chrome, soft pastel signals.
+- ``sand`` — warm tan canvas, bold gold-on-blue chrome, cyan/orange signals.
+- ``wine`` — mauve canvas, bold acid-lime-on-maroon chrome, blue/green signals.
+- ``garden`` — mauve canvas, bold gold-on-forest-green chrome, olive/red/purple signals.
+- ``dark`` — black canvas, orange chrome, cool-toned signal sequence.
+- ``dreamland`` — tan canvas, bold gold-on-green chrome, soft blue/magenta signals.
+- ``retro`` — light-grey canvas with a darker tick band, amber chrome text.
+- ``windows`` — light-grey canvas, black chrome, the classic blue/red/green/yellow accent sequence.
+- ``matrix`` — near-black canvas, bold phosphor-green chrome and signals.
+
+Each theme sets one shared "text" pixel across the frame, rulers, axis labels and legend, so all chrome reads consistently against the canvas; the canvas background is set independently.
+
+Preview every theme at once with :func:`plotext.themes`, which renders a grid of mini-plots — one cell per theme, titled with its name:
+
+.. code-block:: python
+
+   import plotext as plt
+   plt.themes()
+
+Custom themes live in :mod:`plotext._settings.themes` — add an entry to the ``themes`` dict (a name mapped to ``canvas`` / ``text`` pixels and a ``sequence`` of pixels) at import time and it becomes available to ``fig.theme(...)`` and ``plotext.themes()``.

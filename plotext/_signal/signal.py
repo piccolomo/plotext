@@ -5,8 +5,7 @@ from plotext._primitives.marker import marker as marker_class
 from plotext._kernel.clink import clink
 from plotext._kernel.tools import wstring
 
-from plotext._constants.numerical import infinity
-from plotext._methods.sequence import unique
+from plotext._constants.numerical import infinity, max_unique_pixels
 
 from plotext._correct import bool as correct_bool
 from plotext._signal.points import points_class
@@ -247,12 +246,17 @@ class signal_class:
     def _get_ylimits(self, xmin = None, xmax = None):
         return self._get_ymin(xmin, xmax), self._get_ymax(xmin, xmax)
 
-    # Get unique integer foreground colors across every point's main and (when present) fill markers — drops the no_color sentinel (anything outside the unsigned-byte range)
-    def _get_foreground_unique_integer_colors(self):
-        codes = []
+    # Unique pixels across every point's main and (when present) fill markers — deduped via a Python set (pixels are hashable). Capped at max_unique_pixels (see _constants/numerical.py) so image-style signals return in O(cap) instead of O(N).
+    def _get_unique_pixels(self):
+        out, seen = [], set()
         for p in self:
-            codes.extend(p.get_foreground_integer_codes())
-        return unique(c for c in codes if c <= 255)
+            for px in p.get_pixels():
+                if px not in seen:
+                    seen.add(px)
+                    out.append(px)
+                    if len(out) >= max_unique_pixels:
+                        return out
+        return out
 
     # Get filled points object
     def _get_points(self):

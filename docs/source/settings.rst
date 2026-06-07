@@ -1,7 +1,7 @@
 Plot Settings
 =============
 
-Pages in this section cover how to configure a plot — axis labels, ruler behaviour, frame axes, size, and subplot layout. Each topic lives in its own page:
+Pages in this section cover how to configure a plot — axis labels, ruler behaviour, frame axes, size, subplot layout, clearing, and the interactive display mode. Each topic lives in its own page:
 
 .. toctree::
    :maxdepth: 1
@@ -12,3 +12,4 @@ Pages in this section cover how to configure a plot — axis labels, ruler behav
    canvas
    size
    clear
+   interactive

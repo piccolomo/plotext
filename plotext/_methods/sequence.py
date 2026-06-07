@@ -23,6 +23,13 @@ def square(periods = 2, length = 200, amplitude = 1):
     return [amplitude if i % T <= T / 2 else -amplitude for i in range(length)]
 
 
+# Generate Gaussian noise samples (mean `offset`, standard deviation `amplitude`). seed=None for fresh randomness.
+def noise(length = 200, amplitude = 1, offset = 0, seed = None):
+    import random
+    rng = random.Random(seed)
+    return [rng.gauss(offset, amplitude) for _ in range(length)]
+
+
 # Transpose a 2D list (matrix)
 def transpose(data, length = 1):
     return [[]] * length if data == [] else list(map(list, zip(*data)))
@@ -61,4 +68,16 @@ def safe_min(data):
 
 def safe_max(data):
     return max(remove_none(data), default = None)
+
+
+# Tabulate counts of (actual, predicted) categorical pairs. Returns (labels, counts) where counts[r][c] = number of pairs with actual == labels[r] and predicted == labels[c]. labels defaults to the sorted union of values in actual + predicted; pass labels to pin order or restrict the universe (unknown values are silently dropped).
+def _crosstab(actual, predicted, labels = None):
+    labels = sorted(set(actual) | set(predicted)) if labels is None else list(labels)
+    index = {v: i for i, v in enumerate(labels)}
+    n = len(labels)
+    counts = [[0] * n for _ in range(n)]
+    for a, p in zip(actual, predicted):
+        if a in index and p in index:
+            counts[index[a]][index[p]] += 1
+    return labels, counts
 

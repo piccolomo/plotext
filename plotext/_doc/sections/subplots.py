@@ -10,6 +10,12 @@ par("pixel", "Pixel used to paint the canvas"); spec(type.pixel_par, None)
 past_out("title")
 
 
+add(plot_class.theme, name = "theme")
+doc("Applies a named colour preset that covers canvas background, frame foreground, ruler foreground/style, and the cycler's pixel sequence in one call. Available names: default, simple, colorless, dusk, sand, wine, garden, dark, dreamland, retro, windows, matrix. Unknown names raise ValueError.")
+par("name", "Theme name"); spec(type.string, repr("default"))
+past_out("title")
+
+
 add(plot_class.plot_size, name = "plot_size")
 doc("Sets the size (width and height) of this plot, in terminal cells.")
 par("width", "Plot width in terminal columns"); spec(type.int, None)

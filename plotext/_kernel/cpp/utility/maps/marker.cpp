@@ -1,7 +1,7 @@
 // Normal marker maps: symbol name -> glyph, marker-kind tags, representative glyph per kind
 
 const unordered_map<string, wchar_t> symbol_codes = {
-  {"block",        L'█'},
+  {"full",         L'█'},
   {"dot",          L'•'},
   {"dollar",       L'$'},
   {"euro",         L'€'},

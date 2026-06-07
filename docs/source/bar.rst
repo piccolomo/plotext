@@ -61,6 +61,12 @@ Orientation, Width and Style
 
 .. image:: images/bar_style.png
 
+.. _labelled_bars:
+
+.. note::
+
+   Pass ``labelled = True`` to any bar method (:meth:`~plotext._plotter.plot.plot_class.bar`, :meth:`~plotext._plotter.plot.plot_class.multiple_bar`, :meth:`~plotext._plotter.plot.plot_class.stacked_bar`, :meth:`~plotext._plotter.plot.plot_class.hist`) to render each bar's height value as a centered label inside its rectangle. Colours adapt automatically (see :doc:`shape`'s ``label`` parameter), so the value reads against the bar's fill colour without any extra knobs — useful when the height values matter more than the y axis itself.
+
 
 .. _floating_bars:
 
@@ -97,7 +103,7 @@ Because ``bar()`` produces a regular signal, multiple bar series can be drawn on
 Multiple Bar Plot
 -----------------
 
-To plot grouped bars sharing the same x coordinate — one bar per series, placed side by side at each x slot — use :meth:`~plotext._plotter.plot.plot_class.multiple_bar`. It accepts a list of height-sequences (one per group), splits the bar width evenly between them, and offsets each group so they don't overlap. Each group gets its own colour from the cycler.
+To plot grouped bars sharing the same x coordinate — one bar per series, placed side by side at each x slot — use :meth:`~plotext._plotter.plot.plot_class.multiple_bar`. It accepts a list of height-sequences (one per group), splits the bar width evenly between them, and offsets each group so they don't overlap. Each group gets its own colour from the cycler. Pass ``labelled = True`` to label each bar with its height (see the :ref:`labelled-bars note <labelled_bars>`).
 
 .. code-block:: python
 
@@ -139,7 +145,8 @@ The same sketchy frame-less recipe used for :ref:`simple_bar` applies cleanly to
                              orientation = "horizontal",
                              marker = "▇",
                              width = 0,
-                             lines = True))
+                             lines = True,
+                             _offset = -0.25))   # align the y-tick label with the first sub-bar's row
    fig.frame(False)
    fig.lim(0, max(max(men), max(women)) * 1.01, axis = "x")
    fig.tick_alignment("left", axis = "y")
@@ -156,7 +163,7 @@ The same sketchy frame-less recipe used for :ref:`simple_bar` applies cleanly to
 Stacked Bar Plot
 ----------------
 
-To plot bars stacked on top of each other at the same x coordinate — heights add up cumulatively per slot — use :meth:`~plotext._plotter.plot.plot_class.stacked_bar`. It takes the same input shape as ``multiple_bar`` (a list of height-sequences, one per group) and dispatches to the 3-arg ``bar(x, y_min, y_max)`` form so each group's bar starts where the previous group's bar ended.
+To plot bars stacked on top of each other at the same x coordinate — heights add up cumulatively per slot — use :meth:`~plotext._plotter.plot.plot_class.stacked_bar`. It takes the same input shape as ``multiple_bar`` (a list of height-sequences, one per group) and dispatches to the 3-arg ``bar(x, y_min, y_max)`` form so each group's bar starts where the previous group's bar ended. Pass ``labelled = True`` to label each segment with its height (see the :ref:`labelled-bars note <labelled_bars>`).
 
 .. code-block:: python
 
@@ -266,25 +273,54 @@ Histogram
 
 .. code-block:: python
 
-   import random
    import plotext as plt
 
-   random.seed(0)
    fig = plt.figure
    fig.clear()
 
    l = 7 * 10 ** 4
-   fig.draw(fig.hist([random.gauss(0, 1) for _ in range(10 * l)], bins = 60).label("mean 0"))
-   fig.draw(fig.hist([random.gauss(3, 1) for _ in range( 6 * l)], bins = 60).label("mean 3"))
-   fig.draw(fig.hist([random.gauss(6, 1) for _ in range( 4 * l)], bins = 60).label("mean 6"))
+   fig.draw(fig.hist(plt.noise(length = 10 * l, offset = 0, seed = 0), bins = 60).label("mean 0"))
+   fig.draw(fig.hist(plt.noise(length =  6 * l, offset = 3, seed = 1), bins = 60).label("mean 3"))
+   fig.draw(fig.hist(plt.noise(length =  4 * l, offset = 6, seed = 2), bins = 60).label("mean 6"))
 
    fig.title("Histogram")
    fig.legend()
    fig.show()
 
-Parameters mirror ``bar()`` (``marker``, ``width``, ``orientation``, ``lines``, ``fill``, ``xside``, ``yside``); the histogram-specific knobs are ``bins`` (defaults to 10) and ``norm`` (defaults to ``False``).
+Parameters mirror ``bar()`` (``marker``, ``width``, ``orientation``, ``lines``, ``fill``, ``labelled``, ``xside``, ``yside``); the histogram-specific knobs are ``bins`` (defaults to 10) and ``norm`` (defaults to ``False``). See the :ref:`labelled-bars note <labelled_bars>` for the ``labelled`` flag.
 
 .. note:: More documentation is available via :code:`plotext.doc.hist()`.
+
+
+.. _simple_hist:
+
+Simple Histogram
+~~~~~~~~~~~~~~~~
+
+Same minimal recipe as :ref:`simple_bar`, but the bars come from the histogram binning of a continuous data sequence. Extract the bin centres and counts via :func:`plotext._methods.bar.hist_data`, then plot them with ``bar()`` — the bin centres become the y-tick labels (readable as the distribution range) and the counts become the bar lengths.
+
+.. code-block:: python
+
+   import random
+   import plotext as plt
+   from plotext._methods.bar import hist_data
+   random.seed(0)
+
+   data = [random.gauss(0, 1) for _ in range(1000)]
+   binx, biny = hist_data(data, bins = 10)
+
+   fig = plt.figure
+   fig.clear()
+   fig.plot_size(100, 10)
+   fig.frame(False)
+   fig.frequency(0, axis = "x")   # hide the count axis; the bar lengths speak for themselves
+   fig.title(plt.colorize(" Simple Histogram ", style = "bold"))
+   fig.draw(fig.bar(binx, biny, orientation = "horizontal", marker = "▇", width = 0, lines = True))
+   fig.show()
+
+.. image:: images/simple_hist.png
+
+This fills the role of the 5.x ``simple_hist`` helper (which was removed in 6.x) — a one-shot inline view of the distribution, with the bin centres on the y-axis as the range key.
 
 
 Box Plot
@@ -313,6 +349,43 @@ Box Plot
    fig.show()
 
 Parameters mirror ``bar()`` (``marker``, ``width``, ``orientation``, ``lines``, ``fill``, ``xside``, ``yside``). No box-specific knobs.
+
+
+Command-line
+------------
+
+The :doc:`cli` covers every bar variant — the argument forms map straight onto positional and keyword args. plotext bundles a small sample CSV (``@sample:pizzas`` — categories + popularity) so the examples below run out of the box.
+
+.. code-block:: shell
+
+   # Basic bar (categories + heights from the bundled sample)
+   plotext --bar @sample:pizzas --draw --title 'Most Favored Pizzas in the World' --show
+
+   # Horizontal, half-width
+   plotext --bar @sample:pizzas orientation=horizontal width=0.5 --show
+
+   # Floating bars (3-arg form: x, y_min, y_max)
+   plotext --bar [1,2,3,4,5] [1,2,1,3,2] [4,5,3,6,5] --show
+
+   # Multiple bar — grouped side-by-side
+   plotext --multiple-bar [Sausage,Pepperoni,Mushrooms,Cheese,Chicken,Beef] \
+                          [[14,36,11,8,7,4],[12,20,35,15,2,1]] --show
+
+   # Stacked bar
+   plotext --stacked-bar [Sausage,Pepperoni,Mushrooms,Cheese,Chicken,Beef] \
+                         [[14,36,11,8,7,4],[12,20,35,15,2,1]] --show
+
+   # Histogram of Gaussian noise (--noise feeds --hist via the absorb-next mechanism)
+   plotext --noise --hist bins=20 --show
+
+   # Box plot
+   plotext --box [apple,orange,pear,banana] \
+                 [[1,2,3,5,10,8],[4,9,6,12,20,13],[1,2,3,4,5,6],[3,9,12,16,9,8,3,7,2]] \
+                 width=0.3 --show
+
+For larger data, replace the literal lists with ``@path:your_file.csv`` (the columns splat into positional args automatically); append ``:1`` (or ``:1,2``) to pick specific columns, or ``:dict`` for a dict keyed by the first row.
+
+The "simple" frame-less variants (:ref:`simple_bar`, :ref:`simple_multiple_bar`, :ref:`simple_stacked_bar`, :ref:`simple_hist`) use a multi-step Python recipe with ``frame``, ``ticks``, ``ruler_pixel`` and explicit ``lim`` — every step has a CLI equivalent, but the chain gets long. For those, the Python form in the recipe is the cleaner read; reach for the CLI when the data, not the styling, is the point.
 
 .. note::
 

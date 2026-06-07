@@ -146,20 +146,7 @@ past_out("title")
 
 
 add(plot_class.date, name = "date")
-doc("Enables date handling on one or more axes: parses date strings, displays dates on ticks, and optionally sets a time origin.")
-par("active", "Whether to activate date conversion."); spec(type.bool, True)
-par("form", "Specifies how strings are interpreted as datetime objects. " + type.date_form); spec(type.string, repr('%d/%m/%Y'))
-par("origin", "Sets the origin of time: useful with logarithmic scales in date plots to avoid applying a log transformation to the 0 timestamp."); spec(type.date_single_time_par, None)
+doc("Returns the date converter (date_class instance) bound to the selected ruler. All date operations live on the returned object: activate(...) to enable date handling and set form/origin, convert(time, output) to translate between string / datetime / timestamp, today(output) for today's date, clear() to reset.")
 past("axis", "label"); spec(type.axis_multiple, 0)
 past("side", "label"); spec(type.side_multiple, 0)
-past_out("title")
-
-
-add(plot_class.convert, name = "convert")
-doc("Converts the given time value (or values) to the specified output format, using the date converter from the specified axis. "
-    "The input type is detected automatically.")
-par("time", "The time value to convert (or list thereof)."); spec(type.date_time_par)
-par("output", "Specifies the output format."); spec(type.convert_output_par, repr("timestamp"))
-past("axis", "label"); spec(type.axis_multiple, 0)
-past("side", "label"); spec(type.side_multiple, 0)
-out("Converted date/time value, or list thereof", type.convert_output)
+out("Date converter for the selected ruler", type.string)

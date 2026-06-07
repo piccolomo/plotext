@@ -104,18 +104,27 @@ class pixel:
         clink.pixel_copy_background(self._pointer, other._pointer)
         return self
 
+    # Copy foreground from another pixel (verbatim, preserves color type)
+    def _copy_fullground(self, other):
+        clink.pixel_copy_fullground(self._pointer, other._pointer)
+        return self
+
+    # True iff this pixel matches other on fg + bg + style (full equality)
+    def _equals(self, other):
+        return clink.pixel_equals(self._pointer, other._pointer)
+
+    # Value equality: matches on fg + bg + style. Pairs with __hash__ for set/dict use.
+    def __eq__(self, other):
+        return isinstance(other, pixel) and clink.pixel_equals(self._pointer, other._pointer)
+
+    # Hash by the pixel's rendered key — consistent with __eq__.
+    def __hash__(self):
+        return hash(self._get_string())
+
     # Swap fg and bg in place (works for any colour representation — palette, rgb, named).
     def _swap(self):
         clink.pixel_swap(self._pointer)
         return self
-
-    # Background palette index (0..255). Useful when the bg colour needs to be reused as another pixel's foreground.
-    def _get_background_integer_code(self):
-        return clink.pixel_get_background_integer_code(self._pointer)
-
-    # Foreground (fullground) palette index (0..255).
-    def _get_fullground_integer_code(self):
-        return clink.pixel_get_fullground_integer_code(self._pointer)
 
     # Check if pixel has no background
     def _no_background(self):

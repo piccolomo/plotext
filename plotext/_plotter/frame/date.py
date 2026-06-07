@@ -38,6 +38,8 @@ class date_class:
     # Set origin timestamp for calculations
     def set_origin(self, origin = None):
         origin = date_origin_string if origin is None else origin
+        if self._get_type(origin) is None:
+            raise ValueError(f"origin {origin!r} does not match the current form {self._form!r} and is not a recognised datetime / timestamp. Set the form first (or pass a matching string).")
         self._origin = self._convert_time(origin, "timestamp", relative = False)
         return self
 
@@ -46,12 +48,17 @@ class date_class:
         self._active = active
         return self
 
+    # Activate (or deactivate) date handling on this ruler with optional form/origin in one call
+    def activate(self, active = True, form = None, origin = None):
+        self.set_form(form)._set_active(active).set_origin(origin)
+        return self
+
     # Get origin in requested output type
     def get_origin(self, output = "datetime"):
         return self._convert_time(self._origin, output, relative = False)
 
-    # Get today's date in requested output type
-    def get_today(self, output = "datetime"):
+    # Today in the requested form (string / datetime / timestamp)
+    def today(self, output = "datetime"):
         return self._convert_time(dt.today(), output)
 
     # Check if converter is active

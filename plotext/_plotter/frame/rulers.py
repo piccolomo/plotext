@@ -4,7 +4,6 @@ from plotext._constants.numerical import binary
 from plotext._plotter.frame.ruler import xruler_class, yruler_class
 from plotext._correct import axis as correct_axis
 from plotext._methods.sequence import unique
-from plotext._methods.text import text_limits
 
 
 # Rulers container: four ruler slots (x lower/upper, y left/right)
@@ -95,15 +94,6 @@ class rulers_class:
         [r.set_grid(active, style, pixel) for r in self.select(axis, side)]
         return self
 
-    # Set date mode for selected rulers
-    def set_date(self, active = True, form = None, origin = None, axis = None, side = None):
-        [r.set_date(active, form, origin) for r in self.select(axis, side)]
-        return self
-
-    # Convert a time value using the selected ruler's date
-    def convert(self, time, output = "timestamp", axis = None, side = None):
-        return self.get(axis, side)._date.convert(time, output)
-
     # Canvas-space positions where any registered line crosses the given axis (used to stamp ┼ on the axis itself).
     def _get_grid_positions(self, axis = 0):
         data = self._y if axis else self._x
@@ -127,14 +117,6 @@ class rulers_class:
                 lim = self._get(int(not axis), side)._get_limits()
                 lim = signals._get_limits(axis, side, *lim)
                 self._get(axis, side)._update_limits(lim, merge = True)
-        return self
-
-    # Update ticks limits based on text positions (relative texts are skipped).
-    # merge=True so text positions extend the existing signal/tick range
-    # rather than overwriting it — otherwise texts at coords outside the
-    # signal extent get clipped because only None slots would be filled.
-    def _update_texts_limits(self, texts):
-        [self._get(a, s)._update_limits(lim, merge = True) for s in binary for a in binary if (lim := text_limits(texts, a, s)) is not None]
         return self
 
     # Update ticks limits

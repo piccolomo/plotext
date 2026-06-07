@@ -60,7 +60,11 @@ legend = {
 marker = "hd"
 
 # Color sequence
-color_sequence = [12, 10, 9, 14, 13, 11, 0, 15, 8, 7, 1, 2, 3, 4, 5, 6]
+pixel_sequence = [pixel(foreground = c) for c in [12, 10, 9, 14, 13, 11, 0, 15, 8, 7, 1, 2, 3, 4, 5, 6]]
 
 # Misc
 date_origin_string = '01/01/1900'
+
+# Candlestick wick + body foreground colors (override globally for custom themes)
+candlestick_up_color   = "green"
+candlestick_down_color = "red"

@@ -7,7 +7,7 @@ from plotext._primitives.matrix   import matrix   as matrix_class
 from plotext._methods.string import only_spaces
 
 
-# Normalize a single label (str / colorize / matrix / None) into a 1-row matrix ready to feed text_class. None passes through (means "no label"). Cells get `default_pixel`'s background where they don't already have one.
+# Normalize a single label (str / colorize / matrix / None) into a 1-row matrix ready to wrap in a matrix_marker. None passes through (means "no label"). Cells get `default_pixel`'s background where they don't already have one.
 def label(label, default_pixel):
     if label is None: return None
     if isinstance(label, matrix_class):

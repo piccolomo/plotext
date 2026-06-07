@@ -21,6 +21,12 @@ To create a basic plot, build a signal with ``signal`` and pass it to ``draw`` o
    fig.title("Scatter Plot")
    fig.show()
 
+Or directly from the shell:
+
+.. code-block:: shell
+
+   plotext --sin --signal --title 'Scatter Plot' --show
+
 .. image:: images/scatter.png
    :alt: scatter
 
@@ -35,6 +41,9 @@ To create a basic plot, build a signal with ``signal`` and pass it to ``draw`` o
 .. note::
 
    A signal can be deep-copied with :meth:`.copy() <plotext._signal.signal.signal_class.copy>`, or have its points overwritten in place from another signal with :meth:`.clone(other) <plotext._signal.signal.signal_class.clone>`. Use ``copy`` when you want to keep the original configuration and replay it with new data alongside; use ``clone`` to swap one signal's points for another's while keeping the rest of the configuration intact.
+
+
+.. note:: To display the plot dynamically as you build it, without calling ``show`` each time, turn on :ref:`interactive` — every mutating call then reprints the figure immediately, matplotlib-style.
 
 
 .. _line:
@@ -56,6 +65,12 @@ For a line plot, chain :meth:`.lines() <plotext._signal.signal.signal_class.line
    fig.draw(signal)
    fig.title("Line Plot")
    fig.show()
+
+Or directly from the shell:
+
+.. code-block:: shell
+
+   plotext --sin --signal --lines --title 'Line Plot' --show
 
 .. image:: images/line.png
    :alt: line plot
@@ -95,6 +110,12 @@ In plotext, any signal becomes a stem plot by chaining :meth:`.fillx() <plotext.
    fig.title("Stem Plot")
    fig.show()
 
+Or directly from the shell:
+
+.. code-block:: shell
+
+   plotext --sin length=50 --signal --fillx --title 'Stem Plot' --show
+
 .. image:: images/stem.png
    :alt: stem
 
@@ -132,3 +153,5 @@ By default the stem baseline is the axis (``0``). For a varying baseline, build 
    :alt: elaborate stem plot
 
 .. note:: The base signal and the fill signal should have the same number of points. If they differ, filling is applied only up to the shorter of the two.
+
+.. note:: No CLI equivalent — this example links two signals via :meth:`.fill() <plotext._signal.signal.signal_class.fill>`, and the :doc:`cli` chain syntax holds one drawable in config at a time, with no way to reference a previously built signal as an argument. For multi-signal patterns, stay with the Python API.

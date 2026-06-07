@@ -46,7 +46,11 @@ Documentation
    terminal
    inspection
    file
+   cli
    api
    prettydoc
+   changelog
+   credits
+   future
 
 .. note:: This project is under active development.

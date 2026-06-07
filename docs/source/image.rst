@@ -119,7 +119,7 @@ Parameters (same for both forms):
 GIF
 ---
 
-:func:`plotext.gif` animates a GIF in the terminal. It uses a **decode-on-fly** strategy: each frame is decoded, painted, and printed inside the playback loop, with the program then sleeping only the remainder of the GIF's per-frame duration before moving on. Press ``q`` to exit.
+:func:`plotext.gif` animates a GIF in the terminal. It uses a **decode-on-fly** strategy: each frame is decoded, painted, and printed inside the playback loop, with the program then sleeping only the remainder of the GIF's per-frame duration before moving on. Press ``q`` to exit — a ``press q to exit`` hint (``q`` in bold red, on a discrete dark label) is stamped onto the bottom-left of every frame as a reminder.
 
 This design has three nice properties:
 
@@ -139,6 +139,8 @@ Parameters:
 - ``gray`` — if ``True``, convert each frame to grayscale before rendering.
 - ``width`` / ``height`` — target dimensions in canvas chars; default to the current terminal size, otherwise clamped against the terminal when :meth:`plt.terminal.limit <plotext._kernel.terminal.terminal.limit>` is on for that axis (the default) or passed through unchanged when the limit has been disabled.
 - ``loop`` — if ``True`` (default), replay forever until ``q`` is pressed; if ``False``, play once and return.
+
+.. note:: The ``press q to exit`` hint overwrites the bottom-left cells of each frame in place (via :meth:`~plotext.matrix.insert`), so the frame keeps its size — no extra row is added and no terminal row is reserved.
 
 .. note:: ``gif`` requires Pillow — install with ``pip install plotext[image]``.
 
@@ -169,3 +171,24 @@ The shared internals live in ``git/plotext/_methods/image.py``:
 - ``_resolve_size(width, height)`` — clamps user-supplied dims against the terminal so the canvas never overflows; falls back to the terminal dim when ``None``. Used by both ``image()`` and ``gif()``.
 - ``_render_image(img, gray, width, height)`` — the single PIL-Image → painted ``plotext.matrix`` path. Both ``image()`` and ``gif()`` route every paint through this helper.
 - ``heatmap(data, map='gray', symbol=None)`` — internal numeric/RGB matrix painter (no figure pipeline). Used by ``_render_image``; not exported at module level.
+
+
+Command-line
+------------
+
+Heatmap takes a 2D matrix inline; image and gif take a file path. ``--image`` resolves to the figure-integrated ``fig.image`` (the chain enters drawable mode); there's no shell-level shortcut to the direct ``plt.image`` because the resolver picks ``fig`` first.
+
+.. code-block:: shell
+
+   # Heatmap from a small inline matrix
+   plotext --frame 0 \
+           --heatmap '[[1,2,3,4],[2,4,6,8],[3,6,9,12],[4,8,12,16]]' map=viridis fill=true \
+           --draw --show
+
+   # Image — direct print, no figure pipeline (CLI's --image bypasses the figure for media)
+   plotext --image @sample:puppy
+
+   # Animate a GIF — bundled sample; blocks until 'q' is pressed
+   plotext --gif @sample:shaq
+
+``path`` arguments accept ``http://`` / ``https://`` URLs everywhere — they're downloaded once into ``<tempfile.gettempdir()>/plotext/`` and reused on subsequent calls. Works for ``--image``, ``--gif``, and ``--video``, and from Python too (``plt.image('https://…')``, ``plt.gif('https://…')``). The plotext repo also bundles small CSV / image / gif samples under ``plotext/_examples/data/``; they're reachable via ``@sample:<name>`` (see ``plotext --help`` for the auto-discovered list).

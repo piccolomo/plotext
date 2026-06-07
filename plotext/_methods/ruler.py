@@ -59,10 +59,13 @@ def first_decimal_digit_position(x):
     return -math.floor(math.log10(abs(x + 1e-8)))
 
 
-# Determine minimum decimal digits needed to distinguish all values
+# Determine minimum decimal digits needed to distinguish all values; for ticks that are all integer-valued, return 0 so the labels print without trailing ".0".
 def distinguishing_digit(data):
     d = [_distinguishing_digit(data[i], data[i + 1]) for i in range(len(data) - 1)]
-    return max(d, default=1)
+    digit = max(d, default=0)
+    if not all(t == int(t) for t in data):
+        digit += 1
+    return digit
 
 
 # Compute digits needed to distinguish two float values
@@ -70,7 +73,7 @@ def _distinguishing_digit(a, b):
     d = abs(a - b)
     d = 0 if d == 0 else -math.log10(2 * d)
     d = 0 if d < 0 else math.ceil(d)
-    return d + 1
+    return d
 
 
 # Compare two floats using relative tolerance

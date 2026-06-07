@@ -49,17 +49,26 @@ class matrix:
         clink.matrix_set_normal_character(self._pointer, col, row, wchar(char), pixel._pointer)
         return self
 
-    # Stamp a single box marker at (col, row). Caller is responsible for keeping (col, row) in bounds.
+    # Stamp a single box marker at (col, row). Builds a Point carrying the marker and dispatches through the general insert(Point) path — Marker::stamp polymorphism does the right thing per marker kind.
     def add_box_marker(self, col, row, box):
-        clink.matrix_add_box_marker(self._pointer, col, row, box._pointer)
+        from plotext._signal.point import point_class
+        p = point_class(col, row, box)
+        clink.matrix_insert_point(self._pointer, p._pointer)
         return self
 
-    # Stamp a line spanning [start, end) along the variable axis. coord is the FIXED axis (row for horizontal lines, col for vertical). start/end default to the matrix bounds. Single FFI call — the loop runs in C++.
+    # Stamp a line spanning [start, end) along the variable axis. coord is the FIXED axis (row for horizontal lines, col for vertical). start/end default to the matrix bounds. Builds a Points collection of N points (one per cell), dispatches through matrix_insert_points — the C++ loop stamps each via Marker::stamp.
     def add_line(self, coord, line, start=None, end=None):
+        from plotext._signal.point import point_class
+        from plotext._signal.points import points_class
         vertical = line.get_orientation() == 1
         s = 0 if start is None else start
         e = (self.get_height() if vertical else self.get_width()) if end is None else end
-        clink.matrix_add_line(self._pointer, coord, line._pointer, s, e, vertical)
+        n = e - s
+        pts = points_class(n)
+        for k in range(s, e):
+            p = point_class(coord if vertical else k, k if vertical else coord, line)
+            clink.points_append_point(pts._pointer, p._pointer)
+        clink.matrix_insert_points(self._pointer, pts._pointer)
         return self
 
     # Insert a matrix, colorize, or raw string at (col, row) with horizontal/vertical alignment
@@ -74,6 +83,10 @@ class matrix:
         return clink.matrix_insert_matrix(
             self._pointer, col, row, obj._pointer, ha, -va)
 
+    # Stamp a single point. Returns True if it fit, False otherwise (single-cell out-of-bounds or MatrixMarker no-valid-alignment).
+    def _insert_point(self, point):
+        return clink.matrix_insert_point(self._pointer, point._pointer)
+
     # Insert a points object into the matrix
     def _insert_points(self, points):
         clink.matrix_insert_points(self._pointer, points._pointer)
@@ -83,13 +96,6 @@ class matrix:
     def _insert_matrix(self, col, row, obj):
         clink.matrix_insert_matrix(self._pointer, col, row, obj._pointer, -1, -1)
         return self
-
-    # Insert a Text into the matrix at its own (x, y), respecting its alignment and orientation.
-    # check_space defaults to True so overflow strings are skipped instead of
-    # writing past matrix bounds (which segfaults the C++ kernel). Pass
-    # check_space=False to opt into the unchecked write.
-    def _insert_text(self, text, check_space = True, change_color = True):
-        return clink.matrix_insert_text(self._pointer, text._pointer, check_space, change_color)
 
     # Stack this matrix next to another
     def hstack(self, other, adapt=False):
@@ -104,6 +110,11 @@ class matrix:
     # Return a deep copy of the matrix
     def copy(self):
         return self.__class__(_pointer=clink.matrix_copy(self._pointer))
+
+    # Transpose in place (W×H → H×W). Used by vertical-text construction.
+    def transpose(self):
+        clink.matrix_transpose(self._pointer)
+        return self
 
     # Build the rendered wide string (optionally colorless)
     def get_string(self, colorless=False):
@@ -120,10 +131,11 @@ class matrix:
         return string
 
     # Save the matrix to disk. Extension-driven: "html" → HTML via get_html(), "ansi" → colored text, anything else → plain colorless text. append=True appends.
-    def save(self, path, append=False):
+    def save(self, path, append=False, log=False):
         ext = _get_extension(path)
         canvas = self.get_html() if ext == "html" else self.get_string(colorless=(ext != "ansi"))
         write(canvas, path, append)
+        if log: print(f"plotext.save: wrote {len(canvas.encode('utf-8'))} bytes to {path}")
         return self
 
     # Print the matrix to stdout

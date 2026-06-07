@@ -8,6 +8,7 @@ from plotext._primitives.pixel import pixel as pixel_class
 from plotext._primitives.marker import marker as marker_class
 from plotext._correct.data import matrix as correct_matrix
 from plotext._correct.heatmap import colormap as correct_colormap, symbol as correct_symbol
+from plotext._methods.file import correct as _correct_path
 from plotext._methods.object import is_rgb
 
 
@@ -53,22 +54,31 @@ def _render_image(img, gray, ratio, width, height):
     return heatmap([list(pixels[r * width : (r + 1) * width]) for r in range(height)])
 
 
-# Open an image file via Pillow and paint it into a plotext.matrix.
+# Open an image file (local path, "~/…", or http/https URL — _correct_path downloads URLs once and caches the result) via Pillow and paint it into a plotext.matrix.
 def image(path, gray = False, ratio = True, width = None, height = None):
-    return _render_image(Image.open(path), gray, ratio, width, height)
+    return _render_image(Image.open(_correct_path(path)), gray, ratio, width, height)
 
 
-# Animate a GIF: decode each frame on the fly, paint, print, sleep only the remainder of the GIF's per-frame duration. Press q to exit. Terminal resizes apply automatically.
-def gif(path, gray = False, ratio = True, loop = True, width = None, height = None):
+# A colored "press q to exit" hint: q in bold red, on a discrete black label (fix_background fills the otherwise-unset cell backgrounds).
+def _exit_hint():
+    from plotext._primitives.colorize import colorize
+    hint = colorize("press ", foreground = "white").hstack(colorize("q", foreground = "red", style = "bold")).hstack(colorize(" to exit", foreground = "white"))
+    return hint._fix_background(pixel_class(background = "black"))
+
+
+# Animate a GIF (local path, "~/…", or http/https URL — _correct_path downloads URLs once and caches the result): decode each frame on the fly, paint, print, sleep only the remainder of the GIF's per-frame duration. Press q to exit. Terminal resizes apply automatically.
+def gif(path, gray = False, ratio = True, loop = True, width = None, height = None, _hint = True):
     from plotext._kernel.api import terminal
-    img = Image.open(path)
+    img = Image.open(_correct_path(path))
+    hint = _exit_hint()
     prev_height = 0
     while True:
         for frame in ImageSequence.Iterator(img):
             if terminal.is_pressed('q'): return
             start = time.perf_counter()
             matrix = _render_image(frame, gray, ratio, width, height)
-            if prev_height: terminal.clean(prev_height)
+            if _hint: matrix.insert(0, matrix.get_height() - 1, hint)   # overwrite the bottom-left with the exit hint (in place, no extra row)
+            if prev_height: terminal.clean(prev_height, _prompt = 0)     # up exactly the printed rows (frame need not fill the screen)
             matrix.print()
             prev_height = matrix.get_height()
             frame_time = img.info.get('duration', 100) / 1000

@@ -6,6 +6,8 @@ from plotext._plotter.frame.lines import lines_class
 from plotext._plotter.frame.grid_line import grid_line_class
 from plotext._plotter.frame.line_signal import line_signal
 from plotext._primitives.matrix import matrix as matrix_class
+from plotext._primitives.matrix_marker import matrix_marker
+from plotext._signal.point import point_class
 from plotext._correct import limits as correct_limits
 from plotext._correct import label as correct_labels
 from plotext._correct import pixel as correct_pixel
@@ -149,11 +151,6 @@ class ruler_class:
         self._pixel._fix(pixel)
         return self
 
-    # Configure date mode
-    def set_date(self, active = True, form = None, origin = None, axis = None, side = None):
-        self._date.set_form(form)._set_active(active).set_origin(origin)
-        return self
-
     # Update limits based on provided limits
     def _update_limits(self, limits, merge = False):
         self._limits.update(limits, merge = merge)
@@ -172,10 +169,6 @@ class ruler_class:
         self._ticks.filter(bins)
         self._lines.rescale(self, bins)
         return self
-
-    # Build a text_class per tick: position maps to col (axis 0) or row (axis 1); other_coord is the orthogonal coordinate
-    def _get_ticks_texts(self, axis = 0, other_coord = 0):
-        return self._ticks.get_texts(axis, other_coord)
 
     # Get scale
     def _get_scale(self):
@@ -324,9 +317,7 @@ class xruler_class(ruler_class):
     # Paint x-ticks (single-row strip, dynamic-alignment labels). Returns canvas cols where labels actually landed.
     def draw_ticks(self, matrix, ticks_col, ticks_row, ticks_width):
         out = matrix_class(ticks_width, 1, self._get_pixel())
-        texts = self._get_ticks_texts(axis = 0)
-        fits = [out._insert_text(t) for t in texts]
-        ticks = [int(texts[i]._get_x()) for i, ok in enumerate(fits) if ok]
+        ticks = [int(t.get_position()) for t in self._ticks if out._insert_point(point_class(t.get_position(), 0, matrix_marker(t.get_label(), ha = 2)))]
         matrix._insert_matrix(ticks_col, ticks_row, out)
         return ticks
 
@@ -354,7 +345,6 @@ class yruler_class(ruler_class):
         ta = self._get_tick_alignment() if self._get_tick_alignment() is not None else default_ta
         oc = 0 if ta == -1 else (ticks_width - 1 if ta == 1 else (ticks_width - 1) // 2)
         out = matrix_class(ticks_width, ticks_height, self._get_pixel())
-        ticks = []
-        [ticks.append(int(t._get_y())) for t in self._get_ticks_texts(axis = 1, other_coord = oc) if out._insert_text(t._set_alignment(ta))]
+        ticks = [int(t.get_position()) for t in self._ticks if out._insert_point(point_class(oc, t.get_position(), matrix_marker(t.get_label(), ha = ta)))]
         matrix._insert_matrix(ticks_col, ticks_row, out)
         return ticks

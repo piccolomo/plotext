@@ -31,11 +31,6 @@ public:
     inline void    set_pixel(const Pixel& p) noexcept { Pixel::operator=(p); }
     inline void    copy_wcharacter(const NormalCharacter& o) noexcept { c = o.c; }
 
-    inline void fix_pixel_background(Pixel & p) const noexcept {
-        if (!p.no_background()) return;
-        if (is_full()) p.set_background(get_fullground_integer_code());
-        else p.copy_background(*this); }
-
     inline void to_buffer(wchar_t* buf, size_t & pos, const bool & colorfull = true) const noexcept {
         if (colorfull) Pixel::to_buffer(buf, pos);
         wchar_to_buffer(c, buf, pos);
@@ -169,6 +164,7 @@ public:
     inline void    clear() noexcept { arms = 0; set_style(box_normal); Pixel::clear(); }
     inline uint8_t get_code()       const noexcept { return get_box_code(arms, get_style()); }
     inline uint8_t get_arms()       const noexcept { return arms; }
+    inline void    merge(const BoxCharacter & o) noexcept { arms |= o.arms; }                     // merge another BoxCharacter's arms into this one (used by Points::squash to keep box-line crossings as ┼/┤/├ instead of overwriting)
     inline wchar_t get_wcharacter() const noexcept { return get_box_glyph(get_code()); }
 
     inline NormalCharacter get_normal_character() const noexcept { return NormalCharacter(get_wcharacter(), *this); }

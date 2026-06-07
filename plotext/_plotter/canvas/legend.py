@@ -1,7 +1,8 @@
 # Legend component for plotext: manages markers, labels, pixel, position and frame
 
 from plotext._primitives.matrix import matrix as matrix_class
-from plotext._primitives.text import text as text_class
+from plotext._primitives.matrix_marker import matrix_marker
+from plotext._signal.point import point_class
 from plotext._plotter.frame.axes import axes_class
 from plotext._plotter.frame.corner import corner_class
 from plotext._correct import pixel as correct_pixel
@@ -225,7 +226,7 @@ class legend_class:
             m = self._markers[r]
             log._set_pixelled_character(col, row + 2 * r, m._get_model(), m.get_pixel())
             l = self._labels[r]
-            log._insert_text(text_class(col + 2, row + 2 * r, l))
+            log._insert_point(point_class(col + 2, row + 2 * r, matrix_marker(l, ha = -1)))
 
         return log
 

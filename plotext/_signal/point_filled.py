@@ -3,6 +3,7 @@
 from plotext._kernel.clink import clink
 from plotext._kernel.tools import wstring
 from plotext._primitives.marker import marker as marker_class
+from plotext._primitives.pixel import pixel as pixel_class
 
 
 # Filled point: x/y/col/row with a marker and an integer foreground color
@@ -42,12 +43,12 @@ class point_filled_class:
     def has_fill(self):
         return clink.point_filled_has_fill(self._pointer)
 
-    # Foreground palette indices: main marker always, fill marker only when the point has one
-    def get_foreground_integer_codes(self):
-        codes = [clink.point_filled_get_main_foreground_integer_code(self._pointer)]
+    # Pixels in use: main marker always, fill marker only when the point has one
+    def get_pixels(self):
+        pixels = [pixel_class(_pointer=clink.point_filled_get_main_pixel(self._pointer))]
         if self.has_fill():
-            codes.append(clink.point_filled_get_fill_foreground_integer_code(self._pointer))
-        return codes
+            pixels.append(pixel_class(_pointer=clink.point_filled_get_fill_pixel(self._pointer)))
+        return pixels
 
     # Get string representation (delegated to C)
     def get_string(self, fill=True):

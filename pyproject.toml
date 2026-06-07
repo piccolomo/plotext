@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# cibuildwheel configuration. The wheel itself is built by setup.py + build_cpp.py
+# (the kernel compiles per-platform during the wheel build), so cibuildwheel just
+# needs to make sure a C++ toolchain is available on each runner.
+
+[tool.cibuildwheel]
+build = "cp38-* cp39-* cp310-* cp311-* cp312-* cp313-*"
+skip = "pp* *-musllinux_* *-win32 *_i686"
+test-command = "python -c \"import plotext; print(plotext.__version__)\""
+
+# manylinux containers already ship gcc; nothing extra required.
+[tool.cibuildwheel.linux]
+archs = ["x86_64", "aarch64"]
+
+# Apple clang is preinstalled on the runner.
+[tool.cibuildwheel.macos]
+archs = ["x86_64", "arm64"]
+
+# Windows runners ship MSVC; build_cpp.py needs to detect Windows-native vs
+# the historical mingw cross-compile path (used from a Linux box) and pick MSVC here.
+[tool.cibuildwheel.windows]
+archs = ["AMD64"]

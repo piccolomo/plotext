@@ -28,3 +28,8 @@ public:
         wcout << L"FilledPoints (" << get_length() << L"):" << endl;
         for (size_t i = 0; i < get_length(); ++i) { wcout << L"  "; at(i).log(); } }
 };
+
+
+// Stamp every FilledPoint in the collection. Declared inside Matrix's class body in 07_matrix.cpp; defined here because FilledPoints must be fully declared first.
+inline void Matrix::insert(const FilledPoints & fps) noexcept {
+    for (size_t i = 0; i < fps.get_length(); ++i) insert(fps.at(i)); }

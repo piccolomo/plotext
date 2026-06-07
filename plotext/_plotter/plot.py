@@ -6,7 +6,7 @@ from plotext._plotter.subplot import subplot_class
 from plotext._plotter.canvas.legend import legend_class
 from plotext._plotter.utils.timer import timer_class
 from plotext._plotter.utils.cycler import color_cycler
-from plotext._plotter.canvas.texts import texts_class
+from plotext._plotter.utils.interactive import interactive_class, refresh
 from plotext._plotter.draw import draw_class
 
 from plotext._plotter.frame.labels import labels_class
@@ -24,26 +24,27 @@ from plotext._correct import axis as correct_axis
 from plotext._correct import placement as correct_placement
 
 from plotext._settings import defaults
+from plotext._settings.themes import themes
 from plotext._constants.numerical import binary
 
 from plotext._methods.matrix import join_matrices
 from plotext._primitives.marker import marker as marker_class
 
 
-# Master plot class: composes subplot, draw and build behavior
-class plot_class(subplot_class, draw_class, plot_build_class):
+# Master plot class: composes subplot, draw, build and interactive behavior
+class plot_class(subplot_class, draw_class, plot_build_class, interactive_class):
 
     # Initialize all plot components
     def __init__(self, parent):
+        interactive_class.__init__(self)          # set first: decorated setters run during the init below and read this state on the master
         self._parts = parts_class()
         self._labels = labels_class()
         self._rulers = rulers_class()
         self._axes = axes_class()
         self._signals = signals_class()
-        self._texts = texts_class()
         self._legend = legend_class()
         self._timer = timer_class()
-        self._cycler = color_cycler(defaults.color_sequence)
+        self._cycler = color_cycler(defaults.pixel_sequence)
 
         subplot_class.__init__(self, parent)
         draw_class.__init__(self)
@@ -52,12 +53,14 @@ class plot_class(subplot_class, draw_class, plot_build_class):
         self.canvas_pixel()
 
     # Create grid of subplots and clone settings into each
+    @refresh
     def subplots(self, rows = None, cols = None):
         subplot_class._subplots(self, rows, cols)
         self._for_each_subplot("_clone", self)
         return self
 
     # Clear size and parts; reset subplot sizes to None so harmonization can redistribute them on the next plot_size call. On the master also reset the terminal's sizing state (prompt height + per-axis limit flags) since those are size-domain settings.
+    @refresh
     def clear_size(self):
         self._parts.clear()
         if self._is_master():
@@ -71,16 +74,17 @@ class plot_class(subplot_class, draw_class, plot_build_class):
     clz = clear_size
 
     # Clear subplots tree (rebuilds an empty 0×0 grid; leaves size, position, settings, etc. untouched)
+    @refresh
     def clear_subplots(self):
         self._subplots()
         return self
 
     clss = clear_subplots
 
-    # Clear signals, texts, lines and legend data
+    # Clear signals, lines and legend data
+    @refresh
     def clear_data(self):
         self._signals._clear()
-        self._texts.clear()
         self._rulers.clear_lines()
         self._legend.clear_signals()
         self._cycler.reset()
@@ -90,6 +94,7 @@ class plot_class(subplot_class, draw_class, plot_build_class):
     cld = clear_data
 
     # Clear all settings
+    @refresh
     def clear_settings(self):
         self._rulers.clear_settings()
         self._axes.clear_settings()
@@ -101,6 +106,7 @@ class plot_class(subplot_class, draw_class, plot_build_class):
     cls = clear_settings
 
     # Reset all pixels to defaults
+    @refresh
     def clear_pixels(self):
         self._labels.clear_pixel()
         self._rulers.clear_pixels()
@@ -114,6 +120,7 @@ class plot_class(subplot_class, draw_class, plot_build_class):
     clp = clear_pixels
 
     # Clear ruler and axis styles
+    @refresh
     def clear_styles(self):
         self._rulers.clear_styles()
         self._axes.clear_styles()
@@ -121,6 +128,7 @@ class plot_class(subplot_class, draw_class, plot_build_class):
         return self
 
     # Clear the whole plot
+    @refresh
     def clear(self):
         self.clear_size()
         self.clear_subplots()
@@ -160,8 +168,8 @@ class plot_class(subplot_class, draw_class, plot_build_class):
 
         m = correct_marker.markers(marker, self._next_marker(), len(x))
 
-        x = self.convert(x, "timestamp", axis = 0, side = xside) if self._is_date_active(0, xside) else x
-        y = self.convert(y, "timestamp", axis = 1, side = yside) if self._is_date_active(1, yside) else y
+        x = self.date(0, xside).convert(x, "timestamp") if self.date(0, xside).is_active() else x
+        y = self.date(1, yside).convert(y, "timestamp") if self.date(1, yside).is_active() else y
 
         signal = signal_class(len(x))
         signal._append_points(x, y, m)
@@ -170,12 +178,14 @@ class plot_class(subplot_class, draw_class, plot_build_class):
         return signal
 
     # Set plot title
+    @refresh
     def title(self, label = None):
         self._labels.set_title(label)
         self._for_each_subplot("title", label)
         return self
 
     # Set axis label
+    @refresh
     def label(self, label = None, axis = None, side = None):
         self._labels.set(label, axis, side)
         self._for_each_subplot("label", label, axis, side)
@@ -183,6 +193,7 @@ class plot_class(subplot_class, draw_class, plot_build_class):
 
     # Configure the plot legend: visibility, position, alignment, colour, axis anchoring.
     # status defaults to True so any call (including bare legend()) activates the legend.
+    @refresh
     def legend(self, status = True, x = None, y = None, ha = None, va = None, relative = None, pixel = None, xside = None, yside = None):
         self._legend.set(status = status, x = x, y = y, relative = relative,
                          ha = ha, va = va, pixel = pixel,
@@ -191,36 +202,42 @@ class plot_class(subplot_class, draw_class, plot_build_class):
         return self
 
     # Set ruler alignment
+    @refresh
     def alignment(self, alignment = None, axis = None, side = None):
         self._rulers.set_alignment(alignment, axis = axis, side = side)
         self._for_each_subplot("alignment", alignment, axis, side)
         return self
 
     # Set ruler direction
+    @refresh
     def direction(self, direction = None, axis = None, side = None):
         self._rulers.set_direction(direction, axis, side)
         self._for_each_subplot("direction", direction, axis, side)
         return self
 
     # Set ruler scale
+    @refresh
     def scale(self, scale = None, axis = None, side = None):
         self._rulers.set_scale(scale, axis, side)
         self._for_each_subplot("scale", scale, axis, side)
         return self
 
     # Set ruler limits
+    @refresh
     def lim(self, lower = None, upper = None, axis = None, side = None):
         self._rulers.set_limits(lower, upper, axis, side)
         self._for_each_subplot("lim", lower, upper, axis, side)
         return self
 
     # Set ruler frequency
+    @refresh
     def frequency(self, frequency = None, axis = None, side = None):
         self._rulers.set_frequency(frequency = frequency, axis = axis, side = side)
         self._for_each_subplot("frequency", frequency, axis, side)
         return self
 
     # Set ruler ticks
+    @refresh
     def ticks(self, positions = None, labels = None, axis = 0, side = 0):
         self._rulers.set_ticks(positions = positions, labels = labels, axis = axis, side = side)
         self._for_each_subplot("ticks", positions, labels, axis, side)
@@ -228,12 +245,14 @@ class plot_class(subplot_class, draw_class, plot_build_class):
 
     # Set ruler pixel (colour/style of tick labels). Recolours existing ticks
     # in place — call after ticks() to restyle labels without resetting them.
+    @refresh
     def ruler_pixel(self, pixel = None, axis = binary, side = binary):
         self._rulers.set_pixel(pixel, axis, side)
         self._for_each_subplot("ruler_pixel", pixel, axis, side)
         return self
 
     # Set tick label alignment along the chosen axis ticks region. None resets to the per-side default.
+    @refresh
     def tick_alignment(self, alignment = None, axis = 0, side = 0):
         axis = correct_axis.axis(axis)
         alignment = correct_placement.alignment(alignment, orientation = 1 - axis, default = None)
@@ -242,43 +261,54 @@ class plot_class(subplot_class, draw_class, plot_build_class):
         return self
 
     # Set grid
+    @refresh
     def grid(self, active = None, style = None, pixel = None, axis = binary, side = binary):
         active = correct_bool.boolean(active, True)
         self._rulers.set_grid(active, style, pixel, axis, side)
         self._for_each_subplot("grid", active, style, pixel, axis, side)
         return self
 
-    # Configure date axis
-    def date(self, active = True, form = None, origin = None, axis = None, side = None):
-        self._rulers.set_date(active, form, origin, axis, side)
-        self._for_each_subplot("date", active, form, origin, axis, side)
-        return self
-
-    # Convert time value on axis
-    def convert(self, time, output = "timestamp", axis = None, side = None):
+    # Getter: returns the date_class instance bound to the selected ruler. All date operations (activate / convert / today / clear) live on the returned object.
+    def date(self, axis = None, side = None):
         axis = correct_axis.axis(axis)
         side = correct_axis.side(axis, side)
-        return self._rulers.convert(time, output, axis, side)
-
-    # Check if date mode is active
-    def _is_date_active(self, axis = None, side = None):
-        return self._rulers.get(axis, side)._date.is_active()
+        return self._rulers.get(axis, side)._date
 
     # Set axis properties
+    @refresh
     def axis(self, status = None, style = None, pixel = None, axis = 0, side = 0):
         self._axes.set(axis = axis, side = side, status = status, style = style, pixel = pixel)
         self._for_each_subplot("axis", status, style, pixel, axis, side)
         return self
 
     # Set frame (all axes)
+    @refresh
     def frame(self, status = True, style = None, pixel = None):
         self.axis(status = status, style = style, pixel = pixel, axis = binary, side = binary)
         return self
 
     # Set canvas pixel
+    @refresh
     def canvas_pixel(self, pixel = None):
         self._canvas_pixel = correct_pixel.pixel(pixel, defaults.pixels["canvas"])
         self._for_each_subplot("canvas_pixel", pixel)
+        return self
+
+    # Apply a named colour preset (canvas + frame + ruler + label + legend + cycler sequence) in one call
+    @refresh
+    def theme(self, name = "default"):
+        if name not in themes:
+            raise ValueError(f"Unknown theme {name!r}. Available: {', '.join(themes)}.")
+        t = themes[name]
+        # Clone the theme pixels in directly (authoritative — no merge with package defaults, so the `clear` theme stays genuinely colourless). One shared "text" pixel covers frame, ruler, label and legend (including the legend's own box border).
+        self._canvas_pixel.clone(t["canvas"])
+        [a._pixel.clone(t["text"]) for a in self._axes.get_multiple(binary, binary)]
+        [r._pixel.clone(t["text"]) for r in self._rulers.select(binary, binary)]
+        [a._pixel.clone(t["text"]) for a in self._legend._axes.get_multiple(binary, binary)]
+        self._labels._pixel.clone(t["text"])
+        self._legend._pixel.clone(t["text"])
+        self._cycler.set_sequence(t["sequence"])
+        self._for_each_subplot("theme", name)
         return self
 
     # Start a timed event
@@ -313,6 +343,11 @@ class plot_class(subplot_class, draw_class, plot_build_class):
         out.print(colorless = colorless, flush = flush)
         self._stop_event("print")
         return out
+
+    # Build and save the plot to disk. Format dispatched by extension (.html, .ansi, anything else → plain text).
+    def save(self, path, append = False, log = False):
+        self.build().save(path, append = append, log = log)
+        return self
 
     # Build the plot matrix; recurses into nested subplots so containers
     # render their full subtree. Harmonization runs once at the master.

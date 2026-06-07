@@ -1,10 +1,9 @@
 # Build: renders the final plot matrix from signals, rulers, axes, labels, ticks, legend and corners
 
 from plotext._primitives.matrix import matrix as matrix_class
-from plotext._primitives.text import text as text_class
 from plotext._primitives.box import box_class
 from plotext._plotter.frame.rulers import rulers_class
-from plotext._signal.grid import points_grid
+from plotext._signal.grid import grid as grid_class
 from plotext._signal.points import points_class
 from plotext._constants.numerical import binary
 from plotext._plotter.frame.corner import corner_class
@@ -29,7 +28,6 @@ class plot_build_class:
         # Update Rulers
         irulers._update_ticks_limits()
         irulers._update_signals_limits(self._signals)
-        irulers._update_texts_limits(self._texts)
         irulers._update_ticks()
 
         # Upper Bar Height
@@ -120,7 +118,7 @@ class plot_build_class:
         # Build Matrix
         self._start_event("create matrix")
         matrix = matrix_class(self._parts.get_width(), self._parts.get_height(), self._canvas_pixel)
-        grid = points_grid(width_canvas, height_canvas)
+        grid = grid_class(width_canvas, height_canvas)
         self._stop_event("create matrix")
 
         # Rescale Rulers
@@ -142,10 +140,6 @@ class plot_build_class:
             self._start_event("signals")
             signals.draw(matrix, irulers, self._parts.canvas, self._canvas_pixel, grid)
             self._stop_event("signals")
-
-            self._start_event("texts")
-            self._texts.draw(matrix, irulers, self._parts.canvas)
-            self._stop_event("texts")
 
 
         # Add upper bar labels and title

@@ -5,7 +5,7 @@ from plotext._primitives.pixel import pixel as pixel_class
 from plotext._primitives.colorize import colorize as colorize_class
 from plotext._primitives.marker import marker as marker_class
 from plotext._primitives.matrix import matrix as matrix_class
-from plotext import uncolorize, colors, styles, markers
+from plotext import uncolorize, colors, styles, markers, themes
 
 
 # Pixel
@@ -80,6 +80,18 @@ doc("Replaces the string content, preserving the existing color/style.")
 par("string", "New string content"); spec(type.string)
 past_out("colorize.clone")
 
+add(colorize_class.upper, name = "colorize.upper")
+doc("Returns a new colorize with the same color and style, and the string uppercased.")
+out("New uppercased colorize", type.colorize)
+
+add(colorize_class.lower, name = "colorize.lower")
+doc("Returns a new colorize with the same color and style, and the string lowercased.")
+out("New lowercased colorize", type.colorize)
+
+add(colorize_class.title, name = "colorize.title")
+doc("Returns a new colorize with the same color and style, and the string title-cased (first letter of every word uppercased).")
+out("New title-cased colorize", type.colorize)
+
 add(colorize_class.print, name = "colorize.print")
 doc("Prints the colorized string to stdout.")
 par("colorless", "If True, prints without color/style codes"); spec(type.bool, False)
@@ -118,15 +130,20 @@ doc("Prints every available text style code ('bold', 'italic', and so on), each 
 add(markers, name = "markers")
 doc("Prints every available marker code: the HD sub-character codes ('hd', 'fhd', 'braille') and the named character codes, each shown next to its rendered glyph.")
 
+add(themes, name = "themes")
+doc("Displays every available colour theme as a grid of mini-plots, one cell per theme, each titled with its name. Use the name with fig.theme(name) to apply it.")
+
 
 # Marker
 
 add(marker_class, name = "marker")
 doc("Creates a marker: a symbol with optional foreground, background and style, used to render points on the plot canvas.")
-par("marker", "The marker to use. Possible entries: a single character; one of the character codes available via plotext.markers(); or a higher-resolution code ('hd', 'fhd', 'braille') that splits each character cell into sub-cells"); spec(type.marker_par)
+par("symbol", "The symbol to use. Possible entries: a single character; one of the character codes available via plotext.markers(); a higher-resolution code ('hd', 'fhd', 'braille') that splits each character cell into sub-cells; or a plotext.matrix / plotext.colorize for a multi-cell marker (ha and va apply)"); spec(type.symbol_par)
 past("foreground", "pixel")
 past("background", "pixel")
 past("style", "pixel")
+par("ha", "Horizontal alignment of a matrix/colorize marker around the data point. Ignored for single-cell markers"); spec(type.alignment_h, -1)
+par("va", "Vertical alignment of a matrix/colorize marker around the data point. Ignored for single-cell markers"); spec(type.alignment_v, -1)
 out("A marker object", type.marker)
 
 add(marker_class.get_pixel, name = "marker.get_pixel")
@@ -182,6 +199,7 @@ add(matrix_class.save, name = "matrix.save")
 doc("Saves the matrix to disk. Dispatches by file extension: ``.html`` writes HTML via get_html(); ``.ansi`` writes colored text with ANSI escape codes; any other extension writes plain colorless text.")
 par("path", "Output file path"); spec(type.string)
 par("append", "If True, appends to the file instead of overwriting"); spec(type.bool, False)
+par("log", "If True, prints a one-line summary with the number of bytes written and the path"); spec(type.bool, False)
 past_out("matrix")
 
 add(matrix_class.hstack, name = "matrix.hstack")
@@ -199,6 +217,10 @@ out("Resulting matrix", type.matrix)
 add(matrix_class.copy, name = "matrix.copy")
 doc("Returns a copy of the matrix.")
 out("Matrix copy", type.matrix)
+
+add(matrix_class.transpose, name = "matrix.transpose")
+doc("Transposes the matrix in place (W×H becomes H×W). Used internally by vertical-text construction; useful externally for swapping the row/column orientation of a rendered matrix without rebuilding it. Returns self for chaining.")
+past_out("matrix")
 
 add(matrix_class.insert, name = "matrix.insert")
 doc("Inserts a matrix, colorize, or raw string at the given (col, row) position.")

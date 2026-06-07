@@ -1,7 +1,6 @@
 # Ticks: container of tick_class instances with batch get/set/rescale operations
 
 from plotext._plotter.frame.tick import tick_class
-from plotext._primitives.text import text as text_class
 
 
 # Collection of ruler ticks with batch operations
@@ -24,11 +23,6 @@ class ticks_class:
     def set_positions(self, positions):
         [t.set_position(p) for t, p in zip(self.ticks, positions)]
         return self
-
-    # Build a text_class per tick: position maps to col (axis 0) or row (axis 1); other_coord is the orthogonal coordinate. alignment=2 (dynamic) lets the matrix search for a free spot when inserting; non-dynamic callers (e.g. y-axis labels) override via _set_alignment before insert.
-    def get_texts(self, axis = 0, other_coord = 0):
-        return [text_class(t.get_position(), other_coord, t.get_label(), alignment=2) if axis == 0
-                else text_class(other_coord, t.get_position(), t.get_label(), alignment=2) for t in self.ticks]
 
     # Get only tick positions
     def get_positions(self):

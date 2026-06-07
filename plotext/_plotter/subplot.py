@@ -4,6 +4,7 @@ from plotext._settings import defaults
 from plotext._correct import bool as correct_bool
 from plotext._methods.subplot import fit_sizes, set_none_sizes
 from plotext._methods.sequence import get_extreme
+from plotext._plotter.utils.interactive import refresh
 
 
 # Subplot container: handles parent/child nesting and slots
@@ -52,6 +53,7 @@ class subplot_class:
     # left. With -1 the order is reversed, so the first subplot (leftmost
     # column or top row) absorbs the leftover instead. Validation is delegated
     # to correct_bool.direction, the same helper used by the ruler.
+    @refresh
     def size_direction(self, direction = None):
         direction = defaults.size_direction if direction is None else direction
         self._size_direction = correct_bool.direction(direction)
@@ -62,6 +64,7 @@ class subplot_class:
     # requested size across nested subplots, growing the canvas to accommodate.
     # With "minimum" it takes the smallest, shrinking everyone to fit. Validation
     # is delegated to correct_bool.size_policy.
+    @refresh
     def size_policy(self, policy = None):
         policy = defaults.size_policy if policy is None else policy
         self._size_policy = correct_bool.size_policy(policy)
@@ -93,6 +96,7 @@ class subplot_class:
 
     # Set plot size and propagate the change as needed: re-harmonize this
     # subtree, and re-harmonize siblings if this is a sub-master.
+    @refresh
     def plot_size(self, width = None, height = None):
         self._set_size(width, height)
         if self._is_sub_master():
