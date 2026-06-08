@@ -135,8 +135,11 @@ plotext/
             parameter.py           parameter or output (name, type, default)
             text.py                text / alias / labelled-text components
             types.py               registry of type names and human-readable explanations
-        _settings/
+        _defaults/
             pixels.py              default pixel configs for every docstring component
+            section.py             default section label applied to add_function when set_section was not called
+        _methods/
+            menu.py                interactive picker (framed multi-column flow; arrows navigate, enter views, q quits)
         _examples/
             demo.py                reference table of PrettyDoc components
             test.py                prettydoc test suite

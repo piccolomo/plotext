@@ -1,6 +1,7 @@
 # Docs primitive: the prettydoc docstring manager, plus docs_output (the finalized attribute-accessible container)
 
-from plotext.prettydoc._settings.pixels import default_pixels
+from plotext.prettydoc._defaults.pixels import default_pixels
+from plotext.prettydoc._defaults.section import default_section
 from plotext.prettydoc._primitives.function import function_class
 from plotext.prettydoc._primitives.types import types_class
 from plotext._constants.text import space, new_line
@@ -37,8 +38,14 @@ class docs:
         self._functions = []
         self._colorless = colorless
         self._pixels = default_pixels
+        self._default_section = default_section
         self.type = types_class()
         self._set_separator(separator)
+
+    # Set the section label applied to subsequent add_function calls when section is not explicitly passed; pass None (the default) to reset.
+    def set_section(self, section = None):
+        self._default_section = section
+        return self
 
     # Get the explanation for a data type
     def get(self, label, default = None):
@@ -61,8 +68,9 @@ class docs:
         return self
 
     # Add a function wrapper to docs
-    def add_function(self, *function, name = None):
-        self._functions.append(function_class(*function, name = name))
+    def add_function(self, *function, name = None, section = None):
+        section = section if section is not None else self._default_section
+        self._functions.append(function_class(*function, name = name, section = section))
         return self
 
     # Add documentation text for last function
@@ -136,7 +144,7 @@ class docs:
         out = docs_output()
         [el._update(self._colorless) for el in self._functions]
         [object_methods.set_attribute(out, el._get_name(), el._show) for el in self._functions]
-        object_methods.set_attribute(out, "_call", self.show)
+        object_methods.set_attribute(out, "_call", self.pick)
         return out
 
     # Get full combined string of all functions
@@ -147,6 +155,20 @@ class docs:
     def show(self):
         print(self.get_string())
         return self
+
+    # Open the interactive picker; functions group by their section. A single None-section is shown as "Pretty Docstrings"; with multiple sections, a None one is moved to the end and labelled "Unlabelled". On Enter the selected function prints title + docstring.
+    def pick(self):
+        from plotext.prettydoc._methods.menu import run_picker
+        title_pixel = self._get_default_pixel("title")
+        sections = self._get_section()
+        if len(sections) == 1 and sections[0][0] is None:
+            groups = [("Pretty Docstrings", sections[0][1])]
+        else:
+            labeled = [(sec, fns) for sec, fns in sections if sec is not None]
+            unlabeled = [("Unlabelled", fns) for sec, fns in sections if sec is None]
+            groups = labeled + unlabeled
+        sections = [(title, [(fn._get_name(), fn) for fn in fns]) for title, fns in groups]
+        run_picker(sections, print_function = lambda fn: print(fn._get_titled_docstring(title_pixel)))
 
     # Colorize text if not already colorized
     def _colorize(self, text, component, lower = 0):
@@ -173,6 +195,22 @@ class docs:
     # Return last function added
     def _last(self):
         return self._functions[-1]
+
+    # Return the unique section labels in first-seen order (functions registered without a section are skipped).
+    def _get_unique_sections(self):
+        seen = []
+        for fn in self._functions:
+            sec = fn._get_section()
+            if sec is not None and sec not in seen:
+                seen.append(sec)
+        return seen
+
+    # Return [(section, [functions])] in first-seen order; functions without a section land under None.
+    def _get_section(self):
+        groups = {}
+        for fn in self._functions:
+            groups.setdefault(fn._get_section(), []).append(fn)
+        return list(groups.items())
 
     # Number of functions in docs
     def _get_length(self):

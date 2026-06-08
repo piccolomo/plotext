@@ -4,6 +4,8 @@ from plotext._doc.tools import *
 from plotext._plotter.plot import plot_class
 from plotext._signal.signal import signal_class
 
+section('signal')
+
 
 add(plot_class.signal, name = "signal")
 doc("Creates a signal, a sequence of points to be plotted. Line drawing is configured on the returned signal via its fluent methods (lines, point_lines); line_method and fill_method are construction-time parameters here; label and stem fills (fillx, filly) are also set fluently on the signal.")

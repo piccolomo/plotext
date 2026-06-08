@@ -1,7 +1,6 @@
 recursive-include plotext/_completion *
 recursive-include plotext/_examples/data *
 recursive-include plotext/_kernel/cpp *
-exclude plotext/_kernel/cpp/kernel.so plotext/_kernel/cpp/kernel.dll
 include README.md
 include LICENSE
 include build_cpp.py

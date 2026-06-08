@@ -7,6 +7,8 @@ from plotext._primitives.marker import marker as marker_class
 from plotext._primitives.matrix import matrix as matrix_class
 from plotext import uncolorize, colors, styles, markers, themes
 
+section('primitives')
+
 
 # Pixel
 

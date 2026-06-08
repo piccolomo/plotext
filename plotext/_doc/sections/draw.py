@@ -4,6 +4,8 @@ from plotext._doc.tools import *
 from plotext._plotter.plot import plot_class
 from plotext import sin, square, noise, image, gif, video, effect, sleep
 
+section('drawing')
+
 
 add(sin)
 doc("Generates a sinusoidal signal for testing plotting routines.")

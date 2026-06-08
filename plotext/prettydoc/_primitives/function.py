@@ -10,9 +10,10 @@ from plotext._primitives.colorize import colorize
 # One documented callable (or list of aliased callables) with its full docstring layout
 class function_class:
     # Initialize wrapper around one or more functions
-    def __init__(self, *function, name = None):
+    def __init__(self, *function, name = None, section = None):
         self._function = list(function)
         self._set_name(function[0], name)
+        self._section = section
         self._doc = text_class()
         self._alias = alias_class()
         self._parameters_intro = text_class()
@@ -31,6 +32,10 @@ class function_class:
     # Return lowercase qualified function name
     def _get_name(self):
         return self._name
+
+    # Return the section label, or None if unset
+    def _get_section(self):
+        return self._section
 
     # Set function docstring text
     def _set_doc(self, doc = None):
@@ -71,10 +76,14 @@ class function_class:
     def _show(self, colorless = False):
         print(self._get_docstring(colorless))
 
-    # Update the function's __doc__ attribute
+    # Update the function's __doc__ (colorless) and attach a doc() method that prints the colored version; silently skip when the callable rejects attribute assignment (e.g. C functions).
     def _update(self, colorless = False):
         for function in self._function:
             function.__doc__ = self._get_docstring(colorless)
+            try:
+                function.doc = lambda: self._show(colorless = False)
+            except (AttributeError, TypeError):
+                pass
         return self
 
     # Return number of parameters
@@ -95,9 +104,9 @@ class function_class:
     def _get_title(self, pixel):
         return colorize(self._get_name()).set_pixel(pixel).get_string()
 
-    # Return title line followed by full docstring
+    # Return title line followed by a blank line and then the full docstring
     def _get_titled_docstring(self, pixel):
-        return self._get_title(pixel) + new_line + self._get_docstring()
+        return self._get_title(pixel) + new_lines(2) + self._get_docstring()
 
     # Representation
     def __repr__(self):

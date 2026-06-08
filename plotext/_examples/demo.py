@@ -23,36 +23,41 @@ def colors():
     colors_no_plus = unique([el.replace('+', '') for el in color_codes if el not in ['default', 'black', 'white']])
     colors_plus = [el + '+' for el in colors_no_plus]
 
-    # Colorize strings
-    colors_no_plus = [colorize(pad(color, pad_length), foreground=color, background=bg) for color in colors_no_plus]
-    colors_plus = [colorize(pad(color, pad_length), foreground=color, background=bg) for color in colors_plus]
+    # Colorize.
+    colors_no_plus = [colorize(pad(c, pad_length), foreground=c, background=bg) for c in colors_no_plus]
+    colors_plus = [colorize(pad(c, pad_length), foreground=c, background=bg) for c in colors_plus]
     color_codes_colorized = [c + cp for c, cp in zip(colors_no_plus, colors_plus)]
 
-    # Print string color codes
-    colorize("String Color Codes", style='bold').print()
-    [c.print() for c in color_codes_colorized]
-    print(colorize(pad('black', pad_length), 'black', 'gray+'), end='')
-    colorize(pad('white', pad_length), 'white', 'gray+').print()
-    colorize(pad('default', pad_length * 2)).print()
+    # Build the whole string-codes block as one stacked matrix; one print, no buffer reordering.
+    header = colorize("String Color Codes", style='bold')
+    black_white = colorize(pad('black', pad_length), 'black', 'gray+') + colorize(pad('white', pad_length), 'white')
+    default_row = colorize(pad('default', pad_length))
     note = colorize("Note: ") + colorize("yellow", "yellow") + " is alias for " + colorize("orange+", "orange+")
-    print()
-    note.print()
+    blank = colorize("")
 
-    # Print integer color codes
-    colorize("\n\nInteger Color Codes", style='bold').print()
+    block = header.get_matrix()
+    for r in color_codes_colorized:
+        block = block / r
+    block = block / black_white / default_row / blank / note / blank
+
+    # Integer color codes: each row is the horizontal concat of cols cells
+    int_header = colorize("Integer Color Codes", style='bold')
+    block = block / blank / int_header
     for row in range(rows):
-        for col in range(cols):
-            end = '' if col != cols - 1 else '\n'
-            print(colorize(pad(color_index(col, row), 5), color_index(col, row)), end=end)
+        row_cells = [colorize(pad(color_index(col, row), 5), color_index(col, row)) for col in range(cols)]
+        row_matrix = row_cells[0]
+        for cell in row_cells[1:]:
+            row_matrix = row_matrix + cell
+        block = block / row_matrix
 
-    # Print RGB example
-    rgb = (10, 123, 150)
-    print(colorize("\n\nRGB Tuples", style='bold'), end=' like ')
-    print(colorize(str(rgb), foreground=rgb, style='bold'), end=' or ')
-    rgb = (150, 12, 120)
-    colorize(str(rgb), foreground=rgb, style='bold').print()
-    note = colorize("Note: each integer in the tuple should be between 0 and 255")
-    note.print()
+    # RGB tuples row
+    rgb1, rgb2 = (10, 123, 150), (150, 12, 120)
+    rgb_line = (colorize("RGB Tuples", style='bold') + " like "
+                + colorize(str(rgb1), foreground=rgb1, style='bold') + " or "
+                + colorize(str(rgb2), foreground=rgb2, style='bold'))
+    rgb_note = colorize("Note: each integer in the tuple should be between 0 and 255")
+    block = block / blank / rgb_line / rgb_note
+    block.print()
 
 
 # Pre-create colorized style codes

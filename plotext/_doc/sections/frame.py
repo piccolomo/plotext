@@ -5,6 +5,8 @@ from plotext._plotter.plot import plot_class
 from plotext._constants.numerical import binary
 from plotext._settings import defaults
 
+section('frame')
+
 
 # Labels
 

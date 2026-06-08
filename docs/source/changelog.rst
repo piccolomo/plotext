@@ -64,10 +64,15 @@ New
 - ``plotext.file`` — file-I/O namespace (``read``, ``write``, ``exists``, ``delete``, ``parent``, ``join``).
 - ``prettydoc`` — colorized docstring container; the whole 6.x API is documented through it (accessible at ``plotext.doc``).
 
+   - Interactive picker: calling ``plotext.doc()`` (or ``plotext --doc`` from the shell) opens a framed multi-column picker. Arrow keys move between items, ``Enter`` shows the selected function's coloured docstring on a cleared screen, ``q`` quits.
+   - Sections: ``docs.add_function(fn, section='name')`` (or ``docs.set_section('name')`` to set a default for subsequent calls) groups functions into one column per section in the picker. A single None-section shows as ``Pretty Docstrings``; with multiple sections, None-sections move to the end as ``Unlabelled``.
+   - ``.doc()`` attached to each documented callable: ``docs.update()`` attaches a ``.doc()`` method on every registered callable that accepts attribute assignment, printing the coloured render. ``__doc__`` still holds the colourless string for IDEs / ``help()``.
+   - CLI: ``plotext --doc`` opens the picker, ``plotext --METHOD --doc`` prints a single method's docstring (replaces the older ``--methods`` and ``--METHOD --help`` flags).
+
 Internals
 ^^^^^^^^^
 - Rendering kernel rewritten in C++ (``plotext/_kernel/cpp/``), called from Python via ``clink`` bindings.
-- Package reorganized: ``_primitives/`` (pixel/marker/matrix/colorize), ``_signal/`` (signal classes), ``_plotter/`` (plot/subplot/draw mixins), ``_kernel/`` (api + C++ bridge), ``_correct/`` (parameter validation), ``_doc/`` (prettydoc sections), ``_settings/`` (defaults/themes/system), ``_cli/`` (chain-syntax command-line tool).
+- Package reorganized: ``_primitives/`` (pixel/marker/matrix/colorize), ``_signal/`` (signal classes), ``_plotter/`` (plot/subplot/draw mixins), ``_kernel/`` (api + C++ bridge), ``_correct/`` (parameter validation), ``_doc/`` (prettydoc sections), ``_settings/`` (defaults/themes/system), ``_cli/`` (chain-syntax command-line tool), ``prettydoc/_methods/menu.py`` (interactive picker), ``prettydoc/_defaults/section.py`` (default section label).
 
 
 Version 5.3

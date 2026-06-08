@@ -68,10 +68,26 @@ Process and Display
 - **displays all docstrings**: to displays all generated docstrings use the ``docs.show()`` method.
 
 - **displays a specific docstring**: The `docs()` container holds methods, named after the functions, that display the corresponding function's docstring. Therefore to view a specific docstring, you can either use the usual ``print(mean.__doc__)`` or the simplified ``docs.mean()`` access point.
-   
-.. note:: 
+
+- **call .doc() on the function itself**: ``docs.update()`` also attaches a ``.doc()`` method directly to each registered function whenever the callable accepts attribute assignment. So ``mean.doc()`` prints the coloured prettydoc render while ``mean.__doc__`` keeps the colourless string that IDEs, ``help()`` and other introspection tools expect. Callables that reject attribute assignment (most C-implemented built-ins) are silently skipped.
+
+- **call the container itself for an interactive picker**: ``docs()`` (or ``plotext.doc()``) opens a framed multi-column picker. Arrow keys move between items, ``Enter`` shows the selected function's coloured docstring on a cleared screen, ``q`` quits. Headers and blanks are skipped automatically. When stdin is not a TTY (e.g. piped output), every docstring is printed instead.
+
+.. note::
 
     * Additional technical details can be found in the :ref:`prettydoc_api` API.
+
+
+.. _sections:
+
+Group by Section
+----------------
+
+Functions can be grouped into sections so the interactive picker shows one column-group per section.
+
+- **assign a section at registration**: pass ``section`` to ``add_function()`` to put that function under a named heading: ``docs.add_function(mean, section='averages')``.
+- **set a default section for the next calls**: ``docs.set_section('averages')`` makes every subsequent ``add_function()`` inherit that label until another ``set_section()`` is called. ``docs.set_section()`` (or ``docs.set_section(None)``) resets the default.
+- **picker behaviour**: when a single None-section is present it shows as ``Pretty Docstrings``. With multiple sections, a None-section is moved to the end and labelled ``Unlabelled``.
 
 
 .. _doc_color:

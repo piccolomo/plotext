@@ -3,6 +3,8 @@
 from plotext._doc.tools import *
 from plotext._plotter.plot import plot_class
 
+section('subplots')
+
 
 add(plot_class.canvas_pixel, name = "canvas_pixel")
 doc("Sets the pixel (color and style) of the plot canvas background.")

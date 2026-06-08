@@ -18,8 +18,8 @@ def run_c_code(code):
 
 
 # Print one method's docstring: styled prettydoc if registered, else raw __doc__.
-# Used by `plotext --METHOD --help`.
-def print_method_help(method_name):
+# Used by `plotext --METHOD --doc`.
+def print_method_doc(method_name):
     import plotext as plotext_module
     pretty = getattr(plotext_module.doc, method_name, None)
     if callable(pretty):
@@ -36,7 +36,7 @@ def print_method_help(method_name):
 # Command-line entry point. Recognises:
 #   plotext                              -> print --help
 #   plotext --help, -h                   -> print --help
-#   plotext --methods                    -> list methods by category
+#   plotext --doc                        -> open the interactive doc picker
 #   plotext -c "<code>"                  -> exec arbitrary Python (plt is plotext)
 #   plotext --METHOD ... --METHOD --help -> print one method's docstring
 #   plotext --METHOD [args] ...          -> run the --METHOD chain
@@ -49,9 +49,10 @@ def main(arguments=None):
         print_help()
         return
 
-    # --methods: list every CLI-callable method grouped by category.
-    if arguments[0] == '--methods':
-        print_methods()
+    # --doc: open the interactive doc picker grouped by section.
+    if arguments[0] == '--doc':
+        import plotext as plt
+        plt.doc()
         return
 
     # -c "<code>": exec arbitrary Python instead of parsing the --METHOD chain.
@@ -65,9 +66,9 @@ def main(arguments=None):
     # Otherwise: parse the chain of --METHODs and run them in order.
     methods = group_by_method(arguments)
 
-    # Per-method help shortcut: `plotext --signal --help` prints signal's docstring.
-    if len(methods) >= 2 and methods[-1][0] == 'help':
-        print_method_help(methods[-2][0])
+    # Per-method doc shortcut: `plotext --signal --doc` prints signal's docstring.
+    if len(methods) >= 2 and methods[-1][0] == 'doc':
+        print_method_doc(methods[-2][0])
         return
 
     run_methods(methods)

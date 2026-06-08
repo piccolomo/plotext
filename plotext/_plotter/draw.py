@@ -49,7 +49,7 @@ class draw_class:
 
     # Build a text annotation at (x, y): one-point signal whose marker is a MatrixMarker carrying the label matrix. orientation=0 horizontal (W×1 label, alignment maps to ha — accepts left/center/right), orientation=1 vertical (label transposed to 1×W, alignment maps to va — accepts top/center/bottom). Caller passes the result to draw() to register it.
     def text(self, x, y, label, alignment = None, orientation = None, xside = None, yside = None):
-        label = correct_label.label(label, defaults.pixels["label"])
+        label = correct_label.label(label, self._canvas_pixel)
         orientation = correct_placement.orientation(orientation)
         alignment = correct_placement.alignment(alignment, orientation = orientation)
         ha, va = (-1, alignment) if orientation == 1 else (alignment, -1)

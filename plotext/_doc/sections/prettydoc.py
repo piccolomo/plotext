@@ -3,6 +3,8 @@
 from plotext._doc.tools import *
 from plotext import prettydoc, test
 
+section('prettydoc')
+
 
 add(prettydoc.docs, name = "prettydoc.docs")
 doc("Initializes a PrettyDoc object that manages visually styled docstrings.")
@@ -30,6 +32,12 @@ add(prettydoc.docs.add_function, name = "prettydoc.docs.add_function")
 doc("Registers a function to be documented. All subsequent PrettyDoc calls apply to the most recently added function until another is registered.")
 par("function", "The function (or list of aliased functions) to document"); spec(type.function)
 par("name", "Optional explicit name; defaults to the function's __qualname__"); spec(type.string, None)
+par("section", "Optional section label; if omitted, falls back to the default set via set_section()"); spec(type.string, None)
+past_out("prettydoc.docs")
+
+add(prettydoc.docs.set_section, name = "prettydoc.docs.set_section")
+doc("Sets the default section label applied to subsequent add_function calls when no explicit section is passed. Call with no argument or pass None to reset.")
+par("section", "Section label, or None to reset"); spec(type.string, None)
 past_out("prettydoc.docs")
 
 add(prettydoc.docs.add_doc, name = "prettydoc.docs.add_doc")
@@ -72,7 +80,7 @@ par("function", "Name of the function whose output should be reused"); spec(type
 past_out("prettydoc.docs")
 
 add(prettydoc.docs.update, name = "prettydoc.docs.update")
-doc("Finalizes the manager: applies every registered docstring to its function's __doc__ and returns a container that exposes every docstring by attribute name.")
+doc("Finalizes the manager: applies every registered docstring to its function's __doc__ (colourless), attaches a .doc() method on each callable that prints the coloured render (silently skipped when the callable rejects attribute assignment, as with most C built-ins), and returns a container that exposes every docstring by attribute name.")
 out("A docs_output container with one callable attribute per registered function", type.docs)
 
 add(prettydoc.docs.show, name = "prettydoc.docs.show")

@@ -59,8 +59,8 @@ Discovering methods
 -------------------
 
 * ``plotext --help`` prints the usage, value-parsing rules, ``@`` syntax, and a handful of examples.
-* ``plotext --methods`` lists every CLI-callable method grouped by category (drawing, media, subplots, settings, rendering, clear, signal configuration, module helpers).
-* ``plotext --METHOD --help`` prints the docstring of a single method (e.g. ``plotext --candlestick --help``).
+* ``plotext --doc`` opens the interactive doc picker — sections in side-by-side columns, arrow-key navigation, Enter shows the selected method's title + docstring. Mirrors ``plotext.doc()`` in the Python API.
+* ``plotext --METHOD --doc`` prints the docstring of a single method (e.g. ``plotext --candlestick --doc``). Mirrors ``plotext.doc.<method>()`` in the Python API.
 
 
 

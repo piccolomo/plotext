@@ -56,7 +56,7 @@ class parameter_class:
 
     # Get full docstring including name and specs, with optional prefix
     def _get_docstring(self, prefix = None):
-        docs = [self._name._get_docstring(), self._get_specs_docstring(new_line)]
+        docs = [self._name._get_docstring(), self._get_specs_docstring(new_line + ' ')]
         doc = connect_strings(docs)
         return add_prefix(doc, prefix)
 

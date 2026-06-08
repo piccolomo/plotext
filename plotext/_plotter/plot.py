@@ -22,6 +22,7 @@ from plotext._correct import pixel as correct_pixel
 from plotext._correct import marker as correct_marker
 from plotext._correct import axis as correct_axis
 from plotext._correct import placement as correct_placement
+from plotext._correct import line as correct_line
 
 from plotext._settings import defaults
 from plotext._settings.themes import themes
@@ -277,6 +278,7 @@ class plot_class(subplot_class, draw_class, plot_build_class, interactive_class)
     # Set axis properties
     @refresh
     def axis(self, status = None, style = None, pixel = None, axis = 0, side = 0):
+        style = correct_line.line_style(style) if style is not None else None
         self._axes.set(axis = axis, side = side, status = status, style = style, pixel = pixel)
         self._for_each_subplot("axis", status, style, pixel, axis, side)
         return self

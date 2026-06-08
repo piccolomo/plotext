@@ -3,6 +3,8 @@
 from plotext._doc.tools import *
 from plotext._methods.file import file
 
+section('file')
+
 
 add(file.correct, name = "file.correct")
 doc("Expands `~/...` paths to the user's home folder. Other paths pass through unchanged.")

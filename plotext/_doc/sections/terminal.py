@@ -3,6 +3,8 @@
 from plotext._doc.tools import *
 from plotext._kernel.terminal import terminal as terminal_class
 
+section('terminal')
+
 
 add(terminal_class, name = "terminal")
 doc("High-level manager for terminal interaction and sizing inside plotext.")

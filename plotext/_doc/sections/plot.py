@@ -3,6 +3,8 @@
 from plotext._doc.tools import *
 from plotext._plotter.plot import plot_class
 
+section('rendering')
+
 
 add(plot_class.clear, name = "clear")
 alias("clf")

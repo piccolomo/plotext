@@ -10,6 +10,7 @@ par, spec, past = pd.add_parameter, pd.add_parameter_spec, pd.add_past_parameter
 out, past_out = pd.add_output, pd.add_past_output
 add_type = pd.register_type
 type = pd.type
+section = pd.set_section
 
 
 # Simple Data Types
