@@ -11,7 +11,8 @@ name: Build & publish wheels
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*'          # both spellings, the version 5 tags carrying no letter
+      - '[0-9]*'
   pull_request:
     paths:
       - 'plotext/_kernel/cpp/**'
@@ -65,8 +66,8 @@ jobs:
     name: Publish to PyPI
     needs: [build_wheels, build_sdist]
     runs-on: ubuntu-latest
-    # Only publish on tag pushes, not PRs or manual runs.
-    if: startsWith(github.ref, 'refs/tags/v')
+    # Only publish when a tag is pushed, not on pull requests nor on manual runs.
+    if: startsWith(github.ref, 'refs/tags/')          # any tag publishes, with or without the leading letter
     environment:
       name: pypi
       url: https://pypi.org/p/plotext
