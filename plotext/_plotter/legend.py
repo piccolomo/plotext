@@ -184,8 +184,9 @@ class legend_class:
     def update(self, signals, rulers = None):
         self.clear_signals()
         for signal in signals:
-            if signal._get_label():
-                self.add(signal._get_marker(), signal._get_label())
+            label = signal._get_label()
+            if label is not None:
+                self.add(signal._get_marker(), label)
         if rulers is not None:
             for ruler in rulers:
                 for line_sig in ruler._lines:

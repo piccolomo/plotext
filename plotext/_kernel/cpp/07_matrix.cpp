@@ -143,6 +143,10 @@ public:
     inline void fix_background(const Pixel & p) noexcept {
         for (size_t i = 0; i < get_size(); ++i) at(i).fix_background(p); }
 
+    // Apply `p`'s background, foreground and style to every cell that has none of its own. Per-cell forward to Pixel::fix.
+    inline void fix(const Pixel & p) noexcept {
+        for (size_t i = 0; i < get_size(); ++i) at(i).fix(p); }
+
     // Apply `p` as the pixel of every cell, preserving the cached glyph. Per-cell forward to NormalCharacter::set_pixel.
     inline void set_pixel(const Pixel & p) noexcept {
         for (size_t i = 0; i < get_size(); ++i) at(i).set_pixel(p); }
@@ -198,6 +202,7 @@ extern "C" {
     void     matrix_transpose    (Matrix * m) noexcept { m->transpose(); }
     void     matrix_fill_pixel   (Matrix * m, Pixel * p) noexcept { m->fill(MatrixCharacter(L' ', *p)); }
     void     matrix_fix_background(Matrix * m, Pixel * p) noexcept { m->fix_background(*p); }
+    void     matrix_fix(Matrix * m, Pixel * p) noexcept { m->fix(*p); }
     void     matrix_apply_pixel  (Matrix * m, Pixel * p) noexcept { m->set_pixel(*p); }
     void     matrix_set_pixel    (Matrix * m, size_t col, size_t row, Pixel * p) noexcept { m->at(col, row).set_pixel(*p); }
     Pixel *  matrix_get_pixel    (Matrix * m, size_t col, size_t row) noexcept { return new Pixel(static_cast<const Pixel &>(m->at(col, row))); }

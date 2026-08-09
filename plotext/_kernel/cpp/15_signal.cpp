@@ -4,7 +4,7 @@ class Signal : public FilledPoints {
 private:
     bool          xside       = false;     // false = lower x axis, true = upper
     bool          yside       = false;     // false = left y axis,  true = right
-    wstring       label;
+    Matrix      * label       = nullptr;   // owned, destroyed in ~Signal, deep-copied on set/copy
     Marker      * marker      = nullptr;   // owned, destroyed in ~Signal, deep-copied on set/copy
     bool          fill_method = false;     // false = simple, true = full
     bool          line_method = false;     // false = simple, true = full
@@ -12,44 +12,47 @@ private:
 public:
     Signal() noexcept : FilledPoints() {}
     Signal(size_t capacity) noexcept : FilledPoints(capacity) {}
-    ~Signal() noexcept { delete marker; }
+    ~Signal() noexcept { delete label; delete marker; }
 
     Signal(const Signal & o) noexcept
-        : FilledPoints(o), xside(o.xside), yside(o.yside), label(o.label),
+        : FilledPoints(o), xside(o.xside), yside(o.yside),
+          label(o.label ? new Matrix(*o.label) : nullptr),
           marker(o.marker ? o.marker->copy() : nullptr),
           fill_method(o.fill_method), line_method(o.line_method) {}
     Signal(Signal && o) noexcept
-        : FilledPoints(std::move(o)), xside(o.xside), yside(o.yside), label(std::move(o.label)),
-          marker(o.marker), fill_method(o.fill_method), line_method(o.line_method) { o.marker = nullptr; }
+        : FilledPoints(std::move(o)), xside(o.xside), yside(o.yside), label(o.label),
+          marker(o.marker), fill_method(o.fill_method), line_method(o.line_method) { o.label = nullptr; o.marker = nullptr; }
     Signal & operator=(const Signal & o) noexcept {
         if (this != &o) {
             FilledPoints::operator=(o);
-            xside = o.xside; yside = o.yside; label = o.label;
+            xside = o.xside; yside = o.yside;
+            delete label; label = o.label ? new Matrix(*o.label) : nullptr;
             delete marker; marker = o.marker ? o.marker->copy() : nullptr;
             fill_method = o.fill_method; line_method = o.line_method; }
         return *this; }
     Signal & operator=(Signal && o) noexcept {
         if (this != &o) {
             FilledPoints::operator=(std::move(o));
-            xside = o.xside; yside = o.yside; label = std::move(o.label);
+            xside = o.xside; yside = o.yside;
+            delete label; label = o.label; o.label = nullptr;
             delete marker; marker = o.marker; o.marker = nullptr;
             fill_method = o.fill_method; line_method = o.line_method; }
         return *this; }
 
-    void clear() noexcept { FilledPoints::clear(); xside = false; yside = false; label.clear(); delete marker; marker = nullptr; }
+    void clear() noexcept { FilledPoints::clear(); xside = false; yside = false; delete label; label = nullptr; delete marker; marker = nullptr; }
 
     // ---- field accessors ----
 
     bool             get_xside()       const noexcept { return xside; }
     bool             get_yside()       const noexcept { return yside; }
-    const wstring &  get_label()       const noexcept { return label; }
+    Matrix *         get_label()       const noexcept { return label; }
     Marker *         get_marker_ptr()  const noexcept { return marker; }
     bool             get_fill_method() const noexcept { return fill_method; }
     bool             get_line_method() const noexcept { return line_method; }
 
     void set_xside       (bool v)              noexcept { xside = v; }
     void set_yside       (bool v)              noexcept { yside = v; }
-    void set_label       (const wstring & s)   noexcept { label = s; }
+    void set_label       (Matrix * m)          noexcept { delete label; label = m ? new Matrix(*m) : nullptr; }
     void set_marker      (Marker * m)          noexcept { delete marker; marker = m ? m->copy() : nullptr; }
     void set_fill_method (bool v)              noexcept { fill_method = v; }
     void set_line_method (bool v)              noexcept { line_method = v; }
@@ -161,12 +164,21 @@ public:
 
     // ---- output / logging ----
 
+    // The label as one line of plain text, its trailing new line dropped, for the log line below
+    wstring get_label_wstring() const noexcept {
+        if (label == nullptr)
+            return L"no label";
+        wstring out = label->get_wstring(true);
+        while (!out.empty() && out.back() == L'\n')
+            out.pop_back();
+        return L"label " + out; }
+
     wstring get_wstring(bool full = false) const noexcept {
         wostringstream os;
         os << L"Plotext signal: length " << get_length()
            << L", xside " << (xside ? L"upper" : L"lower")
            << L", yside " << (yside ? L"right" : L"left")
-           << L", " << (label.empty() ? wstring(L"no label") : L"label " + label)
+           << L", " << get_label_wstring()
            << L", line method " << (line_method ? L"full" : L"simple")
            << L", fill method " << (fill_method ? L"full" : L"simple");
         if (full)
@@ -187,14 +199,14 @@ extern "C" {
 
     bool             signal_get_xside       (Signal * s) noexcept { return s->get_xside(); }
     bool             signal_get_yside       (Signal * s) noexcept { return s->get_yside(); }
-    const wchar_t *  signal_get_label       (Signal * s) noexcept { return wstring_to_cstring(s->get_label()); }
+    Matrix *         signal_get_label       (Signal * s) noexcept { Matrix * m = s->get_label(); return m ? new Matrix(*m) : nullptr; }
     Marker *         signal_get_marker      (Signal * s) noexcept { Marker * m = s->get_marker_ptr(); return m ? m->copy() : nullptr; }
     bool             signal_get_fill_method (Signal * s) noexcept { return s->get_fill_method(); }
     bool             signal_get_line_method (Signal * s) noexcept { return s->get_line_method(); }
 
     void signal_set_xside       (Signal * s, bool v)             noexcept { s->set_xside(v); }
     void signal_set_yside       (Signal * s, bool v)             noexcept { s->set_yside(v); }
-    void signal_set_label       (Signal * s, const wchar_t * v)  noexcept { s->set_label(wstring(v)); }
+    void signal_set_label       (Signal * s, Matrix * m)         noexcept { s->set_label(m); }
     void signal_set_marker      (Signal * s, Marker * m)         noexcept { s->set_marker(m); }
     void signal_set_fill_method (Signal * s, bool v)             noexcept { s->set_fill_method(v); }
     void signal_set_line_method (Signal * s, bool v)             noexcept { s->set_line_method(v); }

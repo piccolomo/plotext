@@ -89,9 +89,9 @@ class date_selection_class(selection_class):
         names = ", ".join(self._names)
         return f"PlotextDates({names})"
 
-    # Activate (or deactivate) date handling on every selected converter, with optional form and origin
-    def activate(self, active = True, form = None, origin = None):
-        self._repeat("activate", active, form, origin)
+    # Activate (or deactivate) date handling on every selected converter, with optional form, origin and zone
+    def activate(self, active = True, form = None, origin = None, zone = None):
+        self._repeat("activate", active, form, origin, zone)
         return self
 
     # Reset every selected converter to default settings

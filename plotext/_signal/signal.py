@@ -8,6 +8,8 @@ from plotext._kernel.tools import wstring
 from plotext._constants.numerical import infinity, max_unique_pixels
 
 from plotext._correct import bool as correct_bool
+from plotext._correct import label as correct_label
+from plotext._primitives.matrix import matrix as matrix_class
 from plotext._signal.points import points_class
 
 
@@ -75,10 +77,10 @@ class signal_class:
             clink.signal_set_fill_method(self._pointer, method)
         return self
 
-    # Set signal label
+    # Set the signal label, held as a one row matrix, so that a colorized label keeps its colors and its true width instead of counting its color codes as characters
     def _set_label(self, label):
-        label = "" if label is None else str(label)
-        clink.signal_set_label(self._pointer, wstring(label))
+        label = correct_label.label(label)
+        clink.signal_set_label(self._pointer, None if label is None else label._pointer)
         return self
 
     # Set signal marker
@@ -181,12 +183,10 @@ class signal_class:
         clink.signal_set_yside(self._pointer, value)
         return self
 
-    # Get signal label
+    # Get the signal label as a matrix, None when the signal carries no label
     def _get_label(self):
-        p = clink.signal_get_label(self._pointer)
-        out = wstring.from_buffer(p).value
-        clink.wstring_delete(p)
-        return out
+        pointer = clink.signal_get_label(self._pointer)
+        return None if pointer is None else matrix_class(0, 0, _pointer = pointer)
 
     # Get signal marker
     def _get_marker(self):

@@ -6,6 +6,7 @@ from plotext._primitives.pixel import pixel as pixel_class
 from plotext._correct.pixel import pixel_par as correct_pixel
 from plotext._methods.object import hash as object_hash
 from plotext._methods.file import write, _get_extension
+from plotext._methods.string import get_page
 import plotext._correct.matrix as correct
 from plotext._settings import defaults
 
@@ -147,6 +148,7 @@ class matrix:
         ext = _get_extension(path)
         if ext == "html":
             canvas = f"<pre>{self.string(colorless = True)}</pre>" if colorless else self.html()
+            canvas = get_page(canvas)
         else:
             cl = (ext != "ansi") if colorless is None else colorless
             canvas = self.string(colorless = cl)
@@ -194,7 +196,12 @@ class matrix:
     def _part(self, col_start, col_stop, row_start, row_stop):
         return self.__class__(0, 0, _pointer = clink.matrix_part(self._pointer, col_start, col_stop, row_start, row_stop))
 
-    # Apply `pixel`'s background to every cell that doesn't already have one (per-cell forward to Pixel::fix_background in C++).
+    # Give every cell the background, the foreground and the style of the pixel, where it carries none of its own
+    def _fix(self, pixel):
+        clink.matrix_fix(self._pointer, pixel._pointer)
+        return self
+
+    # Give every cell the background of the pixel, where it carries none of its own
     def _fix_background(self, pixel):
         clink.matrix_fix_background(self._pointer, pixel._pointer)
         return self

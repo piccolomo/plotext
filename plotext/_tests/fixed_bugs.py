@@ -5,7 +5,7 @@ import os
 import tempfile
 import io
 import contextlib
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import plotext as plt
 from plotext._plotter.frame.date import date_class
 
@@ -94,6 +94,21 @@ class date_bugs(unittest.TestCase):
         stamp = converter.convert(datetime(2024, 4, 11, 9, 0), "timestamp")
         self.assertEqual(converter.convert(stamp, "string"), "2024-04-11 09:00")
 
+    # A date carrying its own zone used to be written back in UTC, with the hours shifted
+    def test_zone_of_the_axis(self):
+        converter = date_class()
+        converter.activate(form = "%d/%m/%Y %H:%M", zone = 3)
+        moscow = timezone(timedelta(hours = 3))
+        stamp = converter.convert(datetime(2026, 3, 1, 12, 0, tzinfo = moscow), "timestamp")
+        self.assertEqual(converter.convert(stamp, "string"), "01/03/2026 12:00")
+
+    # A date given to line() or event() used to stay a string, which broke the plot when it was built
+    def test_dates_in_lines_and_events(self):
+        fig = prepare()
+        fig.date("x").activate(form = "%H:%M")
+        fig.event(["02:00", "12:00", "20:00"])
+        self.assertIn("02:00", rows_of(fig)[-1])
+
 
 # Bugs elsewhere
 class other_bugs(unittest.TestCase):
@@ -122,6 +137,45 @@ class other_bugs(unittest.TestCase):
                 self.assertFalse(os.path.exists(outside))
             finally:
                 os.chdir(here)
+
+    # A colorized legend label used to be measured with its color codes counted as characters, widening the legend box over the plot
+    def test_colorized_legend_label(self):
+        fig = prepare()
+        fig.draw(fig.signal(plt.sin(), marker = "hd").lines().label(plt.colorize("wave", "red")))
+        rows = rows_of(fig)
+        self.assertEqual(len({len(row) for row in rows}), 1)
+        self.assertTrue(any("│ ▚ wave │" in row for row in rows))
+
+    # A group of value zero used to paint one row of its own, covering the top of the group below it
+    def test_zero_group_in_a_stacked_bar(self):
+        fig = prepare()
+        fig.draw(fig.bar(["a"], [[10], [0]], stacked = True))
+        plot = fig.build()
+        column = plot.width() // 2
+        colors = {plot.get(row, column).foreground() for row in range(1, plot.height() - 3)}
+        self.assertEqual(len(colors), 1)
+
+    # A saved web page used to be the plot alone, so a browser guessed the character set and used a proportional font
+    def test_saved_page_is_whole(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path = os.path.join(folder, "plot.html")
+            fig = prepare()
+            fig.draw(fig.signal(plt.sin(), marker = "hd"))
+            fig.build().save(path)
+            page = plt.file.read(path)
+            self.assertIn("<!DOCTYPE html>", page)
+            self.assertIn("utf-8", page)
+            self.assertIn("monospace", page)
+
+    # A legend label used to lose its color when the signal label became a matrix, leaving the terminal to paint it
+    def test_legend_label_is_colored(self):
+        fig = prepare()
+        fig.draw(fig.signal(plt.sin(), marker = "hd").lines().label("wave"))
+        plot = fig.build()
+        rows = rows_of(fig)
+        row = [index for index, line in enumerate(rows) if "wave" in line][0]
+        column = rows[row].index("wave")
+        self.assertIsNotNone(plot.get(row, column).foreground())
 
     # The canvas color default leaves the terminal showing through
     def test_transparent_canvas(self):

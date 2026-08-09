@@ -164,6 +164,7 @@ clink.add('points', 'select', 'in', 'matrix').input("void", "size", "size").outp
 
 clink.add('matrix', 'insert', 'points').input("void", "void").output("void")
 clink.add('matrix', 'fix', 'background').input("void", "void").output("void")
+clink.add('matrix', 'fix').input("void", "void").output("void")
 clink.add('matrix', 'apply', 'pixel').input("void", "void").output("void")
 
 clink.add('points', 'fix', 'background').input("void", "void").output("void")
@@ -198,7 +199,7 @@ clink.add('signal', 'clear').input("void").output("void")
 
 clink.add('signal', 'get', 'xside').input("void").output("bool")
 clink.add('signal', 'get', 'yside').input("void").output("bool")
-clink.add('signal', 'get', 'label').input("void").output("wchar pointer")
+clink.add('signal', 'get', 'label').input("void").output("void")
 clink.add('signal', 'get', 'marker').input("void").output("void")
 
 clink.add('signal', 'get', 'fill', 'method').input("void").output("bool")
@@ -206,7 +207,7 @@ clink.add('signal', 'get', 'line', 'method').input("void").output("bool")
 
 clink.add('signal', 'set', 'xside').input("void", "bool").output("void")
 clink.add('signal', 'set', 'yside').input("void", "bool").output("void")
-clink.add('signal', 'set', 'label').input("void", "wstring").output("void")
+clink.add('signal', 'set', 'label').input("void", "void").output("void")
 clink.add('signal', 'set', 'marker').input("void", "void").output("void")
 
 clink.add('signal', 'set', 'fill', 'method').input("void", "bool").output("void")

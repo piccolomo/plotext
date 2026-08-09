@@ -61,6 +61,13 @@ def log_limits(limits):
     return '[' + ', '.join(limits) + ']'
 
 
+# A whole web page around a block of text: the character set is named, so that a browser does not guess it and the box drawing characters survive, and the font is monospaced, so that the columns line up
+def get_page(canvas):
+    return ('<!DOCTYPE html>\n<html>\n<head>\n<meta charset="utf-8">\n'
+            '<style>pre {font-family: monospace; line-height: 1.05}</style>\n'
+            '</head>\n<body>\n' + canvas + '\n</body>\n</html>\n')
+
+
 # A message from plotext itself, prefixed by the method saying it: a log for something done, a warning for something refused, an error for something wrong; the last two go on the error stream. Imports at call time, to avoid import cycles
 def note(prefix, message, kind = "log"):
     from plotext._primitives.colorize import colorize

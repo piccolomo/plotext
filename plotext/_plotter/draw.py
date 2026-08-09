@@ -71,6 +71,7 @@ class draw_class:
             yside = correct_axis.side(1, yside)
             ruler = self._rulers.get(axis = 1, side = yside)
 
+        position = ruler._date.convert(position, "timestamp") if ruler._date.active() else position   # a date is turned into its number here, as the signal does with its coordinates
         ruler.add_line(position, relative, pixel, style, label)
         self._propagate("line", position, orientation, relative, pixel, style, label, xside, yside)
         return self
@@ -174,6 +175,8 @@ class draw_class:
         # Start empty and append one rectangle per bar; disconnect at joins keeps outlines isolated
         sig = self.signal([], [], marker = markers[0] if markers else default_marker, xside = xside, yside = yside)
         for i in range(len(x)):
+            if y_min[i] == y_max[i]:                     # a bar of no height still paints one row, and in a stack it would cover the group below it
+                continue
             rx, ry = (xe[i], ye[i]) if vertical else (ye[i], xe[i])
             rect = self.rectangle(rx, ry, marker = markers[i],
                                   lines = lines, fill = fill,
@@ -377,11 +380,14 @@ class draw_class:
         vertical = is_vertical(correct_matrix.orientation(orientation))
         line_orientation = 1 if vertical else 0
         pixel = correct_pixel.pixel(pixel, self._cycler.next_pixel())
+        data_axis = "x" if vertical else "y"
+        cross_axis = "y" if vertical else "x"
+        axis = 0 if vertical else 1
+        ruler = self._rulers.get(axis = axis, side = correct_axis.side(axis, side))
+        data = ruler._date.convert(data, "timestamp") if ruler._date.active() else list(data)   # converted once, so that the limits below compare numbers and not the text of the dates
         for i, d in enumerate(data):
             kwargs = {"xside": side} if vertical else {"yside": side}
             self.line(d, orientation = line_orientation, relative = True, pixel = pixel, style = style, label = label if i == 0 else None, **kwargs)
-        data_axis = "x" if vertical else "y"
-        cross_axis = "y" if vertical else "x"
         if data:
             self.ruler(data_axis).lim(min(data), max(data))
         self.ruler(cross_axis).lim(0, 1).frequency(0)

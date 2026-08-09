@@ -52,8 +52,9 @@ def read(path, log = False):
 
 
 # Read a csv file as a table (a list of rows, each being a list of strings), reusing read()
+# The empty rows are left out, a file ending with a new line otherwise giving a last row with no cells, which loses every column when the table is turned into columns
 def csv_read(path, delimiter = ',', log = False):
-    rows = list(csv.reader(io.StringIO(read(path)), delimiter = delimiter))
+    rows = [row for row in csv.reader(io.StringIO(read(path)), delimiter = delimiter) if row]
     if log: note("plotext.file.csv", f"{len(rows)} rows read from {correct(path)}")
     return rows
 

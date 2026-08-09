@@ -31,6 +31,7 @@ class date_class:
     # Reset to default settings
     def clear(self):
         self._set_form()
+        self._set_zone()
         self._origin = date_origin_datetime.timestamp()
         self._set_active(False)
 
@@ -39,6 +40,15 @@ class date_class:
         form = '%d/%m/%Y' if form is None else form
         self._form = form
         return self
+
+    # Set the zone the axis is written in, given as the hours from UTC, 0 by default and 5.5 for India
+    def _set_zone(self, zone = None):
+        self._zone_hours = 0 if zone is None else zone
+        return self
+
+    # The zone as an object the datetime package understands
+    def _get_zone(self):
+        return tz(timedelta(hours = self._zone_hours))
 
     # Set origin timestamp for calculations
     def _set_origin(self, origin = None):
@@ -53,10 +63,11 @@ class date_class:
         self._active = active
         return self
 
-    # Activate (or deactivate) date handling on this ruler with optional form/origin in one call
-    def activate(self, active = True, form = None, origin = None):
+    # Activate (or deactivate) date handling on this ruler with optional form, origin and zone in one call
+    def activate(self, active = True, form = None, origin = None, zone = None):
         self._set_active(active)
         self._set_form(form) if form is not None else None
+        self._set_zone(zone) if zone is not None else None
         self._set_origin(origin) if origin is not None else None
         return self
 
@@ -72,9 +83,9 @@ class date_class:
     def active(self):
         return self._active
 
-    # Convert a string to a datetime (relative is a dummy parameter kept for signature uniformity)
+    # Convert a string to a datetime, read in the zone of the axis (relative is a dummy parameter kept for signature uniformity)
     def _string_to_datetime(self, string, relative = True):
-        return dt.strptime(string, self._form).replace(tzinfo = tz.utc)
+        return dt.strptime(string, self._form).replace(tzinfo = self._get_zone())
 
     # Convert a string to a timestamp, routing through datetime
     def _string_to_timestamp(self, string, relative = True):
@@ -84,14 +95,14 @@ class date_class:
     def _datetime_to_string(self, datetime, relative = True):
         return datetime.strftime(self._form)
 
-    # Convert a datetime to a timestamp, subtracting the origin when requested; a datetime carrying no time zone is read as UTC, as a date written as text is
+    # Convert a datetime to a timestamp, subtracting the origin when requested; a datetime carrying no zone is read in the zone of the axis, as a date written as text is, and one carrying its own keeps it
     def _datetime_to_timestamp(self, datetime, relative = True):
-        datetime = datetime if datetime.tzinfo is not None else datetime.replace(tzinfo = tz.utc)
+        datetime = datetime if datetime.tzinfo is not None else datetime.replace(tzinfo = self._get_zone())
         return datetime.timestamp() - self._origin * relative
 
-    # Convert a timestamp to a datetime, adding the origin when requested; the seconds are counted from the 1st of January 1970 by hand, since Windows refuses to convert a moment before it
+    # Convert a timestamp to a datetime in the zone of the axis, adding the origin when requested; the seconds are counted from the 1st of January 1970 by hand, since Windows refuses to convert a moment before it
     def _timestamp_to_datetime(self, timestamp, relative = True):
-        return epoch_datetime + timedelta(seconds = timestamp + self._origin * relative)
+        return (epoch_datetime + timedelta(seconds = timestamp + self._origin * relative)).astimezone(self._get_zone())
 
     # Convert a timestamp to a string, routing through datetime
     def _timestamp_to_string(self, timestamp, relative = True):
@@ -129,6 +140,7 @@ class date_class:
     # Clone another date_class
     def _clone(self, date):
         self._set_form(form = date._form)
+        self._set_zone(zone = date._zone_hours)
         self._origin = date._origin
         self._active = date._active
         return self
@@ -136,7 +148,7 @@ class date_class:
     # Log string for representation
     def _get_log(self):
         base = f"{'active' if self._active else 'inactive'}, form {repr(self._form)}"
-        return f"{base}, origin {self.origin('string')}" if self._active else base
+        return f"{base}, zone {self._zone_hours}, origin {self.origin('string')}" if self._active else base
 
     # Representation
     def __repr__(self):

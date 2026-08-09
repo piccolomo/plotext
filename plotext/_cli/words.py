@@ -60,9 +60,9 @@ bare_names_namespace = bare_names({'true': True, 'false': False, 'null': None,
                                    'True': True, 'False': False, 'None': None})
 
 
-# Read a CSV file, drop the header row, return the chosen columns of floats; columns_string = '' for all.
+# Read a whole CSV file, returning the chosen columns of floats; no row is dropped, so a file carrying a header needs it taken off first, or read with the dict ending. columns_string = '' for all.
 def get_columns_from_file(path, columns_string):
-    matrix = get_data_from_table(csv_read(path)[1:])
+    matrix = get_data_from_table(csv_read(path))
     if columns_string:
         matrix = select_columns(matrix, get_columns_from_string(columns_string))
     return get_arguments_from_matrix(matrix)

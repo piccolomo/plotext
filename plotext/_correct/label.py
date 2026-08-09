@@ -12,7 +12,7 @@ def label(label, default_pixel = None):
     if label is None: return None
     if isinstance(label, matrix_class):
         label = label.copy()                                                         # don't mutate the caller's matrix
-        label._fix_background(default_pixel) if default_pixel is not None else None
+        label._fix(default_pixel) if default_pixel is not None else None
         return label
     if isinstance(label, str):
         if only_spaces(label): return None

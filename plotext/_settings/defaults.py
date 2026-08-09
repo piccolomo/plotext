@@ -69,6 +69,10 @@ marker = "hd"
 pixel_sequence = [pixel(foreground = c) for c in [12, 10, 9, 14, 13, 11, 0, 15, 8, 7, 1, 2, 3, 4, 5, 6]]
 
 
+# The decimals added to the tick labels, on top of the ones needed to tell one tick from the next; raise it to keep the labels steady while the data moves
+tick_extra_decimals = 0
+
+
 # Misc
 date_origin_datetime = datetime(1900, 1, 1, tzinfo = timezone.utc)   # the moment counting as time zero, read as it is, so it fits any date format
 
