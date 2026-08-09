@@ -19,8 +19,11 @@ Upgrade an existing installation::
 
 .. important::
 
-   PyPI still hosts version 5: version 6 is available only from GitHub,
-   until its official release.
+   Those two commands give the **stable** version. A beta, when one is
+   published, is asked for with ``--pre``::
+
+      pip install --pre plotext
+      pip install --pre plotext --upgrade
 
 
 From GitHub
