@@ -17,6 +17,8 @@ Date Converter
 
 .. important:: By default, |plotext| assumes the date string format to be ``"%d/%m/%Y"``. To change this, use the ``form`` parameter of ``activate()``. The format follows the standard Python `strftime format codes <https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes>`_.
 
+.. note:: Dates are counted from UTC. The ``zone`` parameter of ``activate()`` writes them in another one, given as the hours from UTC: ``activate(form = "%d/%m/%Y %H:%M", zone = 3)`` reads a date with no zone of its own as Moscow time, and writes every label in it, while a date carrying its own zone is honoured as given.
+
 .. note:: More documentation is available via ``plotext.doc.date()``.
 
 

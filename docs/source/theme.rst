@@ -39,6 +39,8 @@ The available themes:
 
 .. note:: The *colorless* theme is distinct from :meth:`plotext.figure.clear.pixels() <plotext._plotter.clear.clear_class.pixels>`, which resets the colors to the package defaults rather than removing them: that call is equivalent to the *default* theme.
 
+.. caution:: A theme hands its color sequence to the signals **created after it**, so it belongs before the drawing: a signal already drawn keeps the color it was given, and only the frame, the rulers, the labels and the legend change.
+
 .. tip:: Preview every theme at once with :func:`plotext.themes() <plotext.themes>`, which renders a grid of mini plots, one per theme, titled with its name.
 
 .. image:: images/themes.png

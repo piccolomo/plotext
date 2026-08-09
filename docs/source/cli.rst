@@ -67,6 +67,8 @@ Csv Files
 | An ending ``:1``, or ``:1,2``, picks specific columns, counted from 1: for example, ``@path:data.csv:2`` reads only the second column.
 | An ending ``:dict`` uses the first row as keys, giving a dictionary of columns, the form taken by ``--candlestick``.
 
+.. caution:: **Every row is read**, the first included, so a file carrying a header needs it removed first, for example with ``tail -n +2``. The ``:dict`` ending is the exception, wanting that row as its keys. Empty rows are skipped, so a file ending with a new line reads as it should.
+
 Sample Files
 ~~~~~~~~~~~~
 
@@ -83,7 +85,7 @@ Reading Urls
 
 .. code-block:: shell
 
-   plotext --figure --signal @path:https://raw.githubusercontent.com/mwaskom/seaborn-data/master/flights.csv:3 --lines --draw --show
+   plotext --figure --signal @path:https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data:1 --lines --draw --show
    plotext --image https://picsum.photos/400/300
 
 .. note:: YouTube urls passed to ``--video`` play through `yt-dlp <https://github.com/yt-dlp/yt-dlp>`_: nothing is saved for later calls, since the stream address it gets from YouTube stops working after a short time.

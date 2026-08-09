@@ -61,6 +61,7 @@ Plot Creation
 
 - ``scatter()`` and ``plot()`` become one :meth:`figure.signal() <plotext._plotter.plot.plot_class.signal>` method, whose result is passed to :meth:`figure.draw() <plotext._plotter.plot.plot_class.draw>`; the connecting lines are set on the signal itself, with :meth:`signal.lines() <plotext._signal.signal.signal_class.lines>`.
 - ``bar()``, ``multiple_bar()`` and ``stacked_bar()`` become one :meth:`figure.bar() <plotext._plotter.plot.plot_class.bar>` method: a list of height sequences groups the bars, and ``stacked = True`` stacks them.
+- A bar of value **zero** draws nothing, where version 5 painted its base row; in a stacked bar that row covered the group below it, as reported in `Issue 187 <https://github.com/piccolomo/plotext/issues/187>`_.
 - ``event_plot()`` becomes :meth:`figure.event() <plotext._plotter.plot.plot_class.event>`, ``matrix_plot()`` becomes :meth:`figure.heatmap() <plotext._plotter.plot.plot_class.heatmap>`, ``image_plot()`` becomes :meth:`figure.image() <plotext._plotter.plot.plot_class.image>`, and ``confusion_matrix()`` becomes :meth:`figure.cmatrix() <plotext._plotter.plot.plot_class.cmatrix>`.
 
 **Removed**
@@ -71,10 +72,10 @@ Plot Creation
 
 **Changed**
 
-- :meth:`figure.candlestick() <plotext._plotter.plot.plot_class.candlestick>` takes one dictionary, with keys ``date``, ``open``, ``close``, ``high`` and ``low``, instead of the two positional arguments of version 5, and gains the ``style`` parameter, *candle* or *ohlc*, with its ``tick`` length.
+- :meth:`figure.candlestick() <plotext._plotter.plot.plot_class.candlestick>` takes one dictionary, with keys ``date``, ``open``, ``close``, ``high`` and ``low``, instead of the two positional arguments of version 5, and gains the ``style`` parameter, *candle* or *ohlc*, with its ``tick`` length, as asked in `Issue 149 <https://github.com/piccolomo/plotext/issues/149>`_.
 - :meth:`figure.box() <plotext._plotter.plot.plot_class.box>` is complete: it was added in version 5.3, as asked in `Issue 169 <https://github.com/piccolomo/plotext/issues/169>`_, and marked there as needing further development.
 - :meth:`figure.error() <plotext._plotter.plot.plot_class.error>` takes its errors as leading arguments, ``(x, y, yerr, xerr)``, instead of the ``xerr`` and ``yerr`` named parameters.
-- :meth:`figure.bar() <plotext._plotter.plot.plot_class.bar>` accepts a list of :ref:`markers <marker_objects>`, one per bar, so each bar can carry its own color, as :meth:`figure.signal() <plotext._plotter.plot.plot_class.signal>` already accepts one per point; a shorter list repeats. Version 5 painted every bar of a call the same.
+- :meth:`figure.bar() <plotext._plotter.plot.plot_class.bar>` accepts a list of :ref:`markers <marker_objects>`, one per bar, so each bar can carry its own color, as :meth:`figure.signal() <plotext._plotter.plot.plot_class.signal>` already accepts one per point; a shorter list repeats. Version 5 painted every bar of a call the same, as asked in `Issue 204 <https://github.com/piccolomo/plotext/issues/204>`_.
 - Its ``labeled`` parameter takes a list beside ``True``, writing your own text in each bar instead of its height, each entry a string, a :ref:`colorize <colorize>` or a :ref:`matrix <matrix>`; grouped and stacked bars take one such list per series, as the heights are given.
 - Every plotting method returns a :ref:`signal <signal>` and draws nothing by itself: :meth:`figure.draw() <plotext._plotter.plot.plot_class.draw>` puts it on the plot. :meth:`figure.line() <plotext._plotter.plot.plot_class.line>` and :meth:`figure.event() <plotext._plotter.plot.plot_class.event>` reach the plot on their own instead, since they draw across the whole canvas rather than at data points.
 
@@ -123,6 +124,7 @@ Labels and Legend
 
 - The :ref:`legend <legend>` appears on its own as soon as a signal, or a line, carries a label, and lists only what is labelled; version 5 listed every drawn signal, naming the unlabelled ones ``signal[n]``. :meth:`figure.legend() <plotext._plotter.plot.plot_class.legend>` is now needed only to place it, color it, draw its box in another :ref:`line style <line_styles>`, or hide it with ``active = False``.
 - :meth:`figure.title() <plotext._plotter.plot.plot_class.title>` and :meth:`figure.label() <plotext._plotter.plot.plot_class.label>` accept a :ref:`colorize <colorize>` or a :ref:`matrix <matrix>` object beside a plain string, so that the animated text of :func:`plotext.effect() <plotext.effect>` can be used as a title.
+- The signal :meth:`label() <plotext._signal.signal.signal_class.label>` accepts them too, so one legend entry can carry more than one color; the colors are no longer counted as characters, which in version 5 widened the legend box and pushed a centered label off center, as reported in `Issue 144 <https://github.com/piccolomo/plotext/issues/144>`_.
 
 
 Colors and Styling
@@ -152,7 +154,7 @@ Shapes and Text
 
 **Renamed**
 
-- ``vertical_line()`` and ``horizontal_line()`` become one :meth:`figure.line() <plotext._plotter.plot.plot_class.line>` method, taking the position and the orientation.
+- ``vertical_line()`` and ``horizontal_line()`` become one :meth:`figure.line() <plotext._plotter.plot.plot_class.line>` method, taking the position and the orientation, and gaining a ``style`` parameter, so the line is no longer always ``─``, as asked in `Issue 145 <https://github.com/piccolomo/plotext/issues/145>`_.
 
 **New**
 
@@ -175,6 +177,7 @@ Dates
 **Changed**
 
 - Date support belongs to one axis, turned on by :meth:`date().activate() <plotext._plotter.frame.date.date_class.activate>`, which also takes the date form and the time origin; that axis then accepts strings, timestamps and datetime objects alike, with no separate date plotting method.
+- A date axis is written in a **zone of its own**, set by the ``zone`` parameter of :meth:`date().activate() <plotext._plotter.frame.date.date_class.activate>` as the hours from UTC, where version 5 always wrote UTC, as reported in `Issue 193 <https://github.com/piccolomo/plotext/issues/193>`_.
 - The colors of a candle, green when the price rises and red when it falls, are named in the defaults, ``candlestick_up_color`` and ``candlestick_down_color``, so a :doc:`theme <theme>` of your own can change them once for every plot.
 
 
@@ -246,6 +249,7 @@ Rendering and Saving
 **Changed**
 
 - :meth:`figure.build() <plotext._plotter.plot.plot_class.build>` gives back a :ref:`matrix <matrix>` instead of a string, so that the plot can be sliced, stacked, saved or turned into a web page.
+- A plot saved as ``html`` is a **whole web page**, naming the character set and a monospaced font, so a browser draws it as the terminal does; version 5 wrote the colored block alone, which a browser read with a guessed character set and a proportional font, as reported in `Issue 215 <https://github.com/piccolomo/plotext/issues/215>`_. :meth:`matrix.html() <plotext.matrix.html>` still gives that block alone, to sit inside a page of your own.
 - :func:`plotext.sleep() <plotext.sleep>` returns nothing, where version 5 gave back the seconds slept.
 
 
@@ -267,7 +271,7 @@ Files and Utilities
 **New**
 
 - :func:`plotext.noise() <plotext.noise>` generates gaussian test data, and :func:`plotext.sample() <plotext.sample>` gives the path of a file shipped with the package: *pizzas*, *stock*, *puppy* and *shaq*.
-- :meth:`terminal.is_pressed() <plotext._kernel.terminal.terminal.is_pressed>` tells whether a key was typed, without pausing the program, and :meth:`terminal.prompt() <plotext._kernel.terminal.terminal.prompt>` sets the rows left free below the plot.
+- :meth:`terminal.is_pressed() <plotext._kernel.terminal.terminal.is_pressed>` tells whether a key was typed, without pausing the program, and :meth:`terminal.prompt() <plotext._kernel.terminal.terminal.prompt>` sets the rows left free below the plot, two by default, so a plot no longer runs under the prompt, as asked in `Issue 181 <https://github.com/piccolomo/plotext/issues/181>`_.
 - :func:`plotext.effect() <plotext.effect>` colors a text with a moving effect, *shimmer*, *pulse*, *rainbow* or *gradient*, animated by its ``step`` parameter.
 
 **Changed**

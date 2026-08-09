@@ -7,6 +7,8 @@ Bar Plots
 
 .. note:: Internally, each bar is a :meth:`rectangle() <plotext._plotter.plot.plot_class.rectangle>`.
 
+.. note:: A bar of value zero is not drawn, only its name is written beside the axis; in a :ref:`stacked <stacked_bar>` bar, a group adding nothing takes no room at all.
+
 
 .. _argument_forms:
 

@@ -43,5 +43,5 @@ The ``name`` parameter picks the sample, without extension:
 
 - *puppy*: the picture of a cuddly puppy, used in the :ref:`image <image>` examples
 - *shaq*: an animated gif of a basketball dunk, played in the :ref:`gif <gif>` section
-- *pizzas*: a csv table of pizza names and popularity, drawn in the :ref:`argument forms <argument_forms>` section of the bar page
+- *pizzas*: a csv table of pizza names and popularity, with no header row, drawn in the :ref:`argument forms <argument_forms>` section of the bar page
 - *stock*: a csv table of daily stock prices, with date, open, close, high and low columns, drawn in the :ref:`candlestick <candlestick>` section

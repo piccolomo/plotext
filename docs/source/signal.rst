@@ -73,7 +73,8 @@ Stem fills follow the same :ref:`line density <density>` choice as lines, applie
 Legend
 ------
 
-:meth:`label() <plotext._signal.signal.signal_class.label>` sets the signal entry on the :ref:`legend <legend>`, and that alone makes the legend appear, as in the example above; the :meth:`legend() <plotext._plotter.plot.plot_class.legend>` method is needed only to move it, color it or switch it off.
+| :meth:`label() <plotext._signal.signal.signal_class.label>` sets the signal entry on the :ref:`legend <legend>`, and that alone makes the legend appear, as in the example above; the :meth:`legend() <plotext._plotter.plot.plot_class.legend>` method is needed only to move it, color it or switch it off.
+| Like the :doc:`title and the axis labels <label>`, it accepts a plain string, a :ref:`colorize <colorize>` object or a :ref:`matrix <matrix>` object, so a single entry can carry more than one color.
 
 
 Inspection

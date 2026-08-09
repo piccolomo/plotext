@@ -26,6 +26,8 @@ A list of either is also accepted, one entry per point: the list maps to the dat
 
 .. caution:: A list of markers shorter than the data is repeated to match its length.
 
+.. caution:: A marker takes **one character cell**, so a symbol two columns wide, an emoji like ``🌞`` or a Chinese character, pushes its row out of line. All the named :ref:`string codes <string_codes>` are one column wide, ``sun`` being ``☀``, so pick a one column symbol when passing your own.
+
 .. code-block:: python
 
    fig.signal(x, y, marker = "x")                                # single character

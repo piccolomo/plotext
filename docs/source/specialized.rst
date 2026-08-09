@@ -68,6 +68,8 @@ Event Plot
 | Like :meth:`~plotext._plotter.plot.plot_class.line`, it returns no signal: the lines are added to the plot directly, with no :meth:`~plotext._plotter.plot.plot_class.draw` call needed. See the :ref:`Line <shape_line>` paragraph for more details.
 | The perpendicular :doc:`axis <axis>` carries no data, so its range is squashed and its :ref:`numerical ticks <ticks>` removed.
 
+.. note:: The event coordinates may be :doc:`dates <date>`, in any accepted form, once the date axis is on.
+
 .. code-block:: python
 
    import random
