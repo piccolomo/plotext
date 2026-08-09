@@ -20,7 +20,7 @@ Upgrade an existing installation::
 .. important::
 
    Those two commands give the **stable** version. A beta, when one is
-   published, is asked for with ``--pre``::
+   published, can be installed with ``--pre``::
 
       pip install --pre plotext
       pip install --pre plotext --upgrade
