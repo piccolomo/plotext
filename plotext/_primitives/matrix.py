@@ -3,7 +3,7 @@
 from plotext._kernel.clink import clink
 from plotext._kernel.tools import wstring, wchar
 from plotext._primitives.pixel import pixel as pixel_class
-from plotext._methods.string import write
+from plotext._correct.pixel import pixel_par as correct_pixel
 from plotext._methods.object import hash as object_hash
 from plotext._methods.file import write, _get_extension
 import plotext._correct.matrix as correct
@@ -12,7 +12,7 @@ from plotext._settings import defaults
 
 class matrix:
     # Initialize from size (and optional fill pixel) or from an existing C pointer
-    def __init__(self, width = 0, height = 0, pixel = None, _pointer = None):
+    def __init__(self, width, height, pixel = None, _pointer = None):
         pixel_pointer = defaults.pixels["matrix"]._pointer if pixel is None else pixel._pointer
         self._pointer = clink.matrix_new(width, height, pixel_pointer) if _pointer is None else _pointer
 
@@ -28,16 +28,22 @@ class matrix:
         return self
 
     # Number of columns
-    def get_width(self):
+    def width(self):
         return clink.matrix_get_width(self._pointer)
 
     # Number of rows
-    def get_height(self):
+    def height(self):
         return clink.matrix_get_height(self._pointer)
 
     # Return (width, height) tuple
-    def get_size(self):
-        return self.get_width(), self.get_height()
+    def size(self):
+        return self.width(), self.height()
+
+    # Pixel coloring the character at (row, col), as in matrix.get(0, 0) for the top left one; negative indexes count from the end
+    def get(self, row, col):
+        row = correct.slice(row, self.height()).start
+        col = correct.slice(col, self.width()).start
+        return pixel_class(_pointer = clink.matrix_get_pixel(self._pointer, col, row))
 
     # Apply a pixel to the cell at (col, row)
     def _set_pixel(self, col, row, pixel):
@@ -49,20 +55,20 @@ class matrix:
         clink.matrix_set_normal_character(self._pointer, col, row, wchar(char), pixel._pointer)
         return self
 
-    # Stamp a single box marker at (col, row). Builds a Point carrying the marker and dispatches through the general insert(Point) path — Marker::stamp polymorphism does the right thing per marker kind.
-    def add_box_marker(self, col, row, box):
+    # Stamp a single box marker at (col, row). Builds a Point carrying the marker and dispatches through the general insert(Point) path, Marker::stamp polymorphism does the right thing per marker kind.
+    def _add_box_marker(self, col, row, box):
         from plotext._signal.point import point_class
         p = point_class(col, row, box)
-        clink.matrix_insert_point(self._pointer, p._pointer)
+        clink.matrix_insert_point(self._pointer, p._pointer, False)
         return self
 
-    # Stamp a line spanning [start, end) along the variable axis. coord is the FIXED axis (row for horizontal lines, col for vertical). start/end default to the matrix bounds. Builds a Points collection of N points (one per cell), dispatches through matrix_insert_points — the C++ loop stamps each via Marker::stamp.
-    def add_line(self, coord, line, start=None, end=None):
+    # Draw a line along one axis, coord being the fixed one, the row for a horizontal line and the column for a vertical one; with no start and end, it spans the whole matrix.
+    def _add_line(self, coord, line, start = None, end = None):
         from plotext._signal.point import point_class
         from plotext._signal.points import points_class
         vertical = line.get_orientation() == 1
         s = 0 if start is None else start
-        e = (self.get_height() if vertical else self.get_width()) if end is None else end
+        e = (self.height() if vertical else self.width()) if end is None else end
         n = e - s
         pts = points_class(n)
         for k in range(s, e):
@@ -71,21 +77,22 @@ class matrix:
         clink.matrix_insert_points(self._pointer, pts._pointer)
         return self
 
-    # Insert a matrix, colorize, or raw string at (col, row) with horizontal/vertical alignment
-    def insert(self, col, row, matrix, ha=-1, va=1):
+    # Insert a matrix, colorize, or raw string at (col, row): ha and va name the item edge anchored to the position, left and top by default, so the item extends right and down
+    def insert(self, col, row, item, ha = -1, va = -1):
         ha = correct.ha(ha)
         va = correct.va(va)
-        matrix = correct.matrix(matrix)
-        return self._insert_matrix_aligned(col, row, matrix, ha, va)
+        item = correct.matrix(item)
+        self._insert_matrix_aligned(col, row, item, ha, va)
+        return self
 
     # Insert another matrix with explicit alignment ints (delegates to clink)
-    def _insert_matrix_aligned(self, col, row, obj, ha=-1, va=-1):
+    def _insert_matrix_aligned(self, col, row, obj, ha = -1, va = -1):
         return clink.matrix_insert_matrix(
-            self._pointer, col, row, obj._pointer, ha, -va)
+            self._pointer, col, row, obj._pointer, ha, va)
 
-    # Stamp a single point. Returns True if it fit, False otherwise (single-cell out-of-bounds or MatrixMarker no-valid-alignment).
-    def _insert_point(self, point):
-        return clink.matrix_insert_point(self._pointer, point._pointer)
+    # Stamp a single point. Returns True if it fit, False otherwise (out of bounds, no valid alignment, or, with check_space on, cells already taken).
+    def _insert_point(self, point, check_space = False):
+        return clink.matrix_insert_point(self._pointer, point._pointer, check_space)
 
     # Insert a points object into the matrix
     def _insert_points(self, points):
@@ -98,18 +105,23 @@ class matrix:
         return self
 
     # Stack this matrix next to another
-    def hstack(self, other, adapt=False):
-        other = correct.matrix(other)
-        return self.__class__(_pointer=clink.matrix_hstack(self._pointer, other._pointer, adapt))
+    def hstack(self, item, adapt = False):
+        item = correct.matrix(item)
+        return self.__class__(0, 0, _pointer = clink.matrix_hstack(self._pointer, item._pointer, adapt))
 
-    # Stack this matrix below another
-    def vstack(self, other, adapt=False):
-        other = correct.matrix(other)
-        return self.__class__(_pointer=clink.matrix_vstack(self._pointer, other._pointer, adapt))
+    # Stack this matrix below another matrix, colorize, or raw string
+    def vstack(self, item, adapt = False):
+        item = correct.matrix(item)
+        return self.__class__(0, 0, _pointer = clink.matrix_vstack(self._pointer, item._pointer, adapt))
 
     # Return a deep copy of the matrix
     def copy(self):
-        return self.__class__(_pointer=clink.matrix_copy(self._pointer))
+        return self.__class__(0, 0, _pointer = clink.matrix_copy(self._pointer))
+
+    # Copy the contents of another matrix into this one in place
+    def clone(self, matrix):
+        clink.matrix_clone(self._pointer, matrix._pointer)
+        return self
 
     # Transpose in place (W×H → H×W). Used by vertical-text construction.
     def transpose(self):
@@ -117,25 +129,28 @@ class matrix:
         return self
 
     # Build the rendered wide string (optionally colorless)
-    def get_string(self, colorless=False):
+    def string(self, colorless = False):
         p = clink.matrix_get_wstring(self._pointer, colorless)
         string = wstring.from_buffer(p).value
         clink.wstring_delete(p)
         return string
 
     # Build the rendered HTML representation (run-length colored spans inside <pre>)
-    def get_html(self):
+    def html(self):
         p = clink.matrix_get_html(self._pointer)
         string = wstring.from_buffer(p).value
         clink.wstring_delete(p)
         return string
 
-    # Save the matrix to disk. Extension-driven: "html" → HTML via get_html(), "ansi" → colored text, anything else → plain colorless text. append=True appends.
-    def save(self, path, append=False, log=False):
+    # Save the matrix to a file, the format following the extension: html gives a web page, ansi keeps the colors as text, anything else gives plain text; colorless forces one or the other, and append adds to the file instead of overwriting it.
+    def save(self, path, colorless = None, append = False, log = False):
         ext = _get_extension(path)
-        canvas = self.get_html() if ext == "html" else self.get_string(colorless=(ext != "ansi"))
-        write(canvas, path, append)
-        if log: print(f"plotext.save: wrote {len(canvas.encode('utf-8'))} bytes to {path}")
+        if ext == "html":
+            canvas = f"<pre>{self.string(colorless = True)}</pre>" if colorless else self.html()
+        else:
+            cl = (ext != "ansi") if colorless is None else colorless
+            canvas = self.string(colorless = cl)
+        write(canvas, path, append, log)
         return self
 
     # Print the matrix to stdout
@@ -145,23 +160,31 @@ class matrix:
 
     # String representation
     def __str__(self):
-        return self.get_string()
+        return self.string()
 
     # Debug representation (same as __str__)
     def __repr__(self):
-        return self.get_string()
+        return self.string()
 
     # Horizontal concatenation via +
-    def __add__(self, other):
-        return self.hstack(other, True)
+    def __add__(self, item):
+        return self.hstack(item, True)
+
+    # Right-side counterpart for the + operator (e.g. "prefix" + matrix)
+    def __radd__(self, item):
+        return correct.matrix(item).hstack(self, True)
 
     # Vertical concatenation via /
-    def __truediv__(self, other):
-        return self.vstack(other, True)
+    def __truediv__(self, item):
+        return self.vstack(item, True)
+
+    # Right-side counterpart for the / operator
+    def __rtruediv__(self, item):
+        return correct.matrix(item).vstack(self, True)
 
     # Slicing support: matrix[row, col] returns a sub-matrix
     def __getitem__(self, key):
-        width, height = self.get_width(), self.get_height()
+        width, height = self.width(), self.height()
         key = (key, slice(0, width)) if isinstance(key, (int, slice)) else key
         col_key = correct.slice(key[1], width)
         row_key = correct.slice(key[0], height)
@@ -169,7 +192,7 @@ class matrix:
 
     # Extract a sub-matrix [col_start, col_stop) x [row_start, row_stop)
     def _part(self, col_start, col_stop, row_start, row_stop):
-        return self.__class__(_pointer=clink.matrix_part(self._pointer, col_start, col_stop, row_start, row_stop))
+        return self.__class__(0, 0, _pointer = clink.matrix_part(self._pointer, col_start, col_stop, row_start, row_stop))
 
     # Apply `pixel`'s background to every cell that doesn't already have one (per-cell forward to Pixel::fix_background in C++).
     def _fix_background(self, pixel):
@@ -177,10 +200,11 @@ class matrix:
         return self
 
     # Apply `pixel` to every cell, preserving each cell's glyph. Bulk counterpart to the per-cell `_set_pixel(col, row, pixel)`.
-    def set_pixel(self, pixel):
+    def fill(self, pixel = None):
+        pixel = correct_pixel(pixel)
         clink.matrix_apply_pixel(self._pointer, pixel._pointer)
         return self
 
     # Hash of the rendered string (used by tests)
     def _hash(self):
-        return object_hash(self.get_string())
+        return object_hash(self.string())

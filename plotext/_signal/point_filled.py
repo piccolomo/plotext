@@ -7,7 +7,7 @@ from plotext._primitives.pixel import pixel as pixel_class
 
 
 # Filled point: x/y/col/row with a marker and an integer foreground color
-class point_filled_class:
+class point:
     # Initialize from (x, y, marker) or an existing C pointer
     def __init__(self, x = 0, y = 0, marker = None, _pointer = None):
         marker = marker_class() if marker is None else marker if isinstance(marker, marker_class) else marker_class(marker)
@@ -20,43 +20,35 @@ class point_filled_class:
             self._pointer = None
 
     # Get x coordinate
-    def get_x(self):
+    def x(self):
         return clink.point_filled_get_x(self._pointer)
 
     # Get y coordinate
-    def get_y(self):
+    def y(self):
         return clink.point_filled_get_y(self._pointer)
 
-    # Get column
-    def get_col(self):
-        return clink.point_filled_get_col(self._pointer)
-
-    # Get row
-    def get_row(self):
-        return clink.point_filled_get_row(self._pointer)
-
     # Get marker object
-    def get_marker(self):
-        return marker_class(_pointer=clink.point_filled_get_marker(self._pointer))
+    def marker(self):
+        return marker_class(_pointer = clink.point_filled_get_marker(self._pointer))
 
     # Whether the point has an explicit fill marker
-    def has_fill(self):
+    def _has_fill(self):
         return clink.point_filled_has_fill(self._pointer)
 
     # Pixels in use: main marker always, fill marker only when the point has one
-    def get_pixels(self):
-        pixels = [pixel_class(_pointer=clink.point_filled_get_main_pixel(self._pointer))]
-        if self.has_fill():
-            pixels.append(pixel_class(_pointer=clink.point_filled_get_fill_pixel(self._pointer)))
+    def _get_pixels(self):
+        pixels = [pixel_class(_pointer = clink.point_filled_get_main_pixel(self._pointer))]
+        if self._has_fill():
+            pixels.append(pixel_class(_pointer = clink.point_filled_get_fill_pixel(self._pointer)))
         return pixels
 
     # Get string representation (delegated to C)
-    def get_string(self, fill=True):
-        p = clink.point_filled_get_wstring(self._pointer, fill)
+    def _get_string(self):
+        p = clink.point_filled_get_wstring(self._pointer, True)
         string = wstring.from_buffer(p).value
         clink.wstring_delete(p)
         return string
 
     # String representation
     def __repr__(self):
-        return f"Plotext PointFilled: " + self.get_string()
+        return "PlotextPoint(" + self._get_string() + ")"

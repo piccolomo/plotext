@@ -73,7 +73,7 @@ public:
         result.copy_from(begin(), get_length());
         return result;}
 
-    // Resize the capacity, preserving as many elements as fit. Empty case (length==0) skips the copy round-trip — saves work AND silences a GCC bounds-analysis warning when reserving on a freshly-empty vector.
+    // Resize the capacity, preserving as many elements as fit. Empty case (length==0) skips the copy round-trip, saves work AND silences a GCC bounds-analysis warning when reserving on a freshly-empty vector.
     void set_capacity(const size_t & new_capacity) {
         if (length == 0) { Array<T>::reallocate(new_capacity); return; }
         Vector<T> temp(*this);                      // copy the data
@@ -84,8 +84,6 @@ public:
     // Convenience: reserve capacity
     void reserve(size_t capacity) {set_capacity(capacity);}
 
-    // Shrink capacity to the current length
-    void minimize() { set_capacity(get_length()); }
 
     // Double the capacity (at least 1)
     void grow() {size_t cap = get_capacity(); if (length >= cap) set_capacity(cap > 0 ? cap * 2 : 1);}
@@ -104,8 +102,6 @@ public:
     // Reset logical length to 0
     void clear() { this->set_length(0); }
 
-    // Remove the last element (if any)
-    void pop() {if (length > 0) increase_length(-1);}
 
     // Fill the logical region with a value
     void fill(const T & value) {for (size_t i = 0; i < length; ++i) {at(i) = value;}}
@@ -156,12 +152,6 @@ public:
     // True if an element equals el
     bool is_in(const T & el) const {for (size_t i = 0; i < length; ++i) if (at(i) == el) return true; return false;}
 
-    // Return a Vector of the unique elements (preserving order)
-    Vector<T> get_unique() const {
-        Vector<T> unique(get_length());
-        for (size_t i = 0; i < this->get_length(); ++i)
-            if (!unique.is_in(at(i))) unique.append(at(i));
-        return unique;}
 
     // --- Stretch (specific to Vector) ---
 

@@ -2,8 +2,8 @@
 
 class FilledPoint : public Point {
 private:
-    Point fill;            // companion endpoint — when has_marker() is true, defines the fill segment
-    bool  connected = false;  // true = a line is drawn from the previous FilledPoint to this one (set via signal.lines() / signal.point_lines())
+    Point fill;            // companion endpoint, when has_marker() is true, defines the fill segment
+    bool  connected = false;  // true = a line is drawn from the previous FilledPoint to this one (set via signal.lines() / signal.line())
 
 public:
     FilledPoint() noexcept = default; 
@@ -11,7 +11,7 @@ public:
     FilledPoint(float x, float y, Marker * m, const Point & f) noexcept : Point(x, y, m), fill(f) {} 
     FilledPoint(const Point & main, const Point & f) noexcept : Point(main), fill(f) {}
 
-    // Explicit rule-of-five — the compiler-generated defaults rely on every base/member's copy/move ctor being trivial-or-correct. With polymorphic Marker* ownership in Point, that's fragile (subtle UB if any path picks the wrong default). Defining all five explicitly eliminates that class of bugs.
+    // Explicit rule-of-five, the compiler-generated defaults rely on every base/member's copy/move ctor being trivial-or-correct. With polymorphic Marker* ownership in Point, that's fragile (subtle UB if any path picks the wrong default). Defining all five explicitly eliminates that class of bugs.
     FilledPoint(const FilledPoint & o) noexcept : Point(o), fill(o.fill), connected(o.connected) {}
     FilledPoint(FilledPoint && o) noexcept : Point(std::move(o)), fill(std::move(o.fill)), connected(o.connected) {}
     FilledPoint & operator=(const FilledPoint & o) noexcept {
@@ -44,7 +44,7 @@ public:
 
     inline wstring get_wstring() const {
         wstring s = Point::get_wstring();
-        if (has_fill()) { s += L" → "; s += fill.get_wstring(); }
+        if (has_fill()) { s += L", fill point "; s += fill.get_wstring(); }
         return s; }
 
     inline void log() const { wcout << L"FilledPoint(" << get_wstring() << L")" << endl; }
@@ -67,7 +67,7 @@ extern "C" {
     Pixel *       point_filled_get_fill_pixel(FilledPoint * fp) noexcept { Marker * m = fp->get_fill().get_marker();  return m ? new Pixel(m->get_pixel()) : nullptr; }
     bool          point_filled_has_fill(FilledPoint * fp) noexcept { return fp->has_fill(); }
 
-    // bool param ignored — our get_wstring always includes the fill segment.
+    // bool param ignored, our get_wstring always includes the fill segment.
     const wchar_t * point_filled_get_wstring(FilledPoint * fp, bool) noexcept { return wstring_to_cstring(fp->get_wstring()); }
 }
 

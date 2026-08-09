@@ -7,20 +7,26 @@
 #include <functional>
 #include <codecvt>
 #include <iomanip>
+#include <sstream>          // the string streams the logs use, pulled in by chance elsewhere and not at all on macos
 #include <cstdint>
 #include <limits>
 #include <cassert>
+#include <algorithm>
 
+// The windows console reads bytes, and must be told they are utf-8 before anything is written; the defines keep windows.h from bringing in the names clashing with the standard ones
 #ifdef _WIN32
-    #include <Windows.h>
+    #define WIN32_LEAN_AND_MEAN
+    #define NOMINMAX
+    #define byte windows_byte
+    #include <windows.h>
+    #undef byte
 #endif
 
 // --- Utility Modules ---
-// Core utilities: Array, Array2D, Vector, Numerical, constants, maps, strings, C-style strings, data, alignment
+// Core utilities: Array, Array2D, Vector, constants, maps, strings, C-style strings, data, alignment
 #include "utility/0_array.cpp"
 #include "utility/1_array2d.cpp"
 #include "utility/2_vector.cpp"
-#include "utility/3_numerical.cpp"
 #include "utility/4_constants.cpp"
 #include "utility/5_maps.cpp"
 #include "utility/6_strings.cpp"

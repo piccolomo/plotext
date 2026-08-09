@@ -1,66 +1,81 @@
-Datetime Plot
-=============
+Date Plots
+==========
 
-Basic Plot
-----------
-
-To plot datetime objects, notify ``plotext`` that you intend to do so by calling ``fig.date(axis, side).activate()`` on the relevant ruler. ``fig.date(axis, side)`` is a getter — it returns the ``date_class`` instance bound to that ruler, and all date operations live on the returned object: ``.activate(active, form, origin)`` to turn date handling on (and optionally set the format and the time origin), ``.convert(time, output)`` to translate between string / datetime / timestamp, ``.today(output)`` for today's date, ``.clear()`` to reset.
-
-.. note:: Once notified via ``activate()``, ``plotext`` automatically recognises the input type and interprets date and time values from strings, ``datetime`` objects (including ``pandas.DatetimeIndex``), or timestamps (seconds from the origin of time).
+| To plot dates and times, date support must first be **turned on** for the relevant :doc:`axis <axis>`, using the date selection returned by the :meth:`~plotext._plotter.plot.plot_class.date` method.
+| A final section covers the :ref:`candlestick plot <candlestick>`, the classical financial chart of prices over time.
 
 
-Here is an example, which requires the ``yfinance`` package:
+Date Converter
+--------------
+
+| The :meth:`~plotext._plotter.plot.plot_class.date` method addresses the **date converter** of the chosen :doc:`axis <axis>` (or axes); every date operation lives on it.
+| Its :meth:`~plotext._plotter.frame.date.date_class.activate` method turns on date support for the specified :doc:`axis <axis>`, optionally setting the date string format and the time origin.
+| A date can be expressed in three forms: a **string** (in the set date string format), a **datetime** object, or a **timestamp** (the number of seconds from the time origin).
+| Its :meth:`~plotext._plotter.frame.date.date_class.convert` method translates a date, or a list of dates, from any form, detected automatically, to the one requested with the ``output`` parameter; :meth:`~plotext._plotter.frame.date.date_class.today` returns today's date and :meth:`~plotext._plotter.frame.date.date_class.clear` resets the support: deactivated, with default form and origin.
+
+.. note:: Once activated, |plotext| recognizes the input type automatically, accepting dates as strings, ``datetime`` objects (including `pandas.DatetimeIndex <https://pandas.pydata.org/docs/reference/api/pandas.DatetimeIndex.html>`_), or timestamps (seconds from the time origin).
+
+.. important:: By default, |plotext| assumes the date string format to be ``"%d/%m/%Y"``. To change this, use the ``form`` parameter of ``activate()``. The format follows the standard Python `strftime format codes <https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes>`_.
+
+.. note:: More documentation is available via ``plotext.doc.date()``.
+
+
+.. _basic_date_plot:
+
+Basic Date Plot
+---------------
+
+Here is an example, drawing the closing prices of the bundled *stock* :ref:`sample <sample_files>`:
 
 .. code-block:: python
 
    import plotext as plt
-   import yfinance as yf
 
    fig = plt.figure
    fig.clear()
 
    fig.date('x').activate() # fig.date().activate() would also work in this case
 
-   start = fig.date('x').convert('11/04/2024', "datetime")
-   end   = fig.date('x').convert('22/10/2025', "datetime")
-   data  = yf.download('GOOG', start = start, end = end, auto_adjust = False, progress = False)
+   rows   = plt.file.csv(plt.sample("stock"))
+   dates  = [row[0] for row in rows[1:]]
+   prices = [float(row[2]) for row in rows[1:]]   # the close column
 
-   prices = data[('Close', 'GOOG')]
-   dates  = data.index # or fig.date('x').convert(data.index, "string")
-
-   signal = fig.signal(dates, prices, marker = "fhd").lines(True)
+   signal = fig.signal(dates, prices, marker = "fhd").lines()
    fig.draw(signal)
 
-   fig.title("Google Stock Price")
+   fig.title("Stock Price")
    fig.label("Date", 0)
    fig.label("Stock Price $", 1)
    fig.show()
 
-
 .. image:: images/date.png
    :alt: Date and Time Plot
 
-.. note::
-   By default, ``plotext`` assumes the date format to be ``"%d/%m/%Y"``. To change this, use the ``form`` parameter of ``date``.
+.. note:: The example reads the bundled *stock* :ref:`sample <sample_files>` with the :meth:`csv() <plotext._methods.file.file_class.csv>` method of the :ref:`file toolkit <tabular_data>`; for live data, see the :ref:`live stock prices <live_stock>` section below.
 
-.. note::
-   The ``convert`` method can be used to explicitly convert between strings, ``datetime`` objects, and timestamps (i.e. floats).
-   The input type is detected automatically, while the desired output type is specified with the ``output`` parameter.
-   Valid output values are ``"datetime"``, ``"timestamp"``, and ``"string"``.
+Or directly from the shell:
 
+.. code-block:: shell
+
+   plotext --figure --date axis=x --activate \
+           --signal '["11/04/2024","12/04/2024","13/04/2024","14/04/2024"]' \
+                    '[170.5, 172.3, 169.8, 174.1]' \
+           --lines --draw \
+           --title 'Stock Price' --label Date axis=x --show
+
+
+.. _candlestick:
 
 Candlestick Plot
 ----------------
 
-To plot a candlestick chart, use ``candlestick``. It takes a single dictionary with string keys date, open, close, high, low, where each value is a sequence.
+| The :meth:`~plotext._plotter.plot.plot_class.candlestick` method draws the classical financial chart: each candle summarizes the prices over **one time interval**, using a rectangle spanning from the opening to the closing price and a thin vertical line spanning from the lowest to the highest price.
+| The candle is **green** when the price rises and **red** when it falls.
 
-The method returns a signal that can be further configured (for example with :meth:`.label() <plotext._signal.signal.signal_class.label>`) and then passed to ``draw``.
-
-Here is an example, which requires the ``yfinance`` package:
+Here is an example, drawing the bundled *stock* :ref:`sample <sample_files>`:
 
 .. code-block:: python
 
-   import yfinance as yf
    import plotext as plt
 
    fig = plt.figure
@@ -68,31 +83,37 @@ Here is an example, which requires the ``yfinance`` package:
 
    fig.date("x").activate()                          # treat x as a date axis (default format "%d/%m/%Y")
 
-   start = fig.date("x").convert("11/04/2022", "datetime")
-   end   = fig.date("x").convert("11/06/2022", "datetime")
-   data  = yf.download("GOOG", start = start, end = end,
-                       auto_adjust = False, progress = False)
+   rows  = plt.file.csv(plt.sample("stock"))[:31]    # header plus the first 30 days
+   stock = {key: list(values) if key == "date" else [float(value) for value in values]
+            for key, values in zip(rows[0], zip(*rows[1:]))}
 
-   ohlc = {
-       "date":  fig.date("x").convert(data.index, "string"),
-       "open":  data[("Open",  "GOOG")],
-       "close": data[("Close", "GOOG")],
-       "high":  data[("High",  "GOOG")],
-       "low":   data[("Low",   "GOOG")],
-   }
-
-   signal = fig.candlestick(ohlc).label("GOOG")
+   signal = fig.candlestick(stock).label("stock")
    fig.draw(signal)
 
-   fig.title("Google Stock Price Candlesticks")
+   fig.title("Stock Price Candlesticks")
    fig.label("Date", "x")
    fig.label("Stock Price $", "y")
-   fig.legend()
    fig.show()
 
-.. note:: More documentation is available via :code:`plotext.doc.candlestick()`.
+Or directly from the shell:
 
-.. note:: The up/down candle colors come from ``plotext._settings.defaults.candlestick_up_color`` (``"green"``) and ``candlestick_down_color`` (``"red"``); override them globally to restyle every candlestick chart in the session:
+.. code-block:: shell
+
+   plotext --figure --date axis=x --activate \
+           --candlestick @sample:stock:dict \
+           --draw --title Candlestick --show
+
+.. image:: images/candlestick.png
+
+.. note:: The example reads the bundled *stock* :ref:`sample <sample_files>` with the :meth:`csv() <plotext._methods.file.file_class.csv>` method of the :ref:`file toolkit <tabular_data>`; for live data, see the :ref:`live stock prices <live_stock>` section below.
+
+| With its parameters you can set the data to draw (``data``, a dictionary with keys ``date``, ``open``, ``close``, ``high`` and ``low``, each holding a sequence of values).
+| You can also pick the candle look (``style``): each body drawn as a rectangle (*candle*, the default), or replaced by two short horizontal lines at the opening and closing prices (*ohlc*), lighter when many candles are packed together.
+
+
+.. note:: More documentation is available via ``plotext.doc.candlestick()``.
+
+.. tip:: The up and down candle colors, green and red by default, can be changed for the whole session by overriding the package defaults, taking any :ref:`color code <colors>`:
 
    .. code-block:: python
 
@@ -101,51 +122,41 @@ Here is an example, which requires the ``yfinance`` package:
       defaults.candlestick_down_color = "magenta"
 
 
-Command-line
-------------
+.. _live_stock:
 
-The :doc:`cli` chain syntax handles the date axis through *intermediate-object chaining*: ``--date axis=x`` calls ``fig.date(axis='x')`` which returns the underlying ``date_class`` instance, and the next method (``--activate``) resolves on that instance — so ``--date axis=x --activate`` is equivalent to ``fig.date(axis='x').activate()``.
+Live Stock Prices
+-----------------
 
-The actual *plot* still needs dates and values from somewhere: the Python examples above use ``yfinance`` to fetch them, which is an external library the CLI can't call. Feed the data from another source instead (literal args, ``@path:<file>.csv``, or stdin):
+Real stock data can be downloaded with the `yfinance <https://pypi.org/project/yfinance/>`_ package, which requires its own installation.
 
-.. code-block:: shell
+To prepare the data for the :ref:`basic date plot <basic_date_plot>`:
 
-   plotext --date axis=x --activate \
-           --signal '["11/04/2024","12/04/2024","13/04/2024","14/04/2024"]' \
-                    '[170.5, 172.3, 169.8, 174.1]' \
-           --lines --draw \
-           --title 'Stock Price' --label Date axis=x --show
+.. code-block:: python
 
-Note the explicit ``--draw``: ``--lines`` and the other signal-config methods dispatch to the in-progress drawable, so figure-level methods (``--title``, ``--label``) only resolve to the figure once ``--draw`` closes the drawable phase.
+   import plotext as plt
+   import yfinance as yf
 
-For a longer series, pipe a CSV with a date column and a price column:
+   fig = plt.figure
+   fig.clear()
+   fig.date("x").activate()
 
-.. code-block:: shell
+   start = fig.date("x").convert("11/04/2024", "datetime")
+   end   = fig.date("x").convert("22/10/2025", "datetime")
+   data  = yf.download("GOOG", start = start, end = end, auto_adjust = False, progress = False)
 
-   plotext --date axis=x --activate \
-           --signal @path:prices.csv --lines --draw \
-           --title 'Stock Price' --show
+   prices = data[("Close", "GOOG")]
+   dates  = data.index # or fig.date("x").convert(data.index, "string")
 
-The candlestick chart works the same way. The OHLC dict can be passed inline as a single literal argument:
+   signal = fig.signal(dates, prices, marker = "fhd").lines()
 
-.. code-block:: shell
+And for the :ref:`candlestick <candlestick>` one:
 
-   plotext --date axis=x --activate \
-           --candlestick '{"date":["01/01/2024","02/01/2024","03/01/2024","04/01/2024","05/01/2024"],
-                           "open":[10,12,11,13,14],
-                           "close":[12,11,13,14,13],
-                           "high":[13,13,14,15,15],
-                           "low":[9,10,10,12,12]}' \
-           --draw --title 'Candlestick' --show
+.. code-block:: python
 
-Cleaner if the OHLC values live in a CSV with a header row — ``@path:<file>.csv:dict`` reads the first row as keys and returns a dict of column lists. plotext bundles a small sample CSV (``@sample:stock``) so the example runs out of the box:
-
-.. code-block:: shell
-
-   plotext --date axis=x --activate \
-           --candlestick @sample:stock:dict \
-           --draw --title 'Candlestick' --show
-
-Replace ``@sample:stock:dict`` with ``@path:/path/to/your.csv:dict`` for your own data (the CSV needs a header row with ``date,open,close,high,low``).
-
-When the data lives in a Python data frame (like the ``yfinance`` example), keep the Python API — building the OHLC dict programmatically is cleaner there than templating it onto a shell command line.
+   ohlc = {
+       "date":  fig.date("x").convert(data.index, "string"),
+       "open":  data[("Open",  "GOOG")],
+       "close": data[("Close", "GOOG")],
+       "high":  data[("High",  "GOOG")],
+       "low":   data[("Low",   "GOOG")],
+   }

@@ -73,29 +73,29 @@ class axis_class:
         if not self._status:
             return out                                                                                      # disabled axis → empty pixel strip
         if self._axis == 0:                                                                                 # x-axis: row 0
-            axis_line = box_class(left=True,            right=True,             pixel=self._pixel, style=self._style)
-            tick      = box_class(up=self._side,        down=not self._side,    pixel=self._pixel, style=self._style)   # stub points TOWARD the labels (lower axis → down to bottom labels, upper axis → up to top labels)
-            grid      = box_class(up=not self._side,    down=self._side,        pixel=self._pixel, style=self._style)   # stub points TOWARD the canvas (opposite of tick)
-            out.add_line(0, axis_line, 0, length)                                                           # paint the line across all cols
-            for c in ticks:      out.add_box_marker(c, 0, tick)                                            # tick stamps merge with axis arms → ┴/┬
-            for c in grid_lines: out.add_box_marker(c, 0, grid)                                            # grid/line stamps point inward → ┬/┴ (or ┼ if also a tick)
+            axis_line = box_class(left = True,            right = True,             pixel = self._pixel, style = self._style)
+            tick      = box_class(up = self._side,        down = not self._side,    pixel = self._pixel, style = self._style)   # stub points TOWARD the labels (lower axis → down to bottom labels, upper axis → up to top labels)
+            grid      = box_class(up = not self._side,    down = self._side,        pixel = self._pixel, style = self._style)   # stub points TOWARD the canvas (opposite of tick)
+            out._add_line(0, axis_line, 0, length)                                                          # paint the line across all cols
+            for c in ticks:      out._add_box_marker(c, 0, tick)                                            # tick stamps merge with axis arms → ┴/┬
+            for c in grid_lines: out._add_box_marker(c, 0, grid)                                            # grid/line stamps point inward → ┬/┴ (or ┼ if also a tick)
         else:                                                                                               # y-axis: col 0
-            axis_line = box_class(up=True,              down=True,              pixel=self._pixel, style=self._style)
-            tick      = box_class(left=not self._side,  right=self._side,       pixel=self._pixel, style=self._style)   # stub points TOWARD the labels (left axis → left to its labels, right axis → right to its labels)
-            grid      = box_class(left=self._side,      right=not self._side,   pixel=self._pixel, style=self._style)   # stub points TOWARD the canvas (opposite of tick)
-            out.add_line(0, axis_line, 0, length)
-            for r in ticks:      out.add_box_marker(0, r, tick)                                            # tick stamps → ├/┤
-            for r in grid_lines: out.add_box_marker(0, r, grid)                                            # grid/line stamps point inward → ┤/├ (or ┼ if also a tick)
+            axis_line = box_class(up = True,              down = True,              pixel = self._pixel, style = self._style)
+            tick      = box_class(left = not self._side,  right = self._side,       pixel = self._pixel, style = self._style)   # stub points TOWARD the labels (left axis → left to its labels, right axis → right to its labels)
+            grid      = box_class(left = self._side,      right = not self._side,   pixel = self._pixel, style = self._style)   # stub points TOWARD the canvas (opposite of tick)
+            out._add_line(0, axis_line, 0, length)
+            for r in ticks:      out._add_box_marker(0, r, tick)                                            # tick stamps → ├/┤
+            for r in grid_lines: out._add_box_marker(0, r, grid)                                            # grid/line stamps point inward → ┤/├ (or ┼ if also a tick)
         return out
 
-    # Paint this axis onto matrix at (axis_col, axis_row), spanning axis_length. ticks_positions = where ┬/┴/├/┤ tick stubs go; lines_positions = where line crossings go. For x-axes, optionally extend the axis pixel into the corner regions on the same row.
+    # Draw the axis on the matrix at the given position and length, placing a tick mark at each tick position and a crossing at each line one.
     def draw(self, matrix, axis_col, axis_row, axis_length, ticks_positions, lines_positions,
              left_corner_width = 0, right_corner_width = 0):
         matrix._insert_matrix(axis_col, axis_row, self.get(axis_length, ticks_positions, lines_positions))
         if left_corner_width:
             matrix._insert_matrix(0, axis_row, matrix_class(left_corner_width, 1, self._pixel))
         if right_corner_width:
-            matrix._insert_matrix(matrix.get_width() - right_corner_width, axis_row, matrix_class(right_corner_width, 1, self._pixel))
+            matrix._insert_matrix(matrix.width() - right_corner_width, axis_row, matrix_class(right_corner_width, 1, self._pixel))
         return self
 
     # Clone properties from another axis instance
@@ -124,13 +124,13 @@ class axis_class:
         return self._style
 
     # Get axis pixel
-    def get_pixel(self):
+    def pixel(self):
         return self._pixel
 
     # Build a compact log line for the axis
-    def get_log(self):
+    def _get_log(self):
         return f"side {self._side},  {self._status}, style {self._style}, pixel {self._pixel}"
 
     # Represent axis in Plotext style
     def __repr__(self):
-        return f"Plotext Axis: " + self.get_log()
+        return "PlotextAxis(" + self._get_log() + ")"

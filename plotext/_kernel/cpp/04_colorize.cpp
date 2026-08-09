@@ -80,10 +80,9 @@ public:
     inline void print(const bool colorless = false, const bool flushing = true) const noexcept {
         const bool colorfull = not colorless;
         if (colorfull) Pixel::stream();
-        wcout.write(get_cstring(), get_length());
-        if (colorfull) wcout.write(ansi_end, 4);
-        wcout.write(new_line, 1);
-        if (flushing) wcout.flush();}
+        write_wide(get_cstring(), get_length(), false);
+        if (colorfull) write_wide(ansi_end, 4, false);
+        write_wide(new_line, 1, flushing);}
 
 
     inline void show() const noexcept { show_ansi_wstring(string); }
@@ -125,7 +124,7 @@ extern "C" {
     Colorize * colorize_copy(Colorize * c) noexcept { return new Colorize(*c); }
 
     // Copy the contents of one Colorize into another
-    void colorize_copy_from(Colorize * c, Colorize * c2) noexcept { *c = *c2; }
+    void colorize_clone(Colorize * c, Colorize * c2) noexcept { *c = *c2; }
 
     // Compare two Colorize objects
     bool colorize_equals(Colorize * c, Colorize * c2) noexcept { return *c == *c2; }

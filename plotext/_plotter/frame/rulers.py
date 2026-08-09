@@ -9,10 +9,11 @@ from plotext._methods.sequence import unique
 # Rulers container: four ruler slots (x lower/upper, y left/right)
 class rulers_class:
 
-    # Initialize 2x2 X and Y rulers
-    def __init__(self):
-        self._x = [xruler_class(), xruler_class()]
-        self._y = [yruler_class(), yruler_class()]
+    # Initialize 2x2 X and Y rulers, each knowing its plot, axis and side
+    def __init__(self, plot = None):
+        self._plot = plot
+        self._x = [xruler_class(plot, 0, 0), xruler_class(plot, 0, 1)]
+        self._y = [yruler_class(plot, 1, 0), yruler_class(plot, 1, 1)]
 
     # Clear all rulers settings
     def clear_settings(self):
@@ -34,7 +35,7 @@ class rulers_class:
         container = self._y if axis else self._x
         return container[side]
 
-    # Activate one specific ruler — caller pre-corrects axis/side.
+    # Activate one specific ruler, caller pre-corrects axis/side.
     def get(self, axis = 0, side = 0):
         return self._get(axis, side)
 
@@ -89,11 +90,6 @@ class rulers_class:
         [r.set_pixel(pixel) for r in self.select(axis, side)]
         return self
 
-    # Set grid for selected rulers
-    def set_grid(self, active = None, style = None, pixel = None, axis = 0, side = 0):
-        [r.set_grid(active, style, pixel) for r in self.select(axis, side)]
-        return self
-
     # Canvas-space positions where any registered line crosses the given axis (used to stamp ┼ on the axis itself).
     def _get_grid_positions(self, axis = 0):
         data = self._y if axis else self._x
@@ -106,11 +102,11 @@ class rulers_class:
 
     # Create a copy of this rulers instance
     def copy(self):
-        out = rulers_class()
+        out = rulers_class(self._plot)
         out._clone(self)
         return out
 
-    # Update ticks limits based on signal limits. merge=True so a previously-set tick range (e.g., bar centres from auto-ticks) gets unioned with the signal data range — otherwise the tick range would silently win and the bars at the canvas extremes would render half-clipped.
+    # Widen the tick limits to hold the signal ones as well, so that a tick range set before, like the bar centers, does not cut the data at the plot edges.
     def _update_signals_limits(self, signals):
         for axis in binary:
             for side in binary:
@@ -122,6 +118,11 @@ class rulers_class:
     # Update ticks limits
     def _update_ticks_limits(self):
         [self._get(a, s)._update_ticks_limits() for s in binary for a in binary]
+        return self
+
+    # Update lines limits
+    def _update_lines_limits(self):
+        [self._get(a, s)._update_lines_limits() for s in binary for a in binary]
         return self
 
     # Update ticks

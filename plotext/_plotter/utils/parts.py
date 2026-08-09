@@ -52,24 +52,24 @@ class parts_class:
         return self
 
     # Get overall size
-    def get_size(self):
+    def size(self):
         return self._width, self._height
 
     # Get overall width
-    def get_width(self):
+    def width(self):
         return self._width
 
     # Get overall height
-    def get_height(self):
+    def height(self):
         return self._height
 
     # Get total height of upper section
     def get_upper_height(self):
-        return self.upper_bar.get_height() + self.upper_axis.get_height() + self.upper_ticks.get_height()
+        return self.upper_bar.height() + self.upper_axis.height() + self.upper_ticks.height()
 
     # Get total height of lower section
     def get_lower_height(self):
-        return self.lower_bar.get_height() + self.lower_axis.get_height() + self.lower_ticks.get_height()
+        return self.lower_bar.height() + self.lower_axis.height() + self.lower_ticks.height()
 
     # Get canvas height
     def get_canvas_height(self):
@@ -77,11 +77,11 @@ class parts_class:
 
     # Get total width of left section
     def get_left_width(self):
-        return self.left_ticks.get_width() + self.left_axis.get_width()
+        return self.left_ticks.width() + self.left_axis.width()
 
     # Get total width of right section
     def get_right_width(self):
-        return self.right_ticks.get_width() + self.right_axis.get_width()
+        return self.right_ticks.width() + self.right_axis.width()
 
     # Get canvas width
     def get_canvas_width(self):
@@ -104,7 +104,7 @@ class parts_class:
         self.upper_bar.set_width(self._width)
         self.lower_bar.set_width(self._width)
 
-        canvas_width = self.canvas.get_width()
+        canvas_width = self.canvas.width()
         self.upper_ticks.set_width(canvas_width)
         self.upper_axis.set_width(canvas_width)
         self.lower_axis.set_width(canvas_width)
@@ -123,7 +123,7 @@ class parts_class:
         self.upper_axis.set_position(left_width, self.upper_ticks.get_row(1))
 
         self.left_ticks.set_position(0, upper_height)
-        self.left_axis.set_position(self.left_ticks.get_width(), upper_height)
+        self.left_axis.set_position(self.left_ticks.width(), upper_height)
 
         self.canvas.set_position(left_width, upper_height)
 
@@ -150,8 +150,8 @@ class parts_class:
         self.lower_left_corner.set_height(self.lower_axis._height + self.lower_ticks._height)
         self.lower_right_corner.set_height(self.lower_axis._height + self.lower_ticks._height)
 
-        self.upper_left_corner.set_position(0, self.upper_bar.get_height())
-        self.upper_right_corner.set_position(self.canvas.get_col(1), self.upper_bar.get_height())
+        self.upper_left_corner.set_position(0, self.upper_bar.height())
+        self.upper_right_corner.set_position(self.canvas.get_col(1), self.upper_bar.height())
 
         self.lower_left_corner.set_position(0, self.lower_axis._row)
         self.lower_right_corner.set_position(self.canvas.get_col(1), self.lower_axis._row)
@@ -160,16 +160,16 @@ class parts_class:
 
     # Run basic tests for size consistency
     def test(self):
-        width_test = (self.left_ticks.get_width() + self.left_axis.get_width() + self.canvas.get_width() + self.right_axis.get_width() + self.right_ticks.get_width()) == self._width
+        width_test = (self.left_ticks.width() + self.left_axis.width() + self.canvas.width() + self.right_axis.width() + self.right_ticks.width()) == self._width
 
-        height_test = (self.upper_bar.get_height() + self.upper_ticks.get_height() + self.upper_axis.get_height() + self.canvas.get_height() + self.lower_axis.get_height() +
-                       self.lower_bar.get_height() + self.lower_ticks.get_height() == self._height)
-        height_test2 = self.left_ticks.get_height() == self.right_ticks.get_height() == self.canvas.get_height()
+        height_test = (self.upper_bar.height() + self.upper_ticks.height() + self.upper_axis.height() + self.canvas.height() + self.lower_axis.height() +
+                       self.lower_bar.height() + self.lower_ticks.height() == self._height)
+        height_test2 = self.left_ticks.height() == self.right_ticks.height() == self.canvas.height()
 
-        corner_width_test = (self.upper_left_corner.get_width() + self.canvas.get_width() + self.upper_right_corner.get_width()) == self._width
-        corner_width_test2 = (self.upper_left_corner.get_width() == self.lower_left_corner.get_width()) and (self.upper_right_corner.get_width() == self.lower_right_corner.get_width())
+        corner_width_test = (self.upper_left_corner.width() + self.canvas.width() + self.upper_right_corner.width()) == self._width
+        corner_width_test2 = (self.upper_left_corner.width() == self.lower_left_corner.width()) and (self.upper_right_corner.width() == self.lower_right_corner.width())
 
-        corner_height_test = self.upper_left_corner.get_height() == self.upper_right_corner.get_height() and self.lower_left_corner.get_height() == self.lower_right_corner.get_height()
+        corner_height_test = self.upper_left_corner.height() == self.upper_right_corner.height() and self.lower_left_corner.height() == self.lower_right_corner.height()
 
         print("Width Test:", width_test)
         print("Height Test:", height_test and height_test2)
@@ -179,18 +179,18 @@ class parts_class:
         return self
 
     # Return a log string summarizing all parts
-    def get_log(self):
+    def _get_log(self):
         out = f'Plotext Parts: total size {(self._width, self._height)}'
         for value in vars(self).values():
             if isinstance(value, part):
-                out += f'\n {value.get_log()}'
+                out += f'\n {value._get_log()}'
         return out
 
     # Print log
     def log(self):
-        print(self.get_log())
+        print(self._get_log())
         return self
 
     # String representation in one line
     def __repr__(self):
-        return self.get_log()
+        return self._get_log()

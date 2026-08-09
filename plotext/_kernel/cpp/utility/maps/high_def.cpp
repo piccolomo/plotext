@@ -24,13 +24,15 @@ constexpr wchar_t hd_lookup[16] = {
 // Retrieve the HD character for a given 4-bit code
 constexpr inline wchar_t get_hd_symbol(unsigned char code) noexcept {return hd_lookup[code];}
 
-// Single-bit mask for a sub-cell at (col, row) in a (cols x rows) high-def grid.
-// Top-left occupies the highest bit (cols*rows - 1); bottom-right occupies bit 0.
-// Used by HDCharacter (2x2), FHDCharacter (2x3), BrailleCharacter (2x4).
+// The single bit of the sub cell at (col, row) inside a cols by rows grid, the top left taking the highest bit and the bottom right bit 0; used by the hd, fhd and braille characters.
 inline constexpr uint8_t get_dot_bit(uint8_t col, uint8_t row, uint8_t cols, uint8_t rows) noexcept { return 1u << (cols * rows - 1 - row * cols - col); }
 
 
-// FHD codes// FHD characters mapped by 6-bit code (0..63)
+// FHD codes: the characters of every 6 bit code, from 0 to 63
+// These sextants ask for more room than a windows character has, so there the table holds blanks and is never read: fhd is not among the codes on windows, and the word is drawn as plain text instead.
+#ifdef _WIN32
+constexpr wchar_t fhd_lookup[64] = {};
+#else
 constexpr wchar_t fhd_lookup[64] = {
     U' ',    // 0b000000 = 0
     U'🬞',   // 0b000001 = 1
@@ -97,14 +99,14 @@ constexpr wchar_t fhd_lookup[64] = {
     U'🬝',   // 0b111110 = 62
     U'█',    // 0b111111 = 63
 };
+#endif
 
 
 // Retrieve the FHD character for a given 6-bit code
 constexpr inline wchar_t get_fhd_symbol(unsigned char code) noexcept {return fhd_lookup[code];}
 
 
-//Braille codes
-// Array of 256 wchar_t ordered by binary code (0 to 255)
+// Braille codes: the characters of every 8 bit code, from 0 to 255
 constexpr wchar_t braille_lookup[256] = {
     L' ',    // 0b00000000 (0)
     L'⢀',   // 0b00000001 (1)
@@ -490,12 +492,14 @@ inline constexpr uint8_t get_box_code (uint8_t arms, uint8_t style) noexcept { r
 inline constexpr uint8_t get_box_arms (uint8_t code) noexcept { return  code       & 0b00001111; }
 inline constexpr uint8_t get_box_style(uint8_t code) noexcept { return (code >> 4) & 0b00000111; }
 
-// Retrieves the glyph for a packed line code. Returns 0 when no glyph exists for this combo.
+// Retrieves the glyph for a packed line code; arm combinations missing from a style's table fall back to the normal style glyph, so no cell ever renders empty.
 inline wchar_t get_box_glyph(uint8_t code) noexcept {
     const uint8_t arms  = get_box_arms (code);
     const uint8_t style = get_box_style(code);
-    if (style == box_double)  return box_double_lookup [arms];
-    if (style == box_heavy)   return box_heavy_lookup  [arms];
-    if (style == box_dotted)  return box_dotted_lookup [arms];
-    if (style == box_rounded) return box_rounded_lookup[arms];
-    return box_normal_lookup[arms];}
+    wchar_t glyph = 0;
+    if      (style == box_double)  glyph = box_double_lookup [arms];
+    else if (style == box_heavy)   glyph = box_heavy_lookup  [arms];
+    else if (style == box_dotted)  glyph = box_dotted_lookup [arms];
+    else if (style == box_rounded) glyph = box_rounded_lookup[arms];
+    else                           glyph = box_normal_lookup [arms];
+    return glyph ? glyph : box_normal_lookup[arms];}

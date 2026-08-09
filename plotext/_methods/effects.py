@@ -4,38 +4,41 @@ from math import exp, sin, pi
 from colorsys import hsv_to_rgb
 from plotext._primitives.matrix import matrix
 from plotext._primitives.pixel  import pixel
-from plotext._correct.effect import effect_name
+from plotext._correct.enums import effect_name
 
 
-# Apply effect `name` to `text` at animation `step`; returns a styled 1-row matrix.
-def effect(text, name = "shimmer", step = 0.0):
+# Apply effect `name` to `text` at animation `step`; returns a styled 1-row matrix. The effect repeats every `period` step units; None picks each effect's own default.
+def effect(text, name = "shimmer", step = 0.0, period = None):
     name = effect_name(name)
-    if name == "shimmer":  return get_shimmer_effect(text, step)
-    if name == "pulse":    return get_pulse_effect(text, step)
-    if name == "rainbow":  return get_rainbow_effect(text, step)
-    if name == "gradient": return get_gradient_effect(text, step)
+    if name == "shimmer":  return get_shimmer_effect(text, step, period = period)
+    if name == "pulse":    return get_pulse_effect(text, step, period = period)
+    if name == "rainbow":  return get_rainbow_effect(text, step, period = period)
+    if name == "gradient": return get_gradient_effect(text, step, period = period)
 
 
-# Gaussian bright spot sweeping across the text at position `step` (in chars).
-def get_shimmer_effect(text, step, color = (60, 60, 90), highlight = (255, 255, 255), width = 2.0, wrap = True):
+# Gaussian bright spot sweeping across the text at position `step` (in chars); repeats every `period` chars (None uses the text length).
+def get_shimmer_effect(text, step, color = (60, 60, 90), highlight = (255, 255, 255), width = 2.0, wrap = True, period = None):
     length = len(text)
+    period = length if period is None else period
     colors = []
     for i in range(length):
-        scale = get_shimmer_scale(i - step, length, width, wrap)
+        scale = get_shimmer_scale(i - step, period, width, wrap)
         colors.append(rgb_mix(color, highlight, scale))
     return get_single_row_matrix(text, colors)
 
 
-# Whole-string brightness oscillates between `color` and `highlight` with sine period `period`.
-def get_pulse_effect(text, step, color = (120, 120, 200), highlight = (255, 255, 255), period = 10.0):
+# Whole-string brightness oscillates between `color` and `highlight` with sine period `period` (None uses 10).
+def get_pulse_effect(text, step, color = (120, 120, 200), highlight = (255, 255, 255), period = None):
+    period = 10.0 if period is None else period
     scale  = get_pulse_scale(step, period)
     rgb    = rgb_mix(color, highlight, scale)
     colors = [rgb] * len(text)
     return get_single_row_matrix(text, colors)
 
 
-# Hue cycles across chars; advancing `step` scrolls the pattern.
-def get_rainbow_effect(text, step, period = 10.0, saturation = 1.0, brightness = 1.0):
+# Hue cycles across chars; advancing `step` scrolls the pattern; repeats every `period` units (None uses 10).
+def get_rainbow_effect(text, step, period = None, saturation = 1.0, brightness = 1.0):
+    period = 10.0 if period is None else period
     colors = []
     for i in range(len(text)):
         hue     = get_rainbow_hue(i + step, period)
@@ -54,9 +57,9 @@ def get_gradient_effect(text, step = 0.0, period = None, start = (255, 100, 50),
     return get_single_row_matrix(text, colors)
 
 
-# Gaussian intensity at signed offset `index` for the shimmer effect; wraps around the ends when `wrap = True`.
-def get_shimmer_scale(index, length, std, wrap = True):
-    dist = ((index + length / 2) % length) - length / 2 if wrap else index      # nearest periodic distance when wrap
+# Gaussian intensity at signed offset `index` for the shimmer effect; wraps around every `period` units when `wrap = True`.
+def get_shimmer_scale(index, period, std, wrap = True):
+    dist = ((index + period / 2) % period) - period / 2 if wrap else index      # nearest periodic distance when wrap
     return exp(-(dist / std) ** 2)
 
 

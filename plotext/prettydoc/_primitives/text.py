@@ -1,47 +1,42 @@
-# Text primitives: text_class, alias_class and labelled_text_class used to build docstring components
+# The text pieces a docstring is built from: a plain piece, the alias line, and a label with its value, as in "type: a numeric value".
 
 from plotext._methods.string import add_prefix, connect_strings
 from plotext._constants.text import space
 
 
-# Wrapper around a colorize (or None) value used as a docstring text fragment
+# One piece of text of a docstring, held as a colorize object, or nothing at all.
 class text_class:
-    # Initialize with an optional text value
+    # Start with the given text, or with nothing.
     def __init__(self, text = None):
         self._set(text)
 
-    # Set the text value
+    # Replace the text.
     def _set(self, text = None):
         self._text = text
         return self
 
-    # Set the string content of the text object
-    def _set_string(self, string):
-        self._text.set_string(string)
-        return self
-
-    # Set the pixel used for the text
+    # Paint the text with the given pixel.
     def _set_pixel(self, pixel):
-        self._text.set_pixel(pixel)
+        self._text.fill(pixel)
         return self
 
-    # Get the pixel from the text
+    # The pixel painting the text.
     def _get_pixel(self):
-        return self._text.get_pixel()
+        return self._text.pixel()
 
-    # Check whether the text is empty
+    # True when there is no text at all.
     def _empty(self):
         return self._text is None
 
-    # Get the string representation (colorless or not)
+    # The text as a string, with its colors or without them.
     def _get(self, colorless = 0):
-        return None if self._empty() else self._text.get_string(colorless)
+        return None if self._empty() else self._text.string(colorless)
 
-    # Get formatted docstring with optional prefix
+    # The text as it appears in the docstring, after the given prefix.
     def _get_docstring(self, prefix = None):
         return add_prefix(self._get(), prefix)
 
-    # Return a copy of the object
+    # A copy of this piece.
     def _copy(self):
         out = text_class()
         out._text = self._text
@@ -49,64 +44,64 @@ class text_class:
 
     # Representation
     def __repr__(self):
-        return f"PrettyText: {self._get()}"
+        return f"PrettyText({self._get()})"
 
 
-# Text variant that renders as "The foo() method is an alias."
+# The alias piece, printing as "The mean() method is an alias." for the alias mean.
 class alias_class(text_class):
-    # Initialize with an optional alias name
+    # Start with the given alias name, or with nothing.
     def __init__(self, alias = None):
         text_class.__init__(self, alias)
 
-    # Return a docstring indicating alias nature
+    # The alias line, or nothing when no alias was given.
     def _get_docstring(self, prefix = None):
         doc = None if self._empty() else "The " + self._get() + '() method is an alias.'
         return add_prefix(doc, prefix)
 
     # Representation
     def __repr__(self):
-        return f"PrettyAlias: {self._get()}"
+        return f"PrettyAlias({self._get()})"
 
 
-# Pair of label + value text fragments, joined by a separator
-class labelled_text_class:
-    # Initialize with optional label and text
+# A label and its value, printed together as "type: a numeric value".
+class labeled_text_class:
+    # Start with the given label and value, each optional.
     def __init__(self, label = None, text = None):
         self._label = text_class(label)
         self._value = text_class(text)
         self._set_separator()
 
-    # Set the label part
+    # Replace the label, the word before the separator.
     def _set_label(self, label = None):
         self._label._set(label)
         return self
 
-    # Set the value part
+    # Replace the value, the text after the separator.
     def _set_value(self, value = None):
         self._value._set(value)
         return self
 
-    # Get the label part as string
+    # The label as a string, with its colors or without them.
     def _get_label(self, colorless = 0):
         return self._label._get(colorless)
 
-    # Get the value part as string
+    # The value as a string, with its colors or without them.
     def _get_value(self, colorless = 0):
         return self._value._get(colorless)
 
-    # Set the separator between label and value
+    # Set what sits between the label and the value, a space when not given.
     def _set_separator(self, separator = None):
         self._separator = space if separator is None else separator
 
-    # Get formatted docstring combining label and value
+    # The label and value together, after the given prefix; nothing at all when the value is missing.
     def _get_docstring(self, prefix = None):
         docs = [] if self._value._empty() else [self._label._get_docstring(), self._value._get_docstring()]
         doc = connect_strings(docs, self._separator)
         return add_prefix(doc, prefix)
 
-    # Return a copy of the object
+    # A copy of this piece.
     def _copy(self):
-        out = labelled_text_class()
+        out = labeled_text_class()
         out._label = self._label._copy()
         out._value = self._value._copy()
         out._set_separator(self._separator)

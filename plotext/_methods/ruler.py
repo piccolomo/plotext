@@ -20,7 +20,7 @@ def get_limit_delta(alignment):
 
 
 # Generate evenly spaced values between lower and upper
-def linspace(lower, upper, length=10):
+def linspace(lower, upper, length = 10):
     slope = (upper - lower) / (length - 1) if length > 1 else 0
     return [lower + x * slope for x in range(length)]
 
@@ -62,7 +62,7 @@ def first_decimal_digit_position(x):
 # Determine minimum decimal digits needed to distinguish all values; for ticks that are all integer-valued, return 0 so the labels print without trailing ".0".
 def distinguishing_digit(data):
     d = [_distinguishing_digit(data[i], data[i + 1]) for i in range(len(data) - 1)]
-    digit = max(d, default=0)
+    digit = max(d, default = 0)
     if not all(t == int(t) for t in data):
         digit += 1
     return digit
@@ -77,7 +77,7 @@ def _distinguishing_digit(a, b):
 
 
 # Compare two floats using relative tolerance
-def almost_equal(a, b, relative=3):
+def almost_equal(a, b, relative = 3):
     return abs(a - b) <= 10 ** (-relative) * (abs(a + b)) / 2
 
 

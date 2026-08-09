@@ -26,7 +26,7 @@ class grid:
         return self
 
     # Get the number of stored points
-    def get_length(self):
+    def length(self):
         return clink.grid_get_length(self._pointer)
 
     # Get number of columns
@@ -39,4 +39,4 @@ class grid:
 
     # String representation
     def __repr__(self):
-        return f"Plotext Grid: Cols {self._cols}, Rows {self._rows}, Length {self.get_length()}"
+        return f"PlotextGrid(cols {self._cols}, rows {self._rows}, length {self.length()})"

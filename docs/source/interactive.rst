@@ -3,7 +3,8 @@
 Interactive Mode
 ================
 
-Normally the figure is rendered only when you call ``show``. :meth:`~plotext._plotter.plot.plot_class.interactive` flips that: while it is on, every figure-mutating call reprints the whole figure immediately, so each change appears without an explicit ``show`` — the same convenience as matplotlib's ``plt.ion()``. It is handy at a REPL when building a plot up step by step.
+| Normally the figure is rendered only when you call :meth:`show() <plotext._plotter.plot.plot_class.show>`.
+| The :meth:`interactive() <plotext._plotter.plot.plot_class.interactive>` method flips that: while it is on, every figure-mutating call reprints the whole figure *immediately*, so each change appears without an explicit :meth:`show() <plotext._plotter.plot.plot_class.show>` call.
 
 .. code-block:: python
 
@@ -19,9 +20,12 @@ Normally the figure is rendered only when you call ``show``. :meth:`~plotext._pl
 
    fig.interactive(False)                  # back to manual show()
 
+.. note:: This is the same convenience as `matplotlib <https://matplotlib.org/>`_'s ``plt.ion()``: handy at the interactive Python prompt, when building a plot up step by step.
+
 What triggers a reprint:
 
-- **Mutating calls** — ``draw``, ``line``, ``event`` and every setter (``title``, ``label``, ``lim``, ``scale``, ``grid``, ``theme``, ``canvas_pixel``, ``subplots``, the ``clear`` family, …) reprint once they complete. A single call reprints exactly once, even when it cascades internally (``clear`` calls several sub-clears) or propagates across subplots.
-- **Builders** — ``bar``, ``box``, ``signal``, ``rectangle`` and the like only *return* a drawable; they reprint when their result is passed to ``draw``, which is the moment the content actually lands on the figure.
+- Every method changing the figure reprints it once complete: :meth:`draw() <plotext._plotter.plot.plot_class.draw>`, :meth:`line() <plotext._plotter.plot.plot_class.line>`, :meth:`event() <plotext._plotter.plot.plot_class.event>`, and every setting method, like :meth:`title() <plotext._plotter.plot.plot_class.title>`, :meth:`theme() <plotext._plotter.plot.plot_class.theme>`, :meth:`ruler().lim() <plotext._plotter.frame.ruler.ruler_class.lim>` or the :doc:`clear <clear>` family.
+- A single call reprints exactly **once**, even when it acts on several settings internally, like :meth:`clear() <plotext._plotter.clear.clear_class.all>`, or reaches several :ref:`subplots <subplots>` at once.
+- The signal creating methods, like :meth:`signal() <plotext._plotter.plot.plot_class.signal>` or :meth:`bar() <plotext._plotter.plot.plot_class.bar>`, only return their signal, leaving the figure *untouched*: the reprint comes when the signal is passed to :meth:`draw() <plotext._plotter.plot.plot_class.draw>`, the moment the content actually lands on the figure.
 
-.. note:: Interactive mode is a session toggle, not a plot setting: it persists across ``clear`` and is switched off only by ``interactive(False)``. Enabling it is silent — the next mutating call produces the first reprint.
+.. important:: Interactive mode is a session toggle, not a plot setting: it persists across :meth:`clear() <plotext._plotter.clear.clear_class.all>` and is switched off only by :meth:`interactive(False) <plotext._plotter.plot.plot_class.interactive>`. Enabling it is silent, the next figure-changing call produces the first reprint.

@@ -97,13 +97,12 @@ class signals_class:
                                        irulers._get(1, signal._get_yside()),
                                        canvas_width, canvas_height) for signal in self]
 
-    # Render every signal onto the canvas region of matrix; per-signal x/y rulers are looked up via irulers using the signal's xside/yside.
-    # Points from each signal are accumulated, then squashed once globally so the shared grid sees a single coherent index space.
+    # Draw every signal on the canvas, each against the rulers of its own axis sides; the points of all of them are gathered first, then squashed together, so the shared grid sees one set of positions.
     def draw(self, matrix, irulers, canvas_part, canvas_pixel, grid):
-        canvas_col, canvas_row = canvas_part.get_position()
-        canvas_width, canvas_height = canvas_part.get_size()
+        canvas_col, canvas_row = canvas_part.position()
+        canvas_width, canvas_height = canvas_part.size()
         prepared = self._prepare_all(irulers, canvas_width, canvas_height)
-        all_points = points_class(sum(p.get_length() for p in prepared))
+        all_points = points_class(sum(p.length() for p in prepared))
         for p in prepared:
             all_points.append(p)
         all_points.squash(grid)
@@ -118,4 +117,4 @@ class signals_class:
 
     # Represent signals container
     def __repr__(self):
-        return f"Plotext Signals: {self._get_length()}"
+        return f"PlotextSignals({self._get_length()})"

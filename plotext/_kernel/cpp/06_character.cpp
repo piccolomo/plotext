@@ -1,4 +1,4 @@
-// Character family: NormalCharacter (Pixel + wchar), 4 X-Character builders (HD/FHD/Braille/Box) holding bits, MatrixCharacter (the matrix cell — NormalCharacter + kind + bits, with merge logic).
+// Character family: NormalCharacter (Pixel + wchar), 4 X-Character builders (HD/FHD/Braille/Box) holding bits, MatrixCharacter (the matrix cell, NormalCharacter + kind + bits, with merge logic).
 
 // NormalCharacter: a single wchar_t with inherited Pixel styling
 class NormalCharacter : public Pixel {
@@ -19,17 +19,14 @@ public:
     inline constexpr bool operator==(const NormalCharacter& o) const noexcept       { return c == o.c && Pixel::operator==(o); }
     inline constexpr bool operator!=(const NormalCharacter& o) const noexcept       { return !(*this == o); }
     inline constexpr bool same(const NormalCharacter& o) const noexcept             { return c == o.c && Pixel::operator==(o); }
-    inline constexpr bool same_pixel(const NormalCharacter& o) const noexcept       { return Pixel::operator==(o); }
     inline constexpr bool different_pixel(const NormalCharacter& o) const noexcept  { return !Pixel::operator==(o); }
 
     inline constexpr bool is_empty() const noexcept { return c == L' '; }
-    inline constexpr bool is_full()  const noexcept { return c == L'▇' || c == L'█'; }
     inline void clear() noexcept { c = L' '; Pixel::clear(); }
 
     inline void    set_wcharacter(wchar_t ch) noexcept { c = ch; }
     inline wchar_t get_wcharacter() const noexcept { return c; }
     inline void    set_pixel(const Pixel& p) noexcept { Pixel::operator=(p); }
-    inline void    copy_wcharacter(const NormalCharacter& o) noexcept { c = o.c; }
 
     inline void to_buffer(wchar_t* buf, size_t & pos, const bool & colorfull = true) const noexcept {
         if (colorfull) Pixel::to_buffer(buf, pos);
@@ -52,7 +49,7 @@ public:
 };
 
 
-// HDCharacter: 2×2 sub-cell dot grid (top-left = bit 3) — 4-bit dot pattern in 1 byte
+// HDCharacter: 2×2 sub-cell dot grid (top-left = bit 3), 4-bit dot pattern in 1 byte
 class HDCharacter : public Pixel {
 private:
     static constexpr uint8_t cols = 2, rows = 2;
@@ -77,7 +74,7 @@ public:
 };
 
 
-// FHDCharacter: 2×3 sub-cell dot grid (top-left = bit 5) — 6-bit dot pattern in 1 byte
+// FHDCharacter: 2×3 sub-cell dot grid (top-left = bit 5), 6-bit dot pattern in 1 byte
 class FHDCharacter : public Pixel {
 private:
     static constexpr uint8_t cols = 2, rows = 3;
@@ -102,7 +99,7 @@ public:
 };
 
 
-// BrailleCharacter: 2×4 sub-cell dot grid (top-left = bit 7) — 8-bit dot pattern fills the byte
+// BrailleCharacter: 2×4 sub-cell dot grid (top-left = bit 7), 8-bit dot pattern fills the byte
 class BrailleCharacter : public Pixel {
 private:
     static constexpr uint8_t cols = 2, rows = 4;
@@ -127,7 +124,7 @@ public:
 };
 
 
-// BoxStyle: shared "drawable line config" — style + pixel. Owned state for BoxCharacter and BoxMarker; arms (shape) live in BoxCharacter.
+// BoxStyle: shared "drawable line config", style + pixel. Owned state for BoxCharacter and BoxMarker; arms (shape) live in BoxCharacter.
 class BoxStyle : public Pixel {
 private:
     uint8_t style = box_normal;
@@ -181,7 +178,7 @@ public:
 };
 
 
-// Free helpers used by MatrixCharacter::merge — bit-level merge rules
+// Free helpers used by MatrixCharacter::merge, bit-level merge rules
 inline void merge_dot_bits (uint8_t & bits, uint8_t other) noexcept { bits |= other; }                                                    // HD/FHD/Braille: OR dot bits
 inline void merge_box_bits(uint8_t & bits, uint8_t other) noexcept {                                                                      // Line: OR arms, heavier style wins
     const uint8_t merged_arms   = get_box_arms (bits) | get_box_arms (other);
@@ -189,7 +186,7 @@ inline void merge_box_bits(uint8_t & bits, uint8_t other) noexcept {            
     bits = get_box_code(merged_arms, heavier_style); }
 
 
-// MatrixCharacter: the matrix cell. NormalCharacter + (kind, bits) so successive Points at the same (col, row) merge — HD/FHD/Braille accumulate dots, Line accumulates arms + heaviest style.
+// MatrixCharacter: the matrix cell. NormalCharacter + (kind, bits) so successive Points at the same (col, row) merge, HD/FHD/Braille accumulate dots, Line accumulates arms + heaviest style.
 class MatrixCharacter : public NormalCharacter {
 private:
     uint8_t kind = marker_normal;             // which marker kind currently owns this cell
@@ -199,12 +196,10 @@ public:
     MatrixCharacter() noexcept = default;
     MatrixCharacter(wchar_t ch, const Pixel & p = {}) noexcept : NormalCharacter(ch, p) {}
     MatrixCharacter(const NormalCharacter & nc) noexcept : NormalCharacter(nc) {}
-    // Construct with kind + pixel (and optional cached glyph). Bits stay 0 — caller sets them via set_bits if needed.
+    // Construct with kind + pixel (and optional cached glyph). Bits stay 0, caller sets them via set_bits if needed.
     MatrixCharacter(uint8_t k, const Pixel & p, wchar_t ch = L' ') noexcept : NormalCharacter(ch, p), kind(k) {}
 
     inline uint8_t get_kind() const noexcept { return kind; }
-    inline uint8_t get_bits() const noexcept { return bits; }
-    inline void    set_kind(uint8_t k) noexcept { kind = k; }
     inline void    set_bits(uint8_t b) noexcept { bits = b; }
 
     inline void clear() noexcept { kind = marker_normal; bits = 0; NormalCharacter::clear(); }
@@ -218,7 +213,7 @@ public:
             case marker_box:    set_wcharacter(get_box_glyph(bits)); return;
             default:           return; } }
 
-    // Refresh the cached glyph, then delegate to NormalCharacter::stream — the matrix loop calls this per cell, so glyphs always reflect the latest (kind, bits) at render time.
+    // Refresh the cached glyph, then delegate to NormalCharacter::stream, the matrix loop calls this per cell, so glyphs always reflect the latest (kind, bits) at render time.
     inline void stream(const bool & colorfull = false) noexcept { update_wcharacter(); NormalCharacter::stream(colorfull); }
 
     // Merge another MatrixCharacter into this one. Different kind → adopt new kind (reset bits). Normal kind overwrites entirely. Cached glyph stays stale until update_wcharacter() runs.

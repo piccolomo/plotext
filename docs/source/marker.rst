@@ -1,184 +1,170 @@
 .. _markers:
 
-Markers
-=======
+Marker
+======
 
-A *marker* is the visual unit that represents a single data point — a symbol with optional colour and style. To change the marker of a plot, you have two options: pass a *string code* for quick selection (see :ref:`string_codes`), or a :class:`plotext.marker` object for full control over colour and style (see :ref:`marker_objects`).
+A *marker* is the **symbol** used to render a single data point on the :doc:`canvas <canvas>`, with an optional color and style, basically a :ref:`pixel <pixel>`.
+
+.. note:: A marker holds no coordinates: those belong to the *points* of a :ref:`signal <signal>`, each pairing its coordinates with a marker. A point cannot be created on its own, only inspected, through the :meth:`get() <plotext._signal.signal.signal_class.get>` method of a signal: see the :ref:`point <point>` section of the :doc:`api <api>` page.
 
 
-Usage
------
+.. _marker_parameter:
 
-Every drawable method's ``marker`` parameter accepts:
+Marker Parameter
+----------------
 
-- a :ref:`string code <string_codes>` — the simplest form.
-- a :ref:`marker object <marker_objects>` — for full control over colour and style.
-- a list of either — one entry per internal point, repeated to match the data length when shorter. For :meth:`~plotext._plotter.plot.plot_class.signal` and :meth:`~plotext._plotter.plot.plot_class.candlestick` the list maps to user data points; for shape primitives like :meth:`~plotext._plotter.plot.plot_class.rectangle` and :meth:`~plotext._plotter.plot.plot_class.polygon` it maps to vertex points instead.
+The ``marker`` parameter of the drawing methods accepts several forms:
 
-A bare string code or marker object:
+- a **single character**, drawn as is (a space makes the point invisible)
+- a :ref:`string code <string_codes>`, for quick selection
+- a plain **multi-character** string, stamped whole at each point
+- a `NumPy string <https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.str_>`_, treated exactly as its plain Python counterpart, in any of the forms above
+- a :ref:`marker object <marker_objects>`, for full control over color and style
+- a :ref:`matrix <matrix>` or :ref:`colorize <colorize>` object, stamped as a :ref:`multi-cell marker <plotting_matrices>`, with a fixed top left alignment
+
+A list of either is also accepted, one entry per point: the list maps to the data points in :meth:`~plotext._plotter.plot.plot_class.signal` and :meth:`~plotext._plotter.plot.plot_class.candlestick`, and to the vertices in shapes like :meth:`~plotext._plotter.plot.plot_class.rectangle` and :meth:`~plotext._plotter.plot.plot_class.polygon`; in :meth:`bar() <plotext._plotter.plot.plot_class.bar>` and :meth:`hist() <plotext._plotter.plot.plot_class.hist>`, a list maps to the bar groups instead, as described in the :doc:`bar <bar>` page.
+
+.. caution:: A list of markers shorter than the data is repeated to match its length.
 
 .. code-block:: python
 
-   fig.signal(x, y, marker = "x")                                            # shorthand
-   fig.signal(x, y, marker = plt.marker("x"))                                # explicit
-   fig.signal(x, y, marker = plt.marker("x", plt.pixel(foreground="red")))   # styled
-
-A list of string codes or marker objects (one per data point):
-
-.. code-block:: python
-
-   fig.signal(x, y, marker = ["x", "heart", "star"])                  # list of string codes
-   fig.signal(x, y, marker = [plt.marker("x",     plt.pixel(foreground="red")),
-                              plt.marker("heart", plt.pixel(foreground="blue")),
-                              plt.marker("star",  plt.pixel(foreground="green"))])  # list of marker objects
+   fig.signal(x, y, marker = "x")                                # single character
+   fig.signal(x, y, marker = "heart")                            # string code
+   fig.signal(x, y, marker = "abc")                              # plain string, stamped whole
+   fig.signal(x, y, marker = plt.marker("x", pixel = "red"))     # marker object
+   fig.signal(x, y, marker = plt.colorize("hi!", "red"))         # colorize object
+   fig.signal(x, y, marker = ["x", "heart", "star"])             # one marker per point
 
 
 .. _string_codes:
 
-String codes
+String Codes
 ------------
 
-A string code is one of three things:
+A string code is one of two things:
 
-- **A single printable character** — any character. A space makes the point invisible.
-- **A named character code** — one of the entries in the table below.
-- **A resolution code** — one of *hd*, *fhd*, or *braille* (described after the table).
+- a named character code, like ``heart`` or ``star``, drawing the corresponding symbol at each point, easier to type than the symbol itself: see the image below for the full list
+- a :ref:`higher resolution code <resolutions>`, *hd*, *fhd* or *braille*, splitting each character cell into sub-points, for a **higher plotting resolution**
 
-.. note::
+Use :func:`plotext.markers() <plotext.markers>` for a preview of every available code next to its rendered symbol:
 
-   Multi-character strings that aren't a named code or a resolution code raise a clear ``ValueError`` listing the valid options. Single characters (e.g. ``"x"``, ``"#"``) always pass through as literal glyphs. The previous ``"block"`` alias for the full block ``█`` has been replaced by ``"full"``.
+.. image:: images/markers.png
 
-.. code-block:: python
-
-   fig.signal(x, y, marker = "x")          # single character
-   fig.signal(x, y, marker = "heart")      # named character code
-   fig.signal(x, y, marker = "braille")    # resolution code
-
-
-Named character codes
-~~~~~~~~~~~~~~~~~~~~~
-
-.. list-table::
-   :header-rows: 1
-   :widths: 20 10 20 10 20 10 20 10
-
-   * - Code
-     -
-     - Code
-     -
-     - Code
-     -
-     - Code
-     -
-   * - ``full``
-     - █
-     - ``dot``
-     - •
-     - ``dollar``
-     - $
-     - ``euro``
-     - €
-   * - ``bitcoin``
-     - ฿
-     - ``at``
-     - @
-     - ``heart``
-     - ♥
-     - ``smile``
-     - ☺
-   * - ``gclef``
-     - 𝄞
-     - ``note``
-     - 𝅘𝅥
-     - ``shamrock``
-     - ☘
-     - ``atom``
-     - ⚛
-   * - ``snowflake``
-     - ❄
-     - ``star``
-     - ❋
-     - ``flower``
-     - ❁
-     - ``lightning``
-     - 🌩
-   * - ``queen``
-     - ♕
-     - ``king``
-     - ♔
-     - ``cross``
-     - ♰
-     - ``yinyang``
-     - ☯
-   * - ``om``
-     - ॐ
-     - ``osiris``
-     - 𓂀
-     - ``zero``
-     - 🯰
-     - ``one``
-     - 🯱
-   * - ``two``
-     - 🯲
-     - ``three``
-     - 🯳
-     - ``four``
-     - 🯴
-     - ``five``
-     - 🯵
-   * - ``six``
-     - 🯶
-     - ``seven``
-     - 🯷
-     - ``eight``
-     - 🯸
-     - ``nine``
-     - 🯹
-
-.. note:: Run :func:`plotext.markers` to print the live reference of every available code alongside its rendered symbol.
+.. note:: A multi-character string that is not a known code is drawn as a multi-cell text marker: the whole string is stamped at each point.
 
 
 .. _resolutions:
 
-Resolution codes
-~~~~~~~~~~~~~~~~
+Higher Resolution Codes
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Three codes control the character grid used to place a point. Some may not be available on every terminal or operating system.
+A higher resolution code splits each character cell into a grid of sub-points, fitting more data points in the same space.
 
-- ``hd`` — *high definition* (default): 2 × 2 Unicode block characters (``▞``, ``▘``, ...), so each terminal cell can hold up to four sub-points.
-- ``fhd`` — *full high definition*: 3 × 2 Unicode block characters (``🬗``). Unix-only, only on some terminals.
-- ``braille`` — 4 × 2 Unicode braille characters (``⢕``). Finest resolution. Unix-only; supported by only a few terminals.
+- ``hd``, *high definition* (the default): 2 × 2 block characters, like ``▞`` or ``▘``
+- ``fhd``, *full high definition*: 3 × 2 block characters, like ``🬗``, on unix systems only
+- ``braille``: 4 × 2 braille characters, like ``⢕``, the finest resolution
 
-.. note:: Markers of different resolutions can coexist in the same plot across different signals. Within a single signal, mixing resolutions is safe for scatter plots but discouraged for line plots — the intermediate grid positions between consecutive points may not line up.
+Some codes may not render on every :doc:`terminal <terminal>` or operating system.
 
+.. note:: ``fhd`` **does not work on Windows**. Asking for it there draws the word itself, as any unrecognized marker does, so pick ``hd`` or ``braille`` instead.
 
-.. _marker_objects:
+.. note:: The sub-points falling within the same character cell cannot take different colors: they merge into a single character, which carries one foreground color. This is why a higher resolution code adds nothing to a :ref:`picture <image>`, which needs a different color at every point: a picture is drawn one whole character per pixel instead.
 
-Marker objects
---------------
-
-For full control over colour and style, construct a marker with :class:`plotext.marker` and an explicit :class:`plotext.pixel`:
+.. note:: Markers of different resolutions can coexist in the same plot across different signals. Within a single signal, mixing resolutions is safe for scatter plots but discouraged for line plots: the intermediate positions between consecutive points may not line up.
 
 .. code-block:: python
 
    import plotext as plt
-   m = plt.marker("heart", plt.pixel("red", "white", "bold"))
+   fig = plt.figure
+   fig.clear()
 
-Parameters:
+   for code, phase in zip(("hd", "fhd", "braille"), (0, 0.3, 0.6)):
+       fig.draw(fig.signal(plt.sin(phase = phase), marker = code).lines().label(code))
 
-- ``symbol`` — the symbol to draw. Accepts any :ref:`string code <string_codes>`, or a :class:`~plotext.matrix` / :class:`~plotext.colorize` for a multi-cell marker (see :ref:`plotting_matrices`).
-- ``pixel`` — a :class:`plotext.pixel` carrying the colour + style. Defaults to a blank pixel. See :ref:`pixel`. Ignored when ``symbol`` is a matrix or colorize (those carry their own per-cell pixels).
-- ``ha`` — *only when symbol is a matrix or colorize*: horizontal alignment of the matrix around the data point — ``-1`` left, ``0`` centered, ``1`` right (default ``-1``).
-- ``va`` — *only when symbol is a matrix or colorize*: vertical alignment of the matrix around the data point — ``-1`` top, ``0`` centered, ``1`` bottom (default ``-1``).
+   fig.title("Higher resolution codes")
+   fig.show()
 
+.. image:: images/resolutions.png
+   :alt: higher resolution codes
+
+
+.. _marker_objects:
+
+Marker Object
+-------------
+
+For full control over color and style, construct a marker with :class:`plotext.marker` and its own :ref:`pixel <pixel>`:
+
+.. code-block:: python
+
+   import plotext as plt
+   fig = plt.figure
+   fig.clear()
+
+   y = plt.sin()
+   m = plt.marker("heart", pixel = ("red", "white", "bold"))
+   fig.draw(fig.signal(y, marker = m))
+
+   fig.title("Marker object")
+   fig.show()
+
+.. image:: images/marker_object.png
+   :alt: marker object
+
+.. note:: In the example, the pixel is given as a plain tuple, a shorthand: the formal form is a :ref:`pixel <pixel>` object, as in ``plotext.marker("heart", pixel = plotext.pixel("red", "white", "bold"))``.
+
+| With its parameters you can set the symbol (``symbol``), accepting the same forms as the :ref:`marker parameter <marker_parameter>` itself, and its coloring (``pixel``), in any accepted :ref:`pixel form <pixel_forms>`; the pixel is ignored when the symbol is a :class:`~plotext.matrix` or :class:`~plotext.colorize` object, which carries its own per-cell :ref:`pixels <pixel>`.
+| You can align a matrix or colorize symbol around the data point (``ha`` and ``va``), as described in the :ref:`multi-cell markers <plotting_matrices>` section; they are ignored for single-cell symbols.
+
+
+.. _line_marker:
+
+Line Marker
+-----------
+
+The :class:`plotext.line() <plotext.line>` function builds a marker drawn as a line character, horizontal ``─`` or vertical ``│``, in one of the :ref:`line styles <line_styles>`. Used as the marker of a signal, it draws each point as a small line piece instead of a dot; where two such lines cross, the characters merge properly, like ``┼``:
+
+.. code-block:: python
+
+   import plotext as plt
+   fig = plt.figure
+   fig.clear()
+
+   fig.ruler("x").lim(0, 10)
+   fig.ruler("y").lim(0, 10)
+
+   x = range(2, 9)
+   fig.draw(fig.signal(x, [3] * len(x), marker = plt.line(0, "red")).lines())
+   fig.draw(fig.signal(x, [7] * len(x), marker = plt.line(0, "blue", "double")).lines())
+
+   y = range(1, 10)
+   fig.draw(fig.signal([3] * len(y), y, marker = plt.line(1, "green", "heavy")).lines())
+   fig.draw(fig.signal([7] * len(y), y, marker = plt.line(1, "magenta", "dotted")).lines())
+
+   fig.title("Crossing line markers")
+   fig.show()
+
+.. image:: images/line_marker.png
+   :alt: line marker
+
+| With its parameters you can pick the orientation (``orientation``, 0 for horizontal, the default, and 1 for vertical), the color and style (``pixel``, in any accepted :ref:`pixel form <pixel_forms>`) and the line style (``style``), where *rounded* renders as *default*.
+
+.. caution:: The :meth:`plotext.figure.line() <plotext._plotter.plot.plot_class.line>` method (see :ref:`line <shape_line>`) is a different tool: it draws a horizontal or vertical line across the whole plot, at a given position, while this marker paints one line character at each data point.
 
 .. _color_cycling:
 
-Automatic colour cycling
-------------------------
+Color Cycling
+-------------
 
-When a drawable is built without an explicit ``pixel`` (or marker pixel), its colour is drawn from a per-figure *cycler* — a fixed pool of pixels that each :meth:`~plotext._plotter.plot.plot_class.draw` call advances through. The default pool is 16 palette colours (cycled in order); calling :meth:`~plotext._plotter.plot.plot_class.clear_pixels` rewinds it.
+| Each figure holds a *cycler*: an ordered sequence of **16 colors**.
+| Every time a signal is created without an explicit color, that is with no :class:`plotext.pixel` on its :ref:`marker <marker_objects>`, the cycler hands it the next color of the sequence: successive signals come out in different colors, with no effort on the user side.
+| A color of the sequence already on the plot is skipped, even when set by hand: two signals **never share** one by accident.
+| Explicit colors are never limited, and any color outside the 16, an integer from 16 to 255 or an RGB tuple, plays no part in the cycling.
+| Calling :meth:`plotext.figure.clear.data() <plotext._plotter.clear.clear_class.data>` or :meth:`plotext.figure.clear.pixels() <plotext._plotter.clear.clear_class.pixels>` restarts the cycler from the first color.
 
-The cycler also tracks colours the user *did* set explicitly: if a drawable is rendered with a pixel that matches one of the cycler's slots (foreground + background + style), that slot is marked used and skipped on subsequent implicit picks — so two series never end up the same palette colour by accident. Colours outside the pool (e.g. RGB triples) are not tracked: an explicit RGB pick won't influence what the cycler hands out next.
+.. note:: A user defined sequence can be set through the ``sequence`` parameter of :func:`plotext.add_theme() <plotext.add_theme>`, and takes effect once the theme is applied: see the :ref:`custom themes <custom_themes>` section.
 
-The pool itself lives at ``plotext._settings.defaults.pixel_sequence`` (a list of :class:`~plotext.pixel` objects) and can be replaced at import time before any figure is created.
+
+.. seealso:: The full method list is in the :ref:`marker section <marker_api>` of the :doc:`api <api>` page.
+
+.. note:: More documentation is available via :meth:`plotext.doc.marker() <plotext.marker>` and :meth:`plotext.doc.line() <plotext.line>`.

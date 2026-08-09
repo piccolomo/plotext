@@ -8,7 +8,7 @@ class color_cycler:
     def __init__(self, sequence):
         self.set_sequence(sequence)
 
-    # Accepts a sequence of pixel objects (caller — typically defaults — is responsible for the promotion)
+    # Accepts a sequence of pixel objects (caller, typically defaults, is responsible for the promotion)
     def set_sequence(self, sequence):
         self.sequence = list(sequence)
         self.used = [False] * len(self.sequence)
@@ -34,12 +34,12 @@ class color_cycler:
             self.remove_pixel(p)
         return self
 
-    def get_length(self):
+    def length(self):
         return len(self.sequence)
 
     def reset(self):
         self.used = [False] * len(self.sequence)
 
     def __repr__(self):
-        # Paint each ▣/▢ glyph with its pixel's own ANSI colour (recycles pixel._get_string() which wraps the literal "Pixel" in the pixel's codes)
-        return "ColorCycler: " + "  ".join(p._get_string().replace("Pixel", '▣' if u else '▢') for p, u in zip(self.sequence, self.used))
+        # Paint each ▣/▢ glyph with its pixel's own ANSI colour (recycles pixel._get_string() which wraps the literal "PlotextPixel()" in the pixel's codes)
+        return "PlotextColorCycler(" + "  ".join(p._get_string().replace("PlotextPixel()", '▣' if u else '▢') for p, u in zip(self.sequence, self.used)) + ")"

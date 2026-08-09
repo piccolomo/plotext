@@ -17,47 +17,47 @@ class tick_class:
 
     # Set position
     def set_position(self, position):
-        self.position = position
+        self._position = position
         return self
 
     # Set label
     def set_label(self, label):
-        self.label = label
+        self._label = label
         return self
 
     # Get position
-    def get_position(self):
-        return self.position
+    def position(self):
+        return self._position
 
     # Get label
-    def get_label(self):
-        return self.label
+    def label(self):
+        return self._label
 
     # Check if tick is within given bins
     def is_within_bins(self, bins):
-        return 0 <= self.position < bins
+        return 0 <= self._position < bins
 
     # Rescale tick position according to limits and bins
     def rescale(self, limits, bins, delta):
-        pos = self.get_position()
+        pos = self._position
         pos = int(rescale(pos, *limits, bins, delta))
         self.set_position(pos)
         return self
 
     # Apply logarithm to position
     def log(self):
-        self.position = log(self.position)
+        self._position = log(self._position)
         return self
 
     # Return a copy
     def copy(self):
-        return tick_class(self.position, self.label)
+        return tick_class(self._position, self._label)
 
     # Clone another tick's position
     def clone(self, tick):
-        self.position = tick.position
+        self._position = tick._position
         return self
 
     # String representation
     def __repr__(self):
-        return str((round(self.position, 2), self.label))
+        return str((round(self._position, 2), self._label))

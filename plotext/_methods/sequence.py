@@ -30,6 +30,29 @@ def noise(length = 200, amplitude = 1, offset = 0, seed = None):
     return [rng.gauss(offset, amplitude) for _ in range(length)]
 
 
+# Folder holding the bundled sample files
+def sample_folder():
+    import os
+    folder = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '_data')
+    return folder
+
+
+# Names of the bundled sample files, without extension
+def sample_names():
+    import os
+    names = sorted(set(os.path.splitext(file_name)[0] for file_name in os.listdir(sample_folder())))
+    return names
+
+
+# Return the full path of a bundled sample file, found by name without extension
+def sample(name = "puppy"):
+    import os
+    for file_name in sorted(os.listdir(sample_folder())):
+        if os.path.splitext(file_name)[0] == name:
+            return os.path.join(sample_folder(), file_name)
+    raise ValueError("unknown sample name '" + str(name) + "'; available: " + ', '.join(sample_names()))
+
+
 # Transpose a 2D list (matrix)
 def transpose(data, length = 1):
     return [[]] * length if data == [] else list(map(list, zip(*data)))

@@ -15,7 +15,7 @@ class ticks_class:
         return self
 
     # Set ticks from positions and labels
-    def set(self, positions=[], labels=[]):
+    def set(self, positions = [], labels = []):
         self.ticks = [tick_class(p, l) for p, l in zip(positions, labels)]
         return self
 
@@ -26,7 +26,7 @@ class ticks_class:
 
     # Get only tick positions
     def get_positions(self):
-        return [t.get_position() for t in self.ticks]
+        return [t.position() for t in self.ticks]
 
     # Get (min, max) of tick positions, or (None, None) if empty
     def get_limits(self):
@@ -35,19 +35,19 @@ class ticks_class:
 
     # Get only tick labels
     def get_labels(self):
-        return [t.get_label() for t in self.ticks]
+        return [t.label() for t in self.ticks]
 
     # Get maximum width of tick labels (labels are now 1-row matrices, so width = number of columns)
     def get_labels_width(self):
-        return max([l.get_width() for l in self.get_labels()], default=0)
+        return max([l.width() for l in self.get_labels()], default = 0)
 
     # Get number of ticks
-    def get_length(self):
+    def length(self):
         return len(self.ticks)
 
     # Check if ticks are empty
     def inactive(self):
-        return self.get_length() == 0
+        return self.length() == 0
 
     # Check if ticks are present
     def active(self):
@@ -74,12 +74,12 @@ class ticks_class:
         return self
 
     # Short log string
-    def get_log(self):
-        return str(self.get_length())
+    def _get_log(self):
+        return str(self.length())
 
     # String representation
     def __repr__(self):
-        return "Ticks: " + self.get_log() + ' ' + ', '.join([str(el) for el in self.ticks])
+        return "PlotextTicks(" + self._get_log() + ' ' + ', '.join([str(el) for el in self.ticks]) + ")"
 
     # Iterate over ticks
     def __iter__(self):

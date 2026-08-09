@@ -1,8 +1,8 @@
 import plotext as plt
 
-m = plt.matrix(23, 9)
+m = plt.matrix(23, 9, plt.pixel(background = "gray+"))
 m1 = plt.matrix(10, 5, plt.pixel(background = 'red+'))
-m2 = plt.colorize("some text", "magenta", "gray+", "bold")
+m2 = plt.colorize("some text", ("magenta", "gray+", "bold"))
 
 m.insert(1, 1, m1)
 m.insert(21, 1, m2, ha = "right")

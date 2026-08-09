@@ -1,116 +1,96 @@
-# ctypes bridge to the C kernel: loads the shared library and exposes a thin wrapper to register functions
+# Bridge to the C kernel: loads the compiled library and registers each of its functions with the types it takes and gives back.
 
 from plotext._settings.system import platform as system_platform
-import ctypes as c
+import ctypes
 import os
 
 
-# =========================
-# Load shared library safely
-# =========================
-
+# The compiled kernel library, beside this file, named after the system.
 script_folder = os.path.dirname(os.path.realpath(__file__))
 kernel_file_name = 'kernel.dll' if system_platform == 'windows' else 'kernel.so'
 kernel_file_path = os.path.join(script_folder, 'cpp', kernel_file_name)
 
-kernel = c.CDLL(kernel_file_path)
+# The drawing is done by the C++ kernel, so a missing or unloadable file is said plainly here, the alternative being a bare loading error from ctypes
+if not os.path.isfile(kernel_file_path):
+    raise ImportError(f"plotext cannot draw: its C++ part, {kernel_file_name}, was not built during the installation, most likely for want of a C++ compiler.\nInstall a ready made version instead, with pip install --upgrade --force-reinstall plotext, which carries the file already built.")
+
+try:
+    kernel = ctypes.CDLL(kernel_file_path)
+except OSError as error:
+    raise ImportError(f"plotext cannot draw: its C++ part, {kernel_file_path}, is there but will not load ({error}).\nOn windows this usually means the compiler that built it left its own libraries behind; installing a ready made version, with pip install --upgrade --force-reinstall plotext, avoids the matter.") from None
 
 
-# =========================
-# Types namespace
-# =========================
-
-Types = {
+# The plain name of each type the kernel functions take or give back, as "float" for a C float.
+types_dict = {
     # scalars
-    "size": c.c_size_t,
-    "integer": c.c_int,
-    "float": c.c_float,
-    "bool": c.c_bool,
+    "size": ctypes.c_size_t,
+    "integer": ctypes.c_int,
+    "float": ctypes.c_float,
+    "bool": ctypes.c_bool,
 
     # strings
-    "wstring": c.c_wchar_p,
-    "string": c.c_char_p,
-    "wchar": c.c_wchar,
+    "wstring": ctypes.c_wchar_p,
+    "string": ctypes.c_char_p,
+    "wchar": ctypes.c_wchar,
 
     # pointers
-    "void": c.c_void_p,
-    "float pointer": c.POINTER(c.c_float),
-    "wchar pointer": c.POINTER(c.c_wchar)}
+    "void": ctypes.c_void_p,
+    "float pointer": ctypes.POINTER(ctypes.c_float),
+    "wchar pointer": ctypes.POINTER(ctypes.c_wchar)}
 
 
-wstring = Types["wstring"]
-wchar = Types["wchar"]
+wstring = types_dict["wstring"]
+wchar = types_dict["wchar"]
 
 
-# =========================
-# Clink wrapper
-# =========================
-
-# Thin registry that attaches a C function and declares its ctypes signature
-class Clink:
-    # Initialize state; last tracks the most recently added function for fluent input/output calls
+# The registry of the kernel functions: each is added by name, then told the types it takes and the one it gives back.
+class clink_class:
+    # Initialize the registry; last_function is the one just added, which input() and output() describe.
     def __init__(self):
-        self.last = None
+        self.last_function = None
 
-    # Register a C function by its underscore-joined name and default its output to void
+    # Add a kernel function, its name being the given words joined by underscores, as add("matrix", "new") for matrix_new; its output starts as void.
     def add(self, *names):
         name = '_'.join(names)
 
-        cfunction = getattr(kernel, name)
-        setattr(self, name, cfunction)
-        self.last = cfunction
+        function = getattr(kernel, name)
+        setattr(self, name, function)
+        self.last_function = function
 
         self.output("void")
         return self
 
-    # Declare the argument types of the most recently added function
-    def input(self, *args):
-        self.last.argtypes = tuple(self._resolve(a) for a in args)
+    # Declare the types the last added function takes, as input("void", "size").
+    def input(self, *type_names):
+        self.last_function.argtypes = tuple(types_dict[type_name] for type_name in type_names)
         return self
 
-    # Declare the return type of the most recently added function
-    def output(self, output):
-        self.last.restype = self._resolve(output)
+    # Declare the type the last added function gives back, as output("float").
+    def output(self, type_name):
+        self.last_function.restype = types_dict[type_name]
         return self
 
-    # Map a type name to its ctypes equivalent
-    def _resolve(self, arg):
-        return Types[arg]
-
-    # Return readable signature of all registered C functions
+    # The signature of every registered function, one per line, as "matrix_new(size, size) -> void".
     def __repr__(self):
         lines = []
-
-        for name, func in self.__dict__.items():
-            if not callable(func) or name == "last":
+        for name, function in self.__dict__.items():
+            if not callable(function) or name == "last_function":
                 continue
-
-            argtypes = getattr(func, "argtypes", None)
-            restype = getattr(func, "restype", None)
-
-            # format args
-            if argtypes is None:
-                args = ""
-            else:
-                args = ", ".join(self._ctype_name(a) for a in argtypes)
-
-            # format return
-            ret = self._ctype_name(restype) if restype is not None else "None"
-
-            lines.append(f"{name}({args}) -> {ret}")
-
+            input_types = getattr(function, "argtypes", None)
+            output_type = getattr(function, "restype", None)
+            inputs = ", ".join(self._get_type_name(type_used) for type_used in input_types) if input_types else ""
+            output = self._get_type_name(output_type) if output_type is not None else "None"
+            lines.append(f"{name}({inputs}) -> {output}")
         return "\n".join(sorted(lines))
 
-    # Convert a ctypes type back to its readable name
-    def _ctype_name(self, t):
-        if t is None:
+    # The plain name of a ctypes type, as "float" for c_float; an unknown type gives its own text.
+    def _get_type_name(self, type_used):
+        if type_used is None:
             return "None"
-
-        for k, v in Types.items():
-            if v == t:
-                return k
-
-        return str(t)
+        for name, ctypes_type in types_dict.items():
+            if ctypes_type == type_used:
+                return name
+        return str(type_used)
 
 
-clink = Clink()
+clink = clink_class()

@@ -1,24 +1,21 @@
 Streaming Plots
 ===============
 
-A streaming plot is just a regular plot in a tight loop: clear the previous frame, recompute the data, redraw, sleep (or block on input). plotext makes this flicker-free with two primitives:
+| A streaming plot is a *continuous* sequence of plots: at each frame, the previous plot is cleaned and a new one is drawn with **fresh data**.
 
-- :func:`plt.terminal.clean(n) <plotext._kernel.terminal.terminal.clean>` — wipe exactly ``n`` rows above the cursor, so the next render overwrites the previous one cleanly with no scroll.
-- ``fig.show(flush = 1)`` — emit the rendered frame in a single write, eliminating tearing.
-- :func:`plt.sleep(seconds) <plotext.sleep>` — pause between frames; throttles the loop and further reduces flicker on fast terminals.
+|plotext| runs the loop smoothly with six tools:
 
-Combine those with :func:`plt.terminal.get_size(update=True) <plotext._kernel.terminal.terminal.get_size>` and you also get free terminal-resize handling: the next frame fills the new size. Animated title and axis labels follow naturally — feed :func:`plt.effect` into :func:`fig.title` and :func:`fig.label`, advancing the effect's ``step`` each iteration.
+- :meth:`size(update = True) <plotext._kernel.terminal.terminal.size>` takes a **fresh** :doc:`terminal <terminal>` size instead of the last known one, passed to :meth:`plot_size() <plotext._plotter.plot.plot_class.plot_size>`, adapting the stream to an optionally resized terminal
+- :meth:`clean(lines) <plotext._kernel.terminal.terminal.clean>`, a method of the :doc:`terminal <terminal>`, cleans the given number of last printed lines, typically the plot height, so that the next frame takes their place with **no scrolling**; the ``if frame`` guard skips it at the first pass, when nothing is on screen yet
+- :meth:`clear.data() <plotext._plotter.clear.clear_class.data>` clears **only the data**, so that limits, labels and title, set once before the loop, survive across frames
+- :func:`sleep(seconds) <plotext.sleep>` pauses between frames: tweak the time to reduce any remaining flickering
+- :meth:`show(flush = True) <plotext._plotter.plot.plot_class.show>` pushes the whole frame to the :doc:`terminal <terminal>` in **one go**, once fully written, avoiding partially drawn frames on screen
+- :meth:`is_pressed(key) <plotext._kernel.terminal.terminal.is_pressed>`, a method of the :doc:`terminal <terminal>`, tells whether the given key has been typed, answering right away **without pausing** the program, used here to stop the stream
 
-- :ref:`stream_single`  — a single scrolling signal.
-- :ref:`stream_pattern` — the loop skeleton, line by line.
+.. seealso:: Feeding :func:`plotext.effect` to the title and :doc:`axis <axis>` labels, advanced at each frame, animates them too: it returns a single row :ref:`matrix <matrix>` whose characters are colored by a moving effect, described in the :ref:`animated text effects <effects>` section.
 
 
-.. _stream_single:
-
-Single signal
--------------
-
-A sine wave scrolling left at 4 cycles per window. Press ``q`` to exit:
+A sine wave scrolling left, adapting to the :doc:`terminal <terminal>` size; typing ``q`` stops the stream:
 
 .. code-block:: python
 
@@ -29,86 +26,38 @@ A sine wave scrolling left at 4 cycles per window. Press ``q`` to exit:
    length = 200
 
    fig.clear()
-   fig.lim(0, length, axis = "x")
-   fig.lim(-1, 1,     axis = "y")
+   fig.ruler("x").lim(0, length)
+   fig.ruler("y").lim(-1, 1)
 
-   x = range(length)
-   i = 0
+   x      = range(length)
+   y      = lambda frame: [math.sin(2 * math.pi * (k - frame) / length * 4) for k in range(length)]
+   title  = lambda frame: plt.effect("streaming sin wave", "rainbow",  step = frame * 0.4)
+   xlabel = lambda frame: plt.effect("samples",            "shimmer",  step = frame * 0.4)
+   ylabel = lambda frame: plt.effect("amplitude",          "gradient", step = frame * 0.2)
+
+   frame = 0
    while True:
-       if plt.terminal.is_pressed('q'): break
-       fig_height = fig.get_size()[1]                                # rows currently on screen
-       if i: plt.terminal.clean(fig_height)                          # wipe the previous frame
-       w, h = plt.terminal.get_size(update = True)
-       fig.cld()                                                     # clear data, keep axes/limits
-       fig.plot_size(w, h)                                           # adapt to current terminal
-       y = [math.sin(2 * math.pi * (k - i) / length * 4) for k in range(length)]
-       fig.title(plt.effect("streaming sin wave", "rainbow",  step = i * 0.4))
-       fig.label(plt.effect("samples",            "shimmer",  step = i * 0.4), axis = 0)
-       fig.label(plt.effect("amplitude",          "gradient", step = i * 0.2), axis = 1)
-       fig.draw(fig.signal(x, y).lines(1).label("sin"))
-       fig.show(flush = 1)
+
+       w, h = plt.terminal.size(update = True)            # take a fresh terminal size
+       if frame: plt.terminal.clean(h)                    # clean the previous frame, hint included
+
+       fig.clear.data()                                   # clear the data, keeping the settings
+       fig.plot_size(w, h - 1)                            # adapt to the terminal, one row spared for the hint
+
+       fig.title(title(frame))
+       fig.label(xlabel(frame), axis = 0)
+       fig.label(ylabel(frame), axis = 1)
+       fig.draw(fig.signal(x, y(frame)).lines())
+
+       plt.sleep(0.001)                                   # pause between frames
+       fig.show(flush = True)
+
+       if plt.terminal.is_pressed('q'): break             # exit on key press
        print("press q to exit")
-       i += 1
 
-This is the source of ``tests/22_stream.py``.
+       frame += 1
 
+.. image:: images/stream.gif
 
-.. _stream_pattern:
+.. note:: There is no shell version of a streaming plot: the :doc:`command line <cli>` chain syntax cannot express a loop. If needed, ``python3 -c "<code>"`` runs the Python code above directly.
 
-The loop skeleton
------------------
-
-Every streaming plot in plotext follows the same five-step skeleton:
-
-.. code-block:: python
-
-   i = 0
-   while True:
-       if plt.terminal.is_pressed('q'): break                        # 1. exit on keypress
-       if i: plt.terminal.clean(fig.get_size()[1])                   # 2. wipe previous frame
-       w, h = plt.terminal.get_size(update = True)                   # 3. re-read terminal size
-       fig.cld(); fig.plot_size(w, h)                                # 4. clear data, adapt size
-       # ... compute new data, fig.draw(...) ...
-       fig.show(flush = 1)                                           # 5. render in one write
-       i += 1
-
-Notes:
-
-- ``fig.cld()`` only clears **data**; axis limits, labels, and titles set outside the loop survive — set ``lim``, ``title``, ``xlabel`` etc. *before* the loop.
-- ``flush = 1`` is what makes the redraw look atomic; without it you can see partial frames on slow terminals.
-- The first iteration ``i == 0`` is special: nothing is on screen yet, so ``terminal.clean`` would eat the prompt above. The ``if i:`` guard skips it.
-
-.. note:: A runnable streaming example lives at ``tests/22_stream.py``.
-
-
-Command-line
-------------
-
-Streaming plots are control-flow-heavy: each frame's data is computed inside the loop, frames are cleared with :func:`plt.terminal.clean`, and rendering is keyed off ``fig.show(flush=1)``. The CLI's chain syntax can't express that — so for animation you reach for ``plotext -c "<code>"``, which runs arbitrary Python with ``plt`` (and ``plotext``) pre-bound.
-
-The Python example above translates onto a shell line one-to-one:
-
-.. code-block:: shell
-
-   plotext -c "
-   import math
-   fig = plt.figure
-   length = 200
-   fig.clear()
-   fig.lim(0, length, axis='x')
-   fig.lim(-1, 1, axis='y')
-   x = range(length)
-   i = 0
-   while True:
-       if plt.terminal.is_pressed('q'): break
-       if i: plt.terminal.clean(fig.get_size()[1] - 2)
-       fig.cld()
-       y = [math.sin(2 * math.pi * (k - i) / length * 4) for k in range(length)]
-       fig.draw(fig.signal(x, y).lines(1))
-       fig.show(flush=1)
-       i += 1
-   "
-
-The ``- 2`` in ``terminal.clean(fig.get_size()[1] - 2)`` cancels the default 2-row prompt offset that :meth:`plt.terminal.clean(N) <plotext._kernel.terminal.terminal.clean>` adds for an IPython-style input area. In IPython the offset is real and the Python example earlier on this page leaves it; from bash the offset is spurious and would shift the new frame down, leaving the previous frame's bottom row (the x-ticks) visible.
-
-``plotext -c "<code>"`` is equivalent to ``python -c "import plotext as plt; <code>"`` — same one-shot Python execution, just with ``plt`` already imported. Anywhere the chain syntax falls short (animation, real event handling, custom data generation per frame), reach for it.

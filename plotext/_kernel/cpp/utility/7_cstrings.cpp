@@ -65,6 +65,4 @@ extern "C" {
     // Delete a wchar_t buffer produced by wstring_to_cstring
     void wstring_delete(wchar_t * wstr) noexcept { delete_cstring(wstr); }
 
-    // Disable C/C++ stdio sync and untie wcout from stdout for faster output
-    void fast_print() { std::ios::sync_with_stdio(false); std::wcout.tie(nullptr); }
 }

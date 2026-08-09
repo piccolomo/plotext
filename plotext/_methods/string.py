@@ -11,21 +11,24 @@ def write(string, flush = True):
     return string
 
 
-# Remove ANSI color codes from a string or colorize object
-def uncolorize(string):
+# Remove ANSI color codes from a string, colorize or matrix object, returning a plain string
+def uncolorize(item):
     from plotext._primitives.colorize import colorize
-    if isinstance(string, colorize):
-        return string.get_string(1)
-    while ansi_begin in string:
-        b = string.index(ansi_begin)
-        e = string[b:].index('m') + b + 1
-        string = string.replace(string[b:e], '')
-    return string
+    from plotext._primitives.matrix import matrix
+    if isinstance(item, colorize):
+        return item.string(1)
+    if isinstance(item, matrix):
+        return item.string(colorless = True)
+    while ansi_begin in item:
+        b = item.index(ansi_begin)
+        e = item[b:].index('m') + b + 1
+        item = item.replace(item[b:e], '')
+    return item
 
 
-# Generate multiple new lines
-def new_lines(n = 2):
-    return new_line * n
+# The given number of new lines, joined in one text.
+def new_lines(number = 2):
+    return new_line * number
 
 
 # Add prefix to string if both exist
@@ -56,3 +59,12 @@ def connect_strings(docs, delimiter = empty):
 def log_limits(limits):
     limits = ['None' if limit is None else str(round(limit, 2)) for limit in limits]
     return '[' + ', '.join(limits) + ']'
+
+
+# A message from plotext itself, prefixed by the method saying it: a log for something done, a warning for something refused, an error for something wrong; the last two go on the error stream. Imports at call time, to avoid import cycles
+def note(prefix, message, kind = "log"):
+    from plotext._primitives.colorize import colorize
+    from plotext._settings import defaults
+    prefix_pixel = {"log": defaults.log_prefix_pixel, "warning": defaults.warning_prefix_pixel, "error": defaults.error_prefix_pixel}[kind]
+    stream = sys.stdout if kind == "log" else sys.stderr
+    print(colorize(prefix + ':', pixel = prefix_pixel).string() + ' ' + message, file = stream)

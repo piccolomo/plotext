@@ -1,5 +1,4 @@
-// Mosaic: ultra-compact boolean matrix (max 3x3 -> 9 bits in 1 byte)
-// Bits stored in reverse order (top-left = highest bit)
+// Mosaic: a boolean matrix of at most 3 by 3, packed into one byte, the top left cell taking the highest bit
 
 class Mosaic {
 private:
@@ -26,10 +25,10 @@ public:
     virtual ~Mosaic() noexcept {}
 
     // Copy assignment
-    constexpr Mosaic & operator=(const Mosaic &) noexcept = default;
+    Mosaic & operator=(const Mosaic &) noexcept = default;              // constexpr on a defaulted assignment is allowed only from C++23
 
     // Move assignment
-    constexpr Mosaic & operator=(Mosaic &&) noexcept = default;
+    Mosaic & operator=(Mosaic &&) noexcept = default;
 
     // Number of columns
     constexpr size_t get_cols() const noexcept {return cols;}

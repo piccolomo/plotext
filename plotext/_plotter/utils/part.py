@@ -55,19 +55,19 @@ class part_class:
         return self._row + (self._height if side else 0)
 
     # Get position (col, row) considering offsets
-    def get_position(self, xside = 0, yside = 0):
+    def position(self, xside = 0, yside = 0):
         return self.get_col(xside), self.get_row(yside)
 
     # Get width
-    def get_width(self):
+    def width(self):
         return self._width
 
     # Get height
-    def get_height(self):
+    def height(self):
         return self._height
 
     # Get size (width, height)
-    def get_size(self):
+    def size(self):
         return self._width, self._height
 
     # Public getter for name
@@ -75,9 +75,9 @@ class part_class:
         return self._name
 
     # Return a log string describing the part
-    def get_log(self):
+    def _get_log(self):
         return f"{self._name.title()}: position: {(self._col, self._row)}, size: {(self._width, self._height)}"
 
     # String representation
     def __repr__(self):
-        return f"Plotext Part: " + self.get_log()
+        return "PlotextPart(" + self._get_log() + ")"

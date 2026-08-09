@@ -1,4 +1,4 @@
-# Convert a 2D numeric matrix into a 2D of (r, g, b) triples for heatmap rendering.
+# Convert a 2D grid of numbers into a 2D of (r, g, b) triples for heatmap rendering.
 
 from plotext._constants.enums import viridis, symbol_codes
 
@@ -19,7 +19,7 @@ def _sample(stops, t):
     return tuple(int(a[k] + (b[k] - a[k]) * f) for k in range(3))
 
 
-# Map every cell of a 2D numeric matrix to an (r, g, b) triple via the named colormap; values are normalized by the matrix min/max. Supported names: 'gray', 'viridis'.
+# Map every cell of a 2D grid of numbers to an (r, g, b) triple via the named colormap; values are normalized by the grid min/max. Supported names: 'gray', 'viridis'.
 def colormap(data, name = 'gray'):
     flat = [v for row in data for v in row]
     vmin, vmax = min(flat), max(flat)

@@ -1,36 +1,46 @@
-Inspection
-==========
+Plot Inspection
+===============
 
-Plotext exposes a small set of helpers for poking at the live state of a plot or generating quick test data — useful when investigating layout problems, profiling renders, or just exercising the pipeline.
+|plotext| exposes a small set of helpers for poking at the live state of a plot, useful when investigating layout problems or profiling renders.
 
 
-Test data
----------
+.. _navigate:
 
-Two synthetic-data generators are bundled for tests and examples:
+Navigate
+--------
 
-- :func:`~plotext.sin` — sinusoidal samples, with optional ``phase``, ``decay`` and ``offset``.
-- :func:`~plotext.square` — square wave alternating between ``+amplitude`` and ``-amplitude``.
+Once a tree of :ref:`subplots <subplots>` has been built, the following methods navigate it:
 
-Both share the same ``periods``, ``length`` and ``amplitude`` parameters and return a plain Python list of floats — drop-in input to :meth:`~plotext._plotter.plot.plot_class.signal`.
+- :meth:`parent() <plotext._plotter.plot.plot_class.parent>`: returns the **parent** plot at the given nesting level: ``0`` is the plot itself, ``1`` (the default) its immediate parent, and so on; above the master sits the :doc:`terminal <terminal>` object, which is its own parent.
+- :meth:`master() <plotext._plotter.plot.plot_class.master>`: returns the **master** plot at the top of the tree, that is :class:`plotext.figure <plotext._plotter.plot.plot_class>` itself.
+- :meth:`position() <plotext._plotter.plot.plot_class.position>`: returns the subplot **position** ``(row, col)`` within its parent grid, ``(None, None)`` for the master.
+- :meth:`size() <plotext._plotter.plot.plot_class.size>`: returns the subplot **size** ``(width, height)`` in :doc:`terminal <terminal>` characters.
+
+.. note:: The tree itself can be printed with the :meth:`log() <plotext._plotter.plot.plot_class.log>` methods, described below.
+
+
+Subplots Log
+------------
+
+| The :meth:`log() <plotext._plotter.plot.plot_class.log>` method, available on any plot or :ref:`subplot <subplots>`, prints that plot and every nested subplot, **one indented line** each, showing position, size and grid.
+| The same method on :class:`plotext.terminal <plotext._kernel.terminal.terminal>` prints the tree from the top, the :doc:`terminal <terminal>` included.
+
+For example, on the plot of the :ref:`subplots <subplots>` page example:
 
 .. code-block:: python
 
-   import plotext as plt
+   fig.log()
 
-   fig = plt.figure
-   fig.clear()
-   fig.draw(fig.signal(plt.sin(periods = 4)).lines().label("sin"))
-   fig.draw(fig.signal(plt.square(periods = 4)).lines().label("square"))
-   fig.title("Test data generators")
-   fig.legend()
-   fig.show()
+.. image:: images/tree.png
+   :alt: subplot tree
 
 
 Timing
 ------
 
-:meth:`~plotext._plotter.plot.plot_class.time` prints a timing report of the most recent ``show()`` / ``build()`` — total elapsed time and a per-step breakdown for each profiled section.
+The :meth:`time() <plotext._plotter.plot.plot_class.time>` method prints a **timing report** of the most recent :meth:`show() <plotext._plotter.plot.plot_class.show>` or :meth:`build() <plotext._plotter.plot.plot_class.build>`: the total elapsed time and, when ``full`` is ``True`` (the default), a per-step breakdown for each profiled section.
+
+.. note:: :meth:`build() <plotext._plotter.plot.plot_class.build>` renders the figure and gives back its :ref:`matrix <matrix>`, the grid of colored characters, which can be sliced, stacked, printed and saved.
 
 .. code-block:: python
 
@@ -38,18 +48,11 @@ Timing
 
    fig = plt.figure
    fig.clear()
-   fig.draw(fig.signal(plt.sin()).lines(True))
+   fig.draw(fig.signal(plt.sin()).lines())
    fig.show()
-   fig.time()                           # full report
-   fig.time(full = False)               # total only
+   fig.time()
 
-Pass ``full = False`` to print only the total.
+.. image:: images/time.png
+   :alt: timing report
 
-
-Tree dumps
-----------
-
-- :meth:`~plotext._kernel.terminal.terminal.log` on ``plt.terminal`` prints the terminal, the master plot and every nested subplot.
-- :meth:`~plotext._plotter.plot.plot_class.log` on any plot or subplot prints just that subtree.
-- :meth:`~plotext._plotter.plot.plot_class.get_log` returns the same dump as a string, for capture or logging.
-- :meth:`~plotext._signal.signal.signal_class.log` on a signal prints its points (pass ``full = True`` to include fill information).
+.. caution:: This is a developer oriented tool, meant for investigating slow renders more than for everyday plotting.

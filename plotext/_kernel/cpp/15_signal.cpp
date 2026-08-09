@@ -5,7 +5,7 @@ private:
     bool          xside       = false;     // false = lower x axis, true = upper
     bool          yside       = false;     // false = left y axis,  true = right
     wstring       label;
-    Marker      * marker      = nullptr;   // owned — destroyed in ~Signal, deep-copied on set/copy
+    Marker      * marker      = nullptr;   // owned, destroyed in ~Signal, deep-copied on set/copy
     bool          fill_method = false;     // false = simple, true = full
     bool          line_method = false;     // false = simple, true = full
 
@@ -163,12 +163,12 @@ public:
 
     wstring get_wstring(bool full = false) const noexcept {
         wostringstream os;
-        os << L"Signal: xside " << xside << L", yside " << yside
-           << L", marker " << (marker ? marker->get_wstring() : wstring(L"none"))
-           << L", label " << label
-           << L", line_method " << line_method
-           << L", fill_method " << fill_method
-           << L", length " << get_length();
+        os << L"Plotext signal: length " << get_length()
+           << L", xside " << (xside ? L"upper" : L"lower")
+           << L", yside " << (yside ? L"right" : L"left")
+           << L", " << (label.empty() ? wstring(L"no label") : L"label " + label)
+           << L", line method " << (line_method ? L"full" : L"simple")
+           << L", fill method " << (fill_method ? L"full" : L"simple");
         if (full)
             for (size_t i = 0; i < get_length(); ++i)
                 os << L"\n  " << i << L" " << (i > 0 && at(i).is_connected() ? L"↑" : L" ")

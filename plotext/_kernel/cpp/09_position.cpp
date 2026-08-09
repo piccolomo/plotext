@@ -24,10 +24,10 @@ public:
     virtual ~Position() noexcept {}
 
     // Copy assignment
-    constexpr Position & operator=(const Position &) noexcept = default;
+    Position & operator=(const Position &) noexcept = default;              // constexpr on a defaulted assignment is allowed only from C++23
 
     // Move assignment
-    constexpr Position & operator=(Position &&) noexcept = default;
+    Position & operator=(Position &&) noexcept = default;
 
     // ------------ comparison ------------
 
@@ -56,11 +56,6 @@ public:
         return x >= 0.0f && y >= 0.0f &&
                x < static_cast<float>(width) &&
                y < static_cast<float>(height); }
-
-    // Return the midpoint between this position and another
-    Position get_middle(const Position & p) const noexcept {
-        return Position(0.5f * x + 0.5f * p.x,
-                             0.5f * y + 0.5f * p.y); }
 
     // ------------ setters ------------
 

@@ -2,12 +2,12 @@
 
 from plotext._kernel.clink import clink
 from plotext._primitives.pixel import pixel as pixel_class
-from plotext._correct import line as correct_line
+from plotext._correct import enums as correct_line
 
 
 class box_style_class:
     # style + pixel; or pass _pointer to wrap an existing C-side BoxStyle.
-    def __init__(self, style=None, pixel=None, _pointer=None):
+    def __init__(self, style = None, pixel = None, _pointer = None):
         self._pointer = _pointer if _pointer is not None else clink.box_style_new(
             correct_line.line_style(style),
             (pixel if pixel is not None else pixel_class())._pointer)
@@ -24,8 +24,8 @@ class box_style_class:
         clink.box_style_set_style(self._pointer, correct_line.line_style(style))
         return self
 
-    def get_pixel(self):
-        return pixel_class(_pointer=clink.box_style_get_pixel(self._pointer))
+    def pixel(self):
+        return pixel_class(_pointer = clink.box_style_get_pixel(self._pointer))
 
     def set_pixel(self, pixel):
         clink.box_style_set_pixel(self._pointer, pixel._pointer)

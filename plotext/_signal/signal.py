@@ -1,6 +1,6 @@
 # Signal class: wraps C++ signal pointer; manages points, fill, axes, labels and plotting
 
-from plotext._signal.point_filled import point_filled_class
+from plotext._signal.point_filled import point
 from plotext._primitives.marker import marker as marker_class
 from plotext._kernel.clink import clink
 from plotext._kernel.tools import wstring
@@ -36,45 +36,43 @@ class signal_class:
         return self._set_label(label)
 
     # Connect every point uniformly (True = lines drawn between all points, False = scatter)
-    def lines(self, value = True):
-        v = bool(value)
-        for i in range(self.get_length()):
-            self._set_connected(i, v)
+    def lines(self, active = True):
+        a = bool(active)
+        for i in range(self.length()):
+            self._set_connected(i, a)
         return self
 
     # Connect a single point at index (effective range 1..N-1; out-of-range indices ignored)
-    def point_lines(self, index, value = True):
-        if 0 <= index < self.get_length():
-            self._set_connected(index, bool(value))
+    def line(self, index, active = True):
+        if 0 <= index < self.length():
+            self._set_connected(index, bool(active))
         return self
 
     # Fill a vertical stem from each point down to the x axis
     def fillx(self, active = True):
         if active:
             for i, p in enumerate(self):
-                self._set_fill_point(i, p.get_x(), 0, p.get_marker())
+                self._set_fill_point(i, p.x(), 0, p.marker())
         return self
 
     # Fill a horizontal stem from each point across to the y axis
     def filly(self, active = True):
         if active:
             for i, p in enumerate(self):
-                self._set_fill_point(i, 0, p.get_y(), p.get_marker())
+                self._set_fill_point(i, 0, p.y(), p.marker())
         return self
 
 
     # === Internal setters (used by plot_class.signal and by drawables) ===
 
-    # Set the line drawing method ('simple' or 'full'; 0 or 1) — fluent.
-    def line_method(self, method = None):
+    # Set the drawing method ('simple' or 'full'; 0 or 1) on connecting lines, on stem fills, or on both at once.
+    def density(self, method = None, scope = None):
         method = correct_bool.line_method(method)
-        clink.signal_set_line_method(self._pointer, method)
-        return self
-
-    # Set the fill drawing method ('simple' or 'full'; 0 or 1) — fluent.
-    def fill_method(self, method = None):
-        method = correct_bool.line_method(method)
-        clink.signal_set_fill_method(self._pointer, method)
+        scope = correct_bool.line_method_scope(scope)
+        if scope in ('line', 'both'):
+            clink.signal_set_line_method(self._pointer, method)
+        if scope in ('fill', 'both'):
+            clink.signal_set_fill_method(self._pointer, method)
         return self
 
     # Set signal label
@@ -115,8 +113,8 @@ class signal_class:
     # Copy fill from another signal
     def fill(self, signal):
         for i in signal._get_range():
-            point = signal._get(i)
-            x, y, m = point.get_x(), point.get_y(), point.get_marker()
+            point = signal.get(i)
+            x, y, m = point.x(), point.y(), point.marker()
             self._set_fill_point(i, x, y, m)
         return self
 
@@ -203,8 +201,8 @@ class signal_class:
         return clink.signal_get_line_method(self._pointer)
 
     # Get point by index
-    def _get(self, index):
-        return point_filled_class(_pointer = clink.signal_get_point(self._pointer, index))
+    def get(self, index):
+        return point(_pointer = clink.signal_get_point(self._pointer, index))
 
     # Get X values
     def _get_x(self):
@@ -215,12 +213,12 @@ class signal_class:
         return [p._get_y() for p in self]
 
     # Get number of points
-    def get_length(self):
+    def length(self):
         return clink.signal_get_length(self._pointer)
 
     # Get range for iteration
     def _get_range(self):
-        return range(self.get_length())
+        return range(self.length())
 
     # Get minimum X (optionally filtered by y-range)
     def _get_xmin(self, ymin = None, ymax = None):
@@ -246,11 +244,11 @@ class signal_class:
     def _get_ylimits(self, xmin = None, xmax = None):
         return self._get_ymin(xmin, xmax), self._get_ymax(xmin, xmax)
 
-    # Unique pixels across every point's main and (when present) fill markers — deduped via a Python set (pixels are hashable). Capped at max_unique_pixels (see _constants/numerical.py) so image-style signals return in O(cap) instead of O(N).
+    # Unique pixels across every point's main and (when present) fill markers, deduped via a Python set (pixels are hashable). Capped at max_unique_pixels (see _constants/numerical.py) so image-style signals return in O(cap) instead of O(N).
     def _get_unique_pixels(self):
         out, seen = [], set()
         for p in self:
-            for px in p.get_pixels():
+            for px in p._get_pixels():
                 if px not in seen:
                     seen.add(px)
                     out.append(px)
@@ -278,13 +276,12 @@ class signal_class:
         clink.wstring_delete(p)
         return out
 
-    # Print log
-    def log(self, full = False):
-        print(self._get_log(full))
+    # Print signal summary followed by every point
+    def log(self):
+        print(self._get_log(full = True))
         return self
 
-    # Rescale, plot and densify into canvas-space Points (no squash, no offset, no background fix).
-    # The post-processing steps (squash, fix_background, add_offset, matrix insert) run once over the merged signals in signals_class.draw.
+    # Turn the signal points into canvas positions: rescaled, drawn and made denser; the later steps, squashing, background and offset, happen once on all signals together, in signals_class.draw.
     def _prepare_points(self, xruler, yruler, canvas_width, canvas_height):
         xlim, ylim = xruler._get_limits(direction = True), yruler._get_limits(direction = True)
         xdelta, ydelta = xruler._get_delta(), yruler._get_delta()
@@ -297,10 +294,10 @@ class signal_class:
         points.select_in_matrix(canvas_width, canvas_height)
         return points
 
-    # Represent signal
+    # Represent signal as its one-line summary
     def __repr__(self):
-        return f"Plotext Signal: length {self.get_length()}"
+        return self._get_log(full = False)
 
     # Iterator over points
     def __iter__(self):
-        return (self._get(i) for i in self._get_range())
+        return (self.get(i) for i in self._get_range())

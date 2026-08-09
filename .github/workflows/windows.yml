@@ -1,0 +1,39 @@
+name: Windows tests
+
+# Installs plotext on a real Windows machine and runs the unit tests of plotext and of prettydoc there.
+
+on:
+  push:
+    paths:
+      - 'plotext/**'
+      - 'tests/**'
+      - 'setup.py'
+      - 'build_cpp.py'
+      - 'pyproject.toml'
+      - '.github/workflows/windows.yml'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    name: Unit tests on Windows
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install plotext
+        run: pip install .[image]
+
+      - name: Run the unit tests
+        run: python -m unittest plotext._tests.primitives plotext._tests.plots plotext._tests.dates plotext._tests.fixed_bugs plotext._tests.hashes plotext.prettydoc._tests.docs plotext.prettydoc._tests.hashes -v
+
+      # The plot is written by the C++ kernel, and windows mangles wide characters unless it is told they are utf-8: this draws a plot of a fixed size, with a named marker, and reads back the characters it should hold
+      - name: Check the drawn plot comes out as real characters
+        run: |
+          python -c "import plotext as plt; plt.figure.plot_size(80, 20); plt.figure.draw(plt.figure.signal(plt.sin(), marker = 'dot')); plt.figure.show()" > plot.txt
+          python -c "text = open('plot.txt', encoding = 'utf-8').read(); missing = [name for name, piece in (('the frame', chr(0x2500)), ('the axis', chr(0x2524)), ('the marker', chr(0x2022)), ('the color codes', chr(27) + '[38;5;'), ('the reset code', chr(27) + '[0m')) if piece not in text]; print('missing from the plot:', missing or 'none'); exit(1 if missing else 0)"

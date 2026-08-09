@@ -2,23 +2,22 @@
 
 import sys
 
-from plotext._cli.arguments import group_by_method
-from plotext._cli.run import find_method, run_methods
+from plotext._cli.words import split_sentence_by_method, get_method_name
+from plotext._cli.run import get_method_and_owner_tuple_from_name, run_methods
 from plotext._cli.help import print_help, print_methods
+from plotext._methods.string import note
 
 
-# Exec arbitrary Python with `plt` and `plotext` pre-bound. Used by `plotext -c "<code>"`.
-def run_c_code(code):
-    import plotext as plotext_module
+# Run the given Python code. Used by `plotext -c "<code>"`.
+def run_python_code(code):
     try:
-        exec(code, {'plt': plotext_module, 'plotext': plotext_module, '__name__': '__main__'})
+        exec(code, {'__name__': '__main__'})
     except Exception as error:
-        print(f"plotext: {error}", file=sys.stderr)
+        note("plotext", f"{error}", "error")
         sys.exit(1)
 
 
-# Print one method's docstring: styled prettydoc if registered, else raw __doc__.
-# Used by `plotext --METHOD --doc`.
+# Prints the docstring for 'plotext --method --doc'. The normal route would run the method first with no arguments, causing a crash.
 def print_method_doc(method_name):
     import plotext as plotext_module
     pretty = getattr(plotext_module.doc, method_name, None)
@@ -26,52 +25,51 @@ def print_method_doc(method_name):
         pretty()
         return
     from plotext._signal.signal import signal_class
-    method, _ = find_method(method_name, [signal_class, plotext_module.figure, plotext_module])
+    method, _ = get_method_and_owner_tuple_from_name(method_name, [signal_class, plotext_module.figure, plotext_module])
     if method is None:
-        print(f"plotext: unknown method '{method_name}'", file=sys.stderr)
+        note("plotext", f"unknown method '{method_name}'", "error")
         sys.exit(1)
     print(method.__doc__ or f"(no docstring for --{method_name})")
 
 
-# Command-line entry point. Recognises:
-#   plotext                              -> print --help
-#   plotext --help, -h                   -> print --help
-#   plotext --doc                        -> open the interactive doc picker
-#   plotext -c "<code>"                  -> exec arbitrary Python (plt is plotext)
-#   plotext --METHOD ... --METHOD --help -> print one method's docstring
-#   plotext --METHOD [args] ...          -> run the --METHOD chain
-def main(arguments=None):
-    # Drop sys.argv[0] (the program name); keep the rest as user-typed tokens.
-    arguments = sys.argv[1:] if arguments is None else arguments
+# Command-line entry point: routes the typed sentence to the help page, the documentation menu, the methods list, the -c code runner, or the methods.
+def main(sentence = None):
+    # Drop sys.argv[0] (the program name); keep the rest, the words typed after plotext.
+    sentence = sys.argv[1:] if sentence is None else sentence
 
-    # No args, or --help / -h: print the help page.
-    if not arguments or arguments[0] in ('--help', '-h'):
+    # Nothing typed, or --help / -h: print the help page.
+    if not sentence or sentence[0] in ('--help', '-h'):
         print_help()
         return
 
-    # --doc: open the interactive doc picker grouped by section.
-    if arguments[0] == '--doc':
+    # --doc: open the interactive documentation menu.
+    if sentence[0] == '--doc':
         import plotext as plt
         plt.doc()
         return
 
-    # -c "<code>": exec arbitrary Python instead of parsing the --METHOD chain.
-    if arguments[0] == '-c':
-        if len(arguments) < 2:
-            print("plotext: -c needs a code string", file=sys.stderr)
-            sys.exit(1)
-        run_c_code(arguments[1])
+    # --methods: print the categorized list of CLI methods.
+    if sentence[0] == '--methods':
+        print_methods()
         return
 
-    # Otherwise: parse the chain of --METHODs and run them in order.
-    methods = group_by_method(arguments)
+    # -c "<code>": run the given Python code instead of the methods.
+    if sentence[0] == '-c':
+        if len(sentence) < 2:
+            note("plotext", "-c needs a code string", "error")
+            sys.exit(1)
+        run_python_code(sentence[1])
+        return
+
+    # Otherwise: divide the sentence by --method and run the methods in order.
+    methods_words = split_sentence_by_method(sentence)
 
     # Per-method doc shortcut: `plotext --signal --doc` prints signal's docstring.
-    if len(methods) >= 2 and methods[-1][0] == 'doc':
-        print_method_doc(methods[-2][0])
+    if len(methods_words) >= 2 and get_method_name(methods_words[-1][0]) == 'doc':
+        print_method_doc(get_method_name(methods_words[-2][0]))
         return
 
-    run_methods(methods)
+    run_methods(methods_words)
 
 
 if __name__ == '__main__':

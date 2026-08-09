@@ -1,124 +1,172 @@
 Pretty Docstrings
 =================
 
-You can create colorful and elegant docstrings using the `prettydoc` module within `plotext`. Below is an example of how to utilize this feature on two dummy functions ``mean()`` and ``harmonic_mean()``.
+| The ``prettydoc`` module creates **colorful and elegant** docstrings, browsable one by one or through an interactive menu.
+| All the |plotext| documentation is **written with it**: the ``plotext.doc`` container holds every |plotext| docstring, and calling it, as ``plotext.doc()``, opens the menu below.
+
+.. image:: images/doc_menu.png
+   :alt: The plotext.doc() interactive menu
+
+.. note:: In |plotext|, a single docstring is printed by ``plotext.doc.bar()``, the ``bar()`` entry of the container, or by ``plotext.figure.bar.doc()``: every documented method gains a ``doc()`` method of its own, printing its docstring.
+
+
+Example
+-------
+
+Here is the docstring of a dummy ``harmonic_mean()`` function, documented with `prettydoc`:
+
+.. image:: images/prettydoc.png
+   :alt: Prettydoc Example
+   :width: 325
+
+produced by the following code:
 
 .. literalinclude:: code/prettydoc.py
    :class: code-block
    :language: python3
 
-And here are the resulting docstrings:
-
-.. image:: images/prettydoc.png
-   :alt: Prettydoc Example
-   :width: 650
-
-.. note:: 
-
-    * All **plotext documentation** is written using `prettydoc`. The ``plotext.doc`` container holds all basic `plotext` docstrings, while ``plotext.prettydoc.doc`` holds all `prettydoc` related docstrings.
-
-    * This feature is currently **under active development**. We welcome feedback and suggestions! If you encounter any issues or have feature requests, please open `a new issue <https://github.com/piccolomo/plotext/issues/new>`_ on GitHub.
-
 The following sections comment and explain the previous code.
 
-Initialize
+
+Functions
+---------
+
+| A new :class:`plotext.prettydoc.docs() <plotext.prettydoc.docs>` manager starts empty: its :meth:`function() <plotext.prettydoc.docs.function>` method adds a function to it, taking the actual function as its parameter.
+| Every method after it applies to the **most recently added** function, until the next :meth:`function() <plotext.prettydoc.docs.function>` call.
+
+.. note:: Every piece of documentation is **optional**: a field never added simply does not appear in the rendered docstring.
+
+.. tip:: `prettydoc` documents functions, class methods and attributes alike: an attribute carries no Python ``__name__`` value, so it is added with the ``name`` parameter, as in ``function(figure, name = "figure")``.
+
+
+Descriptions
+------------
+
+The :meth:`description() <plotext.prettydoc.docs.description>` method of the ``docs()`` manager adds the main function documentation, appearing as the docstring intro, and, optionally, the alternative name the function also answers to, through its ``alias`` parameter.
+
+
+Parameters
 ----------
 
-- **initialize the container**: in the example above, we instantiate a new ``prettydoc.docs()`` container and define two dummy functions, ``mean()`` and ``harmonic_mean()``.
+| The :meth:`parameter() <plotext.prettydoc.docs.parameter>` method of the ``docs()`` manager details a function parameter: it requires the parameter ``name`` and main ``doc`` description, and optionally takes the ``type`` and ``default`` values, printed under the parameter description.
+| When the current function shares a parameter with a previously documented one, the :meth:`past_parameter() <plotext.prettydoc.docs.past_parameter>` method of the ``docs()`` manager can be used to **reuse** the already written description, to avoid writing the same documentation twice: it requires the parameter name and the name of the function that already describes it, as ``"mean"`` in the example above.
 
-- **add a function**: the ``add_function()`` method is used to add a function to the ``docs()`` container. Once a function is added, all subsequent methods will apply to the most recently added function. It requires the actual function as parameter. 
+.. caution:: A function documented with a :ref:`source path <doc_source>` is named together with it: for example, the ``bar()`` method, with source ``"plotext.figure"``, is named ``"plotext.figure.bar"``, to avoid confusion between methods sharing a name.
 
-.. note:: 
+.. note:: A copied parameter keeps the type and default value it was given in the other function; passing a new ``type`` or ``default`` to :meth:`past_parameter() <plotext.prettydoc.docs.past_parameter>` replaces that one only.
 
-    `prettydoc` can handle functions as well as **class methods**.
-
-
-.. _document:
-
-Document
---------
-
-The following points outline the key methods and procedures for documenting functions using the `prettydoc` module:
+.. tip:: In the ``type`` and ``default`` fields, ``None`` leaves the value as it is (absent for a new parameter, the copied one for a past parameter), while an empty string removes it.
 
 
-#. **add main description**: the ``docs.add_doc()`` method is used to add the main function documentation. It requires a string as parameter.
+.. _doc_source:
 
-#. **add alias**: if the function has an alternative name, the ``docs.add_alias()`` method is available to document it. It requires a string as parameter.
+Source
+------
 
-#. **add parameters**: for detailing a function parameter use the ``add_parameter()`` which requires the parameter ``name`` and main ``doc`` description as string parameters.
-
-#. **add parameter details**: to add a parameter ``type`` and ``default`` values use the ``add_parameter_specs(type, default)`` method. 
-
-#. **reuse past parameters**: to avoid redundancy, if the current function shares parameters with a previously documented function, the ``add_past_parameter()`` method allows you to reuse already described parameters. It requires the parameter and function names as string parameters. 
-
-   .. note:: 
-
-    You can still modify the details of a previously documented parameter in the same way as for a new parameter: using the ``add_parameter_specs()`` method, previously presented. 
-
-#. **add output details**: to add the details of a function output (basic ``doc`` and ``type``) use the ``add_output(doc, type)`` method. 
-
-#. **reuse past output**: use the ``add_past_output()`` to reuse an already described function output. It requires the function name as its string parameter. 
+The :meth:`source() <plotext.prettydoc.docs.source>` method of the ``docs()`` manager declares the **source path**: what the user writes before the method name to reach it, such as ``"plotext"`` or ``"plotext.figure"``; a list of source paths is also accepted, for methods reachable from several places. The source renders as the ``Source`` field of the docstring; it also tells methods sharing a name (``clear``, ``copy``, ``set``, …) apart, each named together with its own source, as in ``"plotext.figure.bar"``.
 
 
-Process and Display
--------------------
+Output
+------
 
-- **process the docstrings**: once all functions have been added, use the ``docs.update()`` method to finalize and add the docstrings to the corresponding functions.
-
-- **displays all docstrings**: to displays all generated docstrings use the ``docs.show()`` method.
-
-- **displays a specific docstring**: The `docs()` container holds methods, named after the functions, that display the corresponding function's docstring. Therefore to view a specific docstring, you can either use the usual ``print(mean.__doc__)`` or the simplified ``docs.mean()`` access point.
-
-- **call .doc() on the function itself**: ``docs.update()`` also attaches a ``.doc()`` method directly to each registered function whenever the callable accepts attribute assignment. So ``mean.doc()`` prints the coloured prettydoc render while ``mean.__doc__`` keeps the colourless string that IDEs, ``help()`` and other introspection tools expect. Callables that reject attribute assignment (most C-implemented built-ins) are silently skipped.
-
-- **call the container itself for an interactive picker**: ``docs()`` (or ``plotext.doc()``) opens a framed multi-column picker. Arrow keys move between items, ``Enter`` shows the selected function's coloured docstring on a cleared screen, ``q`` quits. Headers and blanks are skipped automatically. When stdin is not a TTY (e.g. piped output), every docstring is printed instead.
-
-.. note::
-
-    * Additional technical details can be found in the :ref:`prettydoc_api` API.
+| The :meth:`output() <plotext.prettydoc.docs.output>` method of the ``docs()`` manager adds the details of the function output: its basic ``doc`` description and ``type``.
+| The :meth:`past_output() <plotext.prettydoc.docs.past_output>` method of the ``docs()`` manager reuses an already described output: it requires the name of the function whose output is copied.
 
 
 .. _sections:
 
-Group by Section
-----------------
+Sections
+--------
 
-Functions can be grouped into sections so the interactive picker shows one column-group per section.
+| Functions can be grouped into sections, listed in the first column of the :ref:`interactive menu <doc_menu>`: the :meth:`section() <plotext.prettydoc.docs.section>` method of the ``docs()`` manager sets the current section name, and every following :meth:`function() <plotext.prettydoc.docs.function>` entry belongs to it, until the next :meth:`section() <plotext.prettydoc.docs.section>` call; with no argument, or ``None``, the following entries stay without a section.
 
-- **assign a section at registration**: pass ``section`` to ``add_function()`` to put that function under a named heading: ``docs.add_function(mean, section='averages')``.
-- **set a default section for the next calls**: ``docs.set_section('averages')`` makes every subsequent ``add_function()`` inherit that label until another ``set_section()`` is called. ``docs.set_section()`` (or ``docs.set_section(None)``) resets the default.
-- **picker behaviour**: when a single None-section is present it shows as ``Pretty Docstrings``. With multiple sections, a None-section is moved to the end and labelled ``Unlabelled``.
+.. note:: With no sections at all, the menu drops the sections column, keeping only the methods and the docstring.
+
+.. caution:: When only some functions are given a section, the ones without one gather at the end of the menu, in a final section labeled ``Unlabeled``.
+
+Update
+------
+
+Once all functions are documented, the :meth:`update() <plotext.prettydoc.docs.update>` method of the ``docs()`` manager:
+
+- writes each docstring into the ``__doc__`` of its function, the string Python shows in ``help()``
+- attaches to each function a ``doc()`` method, printing its docstring **in color**, as ``harmonic_mean.doc()`` in the example
+- returns the **documentation container**: a distinct object with one printing method per documented entry
+
+The :meth:`string() <plotext.prettydoc.docs.string>` method of the ``docs()`` manager returns every docstring joined in a single string.
+
+.. caution:: The colors are written inside the ``__doc__`` strings as ansi color codes, the standard color characters of the terminal: a tool unaware of them, like the `help() <https://docs.python.org/3/library/functions.html#help>`_ page viewer, shows the codes around the words instead of the colors.
+
+.. tip:: Create the manager with ``docs(colorless = True)`` to write the ``__doc__`` strings as plain text; the ``doc()`` methods and the interactive menu print colored docstrings either way.
+
+
+.. _doc_menu:
+
+Menu
+----
+
+| Calling the documentation container as a method, ``doc()``, opens the interactive menu: three scrollable columns, holding the list of sections, the list of methods and the docstring of the picked method, shown when ``Enter`` is pressed on it.
+| With no keyboard to read, as when the program input is piped from a file or another program, the menu cannot run: every docstring is printed instead, one after the other.
+| For example, ``plotext.doc()`` opens the menu of the |plotext| documentation, shown at the top of this page.
+
+.. tip:: Arrow keys move within a column, left and right change column, ``q`` quits.
+
+| The :meth:`title() <plotext.prettydoc.docs.title>` method of the ``docs()`` manager sets the title of the menu, the colored text over its top left corner, which would normally contain your package name: it is ``Plotext Documentation`` for the |plotext| documentation, as in the image at the top of this page.
+
+
+
+
+.. _registry:
+
+Registry
+--------
+
+| A :class:`plotext.prettydoc.registry() <plotext.prettydoc.registry>` keeps long strings under **short names**, so that a long text needed in many docstrings is written once: a type explanation, a recurring message, any long sentence.
+| The :meth:`plotext.prettydoc.registry().add() <plotext.prettydoc.registry.add>` method stores a text under a chosen name; calling the registry with that name gives the text back:
+
+.. code-block:: python
+
+   from plotext.prettydoc import docs, registry
+
+   shared = registry()
+   shared.add('float',  'a numeric value')
+   shared.add('colors', 'Use plotext.colors() for the available color codes.')
+
+   pd = docs()
+   pd.function(mean)
+   pd.parameter('par1', 'the first parameter. ' + shared('colors'), shared('float'), 1)
 
 
 .. _doc_color:
 
-Change Coloring
----------------
-The coloring of each element in the documentation can be customized in the following two ways.
+Colors
+------
+The coloring of each element in the documentation can be customized in the following **two ways**.
 
-.. rubric:: Change Specific Element Coloring
+.. rubric:: Specific Elements
 
-The first method involves selecting your preferred coloring using the :ref:`colorize <colorize>` tool, then passing this object to any of the methods described in the :ref:`document` section. For example, to add a colored alias, use:
-
-.. code-block:: python
-
-   add_alias(colorize('average', fullground = 'blue+', style = 'italic bold'))
-
-
-.. rubric:: Change Default Component Coloring
-
-The second method allows you to change the default coloring of a specific docstring component. The ``set_default_pixel()`` method requires a ``component`` string name and a :ref:`pixel <pixel>` representing the desired coloring. For example:
+The first method involves selecting your preferred coloring using the :ref:`colorize <colorize>` tool, then passing this object to any of the documenting methods described in the previous sections. For example, to add a colored alias, use:
 
 .. code-block:: python
 
-   set_default_pixel('alias', pixel('blue+', style='italic bold'))
+   description(alias = plotext.colorize('average', pixel = ('blue+', None, 'italic bold')))
 
-sets the alias *component* (when present) of all generated docstrings to the specific coloring. By calling this code at the beginning, all subsequent alias components will adopt the chosen color settings.
+
+.. rubric:: Default Components
+
+The second method allows you to change the default coloring of a specific docstring component. The :meth:`pixel() <plotext.prettydoc.docs.pixel>` method of the ``docs()`` manager requires a ``component`` string name and a :ref:`pixel <pixel>` representing the desired coloring. For example:
+
+.. code-block:: python
+
+   pd = docs()
+   pd.pixel('alias', plotext.pixel('blue+', style = 'italic bold'))
+
+sets the alias *component* (when present) of all generated docstrings to the specific coloring. By calling this code at the beginning, all subsequent alias components will adopt the chosen color settings, unless a specific alias component is changed with the previous method.
 
 
 .. rubric:: Docstring Components
 
-The available docstring components can be accessed using the ``plotext.prettydoc.components()`` method, shown in the image below:
+The available docstring components are printed by :func:`plotext.prettydoc.components() <plotext.prettydoc.components>`, shown in the image below:
 
 .. image:: images/components.png
 
@@ -133,3 +181,5 @@ Using one-word shortcuts can be advantageous when documenting many functions. Us
 
 .. literalinclude:: code/prettydoc_short.py
 	:language: python
+
+.. note:: Additional technical details can be found in the :ref:`prettydoc API <prettydoc_api>`.

@@ -2,8 +2,13 @@
 
 from datetime import datetime as dt
 from datetime import timezone as tz
+from datetime import timedelta
 from plotext._methods.object import is_list_like
-from plotext._settings.defaults import date_origin_string
+from plotext._settings.defaults import date_origin_datetime
+
+
+# The moment every timestamp is counted from, used to turn one back into a date by hand
+epoch_datetime = dt(1970, 1, 1, tzinfo = tz.utc)
 
 
 # Date converter: handles string / datetime / timestamp conversions
@@ -25,19 +30,19 @@ class date_class:
 
     # Reset to default settings
     def clear(self):
-        self.set_form()
-        self._origin = 0
+        self._set_form()
+        self._origin = date_origin_datetime.timestamp()
         self._set_active(False)
 
     # Set string format for date parsing
-    def set_form(self, form = None):
+    def _set_form(self, form = None):
         form = '%d/%m/%Y' if form is None else form
         self._form = form
         return self
 
     # Set origin timestamp for calculations
-    def set_origin(self, origin = None):
-        origin = date_origin_string if origin is None else origin
+    def _set_origin(self, origin = None):
+        origin = date_origin_datetime if origin is None else origin
         if self._get_type(origin) is None:
             raise ValueError(f"origin {origin!r} does not match the current form {self._form!r} and is not a recognised datetime / timestamp. Set the form first (or pass a matching string).")
         self._origin = self._convert_time(origin, "timestamp", relative = False)
@@ -50,11 +55,13 @@ class date_class:
 
     # Activate (or deactivate) date handling on this ruler with optional form/origin in one call
     def activate(self, active = True, form = None, origin = None):
-        self.set_form(form)._set_active(active).set_origin(origin)
+        self._set_active(active)
+        self._set_form(form) if form is not None else None
+        self._set_origin(origin) if origin is not None else None
         return self
 
     # Get origin in requested output type
-    def get_origin(self, output = "datetime"):
+    def origin(self, output = "datetime"):
         return self._convert_time(self._origin, output, relative = False)
 
     # Today in the requested form (string / datetime / timestamp)
@@ -62,7 +69,7 @@ class date_class:
         return self._convert_time(dt.today(), output)
 
     # Check if converter is active
-    def is_active(self):
+    def active(self):
         return self._active
 
     # Convert a string to a datetime (relative is a dummy parameter kept for signature uniformity)
@@ -77,13 +84,14 @@ class date_class:
     def _datetime_to_string(self, datetime, relative = True):
         return datetime.strftime(self._form)
 
-    # Convert a datetime to a timestamp, subtracting the origin when requested
+    # Convert a datetime to a timestamp, subtracting the origin when requested; a datetime carrying no time zone is read as UTC, as a date written as text is
     def _datetime_to_timestamp(self, datetime, relative = True):
+        datetime = datetime if datetime.tzinfo is not None else datetime.replace(tzinfo = tz.utc)
         return datetime.timestamp() - self._origin * relative
 
-    # Convert a timestamp to a datetime, adding the origin when requested
+    # Convert a timestamp to a datetime, adding the origin when requested; the seconds are counted from the 1st of January 1970 by hand, since Windows refuses to convert a moment before it
     def _timestamp_to_datetime(self, timestamp, relative = True):
-        return dt.fromtimestamp(timestamp + self._origin * relative).replace(tzinfo = tz.utc)
+        return epoch_datetime + timedelta(seconds = timestamp + self._origin * relative)
 
     # Convert a timestamp to a string, routing through datetime
     def _timestamp_to_string(self, timestamp, relative = True):
@@ -91,7 +99,7 @@ class date_class:
 
     # Determine type of input
     def _get_type(self, time):
-        return "string" if self._is_string_date(time) else "datetime" if isinstance(time, dt) else "timestamp" if isinstance(time, float) else None
+        return "string" if self._is_string_date(time) else "datetime" if isinstance(time, dt) else "timestamp" if isinstance(time, (int, float)) else None
 
     # Check if string can be converted to date
     def _is_string_date(self, time):
@@ -119,16 +127,17 @@ class date_class:
         return self._convert_list(time, output) if is_list_like(time) else self._convert_time(time, output)
 
     # Clone another date_class
-    def clone(self, date):
-        self.set_form(form = date._form)
+    def _clone(self, date):
+        self._set_form(form = date._form)
+        self._origin = date._origin
         self._active = date._active
         return self
 
     # Log string for representation
-    def get_log(self):
+    def _get_log(self):
         base = f"{'active' if self._active else 'inactive'}, form {repr(self._form)}"
-        return f"{base}, origin {self.get_origin('string')}" if self._active else base
+        return f"{base}, origin {self.origin('string')}" if self._active else base
 
     # Representation
     def __repr__(self):
-        return f"Plotext Date: " + self.get_log()
+        return "PlotextDate(" + self._get_log() + ")"

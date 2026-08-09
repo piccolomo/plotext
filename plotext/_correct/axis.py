@@ -1,13 +1,8 @@
 # Axis validation and normalization utilities
 
-from plotext._constants.enums import axis_styles, axis_names, xsides, ysides
+from plotext._constants.enums import axis_names, xsides, ysides
 from plotext._methods.object import is_list_like
 from plotext._methods.sequence import unique
-
-
-# Validate axis style against allowed styles
-def axis_style(style):
-    return style if style in axis_styles else axis_styles[0]
 
 
 # Normalize axis representation
@@ -15,9 +10,9 @@ def axis(axis):
     return boolean_string(axis, axis_names) 
 
 
-# Normalize list of axes
+# Normalize list of axes; the word both selects the two axes
 def axes(axes):
-    axes = correct_list(axes, [0])
+    axes = [0, 1] if axes == 'both' else correct_list(axes, [0])
     return [axis(a) for a in axes]
 
 
@@ -27,14 +22,14 @@ def side(axis, side):
     return boolean_string(side, sides)
 
 
-# Normalize list of sides across axes
+# Normalize list of sides across axes; the word both selects the two sides
 def sides(axes, sides):
-    sides = correct_list(sides, [0])
+    sides = [0, 1] if sides == 'both' else correct_list(sides, [0])
     return sorted(unique([side(axis, s) for axis in axes for s in sides]))
 
 
 # Normalize boolean/string side to integer index
-def boolean_string(side, sides, sides_short=None):
+def boolean_string(side, sides, sides_short = None):
     if side is None:
         side = sides[0]
     elif isinstance(side, str):

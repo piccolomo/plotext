@@ -1,5 +1,4 @@
-# System settings: platform detection, package metadata, and optional dependency imports.
-# Optional deps are imported lazily inside the try/except — installed via the matching pip extras (e.g. `pip install plotext[image]`); when absent the names stay None.
+# System settings: the system in use, the package version, and the optional packages, imported here and left as None when missing, since each is installed on its own, as in pip install plotext[image].
 
 import sys
 
@@ -10,13 +9,13 @@ platform = "windows" if sys.platform in {"win32", "cygwin"} else "unix"
 __name__ = "plotext"
 __version__ = version = "6.0.0b0"
 
-# Optional dependency: Pillow (image rendering) — `pip install plotext[image]`.
+# Optional dependency: Pillow (image rendering), `pip install plotext[image]`.
 try:
     from PIL import Image, ImageOps, ImageSequence
 except ImportError:
     Image = ImageOps = ImageSequence = None
 
-# Optional dependencies: ffpyplayer (video + audio playback) and yt-dlp (YouTube URL resolution) — `pip install plotext[video]`.
+# Optional dependencies: ffpyplayer (video + audio playback) and yt-dlp (YouTube URL resolution), `pip install plotext[video]`.
 try:
     from ffpyplayer.player import MediaPlayer
 except ImportError:

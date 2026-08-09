@@ -8,15 +8,9 @@ from plotext._primitives.pixel import pixel
 from plotext._primitives.colorize import colorize
 from plotext._primitives.matrix import matrix
 from plotext._primitives.marker import marker
-from plotext._primitives.box    import line
+from plotext._primitives.box import line
 
-# Signal types (exposed under distinct names to avoid clashing with api.signal).
-# signal_class itself is NOT re-exported: users must create signals through
-# plotext.signal() rather than instantiating the class directly.
-from plotext._signal.point_filled import point_filled_class as point
-from plotext._signal.points import points_class as points
-
-# Public plot API (signal, draw, title, label, sin, clf, show, ...)
+# The public methods and attributes: figure, terminal, sin, image, colors, and the others listed in the api page.
 from plotext._kernel.api import *
 
 # Phase-driven text effects (shimmer, ...)

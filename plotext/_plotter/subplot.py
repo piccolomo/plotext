@@ -4,37 +4,46 @@ from plotext._settings import defaults
 from plotext._correct import bool as correct_bool
 from plotext._methods.subplot import fit_sizes, set_none_sizes
 from plotext._methods.sequence import get_extreme
-from plotext._plotter.utils.interactive import refresh
+from plotext._plotter.utils.interactive import reprint_after
+from plotext._plotter.utils.propagator import propagator_class
 
 
 # Subplot container: handles parent/child nesting and slots
-class subplot_class:
+class subplot_class(propagator_class):
 
-    # Initialize with parent and clear settings
+    # Initialize with parent and clear settings; a plot's owning plot is itself
     def __init__(self, parent):
+        propagator_class.__init__(self, self)
         self._set_parent(parent)
         self._clear()
+
+    # My counterpart: the subplot itself (a plot's twin inside a subplot is that subplot)
+    def _counterpart(self, subplot):
+        return subplot
 
     # Reset internal subplot state
     def _clear(self):
         self._set_size()
         self._set_position()
-        self.size_direction()
-        self.size_policy()
-        self._subplots()
+        self._size_direction = correct_bool.direction(defaults.size_direction)
+        self._size_policy = correct_bool.size_policy(defaults.size_policy)
+        self._set_subplots()
 
     # Set parent object (None for top-level)
     def _set_parent(self, parent = None):
         self._parent = parent
         return self
 
-    # Set width and height, clamped by parent; None inherits from the terminal on master, stays None on a child so _harmonize_sizes can distribute it.
+    # Set width and height, clamped by parent; None inherits from the terminal on master, stays None on a child so _harmonize_sizes can distribute it. On the master the clamp applies only where the terminal limit is on for that dimension.
     def _set_size(self, width = None, height = None):
         width = None if width is None else max(0, round(width))
         height = None if height is None else max(0, round(height))
 
-        self._width = (self._parent._width if self._is_master() else None) if width is None else width if (self._is_master() or self._parent._width is None) else min(width, self._parent._width)
-        self._height = (self._parent._height if self._is_master() else None) if height is None else height if (self._is_master() or self._parent._height is None) else min(height, self._parent._height)
+        unlimited_width = self._is_master() and not self._parent._limit[0]
+        unlimited_height = self._is_master() and not self._parent._limit[1]
+
+        self._width = (self._parent._width if self._is_master() else None) if width is None else width if (unlimited_width or self._parent._width is None) else min(width, self._parent._width)
+        self._height = (self._parent._height if self._is_master() else None) if height is None else height if (unlimited_height or self._parent._height is None) else min(height, self._parent._height)
 
         self._size = [self._width, self._height]
         return self
@@ -45,35 +54,10 @@ class subplot_class:
         self._col = col
         return self
 
-    # Control how subplot widths (and heights) are redistributed within the
-    # maximum available canvas size. With +1 (the default) the redistribution
-    # runs left-to-right across widths and top-to-bottom across heights — each
-    # subplot takes its requested size clamped by the remaining budget, and the
-    # last subplot (rightmost column or bottom row) absorbs whatever space is
-    # left. With -1 the order is reversed, so the first subplot (leftmost
-    # column or top row) absorbs the leftover instead. Validation is delegated
-    # to correct_bool.direction, the same helper used by the ruler.
-    @refresh
-    def size_direction(self, direction = None):
-        direction = defaults.size_direction if direction is None else direction
-        self._size_direction = correct_bool.direction(direction)
-        return self
-
-    # Control how nested subplot widths (and heights) are harmonized when they
-    # disagree. With "maximum" (the default) each column/row takes the largest
-    # requested size across nested subplots, growing the canvas to accommodate.
-    # With "minimum" it takes the smallest, shrinking everyone to fit. Validation
-    # is delegated to correct_bool.size_policy.
-    @refresh
-    def size_policy(self, policy = None):
-        policy = defaults.size_policy if policy is None else policy
-        self._size_policy = correct_bool.size_policy(policy)
-        return self
-
-    # Set the number of rows and columns (with constraints)
+    # Set the number of rows and columns. The grid is kept exactly as asked, however small the plot: clamping it to what comfortably fits would quietly hand back a different grid, and the next subplot() call would then reach past its end, which is what happens when a terminal is made smaller while a plot is being redrawn.
     def _set_slots(self, rows = None, cols = None):
-        rows = None if rows is None or self._height is None else min(rows, self._height // 3)
-        cols = None if cols is None or self._width is None else min(cols, self._width // 3)
+        rows = None if rows is None else max(1, rows)
+        cols = None if cols is None else max(1, cols)
         if rows is not None and cols is not None and rows * cols == 1:
             rows, cols = 0, 0
         self._rows, self._cols = rows, cols
@@ -94,11 +78,12 @@ class subplot_class:
         plot._set_position(row, col)
         return plot
 
-    # Set plot size and propagate the change as needed: re-harmonize this
-    # subtree, and re-harmonize siblings if this is a sub-master.
-    @refresh
-    def plot_size(self, width = None, height = None):
+    # Set the plot size, with no value resetting it, and the direction and policy when given; the sizes are then harmonized again, on this subtree and on the siblings when this plot holds a grid.
+    @reprint_after
+    def plot_size(self, width = None, height = None, direction = None, policy = None):
         self._set_size(width, height)
+        if direction is not None: self._size_direction = correct_bool.direction(direction)
+        if policy is not None: self._size_policy = correct_bool.size_policy(policy)
         if self._is_sub_master():
             self._parent._harmonize_sizes()
         if self._has_subplots() and self._has_size():
@@ -111,32 +96,13 @@ class subplot_class:
         col = 1 if col is None else int(abs(col))
         return self._get_subplot(row, col)
 
-    # Create/update subplots structure; children are left with None size
-    # until something explicitly sets it (plot_size) or harmonization fills
-    # it in (which happens in plot_size and at render time via build).
-    def _subplots(self, rows = None, cols = None):
+    # Create the grid of subplots, each with no size of its own until plot_size sets one or the harmonization gives it a share.
+    def _set_subplots(self, rows = None, cols = None):
         self._set_slots(rows, cols)
         self._create_subplots()
         return self
 
-    # Apply a method to subplots. With full=False (default) only direct
-    # children are visited — nested levels are reached when the method
-    # itself self-recurses by calling _for_each_subplot in its body
-    # (the convention used by title, label, lim, scale, ...). With
-    # full=True the entire subtree is walked in preorder; pair it only
-    # with leaf-only methods, otherwise self-recursion would double-walk.
-    def _for_each_subplot(self, method_name, *args, full = False, **kwargs):
-        if self._has_subplots():
-            for pos in self._get_slots_range():
-                child = self._get_subplot(*pos)
-                getattr(child, method_name)(*args, **kwargs)
-                if full:
-                    child._for_each_subplot(method_name, *args, full = full, **kwargs)
-
-    # Harmonize widths and heights of child panels and propagate down: fill
-    # any Nones with a proportional share of the parent budget, clamp via
-    # fit_sizes, then cascade by calling _harmonize_sizes on each direct
-    # child (which self-recurses through this same body).
+    # Give every subplot with no size its share of the parent one, fit the result inside it, then do the same on each subplot, down the whole tree.
     def _harmonize_sizes(self):
         if not (self._has_subplots() and self._has_size()):
             return
@@ -146,43 +112,33 @@ class subplot_class:
         heights = fit_sizes(heights, self._height, self._size_direction)
         for row, col in self._get_slots_range():
             self._get_subplot(row, col)._set_size(widths[col - 1], heights[row - 1])
-        self._for_each_subplot("_harmonize_sizes")
+        self._propagate("_harmonize_sizes")
 
-    # Get parent at a given level (0 = self, 1 = immediate parent)
-    def get_parent(self, level = 1):
-        if level == 0:
+    # Get parent at a given level (0 = self, 1 = immediate parent); above the master sits the terminal, which is its own parent
+    def parent(self, level = 1):
+        if level <= 0:
             return self
-        if level == 1:
-            return self._parent
-        parent = self.get_parent(1)
-        if parent is None:
-            return self
-        else:
-            return parent.get_parent(level - 1)
+        return self._parent.parent(level - 1)
 
     # Find the master (top) subplot by walking parents
-    def get_master(self):
+    def master(self):
         current = self
         for i in range(100):
-            parent = current.get_parent(1)
+            parent = current.parent(1)
             if parent._is_terminal():
                 return current
             current = parent
 
-    # Return terminal (the master parent's parent)
-    def get_terminal(self):
-        return self.get_master().get_parent(1)
-
     # Get nesting level (0 for master)
     def _get_nest_level(self):
-        return 1 if self._is_master() else self.get_parent()._get_nest_level() + 1
+        return 1 if self._is_master() else self.parent()._get_nest_level() + 1
 
     # Get (row, col) position
-    def get_position(self):
+    def position(self):
         return self._row, self._col
 
     # Get (width, height) size
-    def get_size(self):
+    def size(self):
         return self._width, self._height
 
     # Range of rows
@@ -269,18 +225,18 @@ class subplot_class:
         return hex(id(self))[-digits:]
 
     # Get a log string including nested subplots
-    def get_log(self, pad = None):
+    def _get_log(self, pad = None):
         out = str(self)
         current_level = self._get_nest_level()
         for row in self._get_rows_range():
             for col in self._get_cols_range():
                 panel = self._get_subplot(row, col)
-                out += '\n' + '  ' * current_level + '└─' + panel.get_log()
+                out += '\n' + '  ' * current_level + '└─' + panel._get_log()
         return out
 
     # Print the log string
     def log(self):
-        print(self.get_log())
+        print(self._get_log())
         return self
 
     # Readable representation of the subplot

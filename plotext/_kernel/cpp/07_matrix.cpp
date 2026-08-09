@@ -1,5 +1,4 @@
-// Matrix: a 2D grid of MatrixCharacter cells. Construct, fill/clear, stream rendered output.
-// Point/Points/FilledPoint/FilledPoints insert paths intentionally live OUTSIDE this file — bodies are appended in the files where their respective types are defined, after Matrix is declared.
+// Matrix: a grid of MatrixCharacter cells, built, filled, cleared and rendered here; the insert paths of Point, Points, FilledPoint and FilledPoints live in their own files instead, since they need Matrix declared first.
 
 class Point;         // body of Matrix::insert(const Point&)         lives at the bottom of 10_point.cpp
 class Points;        // body of Matrix::insert(const Points&)        lives at the bottom of 12_points.cpp
@@ -26,28 +25,30 @@ public:
                 if (!at(c, r).is_empty()) return false;
         return true; }
 
-    // Stamp a single MatrixCharacter at (col, row): bounds-check + cell-merge. Returns true on successful placement, false if (col, row) is out of bounds. Used by Marker::stamp (single-cell markers) so the bounds check lives in one place.
-    inline bool insert(const MatrixCharacter & c, size_t col, size_t row) noexcept {
+    // Stamp a single MatrixCharacter at (col, row): bounds-check + cell-merge. Returns true on successful placement, false if (col, row) is out of bounds or, with check_space on, already taken. Used by Marker::stamp (single-cell markers) so the bounds check lives in one place.
+    inline bool insert(const MatrixCharacter & c, size_t col, size_t row, bool check_space = false) noexcept {
         if (col >= get_width() || row >= get_height()) return false;
+        if (check_space && !is_empty(col, col + 1, row, row + 1)) return false;
         at(col, row).merge(c); return true; }
 
-    // Stamp a Point — body lives at the bottom of 10_point.cpp where Point is fully declared. Returns the stamp() bool from the Point's marker.
-    inline bool insert(const Point &) noexcept;
+    // Stamp a Point, body lives at the bottom of 10_point.cpp where Point is fully declared. Returns the stamp() bool from the Point's marker.
+    inline bool insert(const Point &, bool check_space = false) noexcept;
 
-    // Stamp every Point in a Points collection — body lives at the bottom of 12_points.cpp.
+    // Stamp every Point in a Points collection, body lives at the bottom of 12_points.cpp.
     inline void insert(const Points &) noexcept;
 
-    // Stamp a FilledPoint (walks the main→fill line and stamps each Point) — body lives at the bottom of 13_point_filled.cpp.
+    // Stamp a FilledPoint (walks the main→fill line and stamps each Point), body lives at the bottom of 13_point_filled.cpp.
     inline void insert(const FilledPoint &) noexcept;
 
-    // Stamp every FilledPoint in a FilledPoints collection — body lives at the bottom of 14_points_filled.cpp.
+    // Stamp every FilledPoint in a FilledPoints collection, body lives at the bottom of 14_points_filled.cpp.
     inline void insert(const FilledPoints &) noexcept;
 
-    // Viability check at canvas position (col, row) for a region of (width × height) cells: in-bounds + (when check_space) empty cells. Pure geometric predicate — doesn't need the source matrix.
+    // Viability check at canvas position (col, row) for a region of (width × height) cells: in-bounds + (when check_space) empty cells, the column before the region included, so that two objects placed left to right never end up touching. Pure geometric predicate, doesn't need the source matrix.
     inline bool fits(int col, int row, size_t width, size_t height, bool check_space) const noexcept {
         if (col < 0 || row < 0) return false;
         if ((size_t)col + width > get_width() || (size_t)row + height > get_height()) return false;
-        if (check_space && !is_empty(col, col + width, row, row + height)) return false;
+        const size_t start = col > 0 ? col - 1 : 0;
+        if (check_space && !is_empty(start, col + width, row, row + height)) return false;
         return true; }
 
     // Insert another Matrix at (col, row) with horizontal/vertical alignment, clipped to bounds. Dynamic alignment on either axis triggers a 1D search across candidate displacements centred on the anchor; both axes dynamic → 2D cross-product search (vertical-outer × horizontal-inner). check_space=true requires empty target cells even for static alignments; dynamic path implicitly requires empty cells. Returns true on success, false if no viable spot found.
@@ -130,14 +131,13 @@ public:
         to_buffer(buffer.begin(), length, !colorless);
         return wstring(buffer.begin(), length); }
 
-    // Stream to stdout: build the whole matrix into a single buffer, then one wcout.write — much faster than per-cell wcout calls (saves the per-call streambuf overhead). Heap-allocated buffer (Array<wchar_t>) to survive matrices large enough to overflow the stack.
+    // Stream to stdout: build the whole matrix into a single buffer, then one wcout.write, much faster than per-cell wcout calls (saves the per-call streambuf overhead). Heap-allocated buffer (Array<wchar_t>) to survive matrices large enough to overflow the stack.
     inline void stream(bool colorfull = true, bool flushing = true) noexcept {
         const size_t cap = character_size_max * get_size() + (1 + wcslen(ansi_end)) * get_height() + 1;
         Array<wchar_t> buffer(cap, L'\0');
         size_t length = 0;
         to_buffer(buffer.begin(), length, colorfull);
-        wcout.write(buffer.begin(), length);
-        if (flushing) flush(); }
+        write_wide(buffer.begin(), length, flushing); }
 
     // Apply `p`'s background to every cell that doesn't already have one. Each MatrixCharacter is-a Pixel, so this is a per-cell forward to Pixel::fix_background.
     inline void fix_background(const Pixel & p) noexcept {
@@ -194,11 +194,13 @@ extern "C" {
     size_t   matrix_get_height   (Matrix * m) noexcept { return m->get_height(); }
     void     matrix_print        (Matrix * m, bool colorless, bool flush) noexcept { m->stream(!colorless, flush); }
     Matrix * matrix_copy         (Matrix * m) noexcept { return new Matrix(*m); }
+    void     matrix_clone        (Matrix * dest, Matrix * src) noexcept { *dest = *src; }
     void     matrix_transpose    (Matrix * m) noexcept { m->transpose(); }
     void     matrix_fill_pixel   (Matrix * m, Pixel * p) noexcept { m->fill(MatrixCharacter(L' ', *p)); }
     void     matrix_fix_background(Matrix * m, Pixel * p) noexcept { m->fix_background(*p); }
     void     matrix_apply_pixel  (Matrix * m, Pixel * p) noexcept { m->set_pixel(*p); }
     void     matrix_set_pixel    (Matrix * m, size_t col, size_t row, Pixel * p) noexcept { m->at(col, row).set_pixel(*p); }
+    Pixel *  matrix_get_pixel    (Matrix * m, size_t col, size_t row) noexcept { return new Pixel(static_cast<const Pixel &>(m->at(col, row))); }
     // Set the cell at (col, row) to a NormalCharacter built from (wchar, pixel). Builds a transient MatrixCharacter (kind=marker_normal, bits=0) and dispatches to Array2D::insert.
     void     matrix_set_normal_character(Matrix * m, size_t col, size_t row, wchar_t c, Pixel * p) noexcept { m->Array2D<MatrixCharacter>::insert(col, row, MatrixCharacter(c, *p)); }
     void     matrix_insert_matrix(Matrix * m, size_t col, size_t row, Matrix * mi, int ha, int va) noexcept { m->insert(*mi, col, row, Alignment(ha), Alignment(va)); }

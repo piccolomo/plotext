@@ -2,7 +2,7 @@
 
 class Point : public Position {
 private:
-    Marker * marker = nullptr;        // owned — destroyed in ~Point, deep-copied in copy paths
+    Marker * marker = nullptr;        // owned, destroyed in ~Point, deep-copied in copy paths
 
 public:
     Point() noexcept = default;
@@ -21,7 +21,7 @@ public:
     inline Marker * get_marker() const noexcept { return marker; }
     inline void     set_marker(Marker * m) noexcept { delete marker; marker = m ? m->copy() : nullptr; }
     inline bool     has_marker() const noexcept { return marker != nullptr; }
-    inline uint8_t  get_type()   const noexcept { return marker ? marker->get_type() : marker_none; }     // null-safe — returns marker_none when no marker
+    inline uint8_t  get_type()   const noexcept { return marker ? marker->get_type() : marker_none; }     // null-safe, returns marker_none when no marker
 
     // Sub-cell dot coords inside the marker glyph (fractional part of x/y scaled by marker grid)
     inline unsigned char get_subcell_col() const noexcept { return marker ? static_cast<unsigned char>((get_x() - get_col()) * marker->get_xres()) : 0; }
@@ -72,14 +72,14 @@ public:
     // Simple line: linspace-sampled points between this and p (inclusive). last=false omits the trailing endpoint (use when chaining segments).
     inline Vector<Point> get_simple_line(const Point & p, bool last = true) const noexcept {
         const size_t n = get_simple_line_size(p);
-        Numerical<float> ts = linspace<float>(0.0f, 1.0f, n);
+        Vector<float> ts = linspace<float>(0.0f, 1.0f, n);
         Vector<Point> out(n);
         out.append(*this);
         for (size_t i = 1; i + 1 < n; ++i) out.append(get_line_point(p, ts.at(i)));
         if (last) out.append(p);
         return out; }
 
-    // Full line: walks every sub-cell boundary between this and p, placing a point at each crossing's midpoint. Denser/more uniform coverage than the simple version — fills cells the simple line would skip on shallow slopes. Mirrors legacy/point.cpp:get_full_line.
+    // Full line: walks every sub-cell boundary between this and p, placing a point at each crossing's midpoint. Denser/more uniform coverage than the simple version, fills cells the simple line would skip on shallow slopes. Same walk the old kernel did.
     inline Vector<Point> get_full_line(const Point & p, bool last = true) const noexcept {
         const float cols = static_cast<float>(get_xres());
         const float rows = static_cast<float>(get_yres());
@@ -136,18 +136,18 @@ public:
     // Build the MatrixCharacter contribution this Point produces at (col, row). Forwards to the marker's polymorphic builder (each subclass owns the construction logic for its kind).
     inline MatrixCharacter get_matrix_character() const { return marker ? marker->get_matrix_character(get_subcell_col(), get_subcell_row()) : MatrixCharacter(); }
 
-    // Stamp this Point onto target. Marker-null Points are a trivial no-op (return true). MatrixMarker is the multi-cell special case (is_matrix_marker() flags it, then routes to Matrix::insert(Matrix, col, row, ha, va)); every other marker (Normal/HD/FHD/Braille/Box) takes the single-cell path via Point::get_matrix_character (which forwards subcell coords — that's what makes HD dot-merge work and Box arms accumulate).
-    inline bool stamp(Matrix & target) const noexcept {
+    // Stamp this Point onto target. Marker-null Points are a trivial no-op (return true). MatrixMarker is the multi-cell special case (is_matrix_marker() flags it, then routes to Matrix::insert(Matrix, col, row, ha, va)); every other marker (Normal/HD/FHD/Braille/Box) takes the single-cell path via Point::get_matrix_character (which forwards subcell coords, that's what makes HD dot-merge work and Box arms accumulate).
+    inline bool stamp(Matrix & target, bool check_space = false) const noexcept {
         if (!marker) return true;
         if (marker->is_matrix_marker()) {
             const MatrixMarker * mm = static_cast<const MatrixMarker *>(marker);
-            return target.insert(*mm, get_col(), get_row(), mm->get_halignment(), mm->get_valignment()); }
-        return target.insert(get_matrix_character(), get_col(), get_row()); }
+            return target.insert(*mm, get_col(), get_row(), mm->get_halignment(), mm->get_valignment(), check_space); }
+        return target.insert(get_matrix_character(), get_col(), get_row(), check_space); }
 
-    // Single-line "x, y, <marker>"
+    // Single-line "x <x>, y <y>, marker <marker>"
     inline wstring get_wstring() const {
-        wchar_t head[40];
-        swprintf(head, 40, L"%.2f, %.2f, ", get_x(), get_y());
+        wchar_t head[50];
+        swprintf(head, 50, L"x %.2f, y %.2f, marker ", get_x(), get_y());
         wstring s(head);
         s += marker ? marker->get_wstring() : wstring(L"none");
         return s; }
@@ -164,9 +164,9 @@ extern "C" {
     float   point_get_y     (Point * p) noexcept { return p->get_y(); }
     void    point_log       (Point * p) noexcept { p->log(); }
     const wchar_t * point_get_wstring(Point * p) noexcept { return wstring_to_cstring(p->get_wstring()); }
-    bool    matrix_insert_point(Matrix * m, Point * p) noexcept { return m->insert(*p); }
+    bool    matrix_insert_point(Matrix * m, Point * p, bool check_space) noexcept { return m->insert(*p, check_space); }
 }
 
 
 // Stamp a Point: delegates to Point::stamp, which invokes the marker's polymorphic stamp method. Returns the stamp() bool. Declared inside Matrix's class body in 07_matrix.cpp; defined here because Point must be fully declared first.
-inline bool Matrix::insert(const Point & p) noexcept { return p.stamp(*this); }
+inline bool Matrix::insert(const Point & p, bool check_space) noexcept { return p.stamp(*this, check_space); }

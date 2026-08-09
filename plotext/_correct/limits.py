@@ -9,26 +9,18 @@ def limits_alignment(alignment):
     return alignment if alignment in limit_alignments else limit_alignments[0]
 
 
-# Expand one limit range to include another. None is treated as "no
-# constraint" — that side defers to the other. When both have a value,
-# the lower bound is the smaller and the upper bound is the greater.
-# Returns a new list; inputs are never mutated.
+# Expand one limit range to include another, None meaning no constraint on that side; a new list is returned, the inputs untouched.
 def expand(limits, new_limits):
-    m0, M0 = limits
-    m1, M1 = new_limits
-    m = safe_min([m0, m1])
-    M = safe_max([M0, M1])
-    [m, M] = [m - 1, M + 1] if m is not None and almost_equal(m, M, 5) else [m, M]
-    return [m, M]
+    lower, upper = limits
+    new_lower, new_upper = new_limits
+    lower = safe_min([lower, new_lower])
+    upper = safe_max([upper, new_upper])
+    [lower, upper] = [lower - 1, upper + 1] if lower is not None and almost_equal(lower, upper, 5) else [lower, upper]
+    return [lower, upper]
 
 
-# Merge two limit ranges into the smallest containing range. Defaults
-# new_limits to limits when None is passed. When merge=True, both ranges
-# are unioned via expand(); when merge=False (the default), only None
-# entries in limits are filled from new_limits. Expands a single-point
-# range (a almost-equal b) to (a-1, b+1) so the chart isn't degenerate.
-
-def limits(limits, new_limits, merge = False):
+# Merge two limit ranges into the smallest containing one: with merge, both are united; without it, only the None sides are filled; a single point range is widened by one on each side.
+def merge_limits(limits, new_limits, merge = False):
     limits = replace_none(limits, new_limits)
     limits = expand(limits, new_limits) if merge else limits
     return limits

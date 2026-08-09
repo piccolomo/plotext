@@ -4,7 +4,7 @@ class Marker {
 public:
     virtual ~Marker() noexcept = default;
     virtual uint8_t         get_type()    const noexcept = 0;                                                              // marker_normal / marker_hd / marker_fhd / marker_braille / marker_box
-    // (orientation virtual: meaningful only for BoxMarker — pure h/v subset)
+    // (orientation virtual: meaningful only for BoxMarker, pure h/v subset)
     virtual wstring         get_wstring() const = 0;                                                                       // single-line representation (no newline)
     virtual size_t          get_xres()    const noexcept { return 1; }                                                      // sub-cell horizontal resolution (dot columns per character cell)
     virtual size_t          get_yres()    const noexcept { return 1; }                                                      // sub-cell vertical resolution (dot rows per character cell)
@@ -14,7 +14,7 @@ public:
     virtual void            fix_background(const Pixel & p) noexcept = 0;                                                   // forward to Pixel::fix_background
     virtual void            set_pixel(const Pixel & p) noexcept = 0;                                                        // overwrite the marker's internal pixel
     virtual Marker *        copy()        const = 0;                                                                        // polymorphic deep copy
-    virtual bool            get_orientation() const noexcept { return false; }                                              // only meaningful for BoxMarker — default false for the others
+    virtual bool            get_orientation() const noexcept { return false; }                                              // only meaningful for BoxMarker, default false for the others
     virtual wchar_t         get_model_character() const noexcept { return get_symbol_model(get_type()); }                   // glyph used to represent this marker in the legend; subclasses can override (NormalMarker exposes its actual character; others use the type-based lookup glyph)
     virtual bool            is_matrix_marker() const noexcept { return false; }                                             // MatrixMarker overrides to true. Lets Point::stamp pick the multi-cell branch without dynamic_cast / RTTI.
     virtual void            merge(const Marker & other) noexcept { (void)other; }                                           // default: no merging (later overwrites earlier); BoxMarker overrides so crossings render as ┼/┤/├ instead of overwriting.
@@ -30,7 +30,7 @@ public:
 
     uint8_t         get_type()             const noexcept override { return marker_normal; }
     wchar_t         get_model_character()  const noexcept override { return get_wcharacter(); }
-    wstring         get_wstring() const override { wstring s = L"Normal Marker("; s.push_back(get_wcharacter()); s.push_back(L')'); return s; }
+    wstring         get_wstring() const override { wstring s = L"PlotextMarker("; s.push_back(get_wcharacter()); s.push_back(L')'); return s; }
     MatrixCharacter get_matrix_character(uint8_t, uint8_t) const override { return MatrixCharacter(marker_normal, *this, get_wcharacter()); }
     const Pixel &   get_pixel()   const noexcept override { return *this; }
     void            fix(const Pixel & p) noexcept override { Pixel::fix(p); }
@@ -40,14 +40,14 @@ public:
 };
 
 
-// HDMarker: 2×2 sub-cell point. Pixel only — sub-cell position comes from the Point.
+// HDMarker: 2×2 sub-cell point. Pixel only, sub-cell position comes from the Point.
 class HDMarker : public Pixel, public Marker {
 public:
     HDMarker() noexcept = default;
     HDMarker(const Pixel& p) noexcept : Pixel(p) {}
 
     uint8_t         get_type()    const noexcept override { return marker_hd; }
-    wstring         get_wstring() const override { return L"HD Marker()"; }
+    wstring         get_wstring() const override { return L"PlotextMarker(hd)"; }
     size_t          get_xres()    const noexcept override { return 2; }
     size_t          get_yres()    const noexcept override { return 2; }
     MatrixCharacter get_matrix_character(uint8_t dc, uint8_t dr) const override {
@@ -69,7 +69,7 @@ public:
     FHDMarker(const Pixel& p) noexcept : Pixel(p) {}
 
     uint8_t         get_type()    const noexcept override { return marker_fhd; }
-    wstring         get_wstring() const override { return L"FHD Marker()"; }
+    wstring         get_wstring() const override { return L"PlotextMarker(fhd)"; }
     size_t          get_xres()    const noexcept override { return 2; }
     size_t          get_yres()    const noexcept override { return 3; }
     MatrixCharacter get_matrix_character(uint8_t dc, uint8_t dr) const override {
@@ -91,7 +91,7 @@ public:
     BrailleMarker(const Pixel& p) noexcept : Pixel(p) {}
 
     uint8_t         get_type()    const noexcept override { return marker_braille; }
-    wstring         get_wstring() const override { return L"Braille Marker()"; }
+    wstring         get_wstring() const override { return L"PlotextMarker(braille)"; }
     size_t          get_xres()    const noexcept override { return 2; }
     size_t          get_yres()    const noexcept override { return 4; }
     MatrixCharacter get_matrix_character(uint8_t dc, uint8_t dr) const override {
@@ -106,7 +106,7 @@ public:
 };
 
 
-// BoxMarker: a BoxCharacter (packed arms + style + Pixel) wearing the polymorphic Marker interface. State lives entirely in the BoxCharacter base — no duplicate fields.
+// BoxMarker: a BoxCharacter (packed arms + style + Pixel) wearing the polymorphic Marker interface. State lives entirely in the BoxCharacter base, no duplicate fields.
 class BoxMarker : public BoxCharacter, public Marker {
 public:
     BoxMarker() noexcept = default;
@@ -119,14 +119,14 @@ public:
     BoxMarker(bool up, bool down, bool left, bool right, uint8_t style, const Pixel & p) noexcept
         : BoxCharacter(up, down, left, right, style, p) {}
 
-    // Heuristic — meaningful only for pure h/v markers. Any N or S arm reports as vertical.
+    // Heuristic, meaningful only for pure h/v markers. Any N or S arm reports as vertical.
     bool get_orientation() const noexcept override { return (get_arms() & (box_n | box_s)) != 0; }
 
     uint8_t         get_type()    const noexcept override { return marker_box; }
     void            merge(const Marker & other) noexcept override {
         if (other.get_type() == marker_box) BoxCharacter::merge(static_cast<const BoxMarker &>(other)); }
     wchar_t         get_model_character() const noexcept override { return BoxCharacter::get_wcharacter(); }   // legend shows the actual arm shape (│ ─ ┼ etc.) instead of the type-default glyph
-    wstring         get_wstring() const override { return get_orientation() ? L"Box Marker(vertical)" : L"Box Marker(horizontal)"; }
+    wstring         get_wstring() const override { return get_orientation() ? L"PlotextMarker(box, vertical)" : L"PlotextMarker(box, horizontal)"; }
     MatrixCharacter get_matrix_character(uint8_t, uint8_t) const override {
         MatrixCharacter mc(marker_box, *this);
         mc.set_bits(get_code());
@@ -139,7 +139,7 @@ public:
 };
 
 
-// MatrixMarker: a Matrix-shaped marker with per-axis alignment, but no position of its own. Position is provided by the Point that carries it — same contract as single-cell markers, just with a multi-cell character footprint. Separates "what to draw" (here) from "where to draw it" (Point). get_xres/get_yres return 1 (sub-cell resolution, matches NormalMarker so line generators don't over-densify); the multi-cell footprint is accessed via Matrix::get_width/get_height for the stamping path. The stamp() override delegates to Matrix::insert(col, row, Matrix, ha, va) with the marker's per-axis alignments.
+// MatrixMarker: a Matrix-shaped marker with per-axis alignment, but no position of its own. Position is provided by the Point that carries it, same contract as single-cell markers, just with a multi-cell character footprint. Separates "what to draw" (here) from "where to draw it" (Point). get_xres/get_yres return 1 (sub-cell resolution, matches NormalMarker so line generators don't over-densify); the multi-cell footprint is accessed via Matrix::get_width/get_height for the stamping path. The stamp() override delegates to Matrix::insert(col, row, Matrix, ha, va) with the marker's per-axis alignments.
 class MatrixMarker : public Matrix, public Marker {
 private:
     Alignment halignment = Alignment(-1);   // -1 left, 0 center, 1 right
@@ -155,8 +155,6 @@ public:
     MatrixMarker & operator=(MatrixMarker &&) noexcept = default;
 
     // Per-axis alignment
-    void set_halignment(const Alignment & a) noexcept { halignment = a; }
-    void set_valignment(const Alignment & a) noexcept { valignment = a; }
     const Alignment & get_halignment() const noexcept { return halignment; }
     const Alignment & get_valignment() const noexcept { return valignment; }
 
@@ -177,7 +175,7 @@ public:
     const Pixel & get_pixel() const noexcept override {
         static const Pixel empty;
         return get_size() == 0 ? empty : Array2D<MatrixCharacter>::at(0); }
-    // Pixel transforms apply cell-wise — multi-cell markers don't have a single owned pixel. fix_background / set_pixel forward to Matrix's existing per-cell iterators.
+    // Pixel transforms apply cell-wise, multi-cell markers don't have a single owned pixel. fix_background / set_pixel forward to Matrix's existing per-cell iterators.
     void fix           (const Pixel & p) noexcept override { for (size_t i = 0; i < get_size(); ++i) at(i).fix(p); }
     void fix_background(const Pixel & p) noexcept override { Matrix::fix_background(p); }
     void set_pixel     (const Pixel & p) noexcept override { Matrix::set_pixel(p); }

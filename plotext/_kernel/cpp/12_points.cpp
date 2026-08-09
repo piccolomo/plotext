@@ -1,4 +1,4 @@
-// Points: a collection of Point built on top of plotext's Vector. Minimal version — append, size, iteration via at(), and log.
+// Points: a collection of Point built on top of plotext's Vector. Minimal version, append, size, iteration via at(), and log.
 
 class Points : public Vector<Point> {
 public:
@@ -70,7 +70,7 @@ extern "C" {
     void     points_clear        (Points * ps) noexcept { ps->clear(); }
     void     points_append_point (Points * ps, Point * p) noexcept { ps->append(*p); }
     void     points_append_points(Points * ps, Points * other) noexcept { ps->append(*other); }
-    Point  * points_get_point    (Points * ps, size_t i) noexcept { return new Point(ps->at(i)); }   // returns a copy — Python owns and frees it
+    Point  * points_get_point    (Points * ps, size_t i) noexcept { return new Point(ps->at(i)); }   // returns a copy, Python owns and frees it
     size_t   points_get_length   (Points * ps) noexcept { return ps->get_length(); }
     void     points_log          (Points * ps) noexcept { ps->log(); }
     Points * points_copy         (Points * ps) noexcept { return new Points(*ps); }

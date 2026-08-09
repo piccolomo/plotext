@@ -7,13 +7,13 @@ build-backend = "setuptools.build_meta"
 # needs to make sure a C++ toolchain is available on each runner.
 
 [tool.cibuildwheel]
-build = "cp38-* cp39-* cp310-* cp311-* cp312-* cp313-*"
+build = "cp312-*"          # one build per system is enough, the wheel serving every python
 skip = "pp* *-musllinux_* *-win32 *_i686"
 test-command = "python -c \"import plotext; print(plotext.__version__)\""
 
 # manylinux containers already ship gcc; nothing extra required.
 [tool.cibuildwheel.linux]
-archs = ["x86_64", "aarch64"]
+archs = ["x86_64"]          # the ARM build runs inside an emulator, minutes per wheel; worth restoring for the final release
 
 # Apple clang is preinstalled on the runner.
 [tool.cibuildwheel.macos]

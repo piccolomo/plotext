@@ -4,7 +4,7 @@ from plotext._methods import object as object_methods
 
 
 # Format x and y data lists into aligned pairs
-def data(x=None, y=None):
+def data(x = None, y = None):
     if x is None and y is None:
         x, y = [], []
     elif x is not None and y is None:
@@ -17,13 +17,7 @@ def data(x=None, y=None):
     return [list(x[:l]), list(y[:l])]
 
 
-# Format error-bar plot data into (x, y, xerr, yerr) aligned lists. Accepts:
-#   (y,)                 → x = 1..N, no errors
-#   (x, y)               → paired, no errors
-#   (x, y, yerr)         → y errors only (the common case)
-#   (x, y, yerr, xerr)   → both axes — order mirrors matplotlib's errorbar()
-# Reuses data() so scalar broadcasting and missing-arg defaults match the rest of plotext.
-# Extra args (n > 4) are ignored.
+# Format error bar data into (x, y, xerr, yerr) aligned lists: (y,), (x, y), (x, y, yerr) or (x, y, yerr, xerr); extra arguments are ignored.
 def error_data(*args):
     if len(args) == 0:
         return [], [], [], []

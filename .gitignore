@@ -18,7 +18,5 @@ plotext/#*
 .#*
 
 # Local scratch
-plotext/temp/
-plotext/bin/
-plotext/todo.txt
 docs/temp/
+*.ansi

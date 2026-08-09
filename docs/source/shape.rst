@@ -1,15 +1,26 @@
-Shapes
-======
+Shapes and Text
+===============
 
-``plotext`` provides three primitives for drawing arbitrary geometric shapes onto the canvas: :meth:`~plotext._plotter.plot.plot_class.segment` for two-point lines, :meth:`~plotext._plotter.plot.plot_class.rectangle` for axis-aligned rectangles and :meth:`~plotext._plotter.plot.plot_class.polygon` for regular polygons (triangle, square, pentagon, hexagon, … up to a near-circle at high side counts).
+|plotext| draws four **geometric shapes** onto the :doc:`canvas <canvas>`:
+:meth:`~plotext._plotter.plot.plot_class.rectangle`,
+:meth:`~plotext._plotter.plot.plot_class.polygon`,
+:meth:`~plotext._plotter.plot.plot_class.segment` and
+:meth:`~plotext._plotter.plot.plot_class.line`, plus text annotations with
+:meth:`~plotext._plotter.plot.plot_class.text`.
+A polygon with many sides can also simulate a circle.
 
-Both methods follow the same pattern as :doc:`basic` plots — they return a signal that the caller passes to :meth:`~plotext._plotter.plot.plot_class.draw`.
+All of them return a :ref:`signal <signal>` to pass to
+:meth:`~plotext._plotter.plot.plot_class.draw`, like any other plot, *except*
+:meth:`~plotext._plotter.plot.plot_class.line`, which adds itself to the plot
+directly.
 
+
+.. _rectangle:
 
 Rectangle
 ---------
 
-:meth:`~plotext._plotter.plot.plot_class.rectangle` builds a filled or outlined rectangle between two x and y ranges.
+:meth:`~plotext._plotter.plot.plot_class.rectangle` builds a **filled or outlined** rectangle between two *x* and *y* ranges.
 
 .. code-block:: python
 
@@ -17,30 +28,36 @@ Rectangle
    fig = plt.figure
    fig.clear()
 
-   fig.draw(fig.rectangle((0, 10), (0, 5)).label("filled"))
-   fig.draw(fig.rectangle((12, 22), (0, 5), label = "labelled"))
+   signal = fig.rectangle((0, 10), (0, 5)).label("filled")
+   fig.draw(signal)
+
+   signal = fig.rectangle((12, 22), (0, 5), label = "labeled")
+   fig.draw(signal)
+
    fig.title("Rectangle")
    fig.show()
 
-Parameters:
+Or directly from the shell:
 
-- ``x`` — the x range of the rectangle, as a two-value tuple or list. Endpoint order doesn't matter; *min* and *max* are taken internally.
-- ``y`` — the y range of the rectangle, same format as *x*.
-- ``marker`` — the symbol used to render the rectangle. Pass a single character or a *plotext marker* (see :ref:`markers`).
-- ``lines`` — when *true* (default), the rectangle outline is densified so the border draws cleanly (and the body fills, when fill is also true). When *false*, only the corner points are placed.
-- ``fill`` — when *true* (default), the rectangle's body is filled with markers. When *false*, only the clockwise outline is drawn.
-- ``label`` — optional text drawn centered inside the rectangle. Colours adapt to the rectangle automatically: when filled, the label is painted in the canvas background colour over the rectangle's foreground; when only outlined, the label takes the rectangle's foreground colour. Accepts a plain string, a :class:`~plotext.colorize` for explicit per-character styling, or a :class:`~plotext.matrix` for full pixel control.
-- ``xside``, ``yside`` — which axis pair the rectangle is plotted against (see :ref:`axis`).
+.. code-block:: shell
 
-.. note::
+   plotext --figure --rectangle '(0, 10)' '(0, 5)' --label filled --draw \
+           --rectangle '(12, 22)' '(0, 5)' label=labeled --draw \
+           --title Rectangle --show
 
-   When the rectangle is drawn with a sub-cell marker (``"hd"``, ``"fhd"``, ``"braille"``) and the rectangle's edges don't land on integer cell boundaries, a half-cell canvas-coloured gap can appear immediately next to a label. This is rendering-correct — sub-cell edge glyphs like ``▌``/``▐`` split a cell into bar-colour and canvas-colour halves, and labels are full-cell, so the visual contrast surfaces the half-block's canvas side as a "white gap". To eliminate it, use a full-cell marker (``"full"``) or snap rectangle x-ranges to integer values.
+.. image:: images/rectangle.png
 
+| With its parameters you can set the two ranges the rectangle spans (``x`` and ``y``, each a two-value tuple or list) and the symbol rendering it (``marker``, the higher resolution code ``hd`` by default, ``dot`` on Windows: see the :doc:`marker <marker>` page for all the accepted forms).
+| You can control its outline and body (``lines`` and ``fill``, both drawn by default).
+| Finally, you can write a centered text inside it (``label``), with colors picked automatically: on a filled rectangle they contrast the fill, on an outlined one they match the outline.
+
+
+.. _polygon:
 
 Polygon
 -------
 
-:meth:`~plotext._plotter.plot.plot_class.polygon` builds a regular polygon centered at a point, with a configurable number of sides and radius.
+:meth:`~plotext._plotter.plot.plot_class.polygon` builds a **regular polygon** centered at a point.
 
 .. code-block:: python
 
@@ -48,27 +65,57 @@ Polygon
    fig = plt.figure
    fig.clear()
 
-   fig.draw(fig.polygon(sides=6).label("hexagon"))
-   fig.draw(fig.polygon(sides=100, radius=0.5).label("circle"))
-   fig.title("Polygons")
+   signal = fig.polygon(sides = 6).label("hexagon")
+   fig.draw(signal)
+
+   fig.title("Polygon")
    fig.show()
 
-Parameters:
+Or directly from the shell:
 
-- ``x``, ``y`` — coordinates of the polygon center.
-- ``radius`` — distance from the center to each vertex. For a polygon with very many sides this is the effective circle radius.
-- ``sides`` — number of polygon sides. Triangle is *3*, square is *4*, hexagon is *6*; values above ~50 approximate a circle.
-- ``up`` — when *true*, rotates the polygon by half a side angle. For even-sided polygons this puts a flat edge on top; for odd-sided ones it puts a vertex on top.
-- ``marker`` — symbol used for the vertices.
-- ``lines`` — when *true* (default), the polygon outline is drawn between consecutive vertices. When *false*, only the vertex points are placed.
-- ``fill`` — when *true*, every vertex gets a fill point at *(x, y)* — the polygon center, producing radial spokes from each vertex inward.
-- ``xside``, ``yside`` — which axis pair the polygon is plotted against.
+.. code-block:: shell
 
+   plotext --figure --polygon sides=6 --label hexagon --draw --title Polygon --show
+
+.. image:: images/polygon.png
+
+| With its parameters you can set the center of the polygon (``x`` and ``y``), the distance of each vertex from the center (``radius``) and their number (``sides``).
+| You can tilt the polygon (``up``), placing a vertex or a flat side on top.
+| Finally, you can set the symbol rendering it (``marker``, the higher resolution code ``hd`` by default, ``dot`` on Windows: see the :doc:`marker <marker>` page for all the accepted forms).
+
+
+Circle
+~~~~~~
+
+A polygon with many sides **approximates a circle**: from about 50 sides upward the outline is indistinguishable from a real one, with ``radius`` as its actual radius.
+
+.. code-block:: python
+
+   import plotext as plt
+   fig = plt.figure
+   fig.clear()
+
+   signal = fig.polygon(sides = 100, radius = 2, marker = plt.marker("hd", "red+")).label("circle")
+   fig.draw(signal)
+
+   fig.title("Circle")
+   fig.show()
+
+Or directly from the shell:
+
+.. code-block:: shell
+
+   plotext --figure --polygon sides=100 radius=2 --label circle --draw --title Circle --show
+
+.. image:: images/circle.png
+
+
+.. _segment:
 
 Segment
 -------
 
-:meth:`~plotext._plotter.plot.plot_class.segment` builds a straight line between two points — useful for arbitrary diagonals or axis-aligned segments without going through ``signal()`` and configuring lines manually.
+:meth:`~plotext._plotter.plot.plot_class.segment` builds a **straight line** between two endpoints, without going through :meth:`~plotext._plotter.plot.plot_class.signal` and configuring lines manually.
 
 .. code-block:: python
 
@@ -76,23 +123,35 @@ Segment
    fig = plt.figure
    fig.clear()
 
-   fig.draw(fig.segment((0, 10), (0, 5)).label("diagonal"))
-   fig.draw(fig.segment((0, 10), (5, 5)).label("horizontal"))
+   signal = fig.segment((0, 10), (0, 5)).label("diagonal")
+   fig.draw(signal)
+
+   signal = fig.segment((0, 10), (5, 5)).label("horizontal")
+   fig.draw(signal)
+
    fig.title("Segment")
    fig.show()
 
-Parameters:
+Or directly from the shell:
 
-- ``x`` — the x range of the segment, as a two-value tuple or list. Endpoint order matters (the line goes from the first to the second).
-- ``y`` — the y range of the segment, same format as *x*.
-- ``marker`` — symbol used to render the segment.
-- ``xside``, ``yside`` — which axis pair the segment is plotted against.
+.. code-block:: shell
+
+   plotext --figure --segment '(0, 10)' '(0, 5)' --label diagonal --draw \
+           --segment '(0, 10)' '(5, 5)' --label horizontal --draw \
+           --title Segment --show
+
+.. image:: images/segment.png
+
+| With its parameters you can set the endpoint coordinates (``x`` and ``y``, each a two-value tuple or list) and the symbol rendering the segment (``marker``, the higher resolution code ``hd`` by default, ``dot`` on Windows: see the :doc:`marker <marker>` page for all the accepted forms).
 
 
-Combining shapes
-----------------
+.. _shape_line:
 
-Shapes can be drawn into the same plot by issuing multiple draw calls; each shape becomes its own legend entry if labeled.
+Line
+----
+
+| :meth:`~plotext._plotter.plot.plot_class.line` draws a horizontal or vertical line spanning the whole plot :doc:`canvas <canvas>` at the given coordinate, useful to mark thresholds or reference positions.
+| It returns no signal: the line has to join the :doc:`axes <axis>` frame with the proper connecting characters at its ends, which no sequence of data points can express, so it is managed by the plot :doc:`rulers <ruler>` and added to the plot *directly*, with no :meth:`~plotext._plotter.plot.plot_class.draw` call needed.
 
 .. code-block:: python
 
@@ -100,41 +159,90 @@ Shapes can be drawn into the same plot by issuing multiple draw calls; each shap
    fig = plt.figure
    fig.clear()
 
-   fig.draw(fig.polygon().label("triangle"))
-   fig.draw(fig.rectangle().label("rectangle"))
-   fig.draw(fig.polygon(sides=100).label("circle"))
+   signal = fig.signal(range(10)).label("data")
+   fig.draw(signal)
 
-   fig.title("Shapes")
-   fig.legend()
+   fig.line(3, label = "level")
+   fig.line(5, orientation = "vertical", label = "position")
+
+   fig.title("Line")
    fig.show()
 
-
-Command-line
-------------
-
-All three shape primitives translate directly. Tuples on the shell need quoting (parentheses are shell metacharacters):
+Or directly from the shell:
 
 .. code-block:: shell
 
-   # Rectangle
-   plotext --rectangle '(0, 10)' '(0, 5)' --label filled --draw \
-           --rectangle '(12, 22)' '(0, 5)' label=labelled --draw \
-           --title Rectangle --show
+   plotext --figure --signal [0,1,2,3,4,5,6,7,8,9] --label data --draw \
+           --line 3 label=level \
+           --line 5 orientation=vertical label=position \
+           --title Line --show
 
-   # Polygon
-   plotext --polygon sides=6 --label hexagon --draw \
-           --polygon sides=100 radius=0.5 --label circle --draw \
-           --title Polygons --show
+.. image:: images/lines.png
 
-   # Segment
-   plotext --segment '(0, 10)' '(0, 5)' --label diagonal --draw \
-           --segment '(0, 10)' '(5, 5)' --label horizontal --draw \
-           --title Segment --show
+| With its parameters you can place the line along the perpendicular :doc:`axis <axis>` (``position``, a *y* value when horizontal, an *x* value when vertical), pick its direction (``orientation``) and its line style (``style``, described below).
+| Finally, you can add the line to the :ref:`legend <legend>` (``label``).
 
-   # Combining shapes in one figure
-   plotext --polygon --label triangle --draw \
-           --rectangle --label rectangle --draw \
-           --polygon sides=100 --label circle --draw \
-           --title Shapes --legend --show
+.. _line_styles:
 
-Each shape factory enters the drawable-config phase; ``--label`` chains on the just-built shape, ``--draw`` adds it to the figure and clears the slot for the next one.
+Line Styles
+~~~~~~~~~~~
+
+The ``style`` parameter accepts one of five values:
+
+- ``default`` draws a single solid line (the default)
+- ``double`` draws a double solid line
+- ``heavy`` draws a thick solid line
+- ``dotted`` draws a dashed line
+- ``rounded`` draws a solid line with rounded corners at the frame intersections
+
+Use :func:`plotext.line_styles() <plotext.line_styles>` for a preview of the available styles:
+
+.. image:: images/line_styles.png
+
+.. caution:: ``rounded`` has no effect in :meth:`~plotext._plotter.plot.plot_class.line`, :meth:`~plotext._plotter.plot.plot_class.error`, :meth:`~plotext._plotter.plot.plot_class.event` and :meth:`~plotext._plotter.frame.ruler.ruler_class.grid`, where it renders as ``default``; :meth:`~plotext._plotter.plot.plot_class.axes` displays every style.
+
+
+Text
+----
+
+:meth:`~plotext._plotter.plot.plot_class.text` writes a **text annotation** at the given coordinates.
+
+.. code-block:: python
+
+   import plotext as plt
+   fig = plt.figure
+   fig.clear()
+
+   y = plt.sin()
+   signal = fig.signal(y).lines()
+   fig.draw(signal)
+
+   signal = fig.text(25, 1.05, "maximum", alignment = "center")
+   fig.draw(signal)
+
+   signal = fig.text(100, 0, "midline", orientation = "vertical")
+   fig.draw(signal)
+
+   fig.title("Text")
+   fig.show()
+
+Or directly from the shell:
+
+.. code-block:: shell
+
+   plotext --figure --sin --signal --lines --draw \
+           --text 25 1.05 maximum alignment=center --draw \
+           --text 100 0 midline orientation=vertical --draw \
+           --title Text --show
+
+.. image:: images/text.png
+
+| With its parameters you can set the text coordinates (``x`` and ``y``) and its content (``label``).
+| You can write the text horizontally (the default) or vertically (``orientation``), and choose which part of it sits on the given coordinates (``alignment``): *left*, *center* or *right* for horizontal text, *top*, *center* or *bottom* for vertical.
+| Finally, you can read *x* and *y* as :doc:`canvas <canvas>` cell coordinates instead of data coordinates (``relative``).
+
+.. tip:: A plain string is written with the default label coloring, while a :ref:`colorize <colorize>` object keeps its own foreground color, background color and style.
+
+.. note:: Text annotations contribute to the plot autoscale: a figure holding only texts, with no signals, still produces sensible :doc:`axis <axis>` limits.
+
+

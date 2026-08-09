@@ -56,11 +56,11 @@ class axes_class:
         return self
 
     # Get string representation of a specific axis
-    def get_string(self, axis = 0, side = 0):
-        return self.get(axis, side).get_string()
+    def string(self, axis = 0, side = 0):
+        return self.get(axis, side).string()
 
     # Represent axes in Plotext style
     def __repr__(self):
         out = f"Plotext Axes\n "
-        out += '\n '.join([ax.get_log() for ax in self._xaxis + self._yaxis])
+        out += '\n '.join([ax._get_log() for ax in self._xaxis + self._yaxis])
         return out

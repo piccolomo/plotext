@@ -72,6 +72,9 @@ public:
     // Copy only the background
     inline void copy_background(const Pixel & p) noexcept { Background::operator=(p); }
 
+    // Copy only the style
+    inline void copy_style(const Pixel & p) noexcept { Style::operator=(p); }
+
     // Swap fg and bg, patching each side's "3"/"4" prefix byte so the result remains a valid pixel for any colour representation.
     inline void swap() noexcept {
         Pixel saved = *this;
@@ -84,8 +87,11 @@ public:
     // Apply another pixel's foreground only if this pixel has none
     inline void fix_fullground(const Pixel & pixel) noexcept { if (no_fullground()) copy_fullground(pixel); }
 
-    // Fix both foreground and background against another pixel
-    inline void fix(const Pixel & pixel) noexcept { fix_background(pixel); fix_fullground(pixel); }
+    // Apply another pixel's style only if this pixel has none
+    inline void fix_style(const Pixel & pixel) noexcept { if (no_style()) copy_style(pixel); }
+
+    // Fix foreground, background and style against another pixel, each taken only where this pixel has none
+    inline void fix(const Pixel & pixel) noexcept { fix_background(pixel); fix_fullground(pixel); fix_style(pixel); }
 
     // True if no foreground is set
     inline bool no_fullground() const noexcept { return Fullground::no_color(); }
@@ -123,16 +129,16 @@ public:
         html_to_buffer(buffer, len);
         return wstring(buffer, len); }
 
-    // Get combined ANSI code (caller owns the returned heap buffer — prefer get_wstring)
+    // Get combined ANSI code (caller owns the returned heap buffer, prefer get_wstring)
     inline const wchar_t * get_code() const {
         wchar_t * buffer = new wchar_t[pixel_size_max + 1]; buffer[0] = L'\0'; size_t len = 0;
         to_buffer(buffer, len); return buffer;}
 
-    // Get Pixel as wide string (pixel code + "Pixel" label + reset)
+    // Get Pixel as wide string (pixel code + "PlotextPixel()" label + reset)
     inline wstring get_wstring() const {
-        wchar_t buffer[character_size_max + 5] = {L'\0'}; size_t len = 0;
+        wchar_t buffer[character_size_max + 14] = {L'\0'}; size_t len = 0;
         to_buffer(buffer, len);
-        cstring_to_buffer(L"Pixel", buffer, len);
+        cstring_to_buffer(L"PlotextPixel()", buffer, len);
         if (has_color()) cstring_to_buffer(ansi_end, buffer, len);
         return wstring(buffer);}
 
@@ -192,7 +198,7 @@ extern "C" {
     void pixel_set_style_code(Pixel * p, const char * code) noexcept { p->set_style(string(code)); }
 
     // Copy all properties from src into dest
-    void pixel_copy_pixel(Pixel * dest, const Pixel * src) noexcept { dest->copy_pixel(*src); }
+    void pixel_clone(Pixel * dest, const Pixel * src) noexcept { dest->copy_pixel(*src); }
 
     // Copy only the background from src into dest
     void pixel_copy_background(Pixel * dest, const Pixel * src) noexcept { dest->copy_background(*src); }
@@ -214,6 +220,19 @@ extern "C" {
 
     // True if no background is set
     bool pixel_no_background(const Pixel * p) noexcept { return p->no_background(); }
+
+    // The foreground and the background as one packed number, red times 65536 plus green times 256 plus blue, and -1 when the color is not set
+    int pixel_get_foreground(const Pixel * p) noexcept {
+        const Fullground & color = *p;
+        if (color.no_color()) return -1;
+        unsigned char r, g, b; color.get_rgb(r, g, b);
+        return (r << 16) | (g << 8) | b; }
+
+    int pixel_get_background(const Pixel * p) noexcept {
+        const Background & color = *p;
+        if (color.no_color()) return -1;
+        unsigned char r, g, b; color.get_rgb(r, g, b);
+        return (r << 16) | (g << 8) | b; }
 
     // Log the pixel to wcout
     void pixel_log(const Pixel * p) noexcept { p->log(); }

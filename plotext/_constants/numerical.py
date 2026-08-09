@@ -7,11 +7,8 @@ directions = [-1, 1]
 limit_delta = 10 ** (-4)
 limit_deltas = [0.5, limit_delta]
 
-# Numeric tolerances
-infinitesimal = 1e-12
-
 # Bounds
 infinity = float('inf')
 
-# Maximum number of unique pixels to scan per signal when feeding the colour cycler. Caps the per-draw dedup so image-style signals (thousands of RGB pixels that never match the cycler's palette pool) return in O(MAX_UNIQUE_PIXELS) instead of O(N).
+# How many different pixels are looked at in one signal, when taking the colors already in use; an image holds thousands of them, and this keeps the search short.
 max_unique_pixels = 64

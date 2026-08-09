@@ -1,17 +1,18 @@
 # Colorized string object with pixel-based styling and matrix operations
 
-from plotext._kernel.clink import clink 
-from plotext._kernel.tools import wstring 
-from plotext._primitives.pixel import pixel 
-from plotext._methods.string import write 
+from plotext._kernel.clink import clink
+from plotext._kernel.tools import wstring
+from plotext._primitives.pixel import pixel
+from plotext._correct.pixel import pixel_par as correct_pixel
+from plotext._methods.string import write
 
 
 class colorize:
     # Initialize colorize object with optional string and pixel styling
-    def __init__(self, string = None, foreground = None, background = None, style = None, _pointer = None):
+    def __init__(self, string = None, pixel = None, _pointer = None):
         if _pointer is None:
             string = '' if string is None else str(string)
-            px = pixel(foreground, background, style)
+            px = correct_pixel(pixel)
             self._pointer = clink.colorize_new(wstring(str(string)), px._pointer)
         else:
             self._pointer = _pointer
@@ -20,75 +21,73 @@ class colorize:
     def __del__(self):
         clink.colorize_delete(self._pointer)
 
-    # Set pixel object for this colorize instance
-    def set_pixel(self, pixel=None):
-        pixel = pixel_class() if pixel is None else pixel
+    # Apply `pixel` to every character, preserving each glyph
+    def fill(self, pixel = None):
+        pixel = correct_pixel(pixel)
         clink.colorize_set_pixel(self._pointer, pixel._pointer)
         return self
 
-    # Set string content preserving current pixel style
-    def set_string(self, string):
-        new = colorize(string).set_pixel(self.get_pixel())
+    # Replace the string content, preserving the current pixel.
+    def write(self, string):
+        new = colorize(string).fill(self.pixel())
         return self.clone(new)
 
-    # Return a new colorize with the same pixel and the string uppercased.
+    # Uppercase the colorize string in place, preserving the pixel.
     def upper(self):
-        return self.copy().set_string(self.get_string(colorless = True).upper())
+        return self.write(self.string(colorless = True).upper())
 
-    # Return a new colorize with the same pixel and the string lowercased.
+    # Uppercase the colorize string in place, preserving the pixel.
     def lower(self):
-        return self.copy().set_string(self.get_string(colorless = True).lower())
+        return self.write(self.string(colorless = True).lower())
 
-    # Return a new colorize with the same pixel and the string title-cased.
+    # Title-case the colorize string in place, preserving the pixel.
     def title(self):
-        return self.copy().set_string(self.get_string(colorless = True).title())
+        return self.write(self.string(colorless = True).title())
 
     # Get length of colorized string
-    def get_length(self):
+    def length(self):
         return clink.colorize_get_length(self._pointer)
 
     # Get pixel associated with colorize object
-    def get_pixel(self):
-        return pixel(_pointer=clink.colorize_get_pixel(self._pointer))
+    def pixel(self):
+        return pixel(_pointer = clink.colorize_get_pixel(self._pointer))
 
     # Get matrix representation of colorized string
-    def get_matrix(self):
+    def matrix(self):
         from plotext._primitives.matrix import matrix
-        return matrix(_pointer=clink.colorize_get_matrix(self._pointer))
+        return matrix(0, 0, _pointer = clink.colorize_get_matrix(self._pointer))
 
     # Retrieve string optionally without colors
-    def get_string(self, colorless=False):
+    def string(self, colorless = False):
         p = clink.colorize_get_wstring(self._pointer, colorless)
         string = wstring.from_buffer(p).value
         clink.wstring_delete(p)
         return string
 
     # Print colorized string with optional flush
-    def print(self, colorless=False, flush=False):
+    def print(self, colorless = False, flush = False):
         clink.colorize_print(self._pointer, colorless, flush)
         return self
 
     # Create a copy of this colorize object
     def copy(self):
-        return colorize(_pointer=clink.colorize_copy(self._pointer))
+        return colorize(_pointer = clink.colorize_copy(self._pointer))
 
     # Get substring of colorized string
     def _part(self, start, stop):
-        return colorize(_pointer=clink.colorize_part(self._pointer, start, stop))
+        return colorize(_pointer = clink.colorize_part(self._pointer, start, stop))
 
     # Horizontally stack with another colorized object; returns a matrix
-    def hstack(self, colorized, adapt=True):
-        colorized = correct_colorized(colorized)
-        return self.get_matrix().hstack(colorized.get_matrix(), adapt)
+    def hstack(self, item, adapt = True):
+        return self.matrix().hstack(item, adapt)
 
-    # Vertically stack with another colorized object; returns a matrix
-    def vstack(self, colorized, adapt=True):
-        colorized = correct_colorized(colorized)
-        return self.get_matrix().vstack(colorized.get_matrix(), adapt)
+    # Vertically stack with another colorize, matrix, or raw string; returns a matrix
+    def vstack(self, item, adapt = True):
+        return self.matrix().vstack(item, adapt)
 
     # Clone from another colorized object
     def clone(self, colorized):
-        clink.colorize_copy_from(self._pointer, colorized._pointer)
+        clink.colorize_clone(self._pointer, colorized._pointer)
         return self
 
     # Check if no background is set
@@ -112,24 +111,32 @@ class colorize:
 
     # String representation
     def __repr__(self):
-        return self.get_string()
+        return self.string()
 
     # Horizontal concatenation
-    def __add__(self, string):
-        return self.hstack(string, 1)
+    def __add__(self, item):
+        return self.hstack(item, 1)
+
+    # Right-side counterpart for the + operator (e.g. "prefix" + colorize)
+    def __radd__(self, item):
+        return colorize(item).hstack(self, 1)
 
     # Vertical concatenation
-    def __truediv__(self, string):
-        return self.vstack(string, 1)
+    def __truediv__(self, item):
+        return self.vstack(item, 1)
+
+    # Right-side counterpart for the / operator
+    def __rtruediv__(self, item):
+        return colorize(item).vstack(self, 1)
 
     # Length operator
     def __len__(self):
-        return self.get_length()
+        return self.length()
 
     # Indexing and slicing support
     def __getitem__(self, key):
         from plotext._correct import matrix as correct_matrix
-        key = correct_matrix.slice(key, self.get_length())
+        key = correct_matrix.slice(key, self.length())
         return self._part(key.start, key.stop)
 
     # Equality comparison
@@ -143,19 +150,18 @@ class colorize:
 
     # String cast
     def __str__(self):
-        return self.get_string()
+        return self.string()
 
     # Hash helper
     def _hash(self):
-        return object_methods.hash(self.get_string())
+        return object_methods.hash(self.string())
 
 
-# Ensure input is a colorize object (kept local to _primitives/colorize.py to avoid a circular import with _correct).
-# When default_pixel is provided and the input is a bare string, the resulting colorize gets that pixel applied.
+# The value as a colorize object, a plain string taking the given pixel when one is passed; it lives here, and not in the _correct folder, to avoid importing that folder from this one.
 def correct_colorized(colorized, default_pixel = None):
     if isinstance(colorized, str):
         c = colorize(colorized)
         if default_pixel is not None:
-            c.set_pixel(default_pixel)
+            c.fill(default_pixel)
         return c
     return colorized

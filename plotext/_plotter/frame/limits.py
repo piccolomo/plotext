@@ -22,14 +22,15 @@ class limits_class:
         self.set_direction()
         return self
 
-    # Set lower and upper limits
+    # Set the lower and upper limits asked for, None leaving that side to the plot content
     def set(self, lower = None, upper = None):
         self._limits = [lower, upper]
+        self._content_limits = [None, None]
         return self
 
-    # Update limits with corrections. merge=False just fills None entries from `limits`; merge=True unions the current range with `limits` so neither side gets discarded.
+    # Update the limits the plot content needs, leaving the asked ones untouched. merge=False just fills None entries from `limits`; merge=True unions the current range with `limits` so neither side gets discarded.
     def update(self, limits = None, merge = False):
-        self._limits = correct.limits(self._limits, limits, merge)
+        self._content_limits = correct.merge_limits(self._content_limits, limits, merge)
         return self
 
     # Set alignment for limits
@@ -50,13 +51,14 @@ class limits_class:
 
     # Apply logarithm to both bounds
     def log(self):
-        print(self._limits)
-        self._limits = [log(limit) for limit in self._limits]
+        self._limits = [None if limit is None else log(limit) for limit in self._limits]
+        self._content_limits = [None if limit is None else log(limit) for limit in self._content_limits]
         return self
 
-    # Get current limits, optionally reversed by direction
+    # Get the limits in use, optionally reversed by direction: the asked ones on each side where one was given, those needed by the plot content elsewhere
     def get(self, direction = False):
-        limits = self._limits[::self._direction] if direction else self._limits
+        limits = [asked if asked is not None else content for asked, content in zip(self._limits, self._content_limits)]
+        limits = limits[::self._direction] if direction else limits
         return limits
 
     # Get alignment
@@ -73,7 +75,7 @@ class limits_class:
 
     # Check if limits are undefined
     def inactive(self):
-        return None in self._limits
+        return None in self.get()
 
     # Check if both limits are defined
     def active(self):
@@ -82,14 +84,15 @@ class limits_class:
     # Clone attributes from another limits object
     def clone(self, limits):
         self._limits = limits._limits
+        self._content_limits = limits._content_limits
         self._alignment = limits._alignment
         self._direction = limits._direction
         return self
 
     # Return log string
-    def get_log(self):
-        return f"limits: {string.log_limits(self._limits)}, alignment: {self._alignment}, direction: {self._direction}"
+    def _get_log(self):
+        return f"limits: {string.log_limits(self.get())}, alignment: {self._alignment}, direction: {self._direction}"
 
     # Return string representation
     def __repr__(self):
-        return "Plotext " + self.get_log()
+        return "PlotextLimits(" + self._get_log() + ")"

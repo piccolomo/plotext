@@ -3,7 +3,6 @@
 space = ' '
 new_line = '\n'
 comma = ', '
-colon = ': '
 empty = ''
 period = '.'
 ansi_begin = '\x1b['

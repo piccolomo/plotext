@@ -16,3 +16,53 @@
 .rst-content ol {
     padding-left: 1.2em;
 }
+
+/* -----------------------------------------------------------------------
+   Group headings above the page lists of the home page
+   ----------------------------------------------------------------------- */
+
+
+/* Heading look instead of the theme's small italic caption */
+.rst-content .toctree-wrapper > p.caption {
+    margin: 1.4em 0 0.3em;
+    font-size: 120%;
+    font-weight: 700;
+}
+
+
+/* The caption text itself is italic by default */
+.rst-content .toctree-wrapper > p.caption .caption-text {
+    font-style: normal;
+}
+
+
+/* The generic paragraph rule above pulls the list under the caption too far up */
+.rst-content .toctree-wrapper > p.caption + ul {
+    margin-top: 0;
+}
+
+
+
+
+/* -----------------------------------------------------------------------
+   Home page feature list, which sits above the first section, where the
+   theme adds no bullet markers of its own
+   ----------------------------------------------------------------------- */
+
+
+.rst-content ul.feature-list,
+.rst-content ul.feature-list li {
+    list-style: disc;
+}
+
+
+.rst-content ul.feature-list li {
+    margin-left: 24px;
+    margin-bottom: 0;
+}
+
+
+/* The theme gives every list paragraph a wide bottom margin, which here reads as a gap between the points */
+.rst-content ul.feature-list li p {
+    margin-bottom: 0.15em;
+}

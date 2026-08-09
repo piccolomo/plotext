@@ -3,10 +3,7 @@
 from plotext._constants.enums import horizontal_alignments, horizontal_alignments_short, vertical_alignments, vertical_alignments_short, alignments_int, orientations
 
 
-# Validate and normalize alignment for the given orientation (0 horizontal, 1 vertical).
-# horizontal -> 'left'/'center'/'right' (or short 'l'/'c'/'r');
-# vertical   -> 'top'/'center'/'bottom' (or short 't'/'c'/'b').
-# Integer codes -1/0/1 are accepted for both. Anything else returns default.
+# Validate the alignment for the given orientation: left, center, right when horizontal, top, center, bottom when vertical, short forms and the codes -1, 0, 1 accepted; anything else gives the caller default.
 def alignment(value = None, orientation = 0, default = -1):
     names  = horizontal_alignments       if orientation == 0 else vertical_alignments
     shorts = horizontal_alignments_short if orientation == 0 else vertical_alignments_short

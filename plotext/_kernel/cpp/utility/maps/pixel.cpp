@@ -17,18 +17,18 @@ const unordered_map<string, unsigned char> color_codes = {
     {"blue",     4},
     {"blue+",   12},
     {"magenta",  5},
-    {"magenta+",13},
+    {"magenta+", 13},
     {"cyan",     6},
     {"cyan+",   14}};
 
-// Retrieves the color code for a given color name, returns 100 if not found
+// The code of a color name, as 1 for "red"; an unknown name gives 100, a value outside the 0 to 255 codes, read as "not a color".
 inline unsigned char get_color_code(const string & color) noexcept {
     auto pair = color_codes.find(color);
     if (pair != color_codes.end()) {return pair->second;}
     else {return 100;}}
 
 extern "C" {
-    // Retrieves the color name for a given code, returns "unknown" if not found
+    // The name of a color code, as "red" for 1; a code outside the table gives "unknown".
     const char* get_color_name(unsigned char code) noexcept {
         for (const auto& [name, c] : color_codes) {
             if (c == code) return name.c_str();}
@@ -38,12 +38,12 @@ extern "C" {
 
 // Palette index -> RGB triplet (ported from legacy plotext's type1_to_type2_codes)
 constexpr unsigned char rgb_lookup[256][3] = {
-    // 0..15 — standard ANSI defaults
+    // 0..15, standard ANSI defaults
     {  0,   0,   0}, {205,  49,  49}, { 13, 188, 121}, {229, 229,  16},
     { 36, 114, 200}, {188,  63, 188}, { 17, 168, 205}, {229, 229, 229},
     {102, 102, 102}, {241,  76,  76}, { 35, 209, 139}, {245, 245,  67},
     { 59, 142, 234}, {214, 112, 214}, { 41, 184, 219}, {255, 255, 255},
-    // 16..231 — 6x6x6 color cube
+    // 16..231, 6x6x6 color cube
     {  0,   0,   0}, {  0,   0,  95}, {  0,   0, 135}, {  0,   0, 175}, {  0,   0, 215}, {  0,   0, 255},
     {  0,  95,   0}, {  0,  95,  95}, {  0,  95, 135}, {  0,  95, 175}, {  0,  95, 215}, {  0,  95, 255},
     {  0, 135,   0}, {  0, 135,  95}, {  0, 135, 135}, {  0, 135, 175}, {  0, 135, 215}, {  0, 135, 255},
@@ -80,7 +80,7 @@ constexpr unsigned char rgb_lookup[256][3] = {
     {255, 175,   0}, {255, 175,  95}, {255, 175, 135}, {255, 175, 175}, {255, 175, 215}, {255, 175, 255},
     {255, 215,   0}, {255, 215,  95}, {255, 215, 135}, {255, 215, 175}, {255, 215, 215}, {255, 215, 255},
     {255, 255,   0}, {255, 255,  95}, {255, 255, 135}, {255, 255, 175}, {255, 255, 215}, {255, 255, 255},
-    // 232..255 — 24-step grayscale ramp
+    // 232..255, 24-step grayscale ramp
     {  8,   8,   8}, { 18,  18,  18}, { 28,  28,  28}, { 38,  38,  38}, { 48,  48,  48}, { 58,  58,  58},
     { 68,  68,  68}, { 78,  78,  78}, { 88,  88,  88}, { 98,  98,  98}, {108, 108, 108}, {118, 118, 118},
     {128, 128, 128}, {138, 138, 138}, {148, 148, 148}, {158, 158, 158}, {168, 168, 168}, {178, 178, 178},
@@ -95,12 +95,12 @@ const unordered_map<string, unsigned char> style_codes = {
     {"dim",             2},
     {"italic",          3},
     {"underline",       4},
-    {"double-underline",21},
+    {"double-underline", 21},
     {"strike",          9},
     {"inverted",        7},
     {"flash",           5}};
 
-// Retrieves the style code for a given style name, returns 100 if not found
+// The code of a style name, as 1 for "bold"; an unknown name gives 100, read as "not a style", as for the colors above.
 inline unsigned char get_style_code(const string & style) {
     auto pair = style_codes.find(style);
     if (pair != style_codes.end()) {return pair->second;}

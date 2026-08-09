@@ -1,3 +1,4 @@
+import os
 import pathlib
 import platform
 import subprocess
@@ -7,80 +8,78 @@ from setuptools.command.build_py import build_py
 from setuptools.command.develop import develop
 
 
-HERE = pathlib.Path(__file__).parent.resolve()
-CPP_DIR = HERE / "plotext" / "_kernel" / "cpp"
-CPP_SRC = CPP_DIR / "kernel.cpp"
+# Where this file, the kernel sources and the file compiling them all sit.
+here = pathlib.Path(__file__).parent.resolve()
+cpp_folder = here / "plotext" / "_kernel" / "cpp"
+cpp_source = cpp_folder / "kernel.cpp"
 
 
-def _windows_compile_cmd(out):
-    """Pick a Windows compile command. Native MSVC (cl.exe) when available
-    (typical on GitHub Actions windows runners); otherwise fall back to mingw,
-    either native (g++ on PATH inside MSYS) or the cross toolchain. The kernel
-    is a single TU so we don't need a full setuptools-style invocation."""
+# The command compiling the kernel on windows: the Microsoft compiler when installed, one of the two mingw ones otherwise, and nothing when none is found.
+# The mingw commands carry the static flags, which fold the compiler own libraries into the file: without them the file is built but python cannot load it, its companion libraries sitting elsewhere.
+def get_windows_command(out):
     import shutil
     if shutil.which("cl.exe"):
         return ["cl.exe", "/LD", "/O2", "/EHsc", "/std:c++17",
-                str(CPP_SRC), "/link", "/OUT:" + str(out)]
+                str(cpp_source), "/link", "/OUT:" + str(out)]
     if shutil.which("g++"):
-        return ["g++", "-shared", "-O2", "-fno-stack-protector",
-                "-o", str(out), str(CPP_SRC)]
+        return ["g++", "-shared", "-O2", "-std=c++17", "-fno-stack-protector",
+                "-static", "-static-libgcc", "-static-libstdc++",
+                "-o", str(out), str(cpp_source)]
     if shutil.which("x86_64-w64-mingw32-g++"):
-        return ["x86_64-w64-mingw32-g++", "-shared", "-O2", "-fno-stack-protector",
-                "-o", str(out), str(CPP_SRC)]
+        return ["x86_64-w64-mingw32-g++", "-shared", "-O2", "-std=c++17", "-fno-stack-protector",
+                "-static", "-static-libgcc", "-static-libstdc++",
+                "-o", str(out), str(cpp_source)]
     return None
 
 
+# Compile the kernel into kernel.so, or kernel.dll on windows; a missing compiler, or a build that produces nothing, stops the installation, since the package would not run.
 def compile_kernel():
-    """Compile the C++ kernel into kernel.so (or kernel.dll on Windows)."""
-    if not CPP_SRC.exists():
-        print(f"[plotext] skip: {CPP_SRC} not found", file=sys.stderr)
+    if not cpp_source.exists():
+        print(f"[plotext] skip: {cpp_source} not found", file=sys.stderr)
         return
 
-    # NOTE: -fno-stack-protector disables gcc's stack canary checks. The kernel
-    # uses a few fixed-size wchar_t buffers (e.g. Point::get_wstring's [50])
-    # that have always been borderline; on some build environments the canary
-    # trips at -O2 even though the buffers are not actually corrupted in
-    # practice. Disabling the protector keeps the build portable. The buffers
-    # themselves should be enlarged in a follow-up cleanup.
+    # The -fno-stack-protector option turns off a compiler check that some systems fail on the kernel fixed size buffers, even when nothing is actually wrong; without it the package would not build there.
     if platform.system() == "Windows":
-        out = CPP_DIR / "kernel.dll"
-        cmd = _windows_compile_cmd(out)
+        out = cpp_folder / "kernel.dll"
+        cmd = get_windows_command(out)
         if cmd is None:
-            print("[plotext] WARNING: no C++ compiler found (looked for cl.exe, g++, "
-                  "x86_64-w64-mingw32-g++). Install MSVC build tools or MSYS2.",
-                  file=sys.stderr)
-            return
+            if out.exists():          # an already built kernel travels with the package, so there is nothing to do
+                return
+            raise SystemExit("[plotext] no C++ compiler found (looked for cl.exe, g++, x86_64-w64-mingw32-g++), so the drawing kernel cannot be built and plotext would not run.\n"
+                             "[plotext] Install a ready made version instead, with pip install plotext, or install the MSVC build tools and try again.")
     else:
-        out = CPP_DIR / "kernel.so"
-        cmd = ["g++", "-fPIC", "-shared",
-               "-O2", "-Wall", "-Wextra", "-fno-stack-protector",
-               "-o", str(out), str(CPP_SRC)]
+        out = cpp_folder / "kernel.so"
+        cmd = ["g++", "-fPIC", "-shared",                              # the standard is named, older compilers defaulting to one this kernel does not compile under
+               "-O2", "-std=c++17", "-Wall", "-Wextra", "-fno-stack-protector",
+               "-o", str(out), str(cpp_source)]
+        if platform.system() == "Darwin":                              # macos builds one wheel per architecture and names the wanted one here, which a raw compiler call must pass on
+            cmd += os.environ.get("ARCHFLAGS", "").split()
 
     print(f"[plotext] compiling kernel: {' '.join(cmd)}", flush=True)
     try:
         subprocess.check_call(cmd)
     except (subprocess.CalledProcessError, FileNotFoundError) as exc:
-        print(f"[plotext] WARNING: kernel compilation failed ({exc}).",
-              file=sys.stderr)
-        print("[plotext] If no prebuilt kernel is bundled, run "
-              "'python build_cpp.py' from a cloned repository.",
-              file=sys.stderr)
+        raise SystemExit(f"[plotext] the drawing kernel failed to compile ({exc}), so plotext would not run.\n"
+                         "[plotext] Install a ready made version instead, with pip install plotext.")
+
+    if not out.exists():              # the compiler said nothing, yet nothing came out of it
+        raise SystemExit(f"[plotext] the drawing kernel was not produced at {out}, so plotext would not run.")
 
 
+# The building step of the installation, compiling the kernel before the rest.
 class BuildPyWithKernel(build_py):
-    """setuptools build_py command that compiles the C++ kernel first."""
     def run(self):
         compile_kernel()
         super().run()
 
 
+# The same, for an installation made to be edited in place.
 class DevelopWithKernel(develop):
-    """setuptools develop command that compiles the C++ kernel first."""
     def run(self):
         compile_kernel()
         super().run()
 
 
-# Allow `python3 build_cpp.py` for a quick manual build.
+# Running this file on its own compiles the kernel, as python3 build_cpp.py.
 if __name__ == "__main__":
     compile_kernel()

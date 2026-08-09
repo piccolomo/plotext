@@ -25,6 +25,20 @@ wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
 inline wstring string_to_wstring(const string & str) noexcept {
     return converter.from_bytes(str);}
 
+// Write wide text to the terminal: as utf-8 bytes on windows, whose console takes them once told to, and through wcout elsewhere, where the locale already converts
+inline void write_wide(const wchar_t * text, size_t length, bool flushing) noexcept {
+#ifdef _WIN32
+    static const bool console_ready = SetConsoleOutputCP(CP_UTF8);
+    (void) console_ready;
+    const std::string bytes = converter.to_bytes(text, text + length);
+    fwrite(bytes.data(), 1, bytes.size(), stdout);
+    if (flushing) fflush(stdout);
+#else
+    wcout.write(text, length);
+    if (flushing) wcout.flush();
+#endif
+}
+
 // Convert a wstring to a UTF-8 encoded string
 inline std::string wstring_to_string(const std::wstring& wstr) {
     return converter.to_bytes(wstr);}
@@ -58,26 +72,11 @@ inline size_t get_wstring_real_width(const wstring & s) noexcept {
     return w;
 }
 
-// Get the width of the longest wide string in a vector (counted in terminal cells)
-inline size_t get_width_strings(const vector<wstring> & str) noexcept {
-    size_t length = 0;
-    for (const wstring & s : str) {length = max(length, get_wstring_real_width(s));}
-    return length;}
-
-// Convert boolean to wide character ('1' or '0')
-inline wchar_t bool_to_wchar(const bool & value) noexcept {return value ? L'1' : L'0';}
-
 
 // --- Console Output Utilities ---
 
-// Enable locale-based special characters
-inline void enable_special_characters() noexcept {setlocale(LC_ALL, "");}
-
 // Print new line(s)
 inline void nl(size_t repeat = 1) {for (size_t i = 0; i < repeat; i++) {wcout << endl;}}
-
-// Print spaces
-inline void sp(size_t repeat = 1) {for (size_t i = 0; i < repeat; i++) {wcout << " ";}}
 
 // Flush console output
 inline void flush() {wcout << flush;}

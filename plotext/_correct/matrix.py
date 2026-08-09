@@ -15,21 +15,22 @@ from plotext._constants.enums import (
 # Convert input into a matrix representation
 def matrix(obj):
     if isinstance(obj, colorize_class):
-        return obj.get_matrix()
+        return obj.matrix()
     if isinstance(obj, str):
-        return colorize_class(obj).get_matrix()
+        return colorize_class(obj).matrix()
     return obj
 
 
 # Normalize slice object for given number of bins
 def slice(key, bins):
     if isinstance(key, int):
+        key = key + bins if key < 0 else key
+        if not 0 <= key < bins:
+            raise IndexError("matrix index out of range")
         key = _slice(key, key + 1)
-    if key.start is None:
-        key = _slice(0, key.stop)
-    if key.stop is None:
-        key = _slice(key.start, bins)
-    return key
+    start = 0 if key.start is None else key.start
+    stop = bins if key.stop is None else key.stop
+    return _slice(min(start, bins), min(stop, bins))
 
 
 # Validate orientation

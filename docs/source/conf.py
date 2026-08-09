@@ -18,7 +18,7 @@ sys.path.insert(0, _git_root)
 project = 'plotext'
 author = 'Savino Piccolomo'
 copyright = '2024, Savino Piccolomo'
-release = '6.0.0 beta'
+release = '6.0.0b0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -41,6 +41,26 @@ exclude_patterns = []
 # rather than alphabetically. Keeps related methods (e.g. hstack/vstack) next
 # to each other and follows the deliberate layout of the source.
 autodoc_member_order = 'bysource'
+
+
+# Escape the leading asterisk of "*args" docstring lines so docutils does not
+# read it as an emphasis marker; the runtime docstrings stay untouched.
+def escape_star_parameters(app, what, name, obj, options, lines):
+    for index, line in enumerate(lines):
+        if line.startswith('*'):
+            lines[index] = '\\' + line
+
+
+def setup(app):
+    app.connect('autodoc-process-docstring', escape_star_parameters)
+
+
+# The |plotext| substitution renders like the ``plotext`` literal, but links to the home page
+rst_prolog = """
+.. |plotext| raw:: html
+
+   <a class="reference internal" href="index.html"><code class="docutils literal notranslate"><span class="pre">plotext</span></code></a>
+"""
 
 
 # -- HTML output -------------------------------------------------------------

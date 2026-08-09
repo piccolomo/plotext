@@ -1,76 +1,106 @@
 Terminal
 ========
 
-``plt.terminal`` is the pre-built terminal object plotext uses to track the underlying terminal's size, the prompt height (lines reserved below the plot), and to drive screen-clearing during streaming loops. Unlike the primitives (:class:`plotext.pixel`, :class:`plotext.marker`, :class:`plotext.matrix`), it's a singleton you interact with rather than a value you construct.
+The :class:`plotext.terminal <plotext._kernel.terminal.terminal>` object tracks the terminal the plots print to: its size, the prompt height (the lines reserved below the plot for user input) and the screen cleaning during :doc:`streaming plots <stream>`.
 
-Reach for it when you need to:
+Use it to:
 
-- query / constrain the rendering size (:meth:`~plotext._kernel.terminal.terminal.get_size`, :meth:`~plotext._kernel.terminal.terminal.limit`),
-- wipe the visible region between frames in a live update loop (:meth:`~plotext._kernel.terminal.terminal.clean`),
-- adjust the prompt height when adding or removing lines below the plot (:meth:`~plotext._kernel.terminal.terminal.prompt`),
-- poll the keyboard non-blockingly inside a streaming loop (:meth:`~plotext._kernel.terminal.terminal.is_pressed`).
+- set the **prompt height** (:meth:`prompt() <plotext._kernel.terminal.terminal.prompt>`)
+- read the terminal **size**, and limit the master plot size to it (:meth:`size() <plotext._kernel.terminal.terminal.size>`, :meth:`limit() <plotext._kernel.terminal.terminal.limit>`)
+- **clean** the last printed lines, between frames of a streaming plot (:meth:`clean() <plotext._kernel.terminal.terminal.clean>`)
+- check for a **key press**, without pausing the program (:meth:`is_pressed() <plotext._kernel.terminal.terminal.is_pressed>`)
+
+.. note:: The :meth:`size() <plotext._kernel.terminal.terminal.size>`, :meth:`clean() <plotext._kernel.terminal.terminal.clean>` and :meth:`is_pressed() <plotext._kernel.terminal.terminal.is_pressed>` methods drive streaming plots, with the full pattern described in the :doc:`streaming plots <stream>` page.
 
 
-.. _streaming_pattern:
+.. _prompt_height:
 
-Streaming pattern
------------------
+Prompt Height
+-------------
 
-The canonical "live update" idiom is:
+The :meth:`prompt() <plotext._kernel.terminal.terminal.prompt>` method sets the height of the terminal prompt, the area reserved for **user input** below the plot, 2 lines by default; with no arguments, it restores the default.
 
-1. Set ``plot_size`` so the plot occupies a known number of rows.
-2. Each frame, call :meth:`~plotext._kernel.terminal.terminal.clean` with that row count to wipe the previous frame, :meth:`~plotext._plotter.plot.plot_class.clear_data` (alias ``cld``) to drop signals, redraw, then :meth:`~plotext._plotter.plot.plot_class.show` with ``flush=1``.
-3. Poll :meth:`~plotext._kernel.terminal.terminal.is_pressed` at the top of each iteration so the user can quit cleanly with ``q``.
+
+.. _terminal_size:
+
+Terminal Size
+-------------
+
+The :meth:`size() <plotext._kernel.terminal.terminal.size>` method returns the last known ``(width, height)`` of the terminal in characters, useful to size the plot relative to the terminal window. Pass ``update = True`` to read the terminal size afresh, and ``plottable = False`` to include the prompt lines in the height:
 
 .. code-block:: python
 
-   import math, itertools
-   import plotext as plt
+   w, h = plt.terminal.size()
+   fig.plot_size(w, h // 2)   # half-height plot
 
-   fig    = plt.figure
-   length = 200
-   height = plt.terminal.get_size()[1]
 
-   fig.clear()
-   fig.plot_size(None, height)
-   fig.lim(0, length, axis = "x")
-   fig.lim(-1, 1,    axis = "y")
+.. _no_terminal:
 
-   x = range(length)
-   for i in itertools.count():
-       if plt.terminal.is_pressed('q'): break
-       plt.terminal.clean(height)
-       fig.cld()
-       y = [math.sin(2 * math.pi * (k - i) / length * 4) for k in range(length)]
-       fig.draw(fig.signal(x, y).lines(1).label("sin"))
-       fig.show(flush = 1)
-       print("press q to exit")
+No Terminal
+~~~~~~~~~~~
 
-A full multi-stream variant — a 2×2 subplot grid where the top-right cell is itself split into two nested streaming rows — lives in ``tests/23_multi_stream.py``.
+| |plotext| asks the system how many characters fit on the screen. **Sometimes there is no answer**: the output is piped into another program, or the program runs inside a container, or a web server runs it with nothing attached.
+| The system then reports a size of zero, or the fallback 80 by 22, and, since a plot is normally kept inside the terminal, either everything is drawn far too small or nothing is drawn at all.
+| Nothing is broken there: |plotext| simply believes the screen has no room. Say what the room is, in one of two ways:
+
+.. code-block:: python
+
+   plt.terminal.limit(False, False)   # stop keeping the plot inside the terminal
+   fig.plot_size(140, 40)             # and state the size yourself
+
+or leave the code alone and set the size in the environment the program runs in, which |plotext| reads:
+
+.. code-block:: shell
+
+   COLUMNS=140 LINES=40 python3 my_plot.py
+
+.. caution:: A **browser** is a different case: it cannot read the color codes a terminal uses, so a plot printed into a web page comes out as unreadable text. Write the page instead, with :meth:`matrix.html() <plotext.matrix.html>` or :meth:`matrix.save() <plotext.matrix.save>` on the :ref:`matrix <matrix>` that :meth:`figure.build() <plotext._plotter.plot.plot_class.build>` gives back.
+
+
+.. _size_limits:
+
+Size Limits
+-----------
+
+| The :meth:`limit() <plotext._kernel.terminal.terminal.limit>` method sets whether the master plot size is limited to the terminal plottable area, one boolean per dimension (``width`` and ``height``, both ``True`` by default).
+| With a limit turned off, a larger plot can be set with :meth:`plot_size() <plotext._plotter.plot.plot_class.plot_size>`, and the terminal scrolls.
+| Call :meth:`limit() <plotext._kernel.terminal.terminal.limit>` **before** :meth:`plot_size() <plotext._plotter.plot.plot_class.plot_size>`: the requested size is clamped to the terminal the moment it is set, so lifting a limit afterwards has no effect on it. See the :doc:`size <size>` page.
 
 
 .. _is_pressed:
 
-Polling for keys
+Polling for Keys
 ----------------
 
-:meth:`~plotext._kernel.terminal.terminal.is_pressed` is a non-blocking key poll. Calling it the first time switches the terminal into *cbreak* mode (each keystroke delivered immediately, no Enter required, no echo) and registers an ``atexit`` hook to restore *cooked* mode when the program ends. Subsequent calls just check whether a key is in the input buffer.
+The :meth:`is_pressed() <plotext._kernel.terminal.terminal.is_pressed>` method tells whether the given key (``q`` by default, a single character, case insensitive) has been typed, answering **right away**, with no waiting; it is useful when :doc:`streaming <stream>`, checked at every frame, to stop the stream:
 
 .. code-block:: python
 
    if plt.terminal.is_pressed('q'):
        break
 
-Notes:
+.. note:: The typed keys reach the program without showing on screen and with no Enter needed; when the input is not a keyboard, as in automated runs, the answer is always ``False``, and the stream runs to its end.
 
-- The function takes a single character (case-insensitive). Default is ``'q'``.
-- When ``stdin`` is not a TTY (piped input, redirected, ``/dev/null``) it always returns ``False`` — useful so live demos still run cleanly inside non-interactive sweeps.
-- Cross-platform: ``msvcrt.kbhit`` / ``msvcrt.getch`` on Windows, ``termios`` + ``tty`` + ``select`` on Unix.
+.. note:: The typed keys wait in a queue: each check takes the oldest one out and compares it, so on a stream a typed ``q`` is always caught, a few frames later when other keys sit in front of it.
+
+.. caution:: Outside a stream, a single call just answers ``False``, as no key is waiting; the exception is a key typed while the program was busy, say in a long computation, which the next check finds.
 
 
-Reference
----------
+.. _terminal_clearing:
 
-The full method list is rendered in :doc:`api`.
+Terminal Clearing
+-----------------
 
-.. note:: More documentation for any of the methods is available via :code:`plotext.doc.terminal.<method>()` (for example ``plotext.doc.terminal.is_pressed()``).
+The terminal object holds its own pair of resets:
+
+- :meth:`clean() <plotext._kernel.terminal.terminal.clean>`: cleans the given number of last printed lines, so the next print takes their place; with no arguments, it clears the whole terminal. Useful when :doc:`streaming plots <stream>`.
+- :meth:`clear() <plotext._kernel.terminal.terminal.clear>`: resets the terminal object state: the :ref:`prompt height <prompt_height>`, the width and height :ref:`limits <size_limits>` and the last known terminal :ref:`size <terminal_size>`.
+
+Calling :meth:`clear() <plotext._kernel.terminal.terminal.clear>` only resets the terminal object, leaving the figure *untouched*.
+
+.. note:: The figure clear methods leave these settings alone: a :meth:`plotext.figure.clear() <plotext._plotter.clear.clear_class.all>` inside a loop keeps the :ref:`prompt height <prompt_height>` and the :ref:`limits <size_limits>` you set, and only this method puts them back to their defaults.
+
+
+.. seealso:: The full method list is in the :ref:`terminal section <terminal_api>` of the :doc:`api <api>` page.
+
+.. note:: More documentation for any of the methods is available via ``plotext.doc.terminal.<method>()`` (for example :meth:`plotext.doc.terminal.is_pressed() <plotext._kernel.terminal.terminal.is_pressed>`).

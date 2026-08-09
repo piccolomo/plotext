@@ -45,12 +45,12 @@ class points_class:
         return clink.points_squash(self._pointer, grid._pointer)
 
     # Get number of points
-    def get_length(self):
+    def length(self):
         return clink.points_get_length(self._pointer)
 
     # Get range for iteration
     def get_range(self):
-        return range(self.get_length())
+        return range(self.length())
 
     # Log to stdout via the C kernel
     def log(self):
@@ -63,4 +63,4 @@ class points_class:
 
     # Representation
     def __repr__(self):
-        return f"Plotext Points: {self.get_length()}"
+        return f"PlotextPoints({self.length()})"

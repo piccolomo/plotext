@@ -1,16 +1,16 @@
-# Box primitive: wraps a C++ BoxMarker pointer.
-#   box_class — full-arm initialization (up/down/left/right + style + pixel). Plotter-internal use; covers ticks, corners, grid intersections.
-#   line      — user-facing subclass with simple orientation init.
+# Box primitive: the characters drawing lines and their crossings, as ├ or ┼; box_class takes each arm on its own, used inside the plotter for ticks, corners and grid crossings, while line, its public subclass, takes just an orientation.
 
 from plotext._kernel.clink import clink
 from plotext._kernel.tools import wstring
 from plotext._primitives.pixel import pixel as pixel_class
+from plotext._correct.enums import line_style as correct_line_style
+from plotext._correct.pixel import pixel_par as correct_pixel_par
 
 
 # Internal/plotter-facing class with full arm control.
 class box_class:
     # 4 arm bools + style + pixel; or pass _pointer to wrap an existing C-side BoxMarker. style must be int (already corrected by caller).
-    def __init__(self, up=False, down=False, left=False, right=False, pixel=pixel_class(), style=0, _pointer=None):
+    def __init__(self, up = False, down = False, left = False, right = False, pixel = pixel_class(), style = 0, _pointer = None):
         self._pointer = _pointer if _pointer is not None else clink.marker_new_box(
             bool(up), bool(down), bool(left), bool(right),
             style,
@@ -31,8 +31,8 @@ class box_class:
         return int(clink.marker_get_style(self._pointer))
 
     # Pixel associated with the line
-    def get_pixel(self):
-        return pixel_class(_pointer=clink.marker_get_pixel(self._pointer))
+    def pixel(self):
+        return pixel_class(_pointer = clink.marker_get_pixel(self._pointer))
 
     # Model glyph for the line kind (the legend-style preview char, e.g. ┼)
     def _get_model(self):
@@ -48,7 +48,7 @@ class box_class:
 
     # Deep copy
     def copy(self):
-        return self.__class__(_pointer=clink.marker_copy(self._pointer))
+        return self.__class__(_pointer = clink.marker_copy(self._pointer))
 
     def __copy__(self):
         return self.copy()
@@ -58,10 +58,10 @@ class box_class:
         return self._get_string()
 
 
-# User-facing class — orientation-only init (0 = horizontal, 1 = vertical). Sugar over box_class. orientation must be int 0/1 (caller pre-corrects).
+# User-facing class, orientation-only init (0 = horizontal, 1 = vertical), style accepted by name. Sugar over box_class.
 class line(box_class):
-    def __init__(self, orientation=0, pixel=pixel_class(), style=0, _pointer=None):
+    def __init__(self, orientation = 0, pixel = pixel_class(), style = 'default', _pointer = None):
         if _pointer is not None:
-            super().__init__(_pointer=_pointer); return
+            super().__init__(_pointer = _pointer); return
         v = bool(orientation)
-        super().__init__(up=v, down=v, left=not v, right=not v, pixel=pixel, style=style)
+        super().__init__(up = v, down = v, left = not v, right = not v, pixel = correct_pixel_par(pixel), style = correct_line_style(style))

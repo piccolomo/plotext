@@ -14,7 +14,7 @@ public:
     using Array<T>::end;
     using Array<T>::at;
 
-    // Re-expose the global Array template so derived classes (e.g. Matrix) can write `Array<wchar_t>` without the `::` qualifier — the private inheritance above otherwise shadows the global name during unqualified lookup.
+    // Re-expose the global Array template so derived classes (e.g. Matrix) can write `Array<wchar_t>` without the `::` qualifier, the private inheritance above otherwise shadows the global name during unqualified lookup.
     template <typename U> using Array = ::Array<U>;
 
     // --- Constructors ---
@@ -115,7 +115,7 @@ public:
     Array2D<T> copy() const {Array2D<T> new_array(*this); return new_array;}
 
     // Extract a sub-rectangle [col1, col2) x [row1, row2) as a new Array2D.
-    // Copied cell-by-cell via at() so the original row stride is respected —
+    // Copied cell-by-cell via at() so the original row stride is respected:
     // raw-pointer + reshaped-stride approaches break when the source is a
     // view into a wider array (off-by-width bug).
     Array2D<T> part(size_t col1, size_t col2, size_t row1, size_t row2) const {

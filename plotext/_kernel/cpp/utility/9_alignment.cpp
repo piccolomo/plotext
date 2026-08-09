@@ -2,7 +2,7 @@
 
 // --- Text Alignment Utilities ---
 
-// Alignment: left (-1), center (0), right (1), or dynamic (2) anchor flags plus displacement helpers. Dynamic means "any alignment is OK, find a free spot" — the matrix routes to insert_dynamically.
+// Alignment: left (-1), center (0), right (1), or dynamic (2) anchor flags plus displacement helpers. Dynamic means "any alignment is OK, find a free spot", the matrix routes to insert_dynamically.
 class Alignment {
 private:
     bool left    = 0;
@@ -16,8 +16,7 @@ public:
 
     void clear() { left = center = right = dynamic = 0; }
 
-    // Static-mode displacement (left/center/right). Undefined when dynamic — caller must check is_dynamic() first.
-    // Cast to int up-front: with size_t (unsigned) the negations and 1-width underflow, then the cast back to int is implementation-defined and was producing -1 for center at width=2 (bug).
+    // The displacement of a static alignment, undefined when dynamic, so the caller checks is_dynamic() first; the width is cast to int, since the unsigned form underflows on the negations.
     int  get_displacement(const size_t & width) const { if (left) return 0; const int w = static_cast<int>(width); if (center) return -(w - 1) / 2; return 1 - w; }
     bool is_dynamic() const noexcept { return dynamic; }
 
@@ -25,16 +24,16 @@ public:
     int  get_integer() const noexcept { if (left) return -1; if (center) return 0; if (right) return 1; return 2; }
 };
 
-// Generate a vector of dynamic displacements based on width
+// Every displacement a dynamic alignment may try, in order, the closest to the center first.
 inline Vector<int> get_dynamic_displacements(const size_t & width) {
-    Alignment right(1), center(0);                        // Right and center alignment objects
-    auto unsorted = range(right.get_displacement(width), 1); // Unsorted range of displacements
-    auto sorted = sort(unsorted, center.get_displacement(width)); // Sort relative to center
-    auto displacement = center.get_displacement(width);  // Center displacement
-    transform(sorted.begin(), sorted.end(), sorted.begin(), [displacement](int x){return x - displacement;}); // Adjust to center
+    Alignment right(1), center(0);
+    auto unsorted = range(right.get_displacement(width), 1);
+    auto sorted = sort(unsorted, center.get_displacement(width));
+    auto displacement = center.get_displacement(width);
+    transform(sorted.begin(), sorted.end(), sorted.begin(), [displacement](int x){return x - displacement;});
     return sorted;}
 
-// Build a delta sequence for an Alignment: dynamic → centred search list (get_dynamic_displacements shifted by the center displacement so the first try is the centred placement, mirroring Text's dynamic-insert semantics), static → a one-element sequence with the static displacement. Lets callers handle every alignment combination through a single uniform loop where each delta is the absolute offset to add to the anchor.
+// The displacements to try for an alignment, so that every alignment is handled by one loop: the centered search list when dynamic, the single static displacement otherwise.
 inline Vector<int> get_displacements(const Alignment & a, size_t length) noexcept {
     if (a.is_dynamic()) {
         Vector<int> deltas = get_dynamic_displacements(length);

@@ -60,9 +60,9 @@ class corner_class:
     def get_tick_col(self):
         return 0 if self._horizontal else self._width - 1
 
-    # Line marker for this corner — arms set by alignment (up=not vertical, down=vertical, left=horizontal, right=not horizontal).
+    # Line marker for this corner, arms set by alignment (up=not vertical, down=vertical, left=horizontal, right=not horizontal).
     def get_tick_marker(self):
-        return box_class(up=not self._vertical, down=self._vertical, left=self._horizontal, right=not self._horizontal, pixel=self._axis_pixel, style=self._style)
+        return box_class(up = not self._vertical, down = self._vertical, left = self._horizontal, right = not self._horizontal, pixel = self._axis_pixel, style = self._style)
 
     # Rendered glyph string for the corner tick.
     def get_tick_string(self):
@@ -71,7 +71,7 @@ class corner_class:
     # Build the corner matrix with the tick line marker stamped in the correct cell.
     def get(self):
         out = matrix(self._width, self._height, self._ticks_pixel)
-        out.add_box_marker(self.get_tick_col(), self.get_tick_row(), self.get_tick_marker())
+        out._add_box_marker(self.get_tick_col(), self.get_tick_row(), self.get_tick_marker())
         return out
 
     # Configure pixels/style/size and stamp the corner matrix at (corner_col, corner_row).
@@ -81,7 +81,7 @@ class corner_class:
         return self
 
     # Build a compact log line for the corner
-    def get_log(self):
+    def _get_log(self):
         return (
             f"vertical {self._vertical}, horizontal {self._horizontal}, "
             f"width {self._width}, height {self._height}, "
@@ -93,4 +93,4 @@ class corner_class:
 
     # Represent corner in Plotext style
     def __repr__(self):
-        return f"Plotext Corner: " + self.get_log()
+        return "PlotextCorner(" + self._get_log() + ")"
