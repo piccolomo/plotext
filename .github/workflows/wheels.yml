@@ -80,3 +80,5 @@ jobs:
           merge-multiple: true
           path: dist
       - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true          # a second run then adds what is missing, instead of failing on what is already there
