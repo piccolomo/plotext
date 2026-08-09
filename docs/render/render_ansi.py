@@ -1,6 +1,7 @@
 """Render ANSI terminal output to a PNG, painting block glyphs as exact rectangles."""
 import re
 import sys
+import unicodedata
 from PIL import Image, ImageDraw, ImageFont
 
 src, dst = sys.argv[1], sys.argv[2]
@@ -8,6 +9,12 @@ src, dst = sys.argv[1], sys.argv[2]
 font_size = 20
 font_regular = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf', font_size)
 font_bold = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf', font_size)
+font_wide = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc', font_size)
+
+# The columns a character covers on a terminal: two for the east asian wide ones, one for the rest
+def get_columns(character):
+    return 2 if unicodedata.east_asian_width(character) in ("W", "F") else 1
+
 cell_width = int(font_regular.getlength('M'))
 ascent, descent = font_regular.getmetrics()
 cell_height = ascent + descent
@@ -109,17 +116,20 @@ def trim(row):
     return row
 
 rows = [trim(row) for row in rows]
-width = max(len(r) for r in rows)
+width = max(sum(get_columns(cell[0]) for cell in row) for row in rows)
 im = Image.new('RGB', (width * cell_width, len(rows) * cell_height), default_bg)
 draw = ImageDraw.Draw(im)
 
 for y, row in enumerate(rows):
-    for x, (ch, fg, bg, bold) in enumerate(row):
-        x0, y0 = x * cell_width, y * cell_height
+    column = 0
+    for ch, fg, bg, bold in row:
+        columns = get_columns(ch)
+        x0, y0 = column * cell_width, y * cell_height
+        column += columns
         fg = fg or default_fg
         bg = bg or default_bg
         if bg != default_bg:
-            draw.rectangle([x0, y0, x0 + cell_width - 1, y0 + cell_height - 1], fill = bg)
+            draw.rectangle([x0, y0, x0 + columns * cell_width - 1, y0 + cell_height - 1], fill = bg)
         if ch in blocks:
             for l, t, r, b in blocks[ch]:
                 draw.rectangle([x0 + l * cell_width, y0 + t * cell_height,
@@ -132,7 +142,8 @@ for y, row in enumerate(rows):
                     draw.ellipse([x0 + l * cell_width + pad_x, y0 + t * cell_height + pad_y,
                                   x0 + (l + 0.5) * cell_width - 1 - pad_x, y0 + (t + 0.25) * cell_height - 1 - pad_y], fill = fg)
         elif ch != ' ':
-            draw.text((x0, y0), ch, font = font_bold if bold else font_regular, fill = fg)
+            font = font_wide if columns == 2 else (font_bold if bold else font_regular)
+            draw.text((x0, y0), ch, font = font, fill = fg)
 
 im.save(dst, optimize = True)
 print(dst, im.size)
