@@ -5,6 +5,10 @@
 [![GitTutorial](https://img.shields.io/badge/PR-Welcome-%23FF8300.svg?)](https://github.com/piccolomo/plotext/pulls)
 
 ![logo](https://raw.githubusercontent.com/piccolomo/plotext/master/docs/source/images/logo6.png)
+##
+
+> [!IMPORTANT]
+> **plotext `6.0.0` beta is out** — please [test it](https://plotext.readthedocs.io/en/latest/install.html) on **Linux, Windows, or macOS** and report bugs in [GitHub Issues](https://github.com/piccolomo/plotext/issues) or general feedback in [GitHub Discussions](https://github.com/piccolomo/plotext/discussions).
 
 ![showcase](https://raw.githubusercontent.com/piccolomo/plotext/master/docs/source/images/showcase.webp)
 
