@@ -1,233 +1,233 @@
 plotext source tree map
 =======================
 
-One line per file, taken from the opening comment of the file itself, so that the map and the code cannot drift apart.
+One line per folder and per file, saying what it holds and what it does.
 The files under _kernel/cpp are the drawing kernel, written in C++ and compiled into kernel.so when the package is installed.
 
 
-plotext/
-    __init__.py                           package entry point, exposing the public names: figure, signal, draw, file, the primitives and the tools
-    __main__.py                           lets the package run as a command, as in python -m plotext
+plotext/                                  the package, holding the figure, the primitives and the tools
+    __init__.py                           the names a user reaches, as figure, signal, colorize and file
+    __main__.py                           lets the package run as a command, as python -m plotext
 
-    _cli/
-        help.py                           --help output: styled headers and categorized usage hints
-        main.py                           command-line entry point
-        run.py                            takes the (method, arguments) tuples built by words.py and runs them in order: finds each method, turns its arguments ...
-        words.py                          everything about the words of the sentence: which ones name a method, and what value each one carries
+    _cli/                                 the plotext command, turning a line of words into a plot
+        help.py                           the text printed by plotext --help
+        main.py                           where the command starts
+        run.py                            runs the methods named on the line, one after the other, with their arguments
+        words.py                          reads the words of the line: which name a method, which carry a value
 
-    _constants/
-        enums.py                          enum-style constants: named sets of allowed values for axes, alignment, scales, styles, colors and markers
-        numerical.py                      numerical constants: discrete sets, deltas, tolerances and bounds
-        text.py                           text constants: single-character and short string literals used across rendering and formatting
+    _constants/                           the fixed values the package is built on, never changed while it runs
+        enums.py                          the accepted names: axes, alignments, scales, styles, colors and markers
+        numerical.py                      the fixed numbers: sizes, steps, tolerances and bounds
+        text.py                           the fixed pieces of text: single characters and short strings
 
-    _correct/
-        axis.py                           axis validation and normalization utilities
-        bar.py                            validation utilities for bar-plot parameters and data shapes
-        bool.py                           validation utilities for boolean and binary flag parameters: booleans, directions, line methods, size policies
-        data.py                           data formatting utilities for x/y inputs and list normalization
-        enums.py                          validation utilities for the names listed in _constants/enums.py: effect, candlestick style and line style
-        heatmap.py                        convert a 2D grid of numbers into a 2D of (r, g, b) triples for heatmap rendering
-        label.py                          label normalization and formatting utilities
-        limits.py                         limits validation and normalization utilities
-        marker.py                         marker normalization utilities: single marker and repeated marker lists
-        matrix.py                         alignment, orientation, slice and matrix normalization utilities
-        pixel.py                          pixel normalization utilities
-        placement.py                      validation utilities for placement parameters (alignment and orientation)
+    _correct/                             checks every value a user passes, and puts it in the form the rest of the code expects
+        axis.py                           the axis and the side asked for
+        bar.py                            the heights, the widths and the shape of the data of a bar plot
+        bool.py                           the yes or no values, the direction, the line method and the size policy
+        data.py                           the x and y coordinates, made into lists of numbers of the same length
+        enums.py                          the names listed in _constants/enums.py, as the effect, the candlestick style and the line style
+        heatmap.py                        turns a grid of numbers into a grid of red, green and blue triples
+        label.py                          the text of a label, plain, colored or a whole matrix
+        limits.py                         the lower and upper bound of an axis
+        marker.py                         one marker, or one per point
+        matrix.py                         the alignment, the orientation, the slice and the matrix itself
+        pixel.py                          a color pair and a style, however they are written
+        placement.py                      where a piece of text sits and which way it runs
 
-    _data/
+    _data/                                the sample files shipped with the package, reached by plotext.sample()
         pizzas.csv
         puppy.jpg
         shaq.gif
         stock.csv
 
-    _demos/
-        colors.py                         the colors demo: the string codes, the integer codes and the rgb tuples
-        line_styles.py                    the line styles demo: one box per style, with a middle horizontal and vertical line
-        markers.py                        the markers demo: the named character codes and the higher resolution ones
-        styles.py                         the styles demo: every style code printed in its own style
-        themes.py                         the themes demo: a grid of mini plots, one per theme
-        tools.py                          the pieces shared by the demos: the layout sizes, the blank row, the bold title and the note
+    _demos/                               the reference tables printed on demand, as plotext.markers()
+        colors.py                         every color: the names, the numbers and the red, green and blue triples
+        line_styles.py                    every line style, one box each, with a line across and a line down
+        markers.py                        every marker: the named symbols and the higher resolution ones
+        styles.py                         every style, each printed in itself
+        themes.py                         every theme, as a grid of small plots
+        tools.py                          the pieces the demos share: the sizes, the empty row, the title and the note
 
-    _doc/
-        doc.py                            aggregator: each section file registers its docstrings via the shared prettydoc manager from tools.py; this module ...
-        tools.py                          short names for the prettydoc methods, used by every section file
-        types.py                          the explanations shared by many docstrings: the value each parameter takes, and the recurring messages
+    _doc/                                 the docstrings of the package, written with prettydoc and reached as plotext.doc
+        doc.py                            gathers the sections below into the plotext.doc container
+        tools.py                          short names for the prettydoc methods, used by every section
+        types.py                          the explanations many docstrings share: what a parameter takes, and the messages that recur
 
-        sections/
-            01_components.py              plot components section: terminal, figure and the figure component getters (subplot, ruler, date, clear)
-            02_signal.py                  signal section: the signal creation method and the signal object methods
-            03_point.py                   point section: the point returned by signal.get()
-            04_drawing.py                 drawing and rendering section: draw, build, show, interactive and sleep
-            05_shapes.py                  shapes and text section: rectangle, polygon, segment, line and text signals
-            06_bars.py                    bar plots section: bar, hist and box signals
-            07_specialized.py             specialized plots section: candlestick, error, event, heatmap and cmatrix signals
-            08_date.py                    date section: the date converter methods
-            09_media.py                   media section: image, gif and video
-            10_settings.py                settings section: plot_size, theme and subplots
-            11_dressing.py                plot dressing section: title, label, axes, canvas and legend
-            12_rulers.py                  rulers section: the ruler methods
-            13_clear.py                   clear section: the clearing methods
-            14_inspection.py              plot inspection section: size, parent, master, position, log and time
-            15_demo.py                    demo section: colors, styles, markers, line_styles and themes reference printers
-            16_simulate.py                simulate section: the sin, square and noise data generators, plus the bundled sample files
-            17_terminal.py                terminal section: the terminal methods
-            18_primitives.py              primitives section: the creation methods of every plotext primitive
-            19_pixel.py                   pixel section: the pixel object methods
-            20_colorize.py                colorize section: the colorize object methods
-            21_text.py                    text section: the string tools (uncolorize, effect)
-            22_matrix.py                  matrix section: the matrix object methods
-            23_marker.py                  marker section: the marker object methods
-            24_plotext.py                 plotext components section: the file and prettydoc attributes (doc joins from the aggregator)
-            25_file.py                    file section: the file toolkit methods
-            26_tools.py                   tools section: matplotlib conversion and the test runner
-            27_prettydoc.py               prettydoc section: the docs manager and its members
-            28_registry.py                registry section: the store of strings shared by several docstrings
+        sections/                         one file per group of methods, holding their docstrings
+            01_components.py              the terminal, the figure, and the pieces reached from it: subplot, ruler, date and clear
+            02_signal.py                  the signal() method and the methods of the signal itself
+            03_point.py                   the point given back by signal.get()
+            04_drawing.py                 draw, build, show, interactive and sleep
+            05_shapes.py                  rectangle, polygon, segment, line and text
+            06_bars.py                    bar, hist and box
+            07_specialized.py             candlestick, error, event, heatmap and cmatrix
+            08_date.py                    the date methods
+            09_media.py                   image, gif and video
+            10_settings.py                plot_size, theme and subplots
+            11_dressing.py                title, label, axes, canvas and legend
+            12_rulers.py                  the ruler methods
+            13_clear.py                   the clearing methods
+            14_inspection.py              size, parent, master, position, log and time
+            15_demo.py                    colors, styles, markers, line_styles and themes
+            16_simulate.py                the sin, square and noise generators, and the sample files
+            17_terminal.py                the terminal methods
+            18_primitives.py              the methods creating each primitive
+            19_pixel.py                   the pixel methods
+            20_colorize.py                the colorize methods
+            21_text.py                    the string tools, uncolorize and effect
+            22_matrix.py                  the matrix methods
+            23_marker.py                  the marker methods
+            24_plotext.py                 the file and prettydoc attributes of the package
+            25_file.py                    the file toolkit methods
+            26_tools.py                   the matplotlib conversion and the test runner
+            27_prettydoc.py               the docs manager and its parts
+            28_registry.py                the store of the strings shared by several docstrings
 
-    _kernel/
-        api.py                            public API: the terminal, the master figure, and a handful of standalone helpers
-        clink.py                          registration of all C kernel bindings: declares input and output types for every exported function
-        terminal.py                       terminal: owns the master plot, tracks the terminal size and prompt height, and clears the screen
-        tools.py                          bridge to the C kernel: loads the compiled library and registers each of its functions with the types it takes and ...
+    _kernel/                              the public interface of the package and the bridge to the C++ drawing kernel
+        api.py                            the terminal, the master figure and the standalone tools
+        clink.py                          declares every function of the kernel, with what it takes and what it gives back
+        terminal.py                       the terminal: owns the master figure, reads the terminal size, keeps rows free below the plot and clears the screen
+        tools.py                          loads the compiled kernel and registers its functions with the types they use
 
-        cpp/
-            00_header.h                   aggregator header: pulls in standard library headers and then concatenates every kernel source file in dependency order
-            01_color.cpp                  color: stores the ANSI escape sequence for a foreground or background color; base class for Fullground and Background
-            02_style.cpp                  style: stores the ANSI escape sequence for one or more text styles (bold, underline, italic, etc.)
-            03_pixel.cpp                  pixel: composite of Fullground, Background and Style used as the color/style carrier throughout the kernel
-            04_colorize.cpp               colorize: wide string paired with a Pixel (color + style); supports slicing, buffered rendering and printing
-            05_mosaic.cpp                 mosaic: a boolean matrix of at most 3 by 3, packed into one byte, the top left cell taking the highest bit
-            06_character.cpp              character family: NormalCharacter (Pixel + wchar), 4 X-Character builders (HD/FHD/Braille/Box) holding bits, ...
-            07_matrix.cpp                 matrix: a grid of MatrixCharacter cells, built, filled, cleared and rendered here; the insert paths of Point, Points, ...
-            08_marker.cpp                 marker: abstract polymorphic base for things you can plot at a position
-            09_position.cpp               position: lightweight 2D float position with fast integer conversion and marker-cell helpers
-            10_point.cpp                  point: a 2D position (inherits Position) carrying an OWNED Marker (deep-copied via Marker::copy on construction/copy)
-            11_grid.cpp                   grid: 2D grid mapping (col, row) → point index in some Points collection
-            12_points.cpp                 points: a collection of Point built on top of plotext's Vector
-            13_point_filled.cpp           filledPoint: a Point with a companion "fill" Point
-            14_points_filled.cpp          filledPoints: a collection of FilledPoint built on Vector
-            15_signal.cpp                 signal: a FilledPoints with plotting metadata (xside/yside, label, marker, fill_method, line_method)
-            kernel.cpp                    standalone entry point, empty: the kernel is used as a library, and this main() only exists so it can also be compiled ...
+        cpp/                              the drawing kernel itself, compiled at installation into kernel.so
+            00_header.h                   pulls in the standard headers, then every file below in the order they need each other
+            01_color.cpp                  color: the code switching the terminal to a foreground or a background color
+            02_style.cpp                  style: the code switching the terminal to bold, italic, underline and the rest
+            03_pixel.cpp                  pixel: a foreground, a background and a style held together
+            04_colorize.cpp               colorize: a piece of text with its pixel, sliced, built and printed
+            05_mosaic.cpp                 mosaic: a grid of at most three by three yes or no cells, packed into one byte
+            06_character.cpp              character: one drawn cell, plain or built from the higher resolution and box drawing families
+            07_matrix.cpp                 matrix: the grid of colored characters a plot is made of, filled, cleared and turned into text
+            08_marker.cpp                 marker: the base of everything that can be drawn at a position
+            09_position.cpp               position: a pair of coordinates, with the arithmetic turning them into cells
+            10_point.cpp                  point: a position carrying its own marker
+            11_grid.cpp                   grid: says which point sits in each cell, so a point is found by its column and row
+            12_points.cpp                 points: a collection of points
+            13_point_filled.cpp           filled point: a point with a second point holding its fill
+            14_points_filled.cpp          filled points: a collection of filled points
+            15_signal.cpp                 signal: the filled points of one plot, with its axis sides, its label, its marker and how its lines and fills are drawn
+            kernel.cpp                    an empty starting point, so the kernel can also be compiled on its own
 
-            utility/
-                0_array.cpp               array: owning dynamic-length buffer used throughout the kernel
-                10_orientation.cpp        orientation: horizontal / vertical layout direction for text and similar drawables
-                1_array2d.cpp             array2D: 2D wrapper around Array<T> with (col, row) access and stack/insert helpers
-                2_vector.cpp              vector: dynamic-length container built on top of Array (capacity vs logical length)
-                4_constants.cpp           kernel-wide constants: ANSI escape sequences and pre-computed upper-bound buffer sizes
-                5_maps.cpp                kernel maps aggregator: pixel-level lookups (color/style/HTML), normal marker lookups, and high-definition marker + ...
-                6_strings.cpp             utility functions for string manipulation, encoding conversion and console output
-                7_cstrings.cpp            c-style wide string and buffer utilities (raw wchar_t* operations and append-to-buffer helpers)
-                8_data.cpp                data utilities: range/linspace/sin_wave/sort/rescale helpers, plus bit manipulation and the C rescale wrapper
-                9_alignment.cpp           alignment utilities: left/center/right anchoring used when placing text inside fixed-width cells
+            utility/                      the general pieces the kernel is built from, needed before anything else
+                0_array.cpp               array: a block of values of one type, owning its memory
+                10_orientation.cpp        orientation: whether a thing runs across or down
+                1_array2d.cpp             array in two dimensions: an array read by column and row, with stacking and inserting
+                2_vector.cpp              vector: an array that grows, keeping room ahead of what it holds
+                4_constants.cpp           the fixed values of the kernel: the terminal codes and the sizes reserved for the text built
+                5_maps.cpp                gathers the three map files below
+                6_strings.cpp             the string tools: measuring, converting and writing to the terminal
+                7_cstrings.cpp            the same on plain character buffers, for the fastest paths
+                8_data.cpp                the number tools: ranges, spacing, the sine wave, sorting, rescaling and bit handling
+                9_alignment.cpp           alignment: placing text left, centered or right inside a given width
 
-                maps/
-                    high_def.cpp          high-definition marker maps: HD (2x2), FHD (2x3), Braille (2x4) glyph lookups and Box-drawing line lookups
-                    marker.cpp            normal marker maps: symbol name -> glyph, marker-kind tags, representative glyph per kind
-                    pixel.cpp             pixel-level maps: color name <-> code, palette index -> RGB, style name -> code, style code -> CSS fragment
+                maps/                     the tables turning a name into what is drawn or printed
+                    high_def.cpp          the higher resolution glyphs, two by two, two by three and two by four, and the box drawing lines
+                    marker.cpp            the named symbols and the glyph of each
+                    pixel.cpp             the colors both ways, the palette in red, green and blue, the styles, and their form in a web page
 
-    _methods/
-        bar.py                            bar plot geometry helpers
-        effects.py                        step-driven text effects: a single dispatcher that returns a styled 1-row matrix
-        file.py                           internal file I/O implementation
-        image.py                          direct heatmap / image painters: produce a fully-coloured plotext.matrix without going through the signal pipeline
-        key.py                            non-blocking key polling: returns True if the user has pressed `key` since the last call
-        matplotlib.py                     structural converter: walks a matplotlib Figure (subplot grid, axes, lines, scatters, patches) and rebuilds it onto ...
-        matrix.py                         utilities to join and compose matrix instances into larger matrices
-        object.py                         object utilities: hashing and type checks
-        ruler.py                          ruler utilities for tick formatting, scaling, and numeric precision
-        sequence.py                       sequence utilities for list operations and basic numerical generation
-        string.py                         string utilities and stdout helpers for rendering and formatting
-        subplot.py                        utilities for fitting and distributing subplot sizes within constraints
-        video.py                          terminal video playback via ffpyplayer
+    _methods/                             the standalone tools the rest of the package calls, each free of the figure
+        bar.py                            the geometry of a bar plot
+        effects.py                        the moving text effects, each giving back one colored row
+        file.py                           reading, writing, downloading and deleting files
+        image.py                          paints a picture or a heatmap straight into a matrix, skipping the signals
+        key.py                            says whether a key was pressed, without waiting for one
+        matplotlib.py                     walks a matplotlib figure and rebuilds it here
+        matrix.py                         joins matrices into larger ones
+        object.py                         the small object tools: hashing and type checks
+        ruler.py                          the tick tools: how many decimals to write, and how to space and scale the ticks
+        sequence.py                       the list tools and the simple number generators
+        string.py                         the text tools and the writing to the screen
+        subplot.py                        fits the subplots into the space available
+        video.py                          plays a video in the terminal, through ffpyplayer
 
-    _plotter/
-        build.py                          build: renders the final plot matrix from signals, rulers, axes, labels, ticks, legend and corners
-        clear.py                          clear component: groups the figure clearing methods; calling the component itself clears everything, like all()
-        draw.py                           the drawing methods of the figure: draw and text, the shapes line, rectangle and polygon, the bars bar, hist and box, ...
-        legend.py                         legend component for plotext: manages markers, labels, pixel, position and frame
-        plot.py                           plot class: main subplot container with signals, axes, legend, rulers, labels and canvas
-        subplot.py                        subplot class: manages subplot grid, sizes and positions
+    _plotter/                             the figure: what is drawn on it, how it is dressed, and how it is rendered
+        build.py                          renders the final matrix from the signals, the rulers, the axes, the labels, the ticks and the legend
+        clear.py                          the clearing methods, gathered so that calling the group clears everything
+        draw.py                           the drawing methods: draw and text, the shapes, the bars, and the specialized plots
+        legend.py                         the legend: its entries, its position, its colors and its box
+        plot.py                           the figure itself, owning its signals, axes, rulers, labels, legend and canvas
+        subplot.py                        the grid of panels: how many, how large, and where each one sits
 
-        frame/
-            axes.py                       axes: 2x2 container of frame axes (x lower/upper, y left/right) with batch operations
-            axis.py                       axis: single frame axis (one axis / one side), with status, style and pixel
-            corner.py                     corner: one of the four frame corners (lower-left, lower-right, upper-left, upper-right) with its tick symbol
-            date.py                       date: converts between string, datetime and timestamp representations with a configurable origin
-            grid_line.py                  grid line: ruler-local box_style + active flag
-            labels.py                     labels container: title plus x/y labels with pixel styling
-            limits.py                     limits: ruler lower/upper bounds with alignment and direction
-            line_signal.py                line signal: a line with a position on its ruler, a label and a way to draw itself on the canvas, using the limits of ...
-            lines.py                      lines: lightweight container of line_signal entries owned by a ruler
-            ruler.py                      ruler: one axis/side ruler owning ticks, limits, lines, grid, date, scale and pixel
-            rulers.py                     rulers container: manages 2x2 X/Y rulers, selection, clearing, cloning, updates
-            selection.py                  ruler and date selections: returned by figure.ruler(axis, side); setters repeat on every selected item and chain, ...
-            tick.py                       tick: single ruler tick with a position and a label
-            ticks.py                      ticks: container of tick_class instances with batch get/set/rescale operations
+        frame/                            everything around the canvas: the axes, the rulers, their ticks and the labels
+            axes.py                       the four axes together, set in one call
+            axis.py                       one axis on one side, with its state, its style and its colors
+            corner.py                     one of the four corners, with the character it shows
+            date.py                       dates: converts between text, date and number, with its own origin and zone
+            grid_line.py                  the grid lines of one ruler: their style and whether they are drawn
+            labels.py                     the title and the axis labels, with their colors
+            limits.py                     the lower and upper bound of one ruler, with its alignment and direction
+            line_signal.py                one line across the canvas, with its position on the ruler, its label and how it draws itself
+            lines.py                      the lines belonging to one ruler
+            ruler.py                      one ruler: its ticks, limits, lines, grid, dates, scale and colors
+            rulers.py                     the four rulers together, selected, cleared, copied and updated in one call
+            selection.py                  the rulers picked by figure.ruler(): a setting is repeated on each of them, and the picking is given back
+            tick.py                       one tick: where it sits and what it says
+            ticks.py                      the ticks of one ruler, read, set and rescaled together
 
-        utils/
-            cycler.py                     a utility class to cycle through a predefined sequence of pixels
-            interactive.py                interactive mode: with it on, every method changing the figure reprints it as soon as it ends, so the plot updates as ...
-            part.py                       this module defines a `part` class that represents a part with a name, position, and size
-            parts.py                      parts container: owns the named regions (bars, corners, axes, ticks, canvas, legend) that make up a plot layout
-            propagator.py                 propagator: the base of the plot components reachable from the figure, like the clear object and the rulers; it holds ...
-            selection.py                  selection: base for objects holding several same-kind items (rulers, date converters); repeats a method on every item
-            timer.py                      timer: lightweight event timer used to profile build steps (start/stop per label, accumulated elapsed time and counter)
+        utils/                            the small pieces the figure is built with
+            cycler.py                     hands out the colors of a theme in turn, starting again when they run out
+            interactive.py                when on, every change to the figure prints it again at once
+            part.py                       one region of the plot: its name, its place and its size
+            parts.py                      the regions a plot is made of: bars, corners, axes, ticks, canvas and legend
+            propagator.py                 the base of the pieces reached from the figure, as the clear object and the rulers
+            selection.py                  the base of the objects holding several of one kind, repeating a call on each
+            timer.py                      times each step of the rendering, for figure.time()
 
-    _primitives/
-        box.py                            box primitive: the characters drawing lines and their crossings, as ├ or ┼; box_class takes each arm on its own, used ...
-        box_style.py                      boxStyle primitive: thin wrapper around C++ BoxStyle (style + pixel; no arms, no active flag)
-        colorize.py                       colorized string object with pixel-based styling and matrix operations
-        marker.py                         marker primitive: wraps a C++ marker pointer; handles normal/typed markers and exposes model, pixel and string
-        matrix.py                         matrix primitive: wraps C++ matrix pointer; supports pixels, insertion, stacking and slicing
-        pixel.py                          pixel primitive handling using clink bindings
+    _primitives/                          the objects a plot is made of, each usable on its own
+        box.py                            the line drawing characters and their crossings, as ├ or ┼, each arm set apart
+        box_style.py                      the style and colors a box is drawn with
+        colorize.py                       a piece of text with its colors, stacked, sliced and printed
+        marker.py                         the symbol drawn at each point, with its colors
+        matrix.py                         the grid of colored characters, filled, stacked, sliced and saved
+        pixel.py                          a foreground color, a background color and a style
 
-    _settings/
-        defaults.py                       default settings: terminal size, axis/grid/colors/pixels, subplot, legend, marker and miscellaneous defaults
-        system.py                         system settings: the system in use, the package version, and the optional packages, imported here and left as None when ...
-        themes.py                         the named color themes: each holds the pixels of the canvas, axes, ruler, label and legend, plus the sequence given to ...
+    _settings/                            the values the package starts with, and the themes
+        defaults.py                       every default: the terminal size, the colors, the markers, the legend, the subplots and the rest
+        system.py                         the system in use, the package version, and the optional packages
+        themes.py                         the named themes: the colors of the canvas, axes, ruler, label and legend, and the sequence given to the signals
 
-    _signal/
-        grid.py                           grid: fixed-size (cols x rows) backing grid used by points_class.squash for fast (col, row) → point-index lookup
-        point.py                          point: single (x, y) position with a marker, backed by the C kernel
-        point_filled.py                   pointFilled: single filled data point with x/y/col/row, marker and foreground color, backed by the C kernel
-        points.py                         points: container of data points backed by the C kernel; supports appending, offsetting, selection and squashing
-        signal.py                         signal class: wraps C++ signal pointer; manages points, fill, axes, labels and plotting
-        signals.py                        signals container: holds a list of signal objects, with aggregated limits and selection
+    _signal/                              the data of a plot: its points and the look chosen for them
+        grid.py                           the fixed grid used to find a point by its column and row
+        point.py                          one point with its marker
+        point_filled.py                   one point with its fill
+        points.py                         the points of a signal, appended, moved, picked and squashed into cells
+        signal.py                         the signal: its points, its fills, its axis sides, its label and its marker
+        signals.py                        the signals of a figure, with their overall limits
 
-    _tests/
-        dates.py                          tests of date support: the three ways of writing a date, and the settings holding them together
+    _tests/                               the test suite run by plotext.test()
+        dates.py                          the three ways of writing a date, and the settings holding them together
         fixed_bugs.py                     one test per bug already fixed, so that none of them comes back
         hashes.py                         six whole plots frozen by their hash, to catch a change nobody meant to make
-        plots.py                          tests of the built plot, asking questions of the result rather than comparing pictures
-        primitives.py                     tests of the primitives, on exact values: pixel colors, matrix positions and sizes, colorize widths
-        run.py                            runner of the plotext test suite, gathering the tests of every module beside this one
+        plots.py                          the built plot, asked questions rather than compared with a picture
+        primitives.py                     the primitives on exact values: pixel colors, matrix positions and sizes, colorize widths
+        run.py                            runs every test file beside this one
 
-    prettydoc/
+    prettydoc/                            the builder of the colored docstrings, used by the whole package
 
-        _defaults/
-            pixels.py                     default pixel configurations for every docstring component (title, alias, parameters, output)
+        _defaults/                        the values prettydoc starts with
+            pixels.py                     the colors of each part of a docstring: the title, the alias, the parameters and the output
 
-        _demos/
-            demo.py                       demo: reference table of PrettyDoc components and what each one styles
+        _demos/                           the reference table prettydoc prints on demand
+            demo.py                       every part of a docstring, and what each one looks like
 
-        _menu/
-            keys.py                       keys: reading one keystroke at a time, and putting the terminal in the state where each key arrives instantly, on its ...
-            layout.py                     layout: the sizes and the pieces the menu is drawn with, the column widths, the cells, the frame lines and the headers
-            text.py                       text: measuring and wrapping colored text, so that a docstring fits a column without its colors bleeding outside it
+        _menu/                            the pieces the interactive menu is drawn with
+            keys.py                       reads one key at a time, and puts the terminal where each key arrives at once
+            layout.py                     the sizes of the menu: the columns, the cells, the lines and the headers
+            text.py                       measures and wraps colored text, so a docstring fits its column
 
-        _methods/
-            menu.py                       interactive menu: three columns side by side, the sections, the methods of the picked section, and the docstring of the ...
+        _methods/                         what the user of prettydoc calls
+            menu.py                       the menu: the sections, the methods of the picked one, and its docstring, side by side
 
-        _primitives/
-            container.py                  container: the object update() gives back, holding one printing method per documented entry, reached by name as ...
-            docs.py                       docs: the manager registering every function with its documentation, and building the container out of them
-            function.py                   one documented entry: the function it describes, or several sharing one docstring, together with its description, ...
-            parameter.py                  one documented parameter, or one output: its name and description, and the type and default printed under them
-            registry.py                   registry primitive: a store of the strings shared by several docstrings (type explanations, recurring messages, long ...
-            source.py                     source: one step along the dotted path of the documentation container, as the pixel in plotext.doc.pixel.copy(); ...
-            text.py                       the text pieces a docstring is built from: a plain piece, the alias line, and a label with its value, as in "type: a ...
+        _primitives/                      the objects a documentation is made of
+            container.py                  what update() gives back: one printing method per entry, reached by name
+            docs.py                       the manager: registers every function with its documentation and builds the container
+            function.py                   one entry: the function it describes, its description and its parameters
+            parameter.py                  one parameter, or one output: its name, its description, its type and its default
+            registry.py                   the store of the strings shared by several docstrings
+            source.py                     one step along the dotted path, as the pixel in plotext.doc.pixel.copy()
+            text.py                       the pieces of text a docstring is built from: a plain piece, the alias line, and a label with its value
 
-        _tests/
-            docs.py                       tests of the docstring builder, asking what the built text says
+        _tests/                           the test suite run by plotext.prettydoc.test()
+            docs.py                       the built docstring, asked what it says
             hashes.py                     a whole docstring frozen by its hash, to catch a change nobody meant to make
-            run.py                        runner of the prettydoc test suite, gathering the tests of every module beside this one
+            run.py                        runs every test file beside this one
