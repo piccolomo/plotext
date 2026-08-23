@@ -66,3 +66,9 @@
 .rst-content ul.feature-list li p {
     margin-bottom: 0.15em;
 }
+
+
+/* The front page keeps its "User Guide" heading, so the page carries a name, while its own title stays out of sight, the pages being listed on the left */
+.rst-content .page-title > h1 {
+    display: none;
+}

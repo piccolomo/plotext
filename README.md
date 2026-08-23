@@ -5,10 +5,6 @@
 [![GitTutorial](https://img.shields.io/badge/PR-Welcome-%23FF8300.svg?)](https://github.com/piccolomo/plotext/pulls)
 
 ![logo](https://raw.githubusercontent.com/piccolomo/plotext/master/docs/source/images/logo6.png)
-##
-
-> [!IMPORTANT]
-> **plotext `6.0.0` beta is out** — please [test it](https://plotext.readthedocs.io/en/latest/install.html) on **Linux, Windows, or macOS** and report bugs in [GitHub Issues](https://github.com/piccolomo/plotext/issues) or general feedback in [GitHub Discussions](https://github.com/piccolomo/plotext/discussions).
 
 ![showcase](https://raw.githubusercontent.com/piccolomo/plotext/master/docs/source/images/showcase.webp)
 
@@ -30,3 +26,5 @@
 - **Tools**: [test data](https://plotext.readthedocs.io/en/latest/simulate.html), a [file toolkit](https://plotext.readthedocs.io/en/latest/file.html), a [command line tool](https://plotext.readthedocs.io/en/latest/cli.html) drawing a plot with no Python written, [pretty docstrings](https://plotext.readthedocs.io/en/latest/prettydoc.html) browsable in a menu, and recipes for [other packages](https://plotext.readthedocs.io/en/latest/packages.html).
 
 Here is the link of the main documentation: **[plotext.readthedocs.io](https://plotext.readthedocs.io/en/latest/)**.
+
+*This project is under [active development](https://plotext.readthedocs.io/en/latest/install.html#contributing).*

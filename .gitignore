@@ -18,5 +18,4 @@ plotext/#*
 .#*
 
 # Local scratch
-docs/temp/
 *.ansi

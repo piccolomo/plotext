@@ -42,8 +42,11 @@
 - **Terminal**: read its :ref:`size <terminal_size>`, :ref:`clear <terminal_clearing>` it, and catch a :ref:`key press <is_pressed>` without waiting.
 - **Tools**: :doc:`test data <simulate>`, a :doc:`file toolkit <file>`, a :doc:`command line tool <cli>` drawing a plot with no Python written, :doc:`pretty docstrings <prettydoc>` browsable in a menu, and recipes for :doc:`other packages <packages>`.
 
-
 |
+
+| The source code lives on `GitHub <https://github.com/piccolomo/plotext>`_, together with its `issue tracker <https://github.com/piccolomo/plotext/issues>`_.
+
+.. note:: This project is under :ref:`active development <contributing>`.
 
 .. _user_guide:
 
@@ -54,6 +57,7 @@ User Guide
 
 .. toctree::
    :maxdepth: 1
+   :hidden:
    :caption: Getting Started
 
    install
@@ -62,6 +66,7 @@ User Guide
 
 .. toctree::
    :maxdepth: 1
+   :hidden:
    :caption: Plot Types
 
    shape
@@ -73,6 +78,7 @@ User Guide
 
 .. toctree::
    :maxdepth: 1
+   :hidden:
    :caption: Plot Settings
 
    size
@@ -87,6 +93,7 @@ User Guide
 
 .. toctree::
    :maxdepth: 1
+   :hidden:
    :caption: Plot Utilities
 
    inspection
@@ -94,6 +101,7 @@ User Guide
 
 .. toctree::
    :maxdepth: 1
+   :hidden:
    :caption: Colored Primitives
 
    pixel
@@ -103,6 +111,7 @@ User Guide
 
 .. toctree::
    :maxdepth: 1
+   :hidden:
    :caption: General Tools
 
    simulate
@@ -113,11 +122,10 @@ User Guide
 
 .. toctree::
    :maxdepth: 1
+   :hidden:
    :caption: Project
 
    api
    changelog
    future
    credits
-
-.. note:: This project is under :ref:`active development <contributing>`.
