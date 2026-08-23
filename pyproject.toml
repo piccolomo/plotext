@@ -13,7 +13,7 @@ test-command = "python -c \"import plotext; print(plotext.__version__)\""
 
 # manylinux containers already ship gcc; nothing extra required.
 [tool.cibuildwheel.linux]
-archs = ["x86_64"]          # the ARM build runs inside an emulator, minutes per wheel; worth restoring for the final release
+archs = ["x86_64", "aarch64"]          # the ARM build runs inside an emulator, minutes per wheel
 
 # Apple clang is preinstalled on the runner.
 [tool.cibuildwheel.macos]

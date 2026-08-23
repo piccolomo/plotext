@@ -18,6 +18,11 @@ from build_cpp import BuildPyWithKernel, DevelopWithKernel  # noqa: E402
 # The text of the readme file, shown as the package description.
 readme = (here / "README.md").read_text()
 
+# The version, read as text out of the one file holding it, since importing plotext would load its kernel
+def get_version():
+    text = (here / "plotext" / "_settings" / "system.py").read_text()
+    return text.split('__version__ = version = "')[1].split('"')[0]
+
 # The package carries a kernel compiled for one system, so its wheel must be labelled for that system alone, and not as working everywhere
 class binary_distribution(Distribution):
     def has_ext_modules(self):
@@ -38,7 +43,7 @@ setup(
     author = "Savino Piccolomo",
     author_email = "piccolomo@gmail.com",
     name = 'plotext',
-    version = '6.0.0b0',
+    version = get_version(),
     description = 'plotext plots directly on terminal',
     long_description = readme,
     long_description_content_type = "text/markdown",  
@@ -53,7 +58,7 @@ setup(
     cmdclass = {"build_py": BuildPyWithKernel, "develop": DevelopWithKernel, "bdist_wheel": wheel_of_this_system},
     distclass = binary_distribution,
     classifiers = [
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Operating System :: POSIX :: Linux",

@@ -12,13 +12,15 @@ _here = os.path.dirname(os.path.abspath(__file__))
 _git_root = os.path.dirname(os.path.dirname(_here))  # docs/source -> docs -> git/
 sys.path.insert(0, _git_root)
 
+import plotext
+
 
 # -- Project information -----------------------------------------------------
 
 project = 'plotext'
 author = 'Savino Piccolomo'
 copyright = '2024, Savino Piccolomo'
-release = '6.0.0b0'
+release = plotext.version
 
 
 # -- General configuration ---------------------------------------------------

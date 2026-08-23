@@ -7,7 +7,7 @@ platform = "windows" if sys.platform in {"win32", "cygwin"} else "unix"
 
 # Package metadata
 __name__ = "plotext"
-__version__ = version = "6.0.0b0"
+__version__ = version = "6.0.0"
 
 # Optional dependency: Pillow (image rendering), `pip install plotext[image]`.
 try:
