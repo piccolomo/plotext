@@ -12,6 +12,7 @@ Pull Requests
 
 Issue Reports
 -------------
+- `henryiii <https://github.com/henryiii>`_ for reporting the C++ that strict compilers refuse, the plot lost on macOS when the alphabet setting is missing, and the crash on large numbers, as discussed in Issues `236 <https://github.com/piccolomo/plotext/issues/236>`_, `237 <https://github.com/piccolomo/plotext/issues/237>`_ and `238 <https://github.com/piccolomo/plotext/issues/238>`_.
 - `lost-dan-found <https://github.com/lost-dan-found>`_ for asking that the :doc:`canvas <canvas>` be left unpainted, as discussed in `Issue 230 <https://github.com/piccolomo/plotext/issues/230>`_.
 - `joelostblom <https://github.com/joelostblom>`_ for requesting the :ref:`heatmap <heatmap>`, as discussed in `Issue 143 <https://github.com/piccolomo/plotext/issues/143>`_, and `GNtrazios <https://github.com/GNtrazios>`_ for the code written in `Pull Request 182 <https://github.com/piccolomo/plotext/pull/182>`_.
 - `feizheng10 <https://github.com/feizheng10>`_ for requesting the :ref:`box plot <box>`, as discussed in `Issue 169 <https://github.com/piccolomo/plotext/issues/169>`_, and `is <https://github.com/is>`_ for the code proposed in `Pull Request 170 <https://github.com/piccolomo/plotext/pull/170>`_.
@@ -69,3 +70,16 @@ These count as well as sources of inspiration:
 - `uniplot <https://github.com/olavolav/uniplot>`_: lightweight plotting, with four times the resolution through Unicode
 - `bashplotlib <https://github.com/glamp/bashplotlib>`_: basic plots directly from the shell
 - `termplotlib <https://github.com/nschloe/termplotlib>`_: plots and histograms with a matplotlib-like interface
+
+
+.. _ai:
+
+Artificial Intelligence
+-----------------------
+
+- **Why**: version 6 had been due for a long time, and the assistant is good at exactly the work that was holding it back, changing many places at once, the repetitive parts, and the code where nothing has to be invented; it is what finally brought the release out.
+- **Since May 2026**: version 6 was started and shaped on my own, and the assistant joined only for its last stretch, from May 2026 to the release in August; versions 1 to 5 were written without one.
+- **Code**: I ask for each change, and read it line by line before it enters the package, questioning whatever I do not agree with and going over it with the assistant again and again, sometimes many times, until it comes out the way I want it; nothing goes in unseen.
+- **Design**: the structure, the names and every decision remain mine.
+- **Larger help**: for these documentation pages, the :doc:`docstring menu <prettydoc>` and the :doc:`command line tool <cli>`, the assistant drafted a first rough version, which I then went through part by part, several times over, until it read the way I wanted; nothing was left to it to write on its own.
+- **Issues**: the replies on the issue tracker are mine, and the assistant polishes them, catching my mistakes of grammar and adding the links.

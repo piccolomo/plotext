@@ -111,6 +111,15 @@ class date_bugs(unittest.TestCase):
 
 
 # Bugs elsewhere
+    # The last tick names the last day of the data, which a 32-bit position moved back by a couple of minutes
+    def test_last_day_is_named(self):
+        fig = prepare(100, 20)
+        dates = ["{:02d}/01/2024".format(day) for day in range(1, 11)]
+        fig.date().activate()
+        fig.draw(fig.signal(dates, list(range(10))))
+        self.assertIn("10/01/2024", rows_of(fig)[-1])
+
+
 class other_bugs(unittest.TestCase):
 
     # A signal wholly outside the limits used to crash the legend
@@ -184,3 +193,9 @@ class other_bugs(unittest.TestCase):
         fig.draw(fig.signal(plt.sin()))
         plot = fig.build()
         self.assertEqual(plot.get(plot.height() // 2, plot.width() - 2).background(), None)
+
+    # Large values one apart were held as one number, so the plot divided by a range of no width and stopped with a NaN
+    def test_large_close_values(self):
+        fig = prepare()
+        fig.draw(fig.bar([50331647.5, 50331648.5], [1.0, 2.0]))
+        self.assertEqual(fig.build().size(), (60, 20))

@@ -1,6 +1,6 @@
 // Utility functions for string manipulation, encoding conversion and console output
 
-// --- String Conversions ---
+// String Conversions
 
 // Split a string into tokens by whitespace (spaces, tabs, newlines)
 vector<string> split_string(const string & str) {
@@ -25,18 +25,15 @@ wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
 inline wstring string_to_wstring(const string & str) noexcept {
     return converter.from_bytes(str);}
 
-// Write wide text to the terminal: as utf-8 bytes on windows, whose console takes them once told to, and through wcout elsewhere, where the locale already converts
+// Write wide text to the terminal as utf-8 bytes, turned here so no setting of the machine can change them; windows also needs its console told to accept them
 inline void write_wide(const wchar_t * text, size_t length, bool flushing) noexcept {
 #ifdef _WIN32
     static const bool console_ready = SetConsoleOutputCP(CP_UTF8);
     (void) console_ready;
+#endif
     const std::string bytes = converter.to_bytes(text, text + length);
     fwrite(bytes.data(), 1, bytes.size(), stdout);
     if (flushing) fflush(stdout);
-#else
-    wcout.write(text, length);
-    if (flushing) wcout.flush();
-#endif
 }
 
 // Convert a wstring to a UTF-8 encoded string
@@ -73,7 +70,7 @@ inline size_t get_wstring_real_width(const wstring & s) noexcept {
 }
 
 
-// --- Console Output Utilities ---
+// Console Output Utilities
 
 // Print new line(s)
 inline void nl(size_t repeat = 1) {for (size_t i = 0; i < repeat; i++) {wcout << endl;}}

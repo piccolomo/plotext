@@ -1,6 +1,6 @@
 // Aggregator header: pulls in standard library headers and then concatenates every kernel source file in dependency order
 
-// --- Standard Includes ---
+// Standard Includes
 #include <cstring>
 #include <iostream>
 #include <cmath>
@@ -22,7 +22,7 @@
     #undef byte
 #endif
 
-// --- Utility Modules ---
+// Utility Modules
 // Core utilities: Array, Array2D, Vector, constants, maps, strings, C-style strings, data, alignment
 #include "utility/0_array.cpp"
 #include "utility/1_array2d.cpp"
@@ -35,7 +35,7 @@
 #include "utility/9_alignment.cpp"
 #include "utility/10_orientation.cpp"
 
-// --- Kernel Modules ---
+// Kernel Modules
 #include "01_color.cpp"
 #include "02_style.cpp"
 #include "03_pixel.cpp"

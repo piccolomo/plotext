@@ -7,7 +7,7 @@ private:
     size_t length = 0;
 
 public:
-    // --- Constructors ---
+    // Constructors
 
     // Default constructor
     Array() noexcept = default;
@@ -38,7 +38,7 @@ public:
     // Destructor
     ~Array() {destroy();}
 
-    // --- Iterators ---
+    // Iterators
 
     // Iterator begin
     T * begin() {return data;}
@@ -52,7 +52,7 @@ public:
     // Const iterator end
     const T* end() const {return data + length;}
 
-    // --- Assignment ---
+    // Assignment
 
     // Copy assignment (self-assignment safe)
     Array& operator=(const Array& other) {
@@ -69,7 +69,7 @@ public:
             other.length = 0; }
         return *this; }
 
-    // --- Comparison ---
+    // Comparison
 
     // Equality comparison
     bool operator==(const Array<T>& other) const {
@@ -81,7 +81,7 @@ public:
     // Inequality comparison
     bool operator!=(const Array<T>& other) const { return !(*this == other); }
 
-    // --- Memory Management ---
+    // Memory Management
 
     // Release ownership of the underlying buffer (caller becomes responsible for deleting it)
     T * release_data() noexcept {
@@ -118,7 +118,7 @@ public:
     // Overwrite a run of elements starting at index with values from another Array
     inline void insert(size_t index, const Array<T>& other) noexcept {size_t i = 0; for (auto & el: other) data[index + (i++)] = el;}
 
-    // --- Accessors ---
+    // Accessors
 
     // Number of elements in the array
     size_t get_length() const noexcept { return length; }
@@ -140,10 +140,10 @@ public:
 
     // Check if every element equals the given value
     bool is_constant(const T & value) const noexcept {
-        for (size_t i = 0; i < length; ++i) {if (not (at(i) == value)) return false;}
+        for (size_t i = 0; i < length; ++i) {if (!(at(i) == value)) return false;}
         return true;}
 
-    // --- Modifiers ---
+    // Modifiers
 
     // Fill the array with a value
     void fill(const T& value) { for (size_t i = 0; i < length; ++i) data[i] = value; }
@@ -151,7 +151,7 @@ public:
     // Reverse the elements in place
     void reverse() { for (size_t i = 0; i < length / 2; ++i) std::swap(data[i], data[length - 1 - i]); }
 
-    // --- Utilities ---
+    // Utilities
 
     // Copy source_length elements from a raw pointer into this array at offset. Early return on empty source, keeps the compiler from warning when source happens to be a freshly-constructed (empty, possibly-null) buffer.
     void copy_from(const T* source, size_t source_length, size_t offset = 0) {
@@ -187,7 +187,7 @@ public:
         result.copy_from(other.data, other.length, length);
         return result;}
 
-    // --- Output ---
+    // Output
 
     // Wide-stream output
     friend wostream& operator<<(wostream& os, const Array<T>& v) {

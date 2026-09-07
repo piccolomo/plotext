@@ -184,6 +184,39 @@ Use :meth:`ruler().ticks() <plotext._plotter.frame.ruler.ruler_class.ticks>` whe
 .. note:: Called with no arguments, the automatic placement is restored.
 
 
+.. _exponential_form:
+
+Exponential Form
+~~~~~~~~~~~~~~~~
+
+| By default a numerical tick label is rounded to the fewest decimals that still tell each tick from the next. This is the **base** form.
+| For very large and very small values the base form takes too many characters, and the **exponential** form is handier: a single digit before the point and the power of ten after the ``e``.
+| |plotext| picks the handier of the two on its own, for each ruler.
+
+Here is an example where |plotext| uses the exponential form on the *y* axis:
+
+.. code-block:: python
+
+   import plotext as plt
+   fig = plt.figure
+   fig.clear()
+
+   y = plt.sin(amplitude = 1e9)
+   fig.draw(fig.signal(y))
+
+   fig.title("Exponential tick labels")
+   fig.show()
+
+.. image:: images/exponential_form.png
+   :alt: exponential tick labels on the y axis, plain ones on the x axis
+
+.. note:: The choice is made once for each ruler, so all its labels carry the same form and the same number of decimals; above, the *y* labels are exponential and the *x* ones plain.
+
+.. note:: A label given by hand, through :meth:`ruler().ticks() <plotext._plotter.frame.ruler.ruler_class.ticks>`, is written as you passed it and neither form applies.
+
+.. caution:: Values so large and so close that the machine holds them as one number, as ``1e16 + 0.5`` and ``1e16 + 1.5``, cannot be told apart: they are drawn on a single spot, with a warning.
+
+
 .. _ticks_colors:
 
 Ticks Colors

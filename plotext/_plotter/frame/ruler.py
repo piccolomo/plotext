@@ -250,6 +250,8 @@ class ruler_class(propagator_class):
     def _rescale(self, bins):
         lims = self._limits.get(direction = True)
         delta = self._limits.get_delta()
+        if lims[0] == lims[1] and self._ticks.active():   # values so large and so close that the machine stores them as one, as 1e16 + 0.5 and 1e16 + 1.5; nothing can tell them apart, so they land on a single spot
+            string.note("plotext.figure", f"the values on the {self._name()} axis are too close together to be told apart, so they are drawn on a single spot", "warning")
         self._ticks.rescale(lims, bins, delta)
         self._ticks.filter(bins)
         self._lines.rescale(self, bins)

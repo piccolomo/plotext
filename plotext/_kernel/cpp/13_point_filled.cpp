@@ -7,8 +7,8 @@ private:
 
 public:
     FilledPoint() noexcept = default; 
-    FilledPoint(float x, float y, Marker * m = nullptr) noexcept : Point(x, y, m), fill(x, y) {}
-    FilledPoint(float x, float y, Marker * m, const Point & f) noexcept : Point(x, y, m), fill(f) {} 
+    FilledPoint(double x, double y, Marker * m = nullptr) noexcept : Point(x, y, m), fill(x, y) {}
+    FilledPoint(double x, double y, Marker * m, const Point & f) noexcept : Point(x, y, m), fill(f) {} 
     FilledPoint(const Point & main, const Point & f) noexcept : Point(main), fill(f) {}
 
     // Explicit rule-of-five, the compiler-generated defaults rely on every base/member's copy/move ctor being trivial-or-correct. With polymorphic Marker* ownership in Point, that's fragile (subtle UB if any path picks the wrong default). Defining all five explicitly eliminates that class of bugs.
@@ -25,14 +25,14 @@ public:
     inline       Point & get_fill()       noexcept { return fill; }
     inline const Point & get_fill() const noexcept { return fill; }
     inline void          set_fill(const Point & f) noexcept { fill = f; }
-    inline void          set_fill(float x, float y, Marker * m) noexcept { fill = Point(x, y, m); }
-    inline void          set_main(float x, float y, Marker * m) noexcept { *static_cast<Point*>(this) = Point(x, y, m); }
+    inline void          set_fill(double x, double y, Marker * m) noexcept { fill = Point(x, y, m); }
+    inline void          set_main(double x, double y, Marker * m) noexcept { *static_cast<Point*>(this) = Point(x, y, m); }
     inline bool          has_fill() const noexcept { return fill.has_marker(); }
 
-    inline float         get_xmin() const noexcept { return std::min(get_x(), fill.get_x()); }
-    inline float         get_xmax() const noexcept { return std::max(get_x(), fill.get_x()); }
-    inline float         get_ymin() const noexcept { return std::min(get_y(), fill.get_y()); }
-    inline float         get_ymax() const noexcept { return std::max(get_y(), fill.get_y()); }
+    inline double         get_xmin() const noexcept { return std::min(get_x(), fill.get_x()); }
+    inline double         get_xmax() const noexcept { return std::max(get_x(), fill.get_x()); }
+    inline double         get_ymin() const noexcept { return std::min(get_y(), fill.get_y()); }
+    inline double         get_ymax() const noexcept { return std::max(get_y(), fill.get_y()); }
 
     inline bool          is_connected()             const noexcept { return connected; }
     inline void          set_connected(bool value)        noexcept { connected = value; }
@@ -52,7 +52,7 @@ public:
 
 
 extern "C" {
-    FilledPoint * point_filled_new   (float x, float y, Marker * m) noexcept { return new FilledPoint(x, y, m); }
+    FilledPoint * point_filled_new   (double x, double y, Marker * m) noexcept { return new FilledPoint(x, y, m); }
     void          point_filled_delete(FilledPoint * fp) noexcept { delete fp; }
 
     // Returns a COPY of the marker (Python wraps it in its own marker primitive whose __del__ will free it; sharing the pointer would double-free).
@@ -60,8 +60,8 @@ extern "C" {
 
     size_t        point_filled_get_col (FilledPoint * fp) noexcept { return fp->get_col(); }
     size_t        point_filled_get_row (FilledPoint * fp) noexcept { return fp->get_row(); }
-    float         point_filled_get_x   (FilledPoint * fp) noexcept { return fp->get_x(); }
-    float         point_filled_get_y   (FilledPoint * fp) noexcept { return fp->get_y(); }
+    double         point_filled_get_x   (FilledPoint * fp) noexcept { return fp->get_x(); }
+    double         point_filled_get_y   (FilledPoint * fp) noexcept { return fp->get_y(); }
     // Returns a heap-allocated copy of the main/fill marker's pixel (Python wraps it; nullptr if no marker).
     Pixel *       point_filled_get_main_pixel(FilledPoint * fp) noexcept { Marker * m = fp->get_marker();             return m ? new Pixel(m->get_pixel()) : nullptr; }
     Pixel *       point_filled_get_fill_pixel(FilledPoint * fp) noexcept { Marker * m = fp->get_fill().get_marker();  return m ? new Pixel(m->get_pixel()) : nullptr; }

@@ -27,7 +27,7 @@ public:
     virtual ~Color() noexcept {}
 
     // Compare two colors (length and code equal)
-    constexpr inline bool same(const Color & c) const noexcept { return length == c.length and same_cstrings(code, c.get_code(), c.length); }
+    constexpr inline bool same(const Color & c) const noexcept { return length == c.length && same_cstrings(code, c.get_code(), c.length); }
 
     // Copy another color's code into this one
     inline void copy(const Color & c) noexcept { copy_cstring(c.get_code(), code, c.length); length = c.length; }

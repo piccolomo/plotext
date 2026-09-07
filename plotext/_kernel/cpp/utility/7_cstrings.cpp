@@ -1,6 +1,6 @@
 // C-style wide string and buffer utilities (raw wchar_t* operations and append-to-buffer helpers)
 
-// --- C-style Wide String Utilities ---
+// C-style Wide String Utilities
 
 // Convert a wide string to a C-style wide string (wchar_t*)
 inline wchar_t * wstring_to_cstring(const wstring & wstr) noexcept {
@@ -41,7 +41,7 @@ inline void show_ansi_wstring(const wchar_t * code) {
     for (size_t i = 0; i < wcslen(code); i++) {wcout << i << space << code[i] << ansi_end << endl;}}
 
 
-// --- Buffer Utilities ---
+// Buffer Utilities
 
 // Append a null-terminated C-style wide string to a buffer and update length
 inline void cstring_to_buffer(const wchar_t * string, wchar_t * buffer, size_t & length_buffer) noexcept {

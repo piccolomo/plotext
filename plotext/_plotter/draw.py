@@ -29,7 +29,7 @@ from plotext._methods.object import is_rgb, is_list_like
 
 class draw_class:
 
-    # ---- 1. Registration ----------------------------------------------------
+    # Registration
 
     # Register a signal on the plot and propagate to subplots
     @reprint_after
@@ -39,7 +39,7 @@ class draw_class:
         self._propagate("draw", signal)
         return self
 
-    # ---- 2. Annotation ------------------------------------------------------
+    # Annotation
 
     # Build a text annotation at (x, y), as a single point whose marker carries the label; horizontal text is aligned left, center or right, vertical text top, center or bottom.
     def text(self, x, y, label, orientation = None, alignment = None, xside = None, yside = None):
@@ -49,7 +49,7 @@ class draw_class:
         ha, va = (-1, alignment) if orientation == 1 else (alignment, -1)
         return self.signal([x], [y], marker = marker_class(label.transpose() if orientation == 1 else label, ha = ha, va = va), xside = xside, yside = yside)
 
-    # ---- 3. Geometric shapes ------------------------------------------------
+    # Geometric shapes
 
     # Build a straight line segment between two endpoints (x = (x1, x2), y = (y1, y2)). Free 2-point line for arbitrary diagonals or axis-aligned segments.
     def segment(self, x, y, marker = None, xside = None, yside = None):
@@ -125,7 +125,7 @@ class draw_class:
         signal.lines(lines)
         return signal
 
-    # ---- 4. Bar family ------------------------------------------------------
+    # Bar family
 
     # Build a bar plot signal, joining all bar forms: flat heights go to _flat_bar, a list of height-sequences (one per group) goes to _multiple_bar (side by side groups) or to _stacked_bar (groups on top of each other) when stacked = True.
     @no_reprint_after
@@ -292,7 +292,7 @@ class draw_class:
         self.ruler("x" if vertical else "y", (xside if vertical else yside) or 0).ticks(positions, labels = labels)
         return sig
 
-    # ---- 5. Specialized -----------------------------------------------------
+    # Specialized
 
     # Build a candlestick signal from a dictionary of dates, opens, closes, highs and lows; the candle style fills the body, the ohlc one replaces it with two short lines, lighter when the candles are dense.
     def candlestick(self, data, style = None, tick = None, orientation = None, xside = None, yside = None):
@@ -394,7 +394,7 @@ class draw_class:
         return self
 
 
-    # ---- 6. Structured 2D data ---------------------------------------------
+    # Structured 2D data
 
     # Heatmap signal: per-cell symbol coloured by colormap (numeric input) or RGB triple. fill=True densifies each row into a band filled to the previous row. Row 0 maps to the top. HD symbols rejected, cell resolution is one full char.
     def heatmap(self, data, map = 'gray', fill = False, symbol = None, xside = None, yside = None):

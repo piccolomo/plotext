@@ -1,9 +1,9 @@
 // Data utilities: range/linspace/sin_wave/sort/rescale helpers, plus bit manipulation and the C rescale wrapper
 
-// --- Data Creation Utilities ---
+// Data Creation Utilities
 
 // Tolerance used by range() to decide whether the stop bound has been reached
-constexpr float range_epsilon = 1e-5f;
+constexpr double range_epsilon = 1e-5;
 
 // Generate a range of values from start to stop with optional delta
 template<typename T>
@@ -31,20 +31,22 @@ inline Vector<int> sort(const Vector<int> & unsorted, const int & reference) noe
     sort(sorted.begin(), sorted.end(), comparator);
     return sorted;}
 
-// Rescale a float value to a discrete bin range with offsets
-inline float rescale_element(const float & el, const pair<float, float> & lim, const size_t & bins, const float & delta) noexcept {
-    float delta1 = delta + 0.0016585662f;
-    float delta2 = delta + 0.001516152f;
-    return delta1 + (bins - delta1 - delta2) * (el - lim.first) / (lim.second - lim.first);}
+// Rescale a double value to a discrete bin range with offsets
+inline double rescale_element(const double & el, const pair<double, double> & lim, const size_t & bins, const double & delta) noexcept {
+    double delta1 = delta + 0.0016585662;
+    double delta2 = delta + 0.001516152;
+    double width = lim.second - lim.first;
+    double fraction = (width == 0) ? 0.5 : (el - lim.first) / width;   // how far along the range the value sits, 0 at its first end and 1 at its last; a range of no width puts everything in the middle, instead of dividing by zero
+    return delta1 + (bins - delta1 - delta2) * fraction;}
 
 
-// --- Bit Manipulation Utilities ---
+// Bit Manipulation Utilities
 
 
 
 // C-callable wrapper for rescaling
 extern "C" {
     // Rescale a value into the discrete bin range [0, bins) with the given limits and delta
-    float rescale(float value, float min, float max, size_t bins, float delta) noexcept {
+    double rescale(double value, double min, double max, size_t bins, double delta) noexcept {
         return rescale_element(value, {min, max}, bins, delta);}
 }

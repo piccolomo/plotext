@@ -69,16 +69,16 @@ public:
     wstring get_wstring(bool colorless = false) const noexcept {
         size_t buffer_length = get_length();
         if (!(colorless || no_color())) buffer_length += (count_newlines(string) + 1) * pixel_size_max;
-        wchar_t buffer[buffer_length + 1]; buffer[0] = L'\0'; size_t length = 0;
-        to_buffer(buffer, length, colorless);
-        return wstring(buffer);}
+        Array<wchar_t> buffer(buffer_length + 1, L'\0'); size_t length = 0;
+        to_buffer(buffer.begin(), length, colorless);
+        return wstring(buffer.begin());}
 
     // Return the string as std::string
     inline std::string get_string(bool colorless = false) const noexcept { return wstring_to_string(get_wstring(colorless)); }
 
     // Stream the colorized string to stdout
     inline void print(const bool colorless = false, const bool flushing = true) const noexcept {
-        const bool colorfull = not colorless;
+        const bool colorfull = !colorless;
         if (colorfull) Pixel::stream();
         write_wide(get_cstring(), get_length(), false);
         if (colorfull) write_wide(ansi_end, 4, false);

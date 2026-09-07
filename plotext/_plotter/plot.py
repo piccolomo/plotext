@@ -37,6 +37,8 @@ from plotext._constants.numerical import binary
 from plotext._methods.matrix import join_matrices
 from plotext._primitives.marker import marker as marker_class
 
+from sys import stdout
+
 
 # Master plot class: composes subplot, draw, build and interactive behavior
 class plot_class(subplot_class, draw_class, plot_build_class, interactive_class):
@@ -205,9 +207,10 @@ class plot_class(subplot_class, draw_class, plot_build_class, interactive_class)
         return self._timer.get_total_duration()
 
     # Build and print the plot
-    def show(self, colorless = False, flush = False):
+    def show(self, colorless = False, flush = True):
         out = self.build()
         self._start_event("print")
+        stdout.flush()   # empties what python still holds, so its earlier lines come out before the plot
         out.print(colorless = colorless, flush = flush)
         self._stop_event("print")
         return self

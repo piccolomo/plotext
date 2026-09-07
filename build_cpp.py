@@ -19,7 +19,7 @@ cpp_source = cpp_folder / "kernel.cpp"
 def get_windows_command(out):
     import shutil
     if shutil.which("cl.exe"):
-        return ["cl.exe", "/LD", "/O2", "/EHsc", "/std:c++17",
+        return ["cl.exe", "/LD", "/O2", "/EHsc", "/std:c++17", "/permissive-",   # the strict setting, the one conda-forge builds with
                 str(cpp_source), "/link", "/OUT:" + str(out)]
     if shutil.which("g++"):
         return ["g++", "-shared", "-O2", "-std=c++17", "-fno-stack-protector",
@@ -50,7 +50,7 @@ def compile_kernel():
     else:
         out = cpp_folder / "kernel.so"
         cmd = ["g++", "-fPIC", "-shared",                              # the standard is named, older compilers defaulting to one this kernel does not compile under
-               "-O2", "-std=c++17", "-Wall", "-Wextra", "-fno-stack-protector",
+               "-O2", "-std=c++17", "-Wall", "-Wextra", "-pedantic", "-fno-stack-protector",   # -pedantic names anything the standard does not allow, as an array sized while running, which Microsoft's compiler refuses outright
                "-o", str(out), str(cpp_source)]
         if platform.system() == "Darwin":                              # macos builds one wheel per architecture and names the wanted one here, which a raw compiler call must pass on
             cmd += os.environ.get("ARCHFLAGS", "").split()

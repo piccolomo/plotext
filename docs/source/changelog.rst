@@ -2,6 +2,26 @@ Change Log
 ==========
 
 
+Version 6.1
+-----------
+
+**Fixed**
+
+- `conda-forge <https://conda-forge.org>`_ could not build `plotext <https://github.com/conda-forge/plotext-feedstock>`_ on Windows. Three arrays took their size while the program ran, which is not proper C++, and the words ``and``, ``or`` and ``not`` are refused by Microsoft's compiler. Both are gone, as reported in `Issue 236 <https://github.com/piccolomo/plotext/issues/236>`_.
+- On macOS the plot came out empty when the machine's alphabet setting was missing. |plotext| now writes it as utf-8 bytes itself, on every machine, as reported in `Issue 237 <https://github.com/piccolomo/plotext/issues/237>`_.
+- Plots of large numbers stopped with an error about ``NaN``. Every position is now held with twice the precision, as reported in `Issue 238 <https://github.com/piccolomo/plotext/issues/238>`_.
+- A :doc:`date axis <date>` showed the wrong day, a date being held as a number large enough for the lost precision to push a tick past midnight::
+
+    fig.draw(fig.signal(["01/01/2024", "10/01/2024"], [1, 2]))   # its last label read 09/01/2024
+
+**Changed**
+
+- Large numbers on the tick labels take the :ref:`exponential form <exponential_form>`, which only small ones reached before.
+- The labels of one axis could mix the two forms, one plain and the next exponential, and the exponential ones could each show a different number of decimals. They now all share one form and one number of decimals.
+- :meth:`figure.show() <plotext._plotter.plot.plot_class.show>` flushes what python still holds before drawing, and its own output after, so the plot and your own prints come out in the order you wrote them.
+- Values too close for the machine to tell apart are drawn on one spot, with a warning, instead of stopping the plot.
+
+
 Version 6.0
 -----------
 

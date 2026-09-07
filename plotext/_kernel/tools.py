@@ -20,12 +20,12 @@ except OSError as error:
     raise ImportError(f"plotext cannot draw: its C++ part, {kernel_file_path}, is there but will not load ({error}).\nOn windows this usually means the compiler that built it left its own libraries behind; installing a ready made version, with pip install --upgrade --force-reinstall plotext, avoids the matter.") from None
 
 
-# The plain name of each type the kernel functions take or give back, as "float" for a C float.
+# The plain name of each type the kernel functions take or give back, as "float" for a 64 bit number, what python calls a float and C++ a double.
 types_dict = {
     # scalars
     "size": ctypes.c_size_t,
     "integer": ctypes.c_int,
-    "float": ctypes.c_float,
+    "float": ctypes.c_double,
     "bool": ctypes.c_bool,
 
     # strings
@@ -35,7 +35,7 @@ types_dict = {
 
     # pointers
     "void": ctypes.c_void_p,
-    "float pointer": ctypes.POINTER(ctypes.c_float),
+    "float pointer": ctypes.POINTER(ctypes.c_double),
     "wchar pointer": ctypes.POINTER(ctypes.c_wchar)}
 
 
@@ -83,7 +83,7 @@ class clink_class:
             lines.append(f"{name}({inputs}) -> {output}")
         return "\n".join(sorted(lines))
 
-    # The plain name of a ctypes type, as "float" for c_float; an unknown type gives its own text.
+    # The plain name of a ctypes type, as "float" for c_double; an unknown type gives its own text.
     def _get_type_name(self, type_used):
         if type_used is None:
             return "None"

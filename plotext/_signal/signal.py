@@ -31,7 +31,7 @@ class signal_class:
         return self
 
 
-    # === Public fluent methods (chainable) ===
+    # Public fluent methods (chainable)
 
     # Set the signal label shown on the legend
     def label(self, label = None):
@@ -65,7 +65,7 @@ class signal_class:
         return self
 
 
-    # === Internal setters (used by plot_class.signal and by drawables) ===
+    # Internal setters (used by plot_class.signal and by drawables)
 
     # Set the drawing method ('simple' or 'full'; 0 or 1) on connecting lines, on stem fills, or on both at once.
     def density(self, method = None, scope = None):

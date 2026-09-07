@@ -6,7 +6,7 @@ private:
 
 public:
     Point() noexcept = default;
-    Point(float x, float y, Marker * m = nullptr) noexcept : Position(x, y), marker(m ? m->copy() : nullptr) {}
+    Point(double x, double y, Marker * m = nullptr) noexcept : Position(x, y), marker(m ? m->copy() : nullptr) {}
     ~Point() noexcept { delete marker; }
 
     Point(const Point & o) noexcept : Position(o), marker(o.marker ? o.marker->copy() : nullptr) {}
@@ -27,7 +27,7 @@ public:
     inline unsigned char get_subcell_col() const noexcept { return marker ? static_cast<unsigned char>((get_x() - get_col()) * marker->get_xres()) : 0; }
     inline unsigned char get_subcell_row() const noexcept { return marker ? static_cast<unsigned char>((get_y() - get_row()) * marker->get_yres()) : 0; }
 
-    // ------- line generation -------
+    // Line generation
 
     // Sub-column distance from this point to p, measured in marker dots (e.g. Braille has 2 cols/cell).
     inline size_t get_x_distance_to(const Point & p) const noexcept {
@@ -56,12 +56,12 @@ public:
         return method ? get_full_line_size(p) : get_simple_line_size(p); }
 
     // Single point along the line from this to p at parameter t in [0, 1] (0 = this, 1 = p). Inherits this's marker.
-    inline Point get_line_point(const Point & p, float t) const noexcept {
+    inline Point get_line_point(const Point & p, double t) const noexcept {
         return Point(get_x() + (p.get_x() - get_x()) * t, get_y() + (p.get_y() - get_y()) * t, marker); }
 
     // Midpoint between this and p, inheriting this's marker.
     inline Point get_middle_point(const Point & p) const noexcept {
-        return Point((get_x() + p.get_x()) * 0.5f, (get_y() + p.get_y()) * 0.5f, marker); }
+        return Point((get_x() + p.get_x()) * 0.5, (get_y() + p.get_y()) * 0.5, marker); }
 
     // True when two Points are "close enough" to be considered overlapping: same marker kind, same (col, row), same sub-cell (dot_col, dot_row). Used by Points::squash to deduplicate. Compares marker TYPE rather than pointer (each Point owns its own deep-copied marker, so pointers always differ).
     inline bool is_close(const Point & p) const noexcept {
@@ -72,7 +72,7 @@ public:
     // Simple line: linspace-sampled points between this and p (inclusive). last=false omits the trailing endpoint (use when chaining segments).
     inline Vector<Point> get_simple_line(const Point & p, bool last = true) const noexcept {
         const size_t n = get_simple_line_size(p);
-        Vector<float> ts = linspace<float>(0.0f, 1.0f, n);
+        Vector<double> ts = linspace<double>(0.0, 1.0, n);
         Vector<Point> out(n);
         out.append(*this);
         for (size_t i = 1; i + 1 < n; ++i) out.append(get_line_point(p, ts.at(i)));
@@ -81,37 +81,37 @@ public:
 
     // Full line: walks every sub-cell boundary between this and p, placing a point at each crossing's midpoint. Denser/more uniform coverage than the simple version, fills cells the simple line would skip on shallow slopes. Same walk the old kernel did.
     inline Vector<Point> get_full_line(const Point & p, bool last = true) const noexcept {
-        const float cols = static_cast<float>(get_xres());
-        const float rows = static_cast<float>(get_yres());
+        const double cols = static_cast<double>(get_xres());
+        const double rows = static_cast<double>(get_yres());
 
-        const float x0 = get_x()   * cols, x1 = p.get_x() * cols;
-        const float y0 = get_y()   * rows, y1 = p.get_y() * rows;
-        const float dx = x1 - x0,          dy = y1 - y0;
+        const double x0 = get_x()   * cols, x1 = p.get_x() * cols;
+        const double y0 = get_y()   * rows, y1 = p.get_y() * rows;
+        const double dx = x1 - x0,          dy = y1 - y0;
 
         Vector<Point> out(get_full_line_size(p) + 4);
         out.append(*this);
 
-        if (std::abs(dx) < 1e-6f && std::abs(dy) < 1e-6f) {                     // degenerate point
+        if (std::abs(dx) < 1e-6 && std::abs(dy) < 1e-6) {                     // degenerate point
             if (last) out.append(p);
             return out; }
 
-        const float m  = (std::abs(dx) < 1e-6f) ? 0.0f : dy / dx;
-        const float mi = (std::abs(dy) < 1e-6f) ? 0.0f : dx / dy;
-        const float delta_x = dx >= 0 ? 1.0f : -1.0f;
-        const float delta_y = dy >= 0 ? 1.0f : -1.0f;
-        float x_int = dx >= 0 ? std::floor(x0) + 1 : std::ceil(x0) - 1;
-        float y_int = dy >= 0 ? std::floor(y0) + 1 : std::ceil(y0) - 1;
+        const double m  = (std::abs(dx) < 1e-6) ? 0.0 : dy / dx;
+        const double mi = (std::abs(dy) < 1e-6) ? 0.0 : dx / dy;
+        const double delta_x = dx >= 0 ? 1.0 : -1.0;
+        const double delta_y = dy >= 0 ? 1.0 : -1.0;
+        double x_int = dx >= 0 ? std::floor(x0) + 1 : std::ceil(x0) - 1;
+        double y_int = dy >= 0 ? std::floor(y0) + 1 : std::ceil(y0) - 1;
 
         Point previous = *this, next, middle;
         while (true) {
-            const bool test_x = std::abs(dx) > 1e-6f && (delta_x * (x_int - x0)) < (delta_x * dx);
-            const bool test_y = std::abs(dy) > 1e-6f && (delta_y * (y_int - y0)) < (delta_y * dy);
+            const bool test_x = std::abs(dx) > 1e-6 && (delta_x * (x_int - x0)) < (delta_x * dx);
+            const bool test_y = std::abs(dy) > 1e-6 && (delta_y * (y_int - y0)) < (delta_y * dy);
             if (!(test_x || test_y)) break;
 
-            const float x_line = x0 + mi * (y_int - y0);
-            const float y_line = y0 + m  * (x_int - x0);
+            const double x_line = x0 + mi * (y_int - y0);
+            const double y_line = y0 + m  * (x_int - x0);
 
-            if (test_x && test_y && std::abs(std::abs(m) - 1) < 1e-4f) {        // diagonal: x and y advance together
+            if (test_x && test_y && std::abs(std::abs(m) - 1) < 1e-4) {        // diagonal: x and y advance together
                 next = Point(x_int / cols, y_int / rows, marker);
                 x_int += delta_x; y_int += delta_y; }
             else if (test_x && (!test_y || delta_x * (x_line - x_int) >= 0)) {  // crossing a vertical grid line
@@ -147,7 +147,7 @@ public:
     // Single-line "x <x>, y <y>, marker <marker>"
     inline wstring get_wstring() const {
         wchar_t head[50];
-        swprintf(head, 50, L"x %.2f, y %.2f, marker ", get_x(), get_y());
+        swprintf(head, 50, L"x %.2, y %.2, marker ", get_x(), get_y());
         wstring s(head);
         s += marker ? marker->get_wstring() : wstring(L"none");
         return s; }
@@ -158,10 +158,10 @@ public:
 
 
 extern "C" {
-    Point * point_new_marker(float x, float y, Marker * m) noexcept { return new Point(x, y, m); }
+    Point * point_new_marker(double x, double y, Marker * m) noexcept { return new Point(x, y, m); }
     void    point_delete    (Point * p) noexcept { delete p; }
-    float   point_get_x     (Point * p) noexcept { return p->get_x(); }
-    float   point_get_y     (Point * p) noexcept { return p->get_y(); }
+    double   point_get_x     (Point * p) noexcept { return p->get_x(); }
+    double   point_get_y     (Point * p) noexcept { return p->get_y(); }
     void    point_log       (Point * p) noexcept { p->log(); }
     const wchar_t * point_get_wstring(Point * p) noexcept { return wstring_to_cstring(p->get_wstring()); }
     bool    matrix_insert_point(Matrix * m, Point * p, bool check_space) noexcept { return m->insert(*p, check_space); }

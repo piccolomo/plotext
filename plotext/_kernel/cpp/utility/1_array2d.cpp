@@ -17,7 +17,7 @@ public:
     // Re-expose the global Array template so derived classes (e.g. Matrix) can write `Array<wchar_t>` without the `::` qualifier, the private inheritance above otherwise shadows the global name during unqualified lookup.
     template <typename U> using Array = ::Array<U>;
 
-    // --- Constructors ---
+    // Constructors
 
     // Default constructor
     Array2D() noexcept = default;
@@ -55,12 +55,12 @@ public:
         return *this;}
 
     // Equality comparison
-    bool operator==(const Array2D<T>& other) const {return width == other.width and height == other.height and Array<T>::operator==(other); }
+    bool operator==(const Array2D<T>& other) const {return width == other.width && height == other.height && Array<T>::operator==(other); }
 
     // Inequality comparison
     bool operator!=(const Array2D<T>& other) const {return !(*this == other); }
 
-    // --- Accessors ---
+    // Accessors
 
     // Number of columns
     size_t get_width() const noexcept { return width; }
@@ -85,7 +85,7 @@ public:
 
     // Insert another Array2D at (col, row), cell by cell
     inline void insert(size_t col, size_t row, const Array2D<T>& other) noexcept {
-        assert(col + other.get_width() <= width and row + other.get_height() <= height);
+        assert(col + other.get_width() <= width && row + other.get_height() <= height);
         for (size_t r = 0; r < other.get_height(); ++r)
             for (size_t c = 0; c < other.get_width(); ++c)
                 at(col + c, row + r) = other.at(c, r);}

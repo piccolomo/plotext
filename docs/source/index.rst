@@ -48,6 +48,8 @@
 
 .. note:: This project is under :ref:`active development <contributing>`.
 
+.. note:: :ref:`AI <ai>` helped speed up the writing and polishing, particularly of the repetitive parts of the code, the documentation and the issue replies, in the last months of version 6.
+
 .. _user_guide:
 
 .. rst-class:: page-title

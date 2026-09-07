@@ -1,6 +1,6 @@
 // Alignment utilities: left/center/right anchoring used when placing text inside fixed-width cells
 
-// --- Text Alignment Utilities ---
+// Text Alignment Utilities
 
 // Alignment: left (-1), center (0), right (1), or dynamic (2) anchor flags plus displacement helpers. Dynamic means "any alignment is OK, find a free spot", the matrix routes to insert_dynamically.
 class Alignment {

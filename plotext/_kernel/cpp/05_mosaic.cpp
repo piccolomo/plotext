@@ -67,8 +67,8 @@ public:
     inline bool get(const size_t & col, const size_t & row) const noexcept {
         return bits & (uint8_t(1) << get_index(col, row)); }
 
-    // Add a dot (enables the bit) from float coordinates (truncated to size_t)
-    inline void add_dot(const float & col, const float & row) noexcept {enable(col, row);}
+    // Add a dot (enables the bit) from double coordinates (truncated to size_t)
+    inline void add_dot(const double & col, const double & row) noexcept {enable(col, row);}
 
     // OR-accumulate another Mosaic's bits into this one
     inline void sum(const Mosaic & other) noexcept {bits |= other.bits;}

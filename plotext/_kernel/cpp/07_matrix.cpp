@@ -73,8 +73,8 @@ public:
             at(i).update_wcharacter();
             const bool end_line       = (i + 1) % w == 0;
             const bool start_of_row   = (i % w) == 0;
-            const bool different_pixel = i == 0 or start_of_row or at(i).different_pixel(at(i - 1));
-            if (colorfull and different_pixel) {
+            const bool different_pixel = i == 0 || start_of_row || at(i).different_pixel(at(i - 1));
+            if (colorfull && different_pixel) {
                 cstring_to_buffer(ansi_end, buffer, length);
                 at(i).Pixel::to_buffer(buffer, length); }
             const wchar_t ch = at(i).get_wcharacter();
@@ -94,7 +94,7 @@ public:
             at(i).update_wcharacter();
             const bool end_line        = (i + 1) % w == 0;
             const bool start_of_row    = (i % w) == 0;
-            const bool different_pixel = i == 0 or start_of_row or at(i).different_pixel(at(i - 1));
+            const bool different_pixel = i == 0 || start_of_row || at(i).different_pixel(at(i - 1));
             if (different_pixel) {
                 if (open) { cstring_to_buffer(L"</span>", 7, buffer, length); open = false; }
                 if (at(i).Pixel::has_color()) {
@@ -125,7 +125,7 @@ public:
 
     // Render to wstring; uses Array<wchar_t> on the heap because a stack VLA overflows the default 8 MB stack for matrices with thousands of cells. Fast path: build once, copy out.
     inline wstring get_wstring(bool colorless = false) noexcept {
-        const size_t cap = character_size_max * get_size() + (1 + wcslen(ansi_end)) * get_height() + 1;
+        const size_t cap = character_size_max * get_size() + (1 + ansi_end_length) * get_height() + 1;
         Array<wchar_t> buffer(cap, L'\0');
         size_t length = 0;
         to_buffer(buffer.begin(), length, !colorless);
@@ -133,7 +133,7 @@ public:
 
     // Stream to stdout: build the whole matrix into a single buffer, then one wcout.write, much faster than per-cell wcout calls (saves the per-call streambuf overhead). Heap-allocated buffer (Array<wchar_t>) to survive matrices large enough to overflow the stack.
     inline void stream(bool colorfull = true, bool flushing = true) noexcept {
-        const size_t cap = character_size_max * get_size() + (1 + wcslen(ansi_end)) * get_height() + 1;
+        const size_t cap = character_size_max * get_size() + (1 + ansi_end_length) * get_height() + 1;
         Array<wchar_t> buffer(cap, L'\0');
         size_t length = 0;
         to_buffer(buffer.begin(), length, colorfull);

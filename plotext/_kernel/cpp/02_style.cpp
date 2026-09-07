@@ -23,7 +23,7 @@ public:
     ~Style() noexcept {}
 
     // Compare styles (length and code equal)
-    inline bool operator==(const Style & st) const noexcept { return length == st.length and same_cstrings(code, st.get_code(), length); }
+    inline bool operator==(const Style & st) const noexcept { return length == st.length && same_cstrings(code, st.get_code(), length); }
 
     // Copy assignment (self-assignment safe)
     inline Style & operator=(const Style & st) noexcept {

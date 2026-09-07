@@ -9,7 +9,7 @@ public:
     using Array<T>::at;
     using Array<T>::begin;
 
-    // --- Constructors ---
+    // Constructors
 
     // Default constructor
     Vector() noexcept : Array<T>(), length(0) {}
@@ -49,7 +49,7 @@ public:
     bool operator==(const Vector<T>& other) const {
         if (get_length() != other.get_length()) return false;
         for (size_t i = 0; i < get_length() ; ++i)
-            if (not (at(i) == other.at(i))) return false;
+            if (!(at(i) == other.at(i))) return false;
         return true; }
 
     // Inequality comparison
@@ -153,7 +153,7 @@ public:
     bool is_in(const T & el) const {for (size_t i = 0; i < length; ++i) if (at(i) == el) return true; return false;}
 
 
-    // --- Stretch (specific to Vector) ---
+    // Stretch (specific to Vector)
 
     // Resample the vector to the requested larger size, repeating existing values
     void stretch(size_t size) {
