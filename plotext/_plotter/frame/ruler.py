@@ -299,12 +299,12 @@ class ruler_class(propagator_class):
     # Update ticks, honoring log scale and automatic computation when needed
     def _update_ticks(self):
         log_scale = self._get_scale() == "log"
+        self._limits.log() if log_scale else None
 
         if self._active_ticks():
             self._ticks.log() if log_scale else None
 
         elif self._active_limits():
-            self._limits.log() if log_scale else None
             positions_scaled = self._get_auto_positions()
             positions_unscaled = ruler_methods.power10_data(positions_scaled) if log_scale else positions_scaled
             labels_unscaled = self._get_auto_labels(positions_unscaled)
