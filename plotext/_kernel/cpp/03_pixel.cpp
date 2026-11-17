@@ -15,7 +15,7 @@ public:
     Pixel(const string & fg, const string & bg = "", const string & st = "") noexcept : Fullground(fg), Background(bg), Style(st) {}
 
     // Copy constructor
-    constexpr Pixel(const Pixel & p) noexcept : Fullground(p), Background(p), Style(p) {}
+    Pixel(const Pixel & p) noexcept : Fullground(p), Background(p), Style(p) {}
 
     // Move constructor
     Pixel(Pixel && p) noexcept : Fullground(move(p)), Background(move(p)), Style(move(p)) {}
