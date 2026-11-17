@@ -22,4 +22,4 @@ archs = ["x86_64", "arm64"]
 # Windows runners ship MSVC; build_cpp.py needs to detect Windows-native vs
 # the historical mingw cross-compile path (used from a Linux box) and pick MSVC here.
 [tool.cibuildwheel.windows]
-archs = ["AMD64"]
+archs = ["AMD64", "ARM64"]
