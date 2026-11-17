@@ -65,21 +65,21 @@ public:
 
 
 extern "C" {
-    Points * points_new          (size_t capacity) noexcept { return new Points(capacity); }
-    void     points_delete       (Points * ps) noexcept { delete ps; }
-    void     points_clear        (Points * ps) noexcept { ps->clear(); }
-    void     points_append_point (Points * ps, Point * p) noexcept { ps->append(*p); }
-    void     points_append_points(Points * ps, Points * other) noexcept { ps->append(*other); }
-    Point  * points_get_point    (Points * ps, size_t i) noexcept { return new Point(ps->at(i)); }   // returns a copy, Python owns and frees it
-    size_t   points_get_length   (Points * ps) noexcept { return ps->get_length(); }
-    void     points_log          (Points * ps) noexcept { ps->log(); }
-    Points * points_copy         (Points * ps) noexcept { return new Points(*ps); }
+    exported Points * points_new          (size_t capacity) noexcept { return new Points(capacity); }
+    exported void     points_delete       (Points * ps) noexcept { delete ps; }
+    exported void     points_clear        (Points * ps) noexcept { ps->clear(); }
+    exported void     points_append_point (Points * ps, Point * p) noexcept { ps->append(*p); }
+    exported void     points_append_points(Points * ps, Points * other) noexcept { ps->append(*other); }
+    exported Point  * points_get_point    (Points * ps, size_t i) noexcept { return new Point(ps->at(i)); }   // returns a copy, Python owns and frees it
+    exported size_t   points_get_length   (Points * ps) noexcept { return ps->get_length(); }
+    exported void     points_log          (Points * ps) noexcept { ps->log(); }
+    exported Points * points_copy         (Points * ps) noexcept { return new Points(*ps); }
 
-    void     points_add_offset       (Points * ps, size_t dx, size_t dy) noexcept { ps->add_offset(dx, dy); }
-    void     points_select_in_matrix (Points * ps, size_t w, size_t h) noexcept { ps->select_in_matrix(w, h); }
-    void     points_fix_background   (Points * ps, Pixel * p) noexcept { ps->fix_background(*p); }
-    void     points_squash           (Points * ps, Grid * g) noexcept { ps->squash(*g); }
-    void     matrix_insert_points    (Matrix * m, Points * pts) noexcept { m->insert(*pts); }
+    exported void     points_add_offset       (Points * ps, size_t dx, size_t dy) noexcept { ps->add_offset(dx, dy); }
+    exported void     points_select_in_matrix (Points * ps, size_t w, size_t h) noexcept { ps->select_in_matrix(w, h); }
+    exported void     points_fix_background   (Points * ps, Pixel * p) noexcept { ps->fix_background(*p); }
+    exported void     points_squash           (Points * ps, Grid * g) noexcept { ps->squash(*g); }
+    exported void     matrix_insert_points    (Matrix * m, Points * pts) noexcept { m->insert(*pts); }
 }
 
 

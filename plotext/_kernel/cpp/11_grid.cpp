@@ -48,9 +48,9 @@ public:
 
 
 extern "C" {
-    Grid * grid_new       (size_t cols, size_t rows) noexcept { return new Grid(cols, rows); }
-    void         grid_delete    (Grid * g) noexcept { delete g; }
-    void         grid_clear     (Grid * g) noexcept { g->clear(); }
-    void         grid_log       (Grid * g) noexcept { g->log(); }
-    size_t       grid_get_length(Grid * g) noexcept { return g->get_count(); }
+    exported Grid * grid_new       (size_t cols, size_t rows) noexcept { return new Grid(cols, rows); }
+    exported void         grid_delete    (Grid * g) noexcept { delete g; }
+    exported void         grid_clear     (Grid * g) noexcept { g->clear(); }
+    exported void         grid_log       (Grid * g) noexcept { g->log(); }
+    exported size_t       grid_get_length(Grid * g) noexcept { return g->get_count(); }
 }

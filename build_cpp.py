@@ -19,7 +19,7 @@ cpp_source = cpp_folder / "kernel.cpp"
 def get_windows_command(out):
     import shutil
     if shutil.which("cl.exe"):
-        return ["cl.exe", "/LD", "/O2", "/EHsc", "/std:c++17", "/permissive-",   # the strict setting, the one conda-forge builds with
+        return ["cl.exe", "/LD", "/O2", "/EHsc", "/std:c++17", "/permissive-", "/utf-8",   # strict, and reading the sources as utf-8, which it otherwise does not
                 str(cpp_source), "/link", "/OUT:" + str(out)]
     if shutil.which("g++"):
         return ["g++", "-shared", "-O2", "-std=c++17", "-fno-stack-protector",
@@ -32,6 +32,26 @@ def get_windows_command(out):
     return None
 
 
+# Build the kernel through setuptools, which finds Microsoft's compiler for the machine python runs on; it raises when none is installed, and the commands above take over
+def compile_kernel_with_setuptools(out):
+    from setuptools._distutils.ccompiler import new_compiler
+    compiler = new_compiler()
+    compiler.initialize()
+    objects = compiler.compile([str(cpp_source)], output_dir = str(cpp_folder), extra_postargs = ["/O2", "/EHsc", "/std:c++17", "/permissive-", "/utf-8"])
+    compiler.link_shared_object(objects, str(out))
+
+
+# The machine a windows file was built for, read from its header, as "AMD64" or "ARM64"
+def get_windows_file_machine(path):
+    machine_names = {0x14c: "x86", 0x8664: "AMD64", 0xaa64: "ARM64"}
+    with open(path, "rb") as file:
+        file.seek(0x3c)
+        header_position = int.from_bytes(file.read(4), "little")
+        file.seek(header_position + 4)
+        machine = int.from_bytes(file.read(2), "little")
+    return machine_names.get(machine, str(machine))
+
+
 # Compile the kernel into kernel.so, or kernel.dll on windows; a missing compiler, or a build that produces nothing, stops the installation, since the package would not run.
 def compile_kernel():
     if not cpp_source.exists():
@@ -39,14 +59,20 @@ def compile_kernel():
         return
 
     # The -fno-stack-protector option turns off a compiler check that some systems fail on the kernel fixed size buffers, even when nothing is actually wrong; without it the package would not build there.
+    cmd = None                            # the command to run, left unset when setuptools has already built the kernel itself
     if platform.system() == "Windows":
         out = cpp_folder / "kernel.dll"
-        cmd = get_windows_command(out)
-        if cmd is None:
-            if out.exists():          # an already built kernel travels with the package, so there is nothing to do
-                return
-            raise SystemExit("[plotext] no C++ compiler found (looked for cl.exe, g++, x86_64-w64-mingw32-g++), so the drawing kernel cannot be built and plotext would not run.\n"
-                             "[plotext] Install a ready made version instead, with pip install plotext, or install the MSVC build tools and try again.")
+        try:                              # setuptools first, the only one knowing which compiler belongs to this machine
+            print("[plotext] compiling kernel through setuptools", flush = True)
+            compile_kernel_with_setuptools(out)
+        except Exception as exc:
+            print(f"[plotext] setuptools could not compile the kernel ({exc}), trying the compilers on the path", flush = True)
+            cmd = get_windows_command(out)
+            if cmd is None:
+                if out.exists():          # an already built kernel travels with the package, so there is nothing to do
+                    return
+                raise SystemExit("[plotext] no C++ compiler found (looked for cl.exe, g++, x86_64-w64-mingw32-g++), so the drawing kernel cannot be built and plotext would not run.\n"
+                                 "[plotext] Install a ready made version instead, with pip install plotext, or install the MSVC build tools and try again.")
     else:
         out = cpp_folder / "kernel.so"
         cmd = ["g++", "-fPIC", "-shared",                              # the standard is named, older compilers defaulting to one this kernel does not compile under
@@ -55,15 +81,23 @@ def compile_kernel():
         if platform.system() == "Darwin":                              # macos builds one wheel per architecture and names the wanted one here, which a raw compiler call must pass on
             cmd += os.environ.get("ARCHFLAGS", "").split()
 
-    print(f"[plotext] compiling kernel: {' '.join(cmd)}", flush=True)
-    try:
-        subprocess.check_call(cmd)
-    except (subprocess.CalledProcessError, FileNotFoundError) as exc:
-        raise SystemExit(f"[plotext] the drawing kernel failed to compile ({exc}), so plotext would not run.\n"
-                         "[plotext] Install a ready made version instead, with pip install plotext.")
+    if cmd is not None:
+        print(f"[plotext] compiling kernel: {' '.join(cmd)}", flush=True)
+        try:
+            subprocess.check_call(cmd)
+        except (subprocess.CalledProcessError, FileNotFoundError) as exc:
+            raise SystemExit(f"[plotext] the drawing kernel failed to compile ({exc}), so plotext would not run.\n"
+                             "[plotext] Install a ready made version instead, with pip install plotext.")
 
     if not out.exists():              # the compiler said nothing, yet nothing came out of it
         raise SystemExit(f"[plotext] the drawing kernel was not produced at {out}, so plotext would not run.")
+
+    if platform.system() == "Windows":   # a compiler building for the wrong machine leaves a file python refuses, saying only that it is not a valid application
+        built_for = get_windows_file_machine(out)
+        wanted = platform.machine()
+        if built_for != wanted:
+            raise SystemExit(f"[plotext] the drawing kernel was built for {built_for} while this python is {wanted}, so it would not load.\n"
+                             "[plotext] Use the compiler of this machine, from a developer command prompt opened for it, and try again.")
 
 
 # The building step of the installation, compiling the kernel before the rest.

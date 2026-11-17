@@ -190,28 +190,28 @@ inline Matrix colorize_to_matrix(const Colorize & c) noexcept {
 
 
 extern "C" {
-    Matrix * colorize_get_matrix(Colorize * c) noexcept { return new Matrix(colorize_to_matrix(*c)); }
-    Matrix * matrix_new          (size_t width, size_t height, Pixel * p) noexcept { return new Matrix(width, height, *p); }
-    void     matrix_delete       (Matrix * m) noexcept { delete m; }
-    void     matrix_clear        (Matrix * m) noexcept { m->clear(); }
-    size_t   matrix_get_width    (Matrix * m) noexcept { return m->get_width(); }
-    size_t   matrix_get_height   (Matrix * m) noexcept { return m->get_height(); }
-    void     matrix_print        (Matrix * m, bool colorless, bool flush) noexcept { m->stream(!colorless, flush); }
-    Matrix * matrix_copy         (Matrix * m) noexcept { return new Matrix(*m); }
-    void     matrix_clone        (Matrix * dest, Matrix * src) noexcept { *dest = *src; }
-    void     matrix_transpose    (Matrix * m) noexcept { m->transpose(); }
-    void     matrix_fill_pixel   (Matrix * m, Pixel * p) noexcept { m->fill(MatrixCharacter(L' ', *p)); }
-    void     matrix_fix_background(Matrix * m, Pixel * p) noexcept { m->fix_background(*p); }
-    void     matrix_fix(Matrix * m, Pixel * p) noexcept { m->fix(*p); }
-    void     matrix_apply_pixel  (Matrix * m, Pixel * p) noexcept { m->set_pixel(*p); }
-    void     matrix_set_pixel    (Matrix * m, size_t col, size_t row, Pixel * p) noexcept { m->at(col, row).set_pixel(*p); }
-    Pixel *  matrix_get_pixel    (Matrix * m, size_t col, size_t row) noexcept { return new Pixel(static_cast<const Pixel &>(m->at(col, row))); }
+    exported Matrix * colorize_get_matrix(Colorize * c) noexcept { return new Matrix(colorize_to_matrix(*c)); }
+    exported Matrix * matrix_new          (size_t width, size_t height, Pixel * p) noexcept { return new Matrix(width, height, *p); }
+    exported void     matrix_delete       (Matrix * m) noexcept { delete m; }
+    exported void     matrix_clear        (Matrix * m) noexcept { m->clear(); }
+    exported size_t   matrix_get_width    (Matrix * m) noexcept { return m->get_width(); }
+    exported size_t   matrix_get_height   (Matrix * m) noexcept { return m->get_height(); }
+    exported void     matrix_print        (Matrix * m, bool colorless, bool flush) noexcept { m->stream(!colorless, flush); }
+    exported Matrix * matrix_copy         (Matrix * m) noexcept { return new Matrix(*m); }
+    exported void     matrix_clone        (Matrix * dest, Matrix * src) noexcept { *dest = *src; }
+    exported void     matrix_transpose    (Matrix * m) noexcept { m->transpose(); }
+    exported void     matrix_fill_pixel   (Matrix * m, Pixel * p) noexcept { m->fill(MatrixCharacter(L' ', *p)); }
+    exported void     matrix_fix_background(Matrix * m, Pixel * p) noexcept { m->fix_background(*p); }
+    exported void     matrix_fix(Matrix * m, Pixel * p) noexcept { m->fix(*p); }
+    exported void     matrix_apply_pixel  (Matrix * m, Pixel * p) noexcept { m->set_pixel(*p); }
+    exported void     matrix_set_pixel    (Matrix * m, size_t col, size_t row, Pixel * p) noexcept { m->at(col, row).set_pixel(*p); }
+    exported Pixel *  matrix_get_pixel    (Matrix * m, size_t col, size_t row) noexcept { return new Pixel(static_cast<const Pixel &>(m->at(col, row))); }
     // Set the cell at (col, row) to a NormalCharacter built from (wchar, pixel). Builds a transient MatrixCharacter (kind=marker_normal, bits=0) and dispatches to Array2D::insert.
-    void     matrix_set_normal_character(Matrix * m, size_t col, size_t row, wchar_t c, Pixel * p) noexcept { m->Array2D<MatrixCharacter>::insert(col, row, MatrixCharacter(c, *p)); }
-    void     matrix_insert_matrix(Matrix * m, size_t col, size_t row, Matrix * mi, int ha, int va) noexcept { m->insert(*mi, col, row, Alignment(ha), Alignment(va)); }
-    Matrix * matrix_vstack       (Matrix * m1, Matrix * m2, bool adapt) noexcept { return new Matrix(m1->vstack(*m2, adapt)); }
-    Matrix * matrix_hstack       (Matrix * m1, Matrix * m2, bool adapt) noexcept { return new Matrix(m1->hstack(*m2, adapt)); }
-    Matrix * matrix_part         (Matrix * m, size_t col_start, size_t col_stop, size_t row_start, size_t row_stop) noexcept { return new Matrix(m->part(col_start, col_stop, row_start, row_stop)); }
-    const wchar_t * matrix_get_wstring(Matrix * m, bool colorless) noexcept { return wstring_to_cstring(m->get_wstring(colorless)); }
-    const wchar_t * matrix_get_html   (Matrix * m) noexcept { return wstring_to_cstring(m->get_html()); }
+    exported void     matrix_set_normal_character(Matrix * m, size_t col, size_t row, wchar_t c, Pixel * p) noexcept { m->Array2D<MatrixCharacter>::insert(col, row, MatrixCharacter(c, *p)); }
+    exported void     matrix_insert_matrix(Matrix * m, size_t col, size_t row, Matrix * mi, int ha, int va) noexcept { m->insert(*mi, col, row, Alignment(ha), Alignment(va)); }
+    exported Matrix * matrix_vstack       (Matrix * m1, Matrix * m2, bool adapt) noexcept { return new Matrix(m1->vstack(*m2, adapt)); }
+    exported Matrix * matrix_hstack       (Matrix * m1, Matrix * m2, bool adapt) noexcept { return new Matrix(m1->hstack(*m2, adapt)); }
+    exported Matrix * matrix_part         (Matrix * m, size_t col_start, size_t col_stop, size_t row_start, size_t row_stop) noexcept { return new Matrix(m->part(col_start, col_stop, row_start, row_stop)); }
+    exported const wchar_t * matrix_get_wstring(Matrix * m, bool colorless) noexcept { return wstring_to_cstring(m->get_wstring(colorless)); }
+    exported const wchar_t * matrix_get_html   (Matrix * m) noexcept { return wstring_to_cstring(m->get_html()); }
 }

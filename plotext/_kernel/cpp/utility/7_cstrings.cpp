@@ -63,6 +63,6 @@ inline constexpr void wchar_to_buffer(const wchar_t character, wchar_t * buffer,
 
 extern "C" {
     // Delete a wchar_t buffer produced by wstring_to_cstring
-    void wstring_delete(wchar_t * wstr) noexcept { delete_cstring(wstr); }
+    exported void wstring_delete(wchar_t * wstr) noexcept { delete_cstring(wstr); }
 
 }

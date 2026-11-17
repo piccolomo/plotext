@@ -29,7 +29,7 @@ inline unsigned char get_color_code(const string & color) noexcept {
 
 extern "C" {
     // The name of a color code, as "red" for 1; a code outside the table gives "unknown".
-    const char* get_color_name(unsigned char code) noexcept {
+    exported const char* get_color_name(unsigned char code) noexcept {
         for (const auto& [name, c] : color_codes) {
             if (c == code) return name.c_str();}
         return "unknown";}
