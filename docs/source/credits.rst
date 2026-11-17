@@ -3,6 +3,8 @@ Credits
 
 Pull Requests
 -------------
+- `xieofxie <https://github.com/xieofxie>`_ for proposing Windows ARM64 testing and wheel builds, as discussed in `Pull Request 242 <https://github.com/piccolomo/plotext/pull/242>`_.
+- `danshapero <https://github.com/danshapero>`_ for fixing the ticks given by hand on a :ref:`log <scale>` axis, which left the plot empty, in `Pull Request 241 <https://github.com/piccolomo/plotext/pull/241>`_.
 - `joelostblom <https://github.com/joelostblom>`_ for the :ref:`labelled bar plot <labeled_bars>` idea, as seen in `Pull Request 164 <https://github.com/piccolomo/plotext/pull/164>`_.
 - `cwaldbieser <https://github.com/cwaldbieser>`_ for the ``first_row`` parameter idea in the ``read_data()`` method, as seen in `Pull Request 166 <https://github.com/piccolomo/plotext/pull/166>`_.
 - `luator <https://github.com/luator>`_ for fixing the :ref:`legend <legend>` symbol for braille markers in `Pull Request 135 <https://github.com/piccolomo/plotext/pull/135>`_.
