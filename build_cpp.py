@@ -19,7 +19,7 @@ cpp_source = cpp_folder / "kernel.cpp"
 def get_windows_command(out):
     import shutil
     if shutil.which("cl.exe"):
-        return ["cl.exe", "/LD", "/O2", "/EHsc", "/std:c++17", "/permissive-",   # the strict setting, the one conda-forge builds with
+        return ["cl.exe", "/LD", "/O2", "/EHsc", "/std:c++17", "/permissive-", "/utf-8",   # strict, and reading the sources as utf-8, which it otherwise does not
                 str(cpp_source), "/link", "/OUT:" + str(out)]
     if shutil.which("g++"):
         return ["g++", "-shared", "-O2", "-std=c++17", "-fno-stack-protector",
@@ -37,7 +37,7 @@ def compile_kernel_with_setuptools(out):
     from setuptools._distutils.ccompiler import new_compiler
     compiler = new_compiler()
     compiler.initialize()
-    objects = compiler.compile([str(cpp_source)], output_dir = str(cpp_folder), extra_postargs = ["/O2", "/EHsc", "/std:c++17", "/permissive-"])
+    objects = compiler.compile([str(cpp_source)], output_dir = str(cpp_folder), extra_postargs = ["/O2", "/EHsc", "/std:c++17", "/permissive-", "/utf-8"])
     compiler.link_shared_object(objects, str(out))
 
 
