@@ -16,8 +16,16 @@ on:
 
 jobs:
   tests:
-    name: Unit tests on Windows
-    runs-on: windows-latest
+    name: Unit tests on Windows ${{ matrix.machine }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            machine: AMD64
+          - os: windows-11-arm
+            machine: ARM64
 
     steps:
       - uses: actions/checkout@v4
@@ -25,6 +33,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          architecture: ${{ matrix.machine == 'ARM64' && 'arm64' || 'x64' }}
 
       - name: Install plotext
         run: pip install .[image]
