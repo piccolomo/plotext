@@ -165,87 +165,87 @@ public:
 extern "C" {
 
     // Create a new Pixel
-    Pixel * pixel_new() noexcept { return new Pixel(); }
+    exported Pixel * pixel_new() noexcept { return new Pixel(); }
 
     // Delete a Pixel
-    void pixel_delete(Pixel * p) noexcept { delete p; }
+    exported void pixel_delete(Pixel * p) noexcept { delete p; }
 
     // Clear the pixel's color and style
-    void pixel_clear(Pixel * p) noexcept {p->clear(); }
+    exported void pixel_clear(Pixel * p) noexcept {p->clear(); }
 
     // Set foreground to a palette index
-    void pixel_set_fullground_integer(Pixel * p, size_t r) noexcept { p->set_fullground(static_cast<unsigned char>(r)); }
+    exported void pixel_set_fullground_integer(Pixel * p, size_t r) noexcept { p->set_fullground(static_cast<unsigned char>(r)); }
 
     // Set foreground to an RGB triplet
-    void pixel_set_fullground_rgb(Pixel * p, size_t r, size_t g, size_t b) noexcept {
+    exported void pixel_set_fullground_rgb(Pixel * p, size_t r, size_t g, size_t b) noexcept {
         p->set_fullground(static_cast<unsigned char>(r), static_cast<unsigned char>(g), static_cast<unsigned char>(b));}
 
     // Set foreground by name
-    void pixel_set_fullground_code(Pixel * p, const char * code) noexcept {
+    exported void pixel_set_fullground_code(Pixel * p, const char * code) noexcept {
         p->set_fullground(string(code)); }
 
     // Set background to a palette index
-    void pixel_set_background_integer(Pixel * p, size_t r) noexcept { p->set_background(static_cast<unsigned char>(r)); }
+    exported void pixel_set_background_integer(Pixel * p, size_t r) noexcept { p->set_background(static_cast<unsigned char>(r)); }
 
     // Set background to an RGB triplet
-    void pixel_set_background_rgb(Pixel * p, size_t r, size_t g, size_t b) noexcept {
+    exported void pixel_set_background_rgb(Pixel * p, size_t r, size_t g, size_t b) noexcept {
         p->set_background(static_cast<unsigned char>(r), static_cast<unsigned char>(g), static_cast<unsigned char>(b)); }
 
     // Set background by name
-    void pixel_set_background_code(Pixel * p, const char * code) noexcept {p->set_background(string(code));}
+    exported void pixel_set_background_code(Pixel * p, const char * code) noexcept {p->set_background(string(code));}
 
     // Set style from space-separated string
-    void pixel_set_style_code(Pixel * p, const char * code) noexcept { p->set_style(string(code)); }
+    exported void pixel_set_style_code(Pixel * p, const char * code) noexcept { p->set_style(string(code)); }
 
     // Copy all properties from src into dest
-    void pixel_clone(Pixel * dest, const Pixel * src) noexcept { dest->copy_pixel(*src); }
+    exported void pixel_clone(Pixel * dest, const Pixel * src) noexcept { dest->copy_pixel(*src); }
 
     // Copy only the background from src into dest
-    void pixel_copy_background(Pixel * dest, const Pixel * src) noexcept { dest->copy_background(*src); }
+    exported void pixel_copy_background(Pixel * dest, const Pixel * src) noexcept { dest->copy_background(*src); }
 
     // Copy only the foreground from src into dest (verbatim, preserves color type)
-    void pixel_copy_fullground(Pixel * dest, const Pixel * src) noexcept { dest->copy_fullground(*src); }
+    exported void pixel_copy_fullground(Pixel * dest, const Pixel * src) noexcept { dest->copy_fullground(*src); }
 
     // True iff a and b match on fg + bg + style (full pixel equality)
-    bool pixel_equals(const Pixel * a, const Pixel * b) noexcept { return *a == *b; }
+    exported bool pixel_equals(const Pixel * a, const Pixel * b) noexcept { return *a == *b; }
 
     // Swap the pixel's fg and bg (preserving each side's ansi prefix)
-    void pixel_swap(Pixel * p) noexcept { p->swap(); }
+    exported void pixel_swap(Pixel * p) noexcept { p->swap(); }
 
     // Fix both foreground and background of dest using src
-    void pixel_fix(Pixel * dest, const Pixel * src) noexcept { dest->fix(*src); }
+    exported void pixel_fix(Pixel * dest, const Pixel * src) noexcept { dest->fix(*src); }
 
     // Fix only the background of dest using src
-    void pixel_fix_background(Pixel * dest, const Pixel * src) noexcept { dest->fix_background(*src); }
+    exported void pixel_fix_background(Pixel * dest, const Pixel * src) noexcept { dest->fix_background(*src); }
 
     // True if no background is set
-    bool pixel_no_background(const Pixel * p) noexcept { return p->no_background(); }
+    exported bool pixel_no_background(const Pixel * p) noexcept { return p->no_background(); }
 
     // The foreground and the background as one packed number, red times 65536 plus green times 256 plus blue, and -1 when the color is not set
-    int pixel_get_foreground(const Pixel * p) noexcept {
+    exported int pixel_get_foreground(const Pixel * p) noexcept {
         const Fullground & color = *p;
         if (color.no_color()) return -1;
         unsigned char r, g, b; color.get_rgb(r, g, b);
         return (r << 16) | (g << 8) | b; }
 
-    int pixel_get_background(const Pixel * p) noexcept {
+    exported int pixel_get_background(const Pixel * p) noexcept {
         const Background & color = *p;
         if (color.no_color()) return -1;
         unsigned char r, g, b; color.get_rgb(r, g, b);
         return (r << 16) | (g << 8) | b; }
 
     // Log the pixel to wcout
-    void pixel_log(const Pixel * p) noexcept { p->log(); }
+    exported void pixel_log(const Pixel * p) noexcept { p->log(); }
 
     // Return the rendered wide string (caller owns the buffer, free with wstring_delete)
-    const wchar_t * pixel_get_wstring(const Pixel * p) noexcept {
+    exported const wchar_t * pixel_get_wstring(const Pixel * p) noexcept {
         return wstring_to_cstring(p->get_wstring()); }
 
     // Return the pixel's HTML CSS body as a wide string (caller owns the buffer, free with wstring_delete)
-    const wchar_t * pixel_get_html(const Pixel * p) noexcept {
+    exported const wchar_t * pixel_get_html(const Pixel * p) noexcept {
         return wstring_to_cstring(p->get_html()); }
 
     // Deep copy of the pixel
-    Pixel * pixel_copy(const Pixel * p) noexcept { return new Pixel(*p); }
+    exported Pixel * pixel_copy(const Pixel * p) noexcept { return new Pixel(*p); }
 
 }

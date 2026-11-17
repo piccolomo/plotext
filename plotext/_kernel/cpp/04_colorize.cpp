@@ -94,49 +94,49 @@ public:
 extern "C" {
 
     // Create a new Colorize object from a wide string and Pixel
-    Colorize * colorize_new(wchar_t * string, Pixel * p) noexcept {
+    exported Colorize * colorize_new(wchar_t * string, Pixel * p) noexcept {
         return new Colorize(string, *p); }
 
     // Delete a Colorize object
-    void colorize_delete(Colorize * p) noexcept { delete p; }
+    exported void colorize_delete(Colorize * p) noexcept { delete p; }
 
     // Get the length of the Colorize string
-    size_t colorize_get_length(Colorize * c) noexcept { return c->get_length(); }
+    exported size_t colorize_get_length(Colorize * c) noexcept { return c->get_length(); }
 
     // Return a substring of Colorize as a new object
-    Colorize * colorize_part(Colorize * c, size_t start, size_t stop) noexcept {
+    exported Colorize * colorize_part(Colorize * c, size_t start, size_t stop) noexcept {
         return new Colorize(c->part(start, stop));}
 
     // Get the Colorize string as wide string (optionally colorless)
-    const wchar_t * colorize_get_wstring(Colorize * c, bool colorless) noexcept {
+    exported const wchar_t * colorize_get_wstring(Colorize * c, bool colorless) noexcept {
         return wstring_to_cstring(c->get_wstring(colorless));}
 
     // Get a copy of the associated Pixel
-    Pixel * colorize_get_pixel(Colorize * c) noexcept { return new Pixel(c->get_pixel()); }
+    exported Pixel * colorize_get_pixel(Colorize * c) noexcept { return new Pixel(c->get_pixel()); }
 
     // Set the Pixel of a Colorize object
-    void colorize_set_pixel(Colorize * c, Pixel * p) noexcept { c->copy_pixel(*p); }
+    exported void colorize_set_pixel(Colorize * c, Pixel * p) noexcept { c->copy_pixel(*p); }
 
     // Print the Colorize object (optionally colorless)
-    void colorize_print(Colorize * c, bool colorless, bool flush) noexcept { c->print(colorless, flush); }
+    exported void colorize_print(Colorize * c, bool colorless, bool flush) noexcept { c->print(colorless, flush); }
 
     // Copy a Colorize object
-    Colorize * colorize_copy(Colorize * c) noexcept { return new Colorize(*c); }
+    exported Colorize * colorize_copy(Colorize * c) noexcept { return new Colorize(*c); }
 
     // Copy the contents of one Colorize into another
-    void colorize_clone(Colorize * c, Colorize * c2) noexcept { *c = *c2; }
+    exported void colorize_clone(Colorize * c, Colorize * c2) noexcept { *c = *c2; }
 
     // Compare two Colorize objects
-    bool colorize_equals(Colorize * c, Colorize * c2) noexcept { return *c == *c2; }
+    exported bool colorize_equals(Colorize * c, Colorize * c2) noexcept { return *c == *c2; }
 
     // Check if Background of Colorize is not set
-    bool colorize_no_background(Colorize * c) noexcept { return c->no_background(); }
+    exported bool colorize_no_background(Colorize * c) noexcept { return c->no_background(); }
 
     // Copy Background from a Pixel into Colorize
-    void colorize_copy_background(Colorize * c, Pixel * p) noexcept { c->copy_background(*p); }
+    exported void colorize_copy_background(Colorize * c, Pixel * p) noexcept { c->copy_background(*p); }
 
     // Fix Background of Colorize using a Pixel if not set
-    void colorize_fix_background(Colorize * c, Pixel * p) noexcept { c->fix_background(*p); }
-    void colorize_fix(Colorize * c, Pixel * p) noexcept { c->fix(*p); }
+    exported void colorize_fix_background(Colorize * c, Pixel * p) noexcept { c->fix_background(*p); }
+    exported void colorize_fix(Colorize * c, Pixel * p) noexcept { c->fix(*p); }
 
 }

@@ -229,12 +229,12 @@ public:
 
 
 extern "C" {
-    BoxStyle * box_style_new       (uint8_t style, Pixel * p)   noexcept { return new BoxStyle(style, *p); }
-    void       box_style_delete    (BoxStyle * b)               noexcept { delete b; }
+    exported BoxStyle * box_style_new       (uint8_t style, Pixel * p)   noexcept { return new BoxStyle(style, *p); }
+    exported void       box_style_delete    (BoxStyle * b)               noexcept { delete b; }
 
-    uint8_t    box_style_get_style (BoxStyle * b)               noexcept { return b->get_style(); }
-    void       box_style_set_style (BoxStyle * b, uint8_t s)    noexcept { b->set_style(s); }
+    exported uint8_t    box_style_get_style (BoxStyle * b)               noexcept { return b->get_style(); }
+    exported void       box_style_set_style (BoxStyle * b, uint8_t s)    noexcept { b->set_style(s); }
 
-    Pixel *    box_style_get_pixel (BoxStyle * b)               noexcept { return new Pixel(b->get_pixel()); }
-    void       box_style_set_pixel (BoxStyle * b, Pixel * p)    noexcept { b->set_pixel(*p); }
+    exported Pixel *    box_style_get_pixel (BoxStyle * b)               noexcept { return new Pixel(b->get_pixel()); }
+    exported void       box_style_set_pixel (BoxStyle * b, Pixel * p)    noexcept { b->set_pixel(*p); }
 }

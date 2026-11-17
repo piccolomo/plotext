@@ -52,23 +52,23 @@ public:
 
 
 extern "C" {
-    FilledPoint * point_filled_new   (double x, double y, Marker * m) noexcept { return new FilledPoint(x, y, m); }
-    void          point_filled_delete(FilledPoint * fp) noexcept { delete fp; }
+    exported FilledPoint * point_filled_new   (double x, double y, Marker * m) noexcept { return new FilledPoint(x, y, m); }
+    exported void          point_filled_delete(FilledPoint * fp) noexcept { delete fp; }
 
     // Returns a COPY of the marker (Python wraps it in its own marker primitive whose __del__ will free it; sharing the pointer would double-free).
-    Marker *      point_filled_get_marker(FilledPoint * fp) noexcept { Marker * m = fp->get_marker(); return m ? m->copy() : nullptr; }
+    exported Marker *      point_filled_get_marker(FilledPoint * fp) noexcept { Marker * m = fp->get_marker(); return m ? m->copy() : nullptr; }
 
-    size_t        point_filled_get_col (FilledPoint * fp) noexcept { return fp->get_col(); }
-    size_t        point_filled_get_row (FilledPoint * fp) noexcept { return fp->get_row(); }
-    double         point_filled_get_x   (FilledPoint * fp) noexcept { return fp->get_x(); }
-    double         point_filled_get_y   (FilledPoint * fp) noexcept { return fp->get_y(); }
+    exported size_t        point_filled_get_col (FilledPoint * fp) noexcept { return fp->get_col(); }
+    exported size_t        point_filled_get_row (FilledPoint * fp) noexcept { return fp->get_row(); }
+    exported double         point_filled_get_x   (FilledPoint * fp) noexcept { return fp->get_x(); }
+    exported double         point_filled_get_y   (FilledPoint * fp) noexcept { return fp->get_y(); }
     // Returns a heap-allocated copy of the main/fill marker's pixel (Python wraps it; nullptr if no marker).
-    Pixel *       point_filled_get_main_pixel(FilledPoint * fp) noexcept { Marker * m = fp->get_marker();             return m ? new Pixel(m->get_pixel()) : nullptr; }
-    Pixel *       point_filled_get_fill_pixel(FilledPoint * fp) noexcept { Marker * m = fp->get_fill().get_marker();  return m ? new Pixel(m->get_pixel()) : nullptr; }
-    bool          point_filled_has_fill(FilledPoint * fp) noexcept { return fp->has_fill(); }
+    exported Pixel *       point_filled_get_main_pixel(FilledPoint * fp) noexcept { Marker * m = fp->get_marker();             return m ? new Pixel(m->get_pixel()) : nullptr; }
+    exported Pixel *       point_filled_get_fill_pixel(FilledPoint * fp) noexcept { Marker * m = fp->get_fill().get_marker();  return m ? new Pixel(m->get_pixel()) : nullptr; }
+    exported bool          point_filled_has_fill(FilledPoint * fp) noexcept { return fp->has_fill(); }
 
     // bool param ignored, our get_wstring always includes the fill segment.
-    const wchar_t * point_filled_get_wstring(FilledPoint * fp, bool) noexcept { return wstring_to_cstring(fp->get_wstring()); }
+    exported const wchar_t * point_filled_get_wstring(FilledPoint * fp, bool) noexcept { return wstring_to_cstring(fp->get_wstring()); }
 }
 
 

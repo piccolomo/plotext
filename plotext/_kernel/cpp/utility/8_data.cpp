@@ -47,6 +47,6 @@ inline double rescale_element(const double & el, const pair<double, double> & li
 // C-callable wrapper for rescaling
 extern "C" {
     // Rescale a value into the discrete bin range [0, bins) with the given limits and delta
-    double rescale(double value, double min, double max, size_t bins, double delta) noexcept {
+    exported double rescale(double value, double min, double max, size_t bins, double delta) noexcept {
         return rescale_element(value, {min, max}, bins, delta);}
 }

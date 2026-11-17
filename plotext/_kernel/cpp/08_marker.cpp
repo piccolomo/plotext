@@ -187,22 +187,22 @@ public:
 
 
 extern "C" {
-    Marker * marker_new_normal (wchar_t c, Pixel * p) noexcept { return new NormalMarker (c, *p); }
-    Marker * marker_new_hd     (Pixel * p) noexcept { return new HDMarker     (*p); }
-    Marker * marker_new_fhd    (Pixel * p) noexcept { return new FHDMarker    (*p); }
-    Marker * marker_new_braille(Pixel * p) noexcept { return new BrailleMarker(*p); }
-    Marker * marker_new_box      (bool up, bool down, bool left, bool right, uint8_t style, Pixel * p) noexcept { return new BoxMarker(up, down, left, right, style, *p); }
-    Marker * marker_new_code   (const char * code, Pixel * p) noexcept { return new NormalMarker(get_symbol(string(code)), *p); }
-    Marker * marker_new_matrix (Matrix * m, int ha, int va) noexcept { return new MatrixMarker(*m, Alignment(ha), Alignment(va)); }
-    void     marker_delete     (Marker * m) noexcept { delete m; }
+    exported Marker * marker_new_normal (wchar_t c, Pixel * p) noexcept { return new NormalMarker (c, *p); }
+    exported Marker * marker_new_hd     (Pixel * p) noexcept { return new HDMarker     (*p); }
+    exported Marker * marker_new_fhd    (Pixel * p) noexcept { return new FHDMarker    (*p); }
+    exported Marker * marker_new_braille(Pixel * p) noexcept { return new BrailleMarker(*p); }
+    exported Marker * marker_new_box      (bool up, bool down, bool left, bool right, uint8_t style, Pixel * p) noexcept { return new BoxMarker(up, down, left, right, style, *p); }
+    exported Marker * marker_new_code   (const char * code, Pixel * p) noexcept { return new NormalMarker(get_symbol(string(code)), *p); }
+    exported Marker * marker_new_matrix (Matrix * m, int ha, int va) noexcept { return new MatrixMarker(*m, Alignment(ha), Alignment(va)); }
+    exported void     marker_delete     (Marker * m) noexcept { delete m; }
 
-    const wchar_t * marker_get_wstring(Marker * m) noexcept { return wstring_to_cstring(m->get_wstring()); }
-    const wchar_t * marker_get_model  (Marker * m) noexcept { return wstring_to_cstring(wstring(1, m->get_model_character())); }
-    Pixel  *        marker_get_pixel  (Marker * m) noexcept { return new Pixel(m->get_pixel()); }
-    void            marker_fix        (Marker * m, Pixel * p) noexcept { m->fix(*p); }
-    void            marker_set_pixel  (Marker * m, Pixel * p) noexcept { m->set_pixel(*p); }
-    Marker *        marker_copy       (Marker * m) noexcept { return m->copy(); }
-    bool            marker_get_orientation(Marker * m) noexcept { return m->get_orientation(); }
+    exported const wchar_t * marker_get_wstring(Marker * m) noexcept { return wstring_to_cstring(m->get_wstring()); }
+    exported const wchar_t * marker_get_model  (Marker * m) noexcept { return wstring_to_cstring(wstring(1, m->get_model_character())); }
+    exported Pixel  *        marker_get_pixel  (Marker * m) noexcept { return new Pixel(m->get_pixel()); }
+    exported void            marker_fix        (Marker * m, Pixel * p) noexcept { m->fix(*p); }
+    exported void            marker_set_pixel  (Marker * m, Pixel * p) noexcept { m->set_pixel(*p); }
+    exported Marker *        marker_copy       (Marker * m) noexcept { return m->copy(); }
+    exported bool            marker_get_orientation(Marker * m) noexcept { return m->get_orientation(); }
     // Returns the line style (0 = normal, 1 = double, 2 = heavy, 3 = dotted, 4 = rounded). Only meaningful for BoxMarker; other kinds return 0.
-    uint8_t         marker_get_style(Marker * m) noexcept { return m->get_type() == marker_box ? static_cast<BoxMarker*>(m)->get_style() : 0; }
+    exported uint8_t         marker_get_style(Marker * m) noexcept { return m->get_type() == marker_box ? static_cast<BoxMarker*>(m)->get_style() : 0; }
 }

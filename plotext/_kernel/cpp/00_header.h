@@ -14,6 +14,13 @@
 #include <algorithm>
 
 // The windows console reads bytes, and must be told they are utf-8 before anything is written; the defines keep windows.h from bringing in the names clashing with the standard ones
+// Windows shows a function to python only when it is marked; the other systems show them all
+#ifdef _WIN32
+    #define exported __declspec(dllexport)
+#else
+    #define exported
+#endif
+
 #ifdef _WIN32
     #define WIN32_LEAN_AND_MEAN
     #define NOMINMAX

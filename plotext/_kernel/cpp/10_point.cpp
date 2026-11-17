@@ -158,13 +158,13 @@ public:
 
 
 extern "C" {
-    Point * point_new_marker(double x, double y, Marker * m) noexcept { return new Point(x, y, m); }
-    void    point_delete    (Point * p) noexcept { delete p; }
-    double   point_get_x     (Point * p) noexcept { return p->get_x(); }
-    double   point_get_y     (Point * p) noexcept { return p->get_y(); }
-    void    point_log       (Point * p) noexcept { p->log(); }
-    const wchar_t * point_get_wstring(Point * p) noexcept { return wstring_to_cstring(p->get_wstring()); }
-    bool    matrix_insert_point(Matrix * m, Point * p, bool check_space) noexcept { return m->insert(*p, check_space); }
+    exported Point * point_new_marker(double x, double y, Marker * m) noexcept { return new Point(x, y, m); }
+    exported void    point_delete    (Point * p) noexcept { delete p; }
+    exported double   point_get_x     (Point * p) noexcept { return p->get_x(); }
+    exported double   point_get_y     (Point * p) noexcept { return p->get_y(); }
+    exported void    point_log       (Point * p) noexcept { p->log(); }
+    exported const wchar_t * point_get_wstring(Point * p) noexcept { return wstring_to_cstring(p->get_wstring()); }
+    exported bool    matrix_insert_point(Matrix * m, Point * p, bool check_space) noexcept { return m->insert(*p, check_space); }
 }
 
 

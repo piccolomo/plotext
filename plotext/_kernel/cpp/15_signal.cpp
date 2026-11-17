@@ -192,51 +192,51 @@ public:
 
 
 extern "C" {
-    Signal * signal_new   (size_t length) noexcept { return new Signal(length); }
-    void     signal_delete(Signal * s) noexcept { delete s; }
-    Signal * signal_copy  (Signal * s) noexcept { return s ? new Signal(*s) : nullptr; }
-    void     signal_clear (Signal * s) noexcept { s->clear(); }
+    exported Signal * signal_new   (size_t length) noexcept { return new Signal(length); }
+    exported void     signal_delete(Signal * s) noexcept { delete s; }
+    exported Signal * signal_copy  (Signal * s) noexcept { return s ? new Signal(*s) : nullptr; }
+    exported void     signal_clear (Signal * s) noexcept { s->clear(); }
 
-    bool             signal_get_xside       (Signal * s) noexcept { return s->get_xside(); }
-    bool             signal_get_yside       (Signal * s) noexcept { return s->get_yside(); }
-    Matrix *         signal_get_label       (Signal * s) noexcept { Matrix * m = s->get_label(); return m ? new Matrix(*m) : nullptr; }
-    Marker *         signal_get_marker      (Signal * s) noexcept { Marker * m = s->get_marker_ptr(); return m ? m->copy() : nullptr; }
-    bool             signal_get_fill_method (Signal * s) noexcept { return s->get_fill_method(); }
-    bool             signal_get_line_method (Signal * s) noexcept { return s->get_line_method(); }
+    exported bool             signal_get_xside       (Signal * s) noexcept { return s->get_xside(); }
+    exported bool             signal_get_yside       (Signal * s) noexcept { return s->get_yside(); }
+    exported Matrix *         signal_get_label       (Signal * s) noexcept { Matrix * m = s->get_label(); return m ? new Matrix(*m) : nullptr; }
+    exported Marker *         signal_get_marker      (Signal * s) noexcept { Marker * m = s->get_marker_ptr(); return m ? m->copy() : nullptr; }
+    exported bool             signal_get_fill_method (Signal * s) noexcept { return s->get_fill_method(); }
+    exported bool             signal_get_line_method (Signal * s) noexcept { return s->get_line_method(); }
 
-    void signal_set_xside       (Signal * s, bool v)             noexcept { s->set_xside(v); }
-    void signal_set_yside       (Signal * s, bool v)             noexcept { s->set_yside(v); }
-    void signal_set_label       (Signal * s, Matrix * m)         noexcept { s->set_label(m); }
-    void signal_set_marker      (Signal * s, Marker * m)         noexcept { s->set_marker(m); }
-    void signal_set_fill_method (Signal * s, bool v)             noexcept { s->set_fill_method(v); }
-    void signal_set_line_method (Signal * s, bool v)             noexcept { s->set_line_method(v); }
+    exported void signal_set_xside       (Signal * s, bool v)             noexcept { s->set_xside(v); }
+    exported void signal_set_yside       (Signal * s, bool v)             noexcept { s->set_yside(v); }
+    exported void signal_set_label       (Signal * s, Matrix * m)         noexcept { s->set_label(m); }
+    exported void signal_set_marker      (Signal * s, Marker * m)         noexcept { s->set_marker(m); }
+    exported void signal_set_fill_method (Signal * s, bool v)             noexcept { s->set_fill_method(v); }
+    exported void signal_set_line_method (Signal * s, bool v)             noexcept { s->set_line_method(v); }
 
-    void signal_append_point  (Signal * s, double x, double y, Marker * m)              noexcept { s->append(x, y, m); }
-    void signal_append        (Signal * s, Signal * other)                            noexcept { s->append(*other); }
-    void signal_set_point     (Signal * s, size_t i, double x, double y, Marker * m)    noexcept { s->set_main(i, x, y, m); }
-    void signal_set_fill_point(Signal * s, size_t i, double x, double y, Marker * m)    noexcept { s->set_fill_point(i, x, y, m); }
-    void signal_set_connected (Signal * s, size_t i, bool v)                          noexcept { s->set_connected(i, v); }
-    bool signal_is_connected  (Signal * s, size_t i)                                  noexcept { return s->is_connected(i); }
+    exported void signal_append_point  (Signal * s, double x, double y, Marker * m)              noexcept { s->append(x, y, m); }
+    exported void signal_append        (Signal * s, Signal * other)                            noexcept { s->append(*other); }
+    exported void signal_set_point     (Signal * s, size_t i, double x, double y, Marker * m)    noexcept { s->set_main(i, x, y, m); }
+    exported void signal_set_fill_point(Signal * s, size_t i, double x, double y, Marker * m)    noexcept { s->set_fill_point(i, x, y, m); }
+    exported void signal_set_connected (Signal * s, size_t i, bool v)                          noexcept { s->set_connected(i, v); }
+    exported bool signal_is_connected  (Signal * s, size_t i)                                  noexcept { return s->is_connected(i); }
 
-    FilledPoint * signal_get_point     (Signal * s, size_t i) noexcept { return new FilledPoint(s->at(i)); }
-    Point       * signal_get_fill_point(Signal * s, size_t i) noexcept { return new Point(s->at(i).get_fill()); }
+    exported FilledPoint * signal_get_point     (Signal * s, size_t i) noexcept { return new FilledPoint(s->at(i)); }
+    exported Point       * signal_get_fill_point(Signal * s, size_t i) noexcept { return new Point(s->at(i).get_fill()); }
 
-    void signal_fix_background (Signal * s, Pixel * p)                                  noexcept { s->fix_background(*p); }
-    void signal_log_x          (Signal * s)                                             noexcept { s->log_x(); }
-    void signal_log_y          (Signal * s)                                             noexcept { s->log_y(); }
-    void signal_rescale_x      (Signal * s, double l, double h, size_t b, double d)        noexcept { s->rescale_x({l, h}, b, d); }
-    void signal_rescale_y      (Signal * s, double l, double h, size_t b, double d)        noexcept { s->rescale_y({l, h}, b, d); }
-    void signal_add_offset     (Signal * s, size_t dx, size_t dy)                       noexcept { s->add_offset(dx, dy); }
-    void signal_select_in_matrix(Signal * s, size_t w, size_t h)                        noexcept { s->select_in_matrix(w, h); }
+    exported void signal_fix_background (Signal * s, Pixel * p)                                  noexcept { s->fix_background(*p); }
+    exported void signal_log_x          (Signal * s)                                             noexcept { s->log_x(); }
+    exported void signal_log_y          (Signal * s)                                             noexcept { s->log_y(); }
+    exported void signal_rescale_x      (Signal * s, double l, double h, size_t b, double d)        noexcept { s->rescale_x({l, h}, b, d); }
+    exported void signal_rescale_y      (Signal * s, double l, double h, size_t b, double d)        noexcept { s->rescale_y({l, h}, b, d); }
+    exported void signal_add_offset     (Signal * s, size_t dx, size_t dy)                       noexcept { s->add_offset(dx, dy); }
+    exported void signal_select_in_matrix(Signal * s, size_t w, size_t h)                        noexcept { s->select_in_matrix(w, h); }
 
-    double signal_get_xmin(Signal * s, double ymin, double ymax) noexcept { return s->get_xmin(ymin, ymax); }
-    double signal_get_xmax(Signal * s, double ymin, double ymax) noexcept { return s->get_xmax(ymin, ymax); }
-    double signal_get_ymin(Signal * s, double xmin, double xmax) noexcept { return s->get_ymin(xmin, xmax); }
-    double signal_get_ymax(Signal * s, double xmin, double xmax) noexcept { return s->get_ymax(xmin, xmax); }
+    exported double signal_get_xmin(Signal * s, double ymin, double ymax) noexcept { return s->get_xmin(ymin, ymax); }
+    exported double signal_get_xmax(Signal * s, double ymin, double ymax) noexcept { return s->get_xmax(ymin, ymax); }
+    exported double signal_get_ymin(Signal * s, double xmin, double xmax) noexcept { return s->get_ymin(xmin, xmax); }
+    exported double signal_get_ymax(Signal * s, double xmin, double xmax) noexcept { return s->get_ymax(xmin, xmax); }
 
-    void   signal_assign     (Signal * s, Signal * other) noexcept { *s = *other; }
-    void   signal_plot       (Signal * s)                  noexcept { s->plot(); }
-    Points*signal_get_points (Signal * s)                  noexcept { return new Points(s->get_points()); }
-    size_t signal_get_length (Signal * s)                  noexcept { return s->get_length(); }
-    const wchar_t * signal_get_wstring(Signal * s, bool fill) noexcept { return wstring_to_cstring(s->get_wstring(fill)); }
+    exported void   signal_assign     (Signal * s, Signal * other) noexcept { *s = *other; }
+    exported void   signal_plot       (Signal * s)                  noexcept { s->plot(); }
+    exported Points*signal_get_points (Signal * s)                  noexcept { return new Points(s->get_points()); }
+    exported size_t signal_get_length (Signal * s)                  noexcept { return s->get_length(); }
+    exported const wchar_t * signal_get_wstring(Signal * s, bool fill) noexcept { return wstring_to_cstring(s->get_wstring(fill)); }
 }
