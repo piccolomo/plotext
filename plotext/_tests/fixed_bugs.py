@@ -43,6 +43,16 @@ class ruler_bugs(unittest.TestCase):
         rows = rows_of(fig)
         self.assertTrue(any(row.lstrip().startswith("4") for row in rows))
 
+    # Ticks given on a log axis used to leave the limits in linear units, so every point fell outside the canvas
+    def test_tick_list_on_log_scale(self):
+        fig = prepare()
+        fig.ruler("both").scale("log")
+        fig.draw(fig.signal([2, 4, 8, 12], [0.76, 0.21, 0.057, 0.026], marker = "x"))
+        fig.ruler("x").ticks([2, 4, 8, 12], ["2", "4", "8", "12"])
+        rows = rows_of(fig)
+        self.assertEqual(sum(row.count("x") for row in rows), 4)
+        self.assertTrue(any("12" in row for row in rows))
+
 
 # Bugs in the bars
 class bar_bugs(unittest.TestCase):
